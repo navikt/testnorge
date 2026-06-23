@@ -39,6 +39,7 @@ type ResultatProps = {
 	bestilling: Bestillingsstatus
 	lukkBestilling: Function
 	erOrganisasjon: boolean
+	compact?: boolean
 }
 
 const ERROR_KEYWORDS = ['feil', 'error']
@@ -58,6 +59,7 @@ export default function BestillingResultat({
 	bestilling,
 	lukkBestilling,
 	erOrganisasjon,
+	compact = false,
 }: ResultatProps) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [showConfetti, setShowConfetti] = useState(false)
@@ -84,66 +86,80 @@ export default function BestillingResultat({
 	return (
 		<div className="bestilling-status" key={`ferdig-bestilling-${bestilling.id}`}>
 			<div className="bestilling-resultat">
-				<div className="status-header">
-					<p>Bestilling #{bestilling.id}</p>
-					<h3>Bestillingsstatus</h3>
-					<div className="status-header_button-wrap">
-						<Button
-							data-testid={TestComponentSelectors.BUTTON_LUKK_BESTILLING_RESULTAT}
-							kind="remove-circle"
-							onClick={() => {
-								lukkBestilling(bestilling.id)
-							}}
-						/>
+				{compact ? (
+					<div className="status-header">
+						<h3>Bestilling #{bestilling.id}</h3>
 					</div>
-				</div>
+				) : (
+					<div className="status-header">
+						<p>Bestilling #{bestilling.id}</p>
+						<h3>Bestillingsstatus</h3>
+						<div className="status-header_button-wrap">
+							<Button
+								data-testid={TestComponentSelectors.BUTTON_LUKK_BESTILLING_RESULTAT}
+								kind="remove-circle"
+								onClick={() => {
+									lukkBestilling(bestilling.id)
+								}}
+							/>
+						</div>
+					</div>
+				)}
 				<hr />
 				<BestillingStatus bestilling={bestilling} erOrganisasjon={erOrganisasjon} />
-				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
-				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
-				{bestilling.stoppet && (
-					<Alert variant="warning" size="small" style={{ marginBottom: '15px' }}>
-						Bestillingen er stoppet
-					</Alert>
-				)}
-				<FeedbackWrapper>
-					<Feedback
-						label="Hvordan var din opplevelse med bruk av Dolly?"
-						feedbackFor="Bruk av Dolly etter bestilling"
-						etterBestilling={true}
-					/>
-				</FeedbackWrapper>
-				{showConfetti && (
-					<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>
-						<StyledConfettiExplosion particleCount={70} force={0.3} duration={confettiDuration} />
-					</div>
-				)}
-				<div className="flexbox--all-center">
-					<BestillingSammendragModal bestillinger={[bestilling]} />
-					{harIdenterOpprettet && (
-						<Button
-							disabled={disableGjenopprett}
-							title={
-								disableGjenopprett
-									? 'Kan ikke gjenopprette gjenoppretting av bestilling'
-									: 'Gjenopprett'
-							}
-							onClick={openGjenopprettModal}
-							kind="synchronize"
-						>
-							GJENOPPRETT
-						</Button>
-					)}
-				</div>
-				{isGjenopprettModalOpen && (
-					<GjenopprettConnector
-						bestilling={bestilling}
-						brukerId={brukerId}
-						closeModal={() => {
-							closeGjenoprettModal()
-							mutate(REGEX_BACKEND_GRUPPER)
-						}}
-					/>
+				{!compact && (
+					<>
+						{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
+						{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
+						{bestilling.stoppet && (
+							<Alert variant="warning" size="small" style={{ marginBottom: '15px' }}>
+								Bestillingen er stoppet
+							</Alert>
+						)}
+						<FeedbackWrapper>
+							<Feedback
+								label="Hvordan var din opplevelse med bruk av Dolly?"
+								feedbackFor="Bruk av Dolly etter bestilling"
+								etterBestilling={true}
+							/>
+						</FeedbackWrapper>
+						{showConfetti && (
+							<div data-testid="confetti" style={{ display: 'flex', flexDirection: 'column' }}>
+								<StyledConfettiExplosion
+									particleCount={70}
+									force={0.3}
+									duration={confettiDuration}
+								/>
+							</div>
+						)}
+						<div className="flexbox--all-center">
+							<BestillingSammendragModal bestillinger={[bestilling]} />
+							{harIdenterOpprettet && (
+								<Button
+									disabled={disableGjenopprett}
+									title={
+										disableGjenopprett
+											? 'Kan ikke gjenopprette gjenoppretting av bestilling'
+											: 'Gjenopprett'
+									}
+									onClick={openGjenopprettModal}
+									kind="synchronize"
+								>
+									GJENOPPRETT
+								</Button>
+							)}
+						</div>
+						{isGjenopprettModalOpen && (
+							<GjenopprettConnector
+								bestilling={bestilling}
+								brukerId={brukerId}
+								closeModal={() => {
+									closeGjenoprettModal()
+									mutate(REGEX_BACKEND_GRUPPER)
+								}}
+							/>
+						)}
+					</>
 				)}
 			</div>
 		</div>

@@ -1,4 +1,12 @@
-import { format, isMonday, isWeekend, parseISO, subDays } from 'date-fns'
+import {
+	eachMonthOfInterval,
+	format,
+	isMonday,
+	isValid,
+	isWeekend,
+	parseISO,
+	subDays,
+} from 'date-fns'
 import { nb } from 'date-fns/locale'
 import {
 	type DashboardBestillingerDTO,
@@ -6,6 +14,7 @@ import {
 	type DashboardOrganisasjonerDTO,
 	type DashboardTeamsDTO,
 } from '@/utils/hooks/useDashboard'
+import { MONTH_NAMES, type MonthName } from './dashboardFeilUtils'
 
 export type PersonTrendPoint = {
 	dato: string
@@ -43,6 +52,38 @@ export type TeamDistributionPoint = {
 
 export const MONTH_SCOPE_LAST_12 = 'LAST_12'
 export const MONTH_SCOPE_ALL = 'ALL'
+
+export const QUICK_RANGE_OPTIONS = [
+	{ value: 'week', label: 'Siste uke' },
+	{ value: 'month', label: 'Siste måned' },
+	{ value: 'threeMonths', label: 'Siste 3 måneder' },
+	{ value: 'sixMonths', label: 'Siste 6 måneder' },
+	{ value: 'year', label: 'Siste år' },
+	{ value: 'all', label: 'All historikk' },
+] as const
+
+export type QuickRangeValue = (typeof QUICK_RANGE_OPTIONS)[number]['value']
+
+export const isQuickRangeValue = (value: string): value is QuickRangeValue =>
+	QUICK_RANGE_OPTIONS.some((option) => option.value === value)
+
+export const monthsInRange = (
+	fraDato: string,
+	tilDato: string,
+): { year: number; month: MonthName }[] => {
+	if (!fraDato || !tilDato) {
+		return []
+	}
+	const start = parseISO(fraDato)
+	const end = parseISO(tilDato)
+	if (!isValid(start) || !isValid(end) || start > end) {
+		return []
+	}
+	return eachMonthOfInterval({ start, end }).map((monthDate) => ({
+		year: monthDate.getFullYear(),
+		month: MONTH_NAMES[monthDate.getMonth()],
+	}))
+}
 
 export const asNumber = (value: number | null | undefined) =>
 	typeof value === 'number' ? value : 0

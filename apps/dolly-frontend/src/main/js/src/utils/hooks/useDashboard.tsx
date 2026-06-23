@@ -102,11 +102,11 @@ export const useDashboard = () => {
 		mutate: mutateDashboardBestillinger,
 	} = useSWR<DashboardBestillingerDTO[], Error>(
 		DollyEndpoints.dashboardBestillinger(currentYear, currentMonth),
-		(url) => fetcher(url, null, 30000),
+		(url) => fetcher(url, null, 60000),
 		{
 			revalidateOnFocus: false,
 			revalidateIfStale: false,
-			dedupingInterval: 15000,
+			dedupingInterval: 60000,
 		},
 	)
 
@@ -115,11 +115,15 @@ export const useDashboard = () => {
 		isLoading: loadingDashboardTeams,
 		error: dashboardTeamsError,
 		mutate: mutateDashboardTeams,
-	} = useSWR<DashboardTeamsDTO[], Error>(DollyEndpoints.dashboardTeams(), fetcher, {
-		revalidateOnFocus: false,
-		revalidateIfStale: false,
-		dedupingInterval: 15000,
-	})
+	} = useSWR<DashboardTeamsDTO[], Error>(
+		DollyEndpoints.dashboardTeams(),
+		(url) => fetcher(url, null, 60000),
+		{
+			revalidateOnFocus: false,
+			revalidateIfStale: false,
+			dedupingInterval: 60000,
+		},
+	)
 
 	const {
 		data: dashboardOrganisasjoner,
@@ -128,11 +132,11 @@ export const useDashboard = () => {
 		mutate: mutateDashboardOrganisasjoner,
 	} = useSWR<DashboardOrganisasjonerDTO[], Error>(
 		DollyEndpoints.dashboardOrganisasjoner(),
-		(url) => fetcher(url, null, 30000),
+		(url) => fetcher(url, null, 40000),
 		{
 			revalidateOnFocus: false,
 			revalidateIfStale: false,
-			dedupingInterval: 15000,
+			dedupingInterval: 60000,
 		},
 	)
 
@@ -144,7 +148,7 @@ export const useDashboard = () => {
 	} = useSWR<DashboardDollyTeamsDTO[], Error>(DollyEndpoints.dashboardDollyTeams(), fetcher, {
 		revalidateOnFocus: false,
 		revalidateIfStale: false,
-		dedupingInterval: 15000,
+		dedupingInterval: 60000,
 	})
 
 	const {
@@ -155,7 +159,7 @@ export const useDashboard = () => {
 	} = useSWR<DashboardOversiktDTO[], Error>(DollyEndpoints.dashboardOversikt(), fetcher, {
 		revalidateOnFocus: false,
 		revalidateIfStale: false,
-		dedupingInterval: 15000,
+		dedupingInterval: 60000,
 	})
 
 	return {
@@ -185,6 +189,37 @@ export const useDashboard = () => {
 	}
 }
 
+const EMPTY_BESTILLINGER: DashboardBestillingerDTO[] = []
+
+export const useDashboardBestillingerForMonths = (months: { year: number; month: string }[]) => {
+	const urls = months.map((maaned) =>
+		DollyEndpoints.dashboardBestillinger(maaned.year, maaned.month),
+	)
+	const shouldFetch = urls.length > 0
+	const {
+		data,
+		isLoading: loadingBestillingerForMonths,
+		error: bestillingerForMonthsError,
+	} = useSWR<DashboardBestillingerDTO[], Error>(
+		shouldFetch ? ['bestillinger-for-months', ...urls] : null,
+		() =>
+			Promise.all(urls.map((url) => fetcher(url, null, 60000))).then((resultater) =>
+				resultater.flatMap((rader) => rader ?? []),
+			),
+		{
+			revalidateOnFocus: false,
+			revalidateIfStale: false,
+			dedupingInterval: 60000,
+		},
+	)
+
+	return {
+		bestillingerForMonths: data ?? EMPTY_BESTILLINGER,
+		loadingBestillingerForMonths,
+		bestillingerForMonthsError,
+	}
+}
+
 export const useDashboardFeilSummert = (year: number | null, month: string | null) => {
 	const shouldFetch = year !== null && Boolean(month)
 	const {
@@ -197,7 +232,7 @@ export const useDashboardFeilSummert = (year: number | null, month: string | nul
 		{
 			revalidateOnFocus: false,
 			revalidateIfStale: false,
-			dedupingInterval: 15000,
+			dedupingInterval: 60000,
 		},
 	)
 
@@ -220,7 +255,7 @@ export const useDashboardFeilDetaljert = (
 		{
 			revalidateOnFocus: false,
 			revalidateIfStale: false,
-			dedupingInterval: 15000,
+			dedupingInterval: 60000,
 		},
 	)
 
@@ -245,7 +280,7 @@ export const useDashboardFeilForDager = (dager: { year: number; month: string; d
 		{
 			revalidateOnFocus: false,
 			revalidateIfStale: false,
-			dedupingInterval: 15000,
+			dedupingInterval: 60000,
 		},
 	)
 

@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { format, parseISO } from 'date-fns'
-import { useDashboard, useDashboardFeilForDager } from '@/utils/hooks/useDashboard'
+import {
+	type DashboardBestillingerDTO,
+	type DashboardDollyTeamsDTO,
+	type DashboardFeilDetaljertRad,
+	type DashboardOrganisasjonerDTO,
+	type DashboardOversiktDTO,
+	type DashboardTeamsDTO,
+	useDashboard,
+	useDashboardFeilForDager,
+} from '@/utils/hooks/useDashboard'
 import {
 	asNumber,
 	buildMonthlyDistributionView,
@@ -24,12 +33,10 @@ import {
 import {
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
-	createPreviousDayChartOptions,
+	createOpprettetGjenopprettetDonutChartOptions,
 } from './dashboardChartOptions'
 import { createDashboardMockData } from './dashboardMockData'
 
-const MONTH_SCOPE_LAST_12_CONST = MONTH_SCOPE_LAST_12
-const MONTH_SCOPE_ALL_CONST = MONTH_SCOPE_ALL
 const DAY_SCOPE_YESTERDAY = 'YESTERDAY'
 const DAY_SCOPE_TODAY = 'TODAY'
 
@@ -49,15 +56,32 @@ const buildFeilPeriodView = (periodeOptions: FeilPeriodeOption[], selectedInterv
 }
 
 const useAutoSelectLatestInterval = (
-	intervalOptions: string[],
+	intervalOptions: { value: string }[],
 	selectedInterval: string,
 	setSetter: (value: string) => void,
 ) => {
 	useEffect(() => {
 		if (!selectedInterval && intervalOptions.length > 0) {
-			setSetter(intervalOptions[intervalOptions.length - 1])
+			setSetter(intervalOptions[intervalOptions.length - 1].value)
 		}
 	}, [intervalOptions, selectedInterval, setSetter])
+}
+
+const tilListe = <T>(input: unknown): T[] => {
+	if (Array.isArray(input)) {
+		return input as T[]
+	}
+	if (!input || typeof input !== 'object') {
+		return []
+	}
+	const record = input as Record<string, unknown>
+	if (Array.isArray(record.content)) {
+		return record.content as T[]
+	}
+	if (Array.isArray(record.data)) {
+		return record.data as T[]
+	}
+	return []
 }
 
 export const useDashboardDataCore = () => {
@@ -98,18 +122,20 @@ export const useDashboardDataCore = () => {
 	const [mockData, setMockData] = useState(() => createDashboardMockData(0))
 
 	const activeDashboardBestillinger = mockModeEnabled
-		? mockData.dashboardBestillinger
-		: (dashboardBestillinger ?? [])
-	const activeDashboardTeams = mockModeEnabled ? mockData.dashboardTeams : (dashboardTeams ?? [])
+		? tilListe<DashboardBestillingerDTO>(mockData.dashboardBestillinger)
+		: tilListe<DashboardBestillingerDTO>(dashboardBestillinger)
+	const activeDashboardTeams = mockModeEnabled
+		? tilListe<DashboardTeamsDTO>(mockData.dashboardTeams)
+		: tilListe<DashboardTeamsDTO>(dashboardTeams)
 	const activeDashboardOrganisasjoner = mockModeEnabled
-		? mockData.dashboardOrganisasjoner
-		: (dashboardOrganisasjoner ?? [])
+		? tilListe<DashboardOrganisasjonerDTO>(mockData.dashboardOrganisasjoner)
+		: tilListe<DashboardOrganisasjonerDTO>(dashboardOrganisasjoner)
 	const activeDashboardDollyTeams = mockModeEnabled
-		? mockData.dashboardDollyTeams
-		: (dashboardDollyTeams ?? [])
+		? tilListe<DashboardDollyTeamsDTO>(mockData.dashboardDollyTeams)
+		: tilListe<DashboardDollyTeamsDTO>(dashboardDollyTeams)
 	const activeDashboardOversikt = mockModeEnabled
-		? mockData.feilOversikt
-		: (dashboardOversikt ?? [])
+		? tilListe<DashboardOversiktDTO>(mockData.feilOversikt)
+		: tilListe<DashboardOversiktDTO>(dashboardOversikt)
 
 	// Pre-compute feil periode options and auto-select the latest one
 	const feilPeriodeOptions = useMemo(
@@ -147,7 +173,7 @@ export const useDashboardDataCore = () => {
 		nyeInklGjenopprettede: previousDaySummary.nye + previousDaySummary.gjenopprettede,
 	}
 
-	const previousDayChartOptions = createPreviousDayChartOptions({
+	const previousDayChartOptions = createOpprettetGjenopprettetDonutChartOptions({
 		nye: previousDaySummaryWithTotals.nye,
 		gjenopprettede: previousDaySummaryWithTotals.gjenopprettede,
 	})
@@ -162,8 +188,10 @@ export const useDashboardDataCore = () => {
 		mockModeEnabled ? [] : selectedDayFeilDager,
 	)
 	const activeSelectedDayFeil = mockModeEnabled
-		? selectedDayDates.flatMap((dato) => mockData.feilDetaljertByDate[dato] ?? [])
-		: feilForDager
+		? selectedDayDates.flatMap((dato) =>
+				tilListe<DashboardFeilDetaljertRad>(mockData.feilDetaljertByDate[dato]),
+			)
+		: tilListe<DashboardFeilDetaljertRad>(feilForDager)
 	const selectedDayFeilGrupper = toFeilGrupper(activeSelectedDayFeil)
 	const selectedDayFeilCount = new Set(activeSelectedDayFeil.map((rad) => rad.bestillingId)).size
 
@@ -210,6 +238,11 @@ export const useDashboardDataCore = () => {
 		[activeDashboardDollyTeams],
 	)
 
+	const filteredDollyTeamsPoints = useMemo(
+		() => filterMonthlyTeamPoints(dollyTeamsMonthlyPoints, dollyTeamsMonthScope),
+		[dollyTeamsMonthlyPoints, dollyTeamsMonthScope],
+	)
+
 	const dollyTeamsView = useMemo(
 		() => buildMonthlyDistributionView(dollyTeamsMonthlyPoints, selectedDollyTeamsInterval),
 		[dollyTeamsMonthlyPoints, selectedDollyTeamsInterval],
@@ -217,21 +250,12 @@ export const useDashboardDataCore = () => {
 
 	const dollyTeamsMonthlyTrendChartOptions = useMemo(
 		() =>
-			createMonthlyTeamTrendChartOptions(
-				toMonthlyTrendData(
-					dollyTeamsMonthlyPoints.filter(
-						(p) =>
-							dollyTeamsMonthScope === MONTH_SCOPE_ALL_CONST ||
-							new Date(p.interval) > new Date(new Date().getFullYear() - 1, new Date().getMonth()),
-					),
-				),
-				{
-					description:
-						'Linjediagram med månedlig utvikling i unike brukere og antall dolly teams fra dollyteams-endepunktet.',
-					secondSeriesName: 'Antall teams',
-				},
-			),
-		[dollyTeamsMonthlyPoints, dollyTeamsMonthScope],
+			createMonthlyTeamTrendChartOptions(toMonthlyTrendData(filteredDollyTeamsPoints), {
+				description:
+					'Linjediagram med månedlig utvikling i unike brukere og antall dolly teams fra dollyteams-endepunktet.',
+				secondSeriesName: 'Antall teams',
+			}),
+		[filteredDollyTeamsPoints],
 	)
 
 	const dollyTeamsDistributionChartOptions = useMemo(
@@ -252,23 +276,19 @@ export const useDashboardDataCore = () => {
 		[activeDashboardTeams],
 	)
 
+	const filteredMonthlyTeamPoints = useMemo(
+		() => filterMonthlyTeamPoints(monthlyTeamPoints, monthScope),
+		[monthlyTeamPoints, monthScope],
+	)
+
 	const teamView = useMemo(
 		() => buildMonthlyDistributionView(monthlyTeamPoints, selectedInterval),
 		[monthlyTeamPoints, selectedInterval],
 	)
 
 	const monthlyTrendChartOptions = useMemo(
-		() =>
-			createMonthlyTeamTrendChartOptions(
-				toMonthlyTrendData(
-					monthlyTeamPoints.filter(
-						(p) =>
-							monthScope === MONTH_SCOPE_ALL_CONST ||
-							new Date(p.interval) > new Date(new Date().getFullYear() - 1, new Date().getMonth()),
-					),
-				),
-			),
-		[monthlyTeamPoints, monthScope],
+		() => createMonthlyTeamTrendChartOptions(toMonthlyTrendData(filteredMonthlyTeamPoints)),
+		[filteredMonthlyTeamPoints],
 	)
 
 	const monthlyDistributionChartOptions = useMemo(
@@ -285,16 +305,6 @@ export const useDashboardDataCore = () => {
 		}
 		reloadDashboard()
 	}
-
-	const filteredDollyTeamsPoints = useMemo(
-		() => filterMonthlyTeamPoints(dollyTeamsMonthlyPoints, dollyTeamsMonthScope),
-		[dollyTeamsMonthlyPoints, dollyTeamsMonthScope],
-	)
-
-	const filteredMonthlyTeamPoints = useMemo(
-		() => filterMonthlyTeamPoints(monthlyTeamPoints, monthScope),
-		[monthlyTeamPoints, monthScope],
-	)
 
 	return {
 		// Mock mode
@@ -314,6 +324,11 @@ export const useDashboardDataCore = () => {
 				loadingDashboardDollyTeams) &&
 			!mockModeEnabled,
 		loadingDashboardBestillinger,
+		loadingDashboardPersoner: loadingDashboardBestillinger,
+		loadingDashboardTeams,
+		loadingDashboardOrganisasjoner,
+		loadingDashboardDollyTeams,
+		loadingDashboardOversikt,
 		dashboardBestillingerError,
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,

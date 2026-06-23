@@ -27,11 +27,6 @@ export type MonthName = (typeof MONTH_NAMES)[number]
 export const monthNumberToName = (month: number): MonthName | null =>
 	month >= 1 && month <= 12 ? MONTH_NAMES[month - 1] : null
 
-export const monthNameToNumber = (name: string): number | null => {
-	const index = MONTH_NAMES.indexOf(name as MonthName)
-	return index === -1 ? null : index + 1
-}
-
 const IDENTITETSFELT = new Set(['sistOppdatert', 'bestillingId', 'ident', 'master'])
 
 const FAGSYSTEM_FEIL_LABELS: Record<string, string> = {
@@ -98,11 +93,46 @@ const intervalVisning = (interval: string): string => {
 	}
 }
 
-export const toFeilPeriodeOptions = (oversikt: DashboardOversiktDTO[]): FeilPeriodeOption[] =>
-	oversikt
+const maanedTilNummer = (maaned: string): number | null => {
+	if (!maaned) {
+		return null
+	}
+	const numerisk = parseInt(maaned, 10)
+	if (!Number.isNaN(numerisk)) {
+		return numerisk >= 1 && numerisk <= 12 ? numerisk : null
+	}
+	const indexFraNavn = MONTH_NAMES.indexOf(maaned.toUpperCase() as MonthName)
+	return indexFraNavn === -1 ? null : indexFraNavn + 1
+}
+
+const tilOversiktListe = (oversikt: unknown): DashboardOversiktDTO[] => {
+	if (Array.isArray(oversikt)) {
+		return oversikt as DashboardOversiktDTO[]
+	}
+	if (!oversikt || typeof oversikt !== 'object') {
+		return []
+	}
+	const oversiktRecord = oversikt as Record<string, unknown>
+	if (Array.isArray(oversiktRecord.content)) {
+		return oversiktRecord.content as DashboardOversiktDTO[]
+	}
+	if (Array.isArray(oversiktRecord.data)) {
+		return oversiktRecord.data as DashboardOversiktDTO[]
+	}
+	if ('aar' in oversiktRecord && 'maaned' in oversiktRecord) {
+		return [oversiktRecord as unknown as DashboardOversiktDTO]
+	}
+	return []
+}
+
+export const toFeilPeriodeOptions = (oversikt: unknown): FeilPeriodeOption[] =>
+	tilOversiktListe(oversikt)
 		.map((rad) => {
-			// maaned comes in as "01", "02", etc. from backend
-			const maanedNum = parseInt(rad.maaned, 10)
+			// maaned comes in either as "01", "02", ... or as an English month name from backend/mock
+			const maanedNum = maanedTilNummer(rad.maaned)
+			if (maanedNum === null) {
+				return null
+			}
 			const maanedNavn = monthNumberToName(maanedNum)
 			if (maanedNavn === null) {
 				return null
@@ -260,6 +290,21 @@ export const feilVerdiTilTekst = (verdi: FeilVerdi): string => {
 	} catch {
 		return String(verdi)
 	}
+}
+
+const MELDING_FELT = ['melding', 'message', 'feilmelding', 'beskrivelse', 'error', 'detail']
+
+export const feilVerdiTilMelding = (verdi: FeilVerdi): string => {
+	if (verdi !== null && typeof verdi === 'object' && !Array.isArray(verdi)) {
+		const record = verdi as Record<string, unknown>
+		for (const felt of MELDING_FELT) {
+			const meldingsfelt = record[felt]
+			if (typeof meldingsfelt === 'string' && meldingsfelt.trim().length > 0) {
+				return meldingsfelt
+			}
+		}
+	}
+	return feilVerdiTilTekst(verdi)
 }
 
 export const erStrukturertFeilVerdi = (verdi: FeilVerdi): boolean =>
