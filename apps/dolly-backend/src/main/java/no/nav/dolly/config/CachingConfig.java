@@ -41,7 +41,7 @@ public class CachingConfig {
 
     @Bean
     @Profile("local")
-    public CacheManager cacheManager() {
+    public CacheManager cacheManagerLocal() {
         return new NoOpCacheManager();
     }
 
