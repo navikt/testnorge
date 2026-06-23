@@ -24,7 +24,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-oversikt-frontend
         - application: dolly-frontend
         - application: dolly-idporten
