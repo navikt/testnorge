@@ -1,18 +1,21 @@
 import { format, isMonday, isWeekend, parseISO, subDays } from 'date-fns'
 import { nb } from 'date-fns/locale'
 import {
+	type DashboardBestillingerDTO,
 	type DashboardDollyTeamsDTO,
 	type DashboardOrganisasjonerDTO,
-	type DashboardPersonerDTO,
 	type DashboardTeamsDTO,
 } from '@/utils/hooks/useDashboard'
 
 export type PersonTrendPoint = {
 	dato: string
 	datoVisning: string
+	bestillinger: number
 	personerTotalt: number
 	nye: number
 	gjenopprettede: number
+	navIdenter: number
+	testnorgeIdenter: number
 }
 
 export type MonthlyTeamPoint = {
@@ -112,10 +115,10 @@ export const withinDateRange = (dato: string, fraDato: string, tilDato: string) 
 }
 
 export const fillMissingPersonDays = (
-	personer: DashboardPersonerDTO[],
+	personer: DashboardBestillingerDTO[],
 	fraDato: string,
 	tilDato: string,
-): DashboardPersonerDTO[] => {
+): DashboardBestillingerDTO[] => {
 	if (!fraDato || !tilDato) {
 		return [...personer].sort((a, b) => a.dato.localeCompare(b.dato))
 	}
@@ -130,7 +133,7 @@ export const fillMissingPersonDays = (
 	}
 
 	const personByDate = new Map(personer.map((personData) => [personData.dato, personData]))
-	const completedDays: DashboardPersonerDTO[] = []
+	const completedDays: DashboardBestillingerDTO[] = []
 	let currentDate = startDate
 
 	while (currentDate <= endDate) {
@@ -139,11 +142,12 @@ export const fillMissingPersonDays = (
 		completedDays.push(
 			personDataForDay ?? {
 				dato: currentDateValue,
+				bestillinger: 0,
 				personerTotalt: 0,
 				nye: 0,
 				gjenopprettede: 0,
-				pdlFeil: 0,
-				andreFeil: 0,
+				navIdenter: 0,
+				testnorgeIdenter: 0,
 			},
 		)
 		currentDate = new Date(currentDate)
@@ -259,13 +263,16 @@ export const toMonthlyDollyTeamPoints = (
 		}))
 		.sort((a, b) => a.interval.localeCompare(b.interval))
 
-export const toPersonTrendData = (personer: DashboardPersonerDTO[]): PersonTrendPoint[] =>
+export const toPersonTrendData = (personer: DashboardBestillingerDTO[]): PersonTrendPoint[] =>
 	personer.map((personData) => ({
 		dato: personData.dato,
 		datoVisning: toDisplayDate(personData.dato),
+		bestillinger: asNumber(personData.bestillinger),
 		personerTotalt: asNumber(personData.personerTotalt),
 		nye: asNumber(personData.nye),
 		gjenopprettede: asNumber(personData.gjenopprettede),
+		navIdenter: asNumber(personData.navIdenter),
+		testnorgeIdenter: asNumber(personData.testnorgeIdenter),
 	}))
 
 export const toMonthlyTrendData = (points: MonthlyTeamPoint[]): MonthlyTrendPoint[] =>
@@ -297,3 +304,45 @@ export const toTeamDistributionForInterval = (
 		team: teamData.team,
 		unikeBrukere: teamData.unikeBrukere,
 	}))
+
+export type MonthlyDistributionView = {
+	intervalOptions: { value: string; label: string }[]
+	yearOptions: string[]
+	selectedYear: string
+	monthOptions: { value: string; label: string }[]
+	selectedPoint: MonthlyTeamPoint | null
+	distribution: TeamDistributionPoint[]
+}
+
+export const buildMonthlyDistributionView = (
+	monthlyPoints: MonthlyTeamPoint[],
+	selectedInterval: string,
+): MonthlyDistributionView => {
+	const intervalOptions = toMonthlyIntervalOptions(monthlyPoints)
+	const yearOptions = [...new Set(intervalOptions.map((option) => option.value.slice(0, 4)))].sort(
+		(a, b) => a.localeCompare(b),
+	)
+	const selectedIntervalValue =
+		typeof selectedInterval === 'string'
+			? selectedInterval
+			: selectedInterval && typeof (selectedInterval as { value?: unknown }).value === 'string'
+				? (selectedInterval as { value: string }).value
+				: ''
+	const selectedYear = selectedIntervalValue.slice(0, 4)
+	const monthOptions = intervalOptions
+		.filter((option) => option.value.startsWith(`${selectedYear}-`))
+		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
+	const selectedPoint =
+		monthlyPoints.find((point) => point.interval === selectedIntervalValue) ?? null
+	const distribution = toTeamDistributionForInterval(monthlyPoints, selectedIntervalValue)
+	return { intervalOptions, yearOptions, selectedYear, monthOptions, selectedPoint, distribution }
+}
+
+export const makeYearChangeHandler =
+	(intervalOptions: { value: string }[], setSelectedInterval: (value: string) => void) =>
+	(year: string) => {
+		const lastOption = intervalOptions.findLast((option) => option.value.startsWith(`${year}-`))
+		if (lastOption) {
+			setSelectedInterval(lastOption.value)
+		}
+	}

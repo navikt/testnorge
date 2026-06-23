@@ -12,6 +12,7 @@ export const MonthlyTeamTrendSection = ({
 	title = 'Nav-team statistikk',
 	description,
 	showScopeToggle = true,
+	emptyStateMessage = 'Ingen teamdata tilgjengelig.',
 	filteredMonthlyTeamPointsLength,
 	monthScope,
 	onMonthScopeChange,
@@ -20,6 +21,7 @@ export const MonthlyTeamTrendSection = ({
 	title?: string
 	description?: string
 	showScopeToggle?: boolean
+	emptyStateMessage?: string
 	filteredMonthlyTeamPointsLength: number
 	monthScope: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 	onMonthScopeChange: (value: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL) => void
@@ -33,7 +35,7 @@ export const MonthlyTeamTrendSection = ({
 			{description && <BodyShort>{description}</BodyShort>}
 			{filteredMonthlyTeamPointsLength === 0 ? (
 				<Alert variant="info" inline>
-					Ingen teamdata tilgjengelig.
+					{emptyStateMessage}
 				</Alert>
 			) : (
 				<>

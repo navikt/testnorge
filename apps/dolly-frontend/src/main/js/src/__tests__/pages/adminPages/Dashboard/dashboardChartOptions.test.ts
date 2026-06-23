@@ -13,9 +13,12 @@ describe('dashboardChartOptions', () => {
 			{
 				dato: '2026-06-01',
 				datoVisning: '01.06.2026',
+				bestillinger: 12,
 				personerTotalt: 10,
 				nye: 5,
 				gjenopprettede: 2,
+				navIdenter: 7,
+				testnorgeIdenter: 5,
 			},
 		])
 
@@ -31,38 +34,15 @@ describe('dashboardChartOptions', () => {
 		).toEqual([-45])
 		expect(options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.min : undefined).toBe(0)
 		const series = options.series as Highcharts.SeriesLineOptions[]
-		expect(series).toHaveLength(3)
-		expect(series[0].name).toBe('Nye')
-		expect(series[1].name).toBe('Gjenopprettede')
-		expect(series[2].name).toBe('Personer totalt')
-		expect(series[2].visible).toBe(false)
-		expect(series[2].data).toEqual([10])
-	})
-
-	it('should honor persisted visibility for total series in person trend chart', () => {
-		const onPersonerTotaltVisibilityChange = vi.fn()
-		const options = createPersonTrendChartOptions(
-			[
-				{
-					dato: '2026-06-01',
-					datoVisning: '01.06.2026',
-					personerTotalt: 10,
-					nye: 5,
-					gjenopprettede: 2,
-				},
-			],
-			{
-				personerTotaltVisible: true,
-				onPersonerTotaltVisibilityChange,
-			},
-		)
-		const series = options.series as Highcharts.SeriesLineOptions[]
-
-		expect(series[2].visible).toBe(true)
-		series[2].events?.hide?.call({} as never)
-		series[2].events?.show?.call({} as never)
-		expect(onPersonerTotaltVisibilityChange).toHaveBeenNthCalledWith(1, false)
-		expect(onPersonerTotaltVisibilityChange).toHaveBeenNthCalledWith(2, true)
+		expect(series).toHaveLength(6)
+		expect(series[0].name).toBe('Personer totalt')
+		expect(series[1].name).toBe('Nye')
+		expect(series[2].name).toBe('Gjenopprettede')
+		expect(series[3].name).toBe('NAV-identer')
+		expect(series[4].name).toBe('Testnorge-identer')
+		expect(series[5].name).toBe('Bestillinger')
+		expect(series[0].visible).toBe(true)
+		expect(series[0].data).toEqual([10])
 	})
 
 	it('should create yesterday comparison chart with two key metrics', () => {

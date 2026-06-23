@@ -1,5 +1,4 @@
-import { Alert, Box, Button, Heading, HGrid, Skeleton, TextField, VStack } from '@navikt/ds-react'
-import { type Options } from 'highcharts'
+import { Alert, Box, Heading, HGrid, Skeleton, TextField, VStack } from '@navikt/ds-react'
 import {
 	DashboardChartPanel,
 	DashboardKpiCard,
@@ -9,7 +8,8 @@ import {
 import { FeilGrupperVisning } from './dashboardFeilSection'
 import { type FeilGruppe } from './dashboardFeilUtils'
 import { createPreviousDayFeilDonutChartOptions } from './dashboardPreviousDayChartOptions'
-import { type DashboardPersonerDTO } from '@/utils/hooks/useDashboard'
+import { type DashboardBestillingerDTO } from '@/utils/hooks/useDashboard'
+import { useDashboardPerson } from './DashboardPersonContext'
 import dollyImg from '@/assets/img/dolly-sheep-confetti.svg'
 
 export type QuickRangeOption = {
@@ -18,9 +18,12 @@ export type QuickRangeOption = {
 }
 
 export type PersonSummary = {
+	bestillinger: number
 	personerTotalt: number
 	nye: number
 	gjenopprettede: number
+	navIdenter: number
+	testnorgeIdenter: number
 }
 
 type PreviousDaySummary = {
@@ -83,7 +86,7 @@ export const PreviousDaySection = ({
 	selectedDayButtonLabel: string
 	selectedDayScope: 'YESTERDAY' | 'TODAY'
 	onSelectedDayScopeChange: (scope: 'YESTERDAY' | 'TODAY') => void
-	previousDayPeriodData: DashboardPersonerDTO[]
+	previousDayPeriodData: DashboardBestillingerDTO[]
 	previousDaySummary: PreviousDaySummary
 	previousDayChartOptions: Options
 	selectedDayFeilGrupper: FeilGruppe[]
@@ -184,78 +187,77 @@ export const PreviousDaySection = ({
 	</DashboardSectionCard>
 )
 
-export const PersonAnalysisSection = ({
-	quickRangeOptions,
-	selectedQuickRange,
-	fraDato,
-	tilDato,
-	tilDatoMax,
-	onFraDatoChange,
-	onTilDatoChange,
-	onQuickRangeClick,
-	onRefresh,
-	filteredPersonerLength,
-	summary,
-	personTrendDataLength,
-	personTrendChartOptions,
-}: {
-	quickRangeOptions: QuickRangeOption[]
-	selectedQuickRange: string | null
-	fraDato: string
-	tilDato: string
-	tilDatoMax: string
-	onFraDatoChange: (value: string) => void
-	onTilDatoChange: (value: string) => void
-	onQuickRangeClick: (value: string) => void
-	onRefresh: () => void
-	filteredPersonerLength: number
-	summary: PersonSummary
-	personTrendDataLength: number
-	personTrendChartOptions: Options
-}) => (
-	<DashboardSectionCard>
-		<VStack gap="space-16">
-			<Heading level="2" size="small">
-				Statistikk for perioder
-			</Heading>
-			<DashboardSelectButtons
-				label="Velg periode"
-				selected={selectedQuickRange}
-				onSelect={onQuickRangeClick}
-				options={quickRangeOptions}
-			/>
-			<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-16" align="end">
-				<TextField
-					label="Fra dato"
-					type="date"
-					max={tilDatoMax}
-					value={fraDato}
-					onChange={(event) => onFraDatoChange(event.target.value)}
+const QUICK_RANGE_OPTIONS = [
+	{ value: 'week', label: 'Siste uke' },
+	{ value: 'month', label: 'Siste måned' },
+	{ value: 'threeMonths', label: 'Siste 3 måneder' },
+	{ value: 'sixMonths', label: 'Siste 6 måneder' },
+	{ value: 'year', label: 'Siste år' },
+	{ value: 'all', label: 'All historikk' },
+] as const
+
+export const PersonAnalysisSection = () => {
+	const {
+		selectedQuickRange,
+		fraDato,
+		tilDato,
+		todayDate,
+		onFraDatoChange,
+		onTilDatoChange,
+		onQuickRangeClick,
+		filteredPersonerLength,
+		summary,
+		personTrendDataLength,
+		personTrendChartOptions,
+	} = useDashboardPerson()
+
+	return (
+		<DashboardSectionCard>
+			<VStack gap="space-16">
+				<Heading level="2" size="small">
+					Statistikk for perioder
+				</Heading>
+				<DashboardSelectButtons
+					label="Velg periode"
+					selected={selectedQuickRange}
+					onSelect={onQuickRangeClick}
+					options={QUICK_RANGE_OPTIONS}
 				/>
-				<TextField
-					label="Til dato"
-					type="date"
-					value={tilDato}
-					max={tilDatoMax}
-					onChange={(event) => onTilDatoChange(event.target.value)}
-				/>
-				<Button variant="secondary" onClick={onRefresh}>
-					Oppdater data
-				</Button>
-			</HGrid>
-			<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
-				<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
-				<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
-				<DashboardKpiCard label="Nye personer" value={summary.nye} />
-				<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
-			</HGrid>
-			{personTrendDataLength === 0 ? (
-				<Alert variant="info" inline>
-					Ingen persondata i valgt periode.
-				</Alert>
-			) : (
-				<DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
-			)}
-		</VStack>
-	</DashboardSectionCard>
-)
+				<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-16" align="end">
+					<TextField
+						label="Fra dato"
+						type="date"
+						max={todayDate}
+						value={fraDato}
+						onChange={(event) => onFraDatoChange(event.target.value)}
+					/>
+					<TextField
+						label="Til dato"
+						type="date"
+						value={tilDato}
+						max={todayDate}
+						onChange={(event) => onTilDatoChange(event.target.value)}
+					/>
+				</HGrid>
+				<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
+					<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
+					<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
+					<DashboardKpiCard label="Nye personer" value={summary.nye} />
+					<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
+				</HGrid>
+				<HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
+					<DashboardKpiCard label="Bestillinger" value={summary.bestillinger} />
+					<DashboardKpiCard label="NAV-identer" value={summary.navIdenter} />
+					<DashboardKpiCard label="Testnorge-identer" value={summary.testnorgeIdenter} />
+				</HGrid>
+				{personTrendDataLength === 0 ? (
+					<Alert variant="info" inline>
+						Ingen persondata i valgt periode.
+					</Alert>
+				) : (
+					<DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
+				)}
+			</VStack>
+		</DashboardSectionCard>
+	)
+}

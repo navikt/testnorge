@@ -22,18 +22,10 @@ const createLineTrendChartOptions = ({
 	series,
 })
 
-type PersonTrendVisibilityOptions = {
-	personerTotaltVisible?: boolean
-	onPersonerTotaltVisibilityChange?: (visible: boolean) => void
-}
-
-export const createPersonTrendChartOptions = (
-	personTrendData: PersonTrendPoint[],
-	visibilityOptions?: PersonTrendVisibilityOptions,
-): Options =>
+export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[]): Options =>
 	createLineTrendChartOptions({
 		description:
-			'Linjediagram med daglig utvikling av nye og gjenopprettede personer i valgt periode.',
+			'Linjediagram med daglig utvikling av bestillinger, identer og personer i valgt periode.',
 		categories: personTrendData.map((point) => point.datoVisning),
 		legend: {
 			enabled: true,
@@ -43,6 +35,12 @@ export const createPersonTrendChartOptions = (
 			itemMarginBottom: 4,
 		},
 		series: [
+			{
+				type: 'line',
+				name: 'Personer totalt',
+				data: personTrendData.map((point) => point.personerTotalt),
+				visible: true,
+			},
 			{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
 			{
 				type: 'line',
@@ -51,13 +49,21 @@ export const createPersonTrendChartOptions = (
 			},
 			{
 				type: 'line',
-				name: 'Personer totalt',
-				data: personTrendData.map((point) => point.personerTotalt),
-				visible: visibilityOptions?.personerTotaltVisible ?? false,
-				events: {
-					show: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(true),
-					hide: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(false),
-				},
+				name: 'NAV-identer',
+				data: personTrendData.map((point) => point.navIdenter),
+				visible: true,
+			},
+			{
+				type: 'line',
+				name: 'Testnorge-identer',
+				data: personTrendData.map((point) => point.testnorgeIdenter),
+				visible: true,
+			},
+			{
+				type: 'line',
+				name: 'Bestillinger',
+				data: personTrendData.map((point) => point.bestillinger),
+				visible: true,
 			},
 		],
 	})

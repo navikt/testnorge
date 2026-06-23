@@ -1,12 +1,12 @@
 import { format, subDays, subMonths } from 'date-fns'
 import {
+	type DashboardBestillingerDTO,
 	type DashboardDollyTeamEntryDTO,
 	type DashboardDollyTeamsDTO,
 	type DashboardFeilDetaljertRad,
 	type DashboardFeilSummertRad,
 	type DashboardOrganisasjonerDTO,
 	type DashboardOversiktDTO,
-	type DashboardPersonerDTO,
 	type DashboardTeamsDTO,
 } from '@/utils/hooks/useDashboard'
 
@@ -59,7 +59,7 @@ const FEIL_FAGSYSTEMER: {
 
 const MASTER_VERDIER = ['PDL', 'TPS', 'DOLLY']
 
-const pickSubset = <T,>(items: T[], min: number, max: number): T[] => {
+const pickSubset = <T>(items: T[], min: number, max: number): T[] => {
 	const count = Math.floor(Math.random() * (max - min + 1)) + min
 	return [...items].sort(() => Math.random() - 0.5).slice(0, Math.min(count, items.length))
 }
@@ -139,7 +139,7 @@ const buildFeilMockData = (): {
 export const createDashboardMockData = (
 	cycle: number,
 ): {
-	dashboardPersoner: DashboardPersonerDTO[]
+	dashboardBestillinger: DashboardBestillingerDTO[]
 	dashboardTeams: DashboardTeamsDTO[]
 	dashboardOrganisasjoner: DashboardOrganisasjonerDTO[]
 	dashboardDollyTeams: DashboardDollyTeamsDTO[]
@@ -147,18 +147,27 @@ export const createDashboardMockData = (
 	feilByInterval: Record<string, DashboardFeilSummertRad[]>
 	feilDetaljertByDate: Record<string, DashboardFeilDetaljertRad[]>
 } => {
-	const zeroFeilMode = Math.abs(cycle) % 5 === 0
+	const cycleOffset = Math.abs(cycle) % 7
 
-	const dashboardPersoner = Array.from({ length: 300 }, (_, index) => {
+	const dashboardBestillinger = Array.from({ length: 300 }, (_, index) => {
 		const dayOffset = 89 - index
 		const dato = format(subDays(new Date(), dayOffset), 'yyyy-MM-dd')
 		const nye = Math.floor(Math.random() * 60) + 10
 		const gjenopprettede = Math.floor(Math.random() * 40) + 5
-		const pdlFeil = zeroFeilMode ? 0 : Math.floor(Math.random() * 41)
-		const andreFeil = zeroFeilMode ? 0 : Math.floor(Math.random() * 41)
-		const personerTotalt = nye + gjenopprettede
+		const navIdenter = Math.floor(Math.random() * 90) + 10
+		const testnorgeIdenter = Math.floor(Math.random() * 45) + 5
+		const bestillinger = navIdenter + testnorgeIdenter + cycleOffset
+		const personerTotalt = nye + gjenopprettede + cycleOffset
 
-		return { dato, personerTotalt, nye, gjenopprettede, pdlFeil, andreFeil }
+		return {
+			dato,
+			bestillinger,
+			personerTotalt,
+			nye,
+			gjenopprettede,
+			navIdenter,
+			testnorgeIdenter,
+		}
 	})
 
 	const teamNames = [
@@ -460,7 +469,7 @@ export const createDashboardMockData = (
 	const { feilOversikt, feilByInterval, feilDetaljertByDate } = buildFeilMockData()
 
 	return {
-		dashboardPersoner,
+		dashboardBestillinger,
 		dashboardTeams,
 		dashboardOrganisasjoner,
 		dashboardDollyTeams,

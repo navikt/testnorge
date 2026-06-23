@@ -14,7 +14,6 @@ import {
 	Tag,
 	VStack,
 } from '@navikt/ds-react'
-import { type Options } from 'highcharts'
 import {
 	DashboardChartPanel,
 	DashboardKpiCard,
@@ -28,6 +27,7 @@ import {
 	feilVerdiTilTekst,
 } from './dashboardFeilUtils'
 import { type FeilVerdi } from '@/utils/hooks/useDashboard'
+import { useDashboardFeil } from './DashboardFeilContext'
 
 const toDateTimeDisplay = (value: string): string => {
 	try {
@@ -119,127 +119,119 @@ export const FeilGrupperVisning = ({
 
 export const DashboardFeilSection = ({
 	title = 'Feil per måned og dag',
-	yearOptions,
-	selectedYear,
-	onSelectedYearChange,
-	monthOptions,
-	selectedInterval,
-	onSelectedIntervalChange,
-	punkterLength,
-	feilTotalt,
-	dagerMedFeil,
-	feilSummertChartOptions,
-	loadingSummert,
-	selectedDay,
-	selectedDayLabel,
-	onClearSelectedDay,
-	feilGrupper,
-	feilDetaljertCount,
-	loadingDetaljert,
 }: {
 	title?: string
-	yearOptions: string[]
-	selectedYear: string
-	onSelectedYearChange: (value: string) => void
-	monthOptions: { value: string; label: string }[]
-	selectedInterval: string
-	onSelectedIntervalChange: (value: string) => void
-	punkterLength: number
-	feilTotalt: number
-	dagerMedFeil: number
-	feilSummertChartOptions: Options
-	loadingSummert: boolean
-	selectedDay: number | null
-	selectedDayLabel: string
-	onClearSelectedDay: () => void
-	feilGrupper: FeilGruppe[]
-	feilDetaljertCount: number
-	loadingDetaljert: boolean
-}) => (
-	<DashboardSectionCard>
-		<VStack gap="space-16">
-			<Heading level="2" size="small">
-				{title}
-			</Heading>
-			{yearOptions.length === 0 ? (
-				<Alert variant="info" inline>
-					Ingen feildata tilgjengelig.
-				</Alert>
-			) : (
-				<>
-					<DashboardSelectButtons
-						label="År"
-						selected={selectedYear}
-						onSelect={onSelectedYearChange}
-						options={yearOptions.map((year) => ({ value: year, label: year }))}
-					/>
-					<DashboardSelectButtons
-						label="Måned"
-						selected={selectedInterval}
-						onSelect={onSelectedIntervalChange}
-						options={monthOptions}
-					/>
-					{loadingSummert ? (
-						<VStack gap="space-12">
-							<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
-								<Skeleton variant="rectangle" height="80px" />
-								<Skeleton variant="rectangle" height="80px" />
-							</HGrid>
-							<Skeleton variant="rectangle" height="360px" />
-						</VStack>
-					) : punkterLength === 0 ? (
-						<Alert variant="success" inline>
-							Ingen feil registrert i valgt måned.
-						</Alert>
-					) : (
-						<>
-							<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
-								<DashboardKpiCard label="Antall feil i måneden" value={feilTotalt} />
-								<DashboardKpiCard label="Dager med feil" value={dagerMedFeil} />
-							</HGrid>
-							<BodyShort size="small" textColor="subtle">
-								Dager i diagrammet kan åpnes for å se detaljerte feil per fagsystem.
-							</BodyShort>
-							<DashboardChartPanel
-								options={feilSummertChartOptions}
-								ariaLabel="Antall feil per dag fordelt på fagsystem"
-							/>
-							{selectedDay !== null && (
-								<Box
-									borderWidth="1"
-									borderColor="neutral-subtle"
-									borderRadius="8"
-									padding="space-16"
-									background="neutral-soft"
-								>
-									<VStack gap="space-12">
-										<HStack justify="space-between" align="center" wrap gap="space-8">
-											<Heading level="3" size="xsmall">
-												Detaljerte feil {selectedDayLabel}
-											</Heading>
-											<Button variant="tertiary" size="small" onClick={onClearSelectedDay}>
-												Lukk
-											</Button>
-										</HStack>
-										{loadingDetaljert ? (
-											<Skeleton variant="rectangle" height="160px" />
-										) : feilGrupper.length === 0 ? (
-											<Alert variant="info" inline>
-												Ingen detaljerte feil registrert for valgt dag.
-											</Alert>
-										) : (
-											<FeilGrupperVisning
-												feilGrupper={feilGrupper}
-												feilDetaljertCount={feilDetaljertCount}
-											/>
-										)}
-									</VStack>
-								</Box>
-							)}
-						</>
-					)}
-				</>
-			)}
-		</VStack>
-	</DashboardSectionCard>
-)
+} = {}) => {
+	const {
+		feilYearOptions,
+		selectedFeilYear,
+		onSelectedFeilYearChange,
+		feilMonthOptions,
+		selectedFeilInterval,
+		onSelectedFeilIntervalChange,
+		feilDagerMedFeil,
+		feilTotalt,
+		hasFeilData,
+		feilSummertChartOptions,
+		loadingFeilSummert,
+		selectedFeilDay,
+		feilSelectedDayLabel,
+		onSelectedFeilDayChange,
+		feilGrupper,
+		feilDetaljertCount,
+		loadingFeilDetaljert,
+	} = useDashboardFeil()
+
+	return (
+		<DashboardSectionCard>
+			<VStack gap="space-16">
+				<Heading level="2" size="small">
+					{title}
+				</Heading>
+				{feilYearOptions.length === 0 ? (
+					<Alert variant="info" inline>
+						Ingen feildata tilgjengelig.
+					</Alert>
+				) : (
+					<>
+						<DashboardSelectButtons
+							label="År"
+							selected={selectedFeilYear}
+							onSelect={onSelectedFeilYearChange}
+							options={feilYearOptions.map((year) => ({ value: year, label: year }))}
+						/>
+						<DashboardSelectButtons
+							label="Måned"
+							selected={selectedFeilInterval}
+							onSelect={onSelectedFeilIntervalChange}
+							options={feilMonthOptions}
+						/>
+						{loadingFeilSummert ? (
+							<VStack gap="space-12">
+								<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
+									<Skeleton variant="rectangle" height="80px" />
+									<Skeleton variant="rectangle" height="80px" />
+								</HGrid>
+								<Skeleton variant="rectangle" height="360px" />
+							</VStack>
+						) : !hasFeilData ? (
+							<Alert variant="success" inline>
+								Ingen feil registrert i valgt måned.
+							</Alert>
+						) : (
+							<>
+								<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
+									<DashboardKpiCard label="Antall feil i måneden" value={feilTotalt} />
+									<DashboardKpiCard label="Dager med feil" value={feilDagerMedFeil} />
+								</HGrid>
+								<BodyShort size="small" textColor="subtle">
+									Dager i diagrammet kan åpnes for å se detaljerte feil per fagsystem.
+								</BodyShort>
+								<DashboardChartPanel
+									options={feilSummertChartOptions}
+									ariaLabel="Antall feil per dag fordelt på fagsystem"
+								/>
+								{selectedFeilDay !== null && (
+									<Box
+										borderWidth="1"
+										borderColor="neutral-subtle"
+										borderRadius="8"
+										padding="space-16"
+										background="neutral-soft"
+									>
+										<VStack gap="space-12">
+											<HStack justify="space-between" align="center" wrap gap="space-8">
+												<Heading level="3" size="xsmall">
+													Detaljerte feil {feilSelectedDayLabel}
+												</Heading>
+												<Button
+													variant="tertiary"
+													size="small"
+													onClick={() => onSelectedFeilDayChange(null)}
+												>
+													Lukk
+												</Button>
+											</HStack>
+											{loadingFeilDetaljert ? (
+												<Skeleton variant="rectangle" height="160px" />
+											) : feilGrupper.length === 0 ? (
+												<Alert variant="info" inline>
+													Ingen detaljerte feil registrert for valgt dag.
+												</Alert>
+											) : (
+												<FeilGrupperVisning
+													feilGrupper={feilGrupper}
+													feilDetaljertCount={feilDetaljertCount}
+												/>
+											)}
+										</VStack>
+									</Box>
+								)}
+							</>
+						)}
+					</>
+				)}
+			</VStack>
+		</DashboardSectionCard>
+	)
+}

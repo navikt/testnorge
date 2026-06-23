@@ -65,12 +65,19 @@ const buildMonthlyDistributionView = (
 	const yearOptions = [...new Set(intervalOptions.map((option) => option.value.slice(0, 4)))].sort(
 		(a, b) => a.localeCompare(b),
 	)
-	const selectedYear = selectedInterval.slice(0, 4)
+	const selectedIntervalValue =
+		typeof selectedInterval === 'string'
+			? selectedInterval
+			: selectedInterval && typeof (selectedInterval as { value?: unknown }).value === 'string'
+				? (selectedInterval as { value: string }).value
+				: ''
+	const selectedYear = selectedIntervalValue.slice(0, 4)
 	const monthOptions = intervalOptions
 		.filter((option) => option.value.startsWith(`${selectedYear}-`))
 		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
-	const selectedPoint = monthlyPoints.find((point) => point.interval === selectedInterval) ?? null
-	const distribution = toTeamDistributionForInterval(monthlyPoints, selectedInterval)
+	const selectedPoint =
+		monthlyPoints.find((point) => point.interval === selectedIntervalValue) ?? null
+	const distribution = toTeamDistributionForInterval(monthlyPoints, selectedIntervalValue)
 	return { intervalOptions, yearOptions, selectedYear, monthOptions, selectedPoint, distribution }
 }
 
@@ -114,16 +121,16 @@ const buildFeilPeriodView = (periodeOptions: FeilPeriodeOption[], selectedInterv
 
 export const useDashboardData = () => {
 	const {
-		dashboardPersoner,
+		dashboardBestillinger: dashboardPersoner,
 		dashboardTeams,
 		dashboardOrganisasjoner,
 		dashboardDollyTeams,
 		dashboardOversikt,
-		loadingDashboardPersoner,
+		loadingDashboardBestillinger: loadingDashboardPersoner,
 		loadingDashboardTeams,
 		loadingDashboardOrganisasjoner,
 		loadingDashboardDollyTeams,
-		dashboardPersonerError,
+		dashboardBestillingerError: dashboardPersonerError,
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
@@ -155,15 +162,19 @@ export const useDashboardData = () => {
 	const [mockModeEnabled, setMockModeEnabled] = useState(false)
 	const [mockData, setMockData] = useState(() => createDashboardMockData(0))
 
-	const activeDashboardPersoner = mockModeEnabled ? mockData.dashboardPersoner : dashboardPersoner ?? []
-	const activeDashboardTeams = mockModeEnabled ? mockData.dashboardTeams : dashboardTeams ?? []
+	const activeDashboardPersoner = mockModeEnabled
+		? mockData.dashboardBestillinger
+		: (dashboardPersoner ?? [])
+	const activeDashboardTeams = mockModeEnabled ? mockData.dashboardTeams : (dashboardTeams ?? [])
 	const activeDashboardOrganisasjoner = mockModeEnabled
 		? mockData.dashboardOrganisasjoner
-		: dashboardOrganisasjoner ?? []
+		: (dashboardOrganisasjoner ?? [])
 	const activeDashboardDollyTeams = mockModeEnabled
 		? mockData.dashboardDollyTeams
-		: dashboardDollyTeams ?? []
-	const activeDashboardOversikt = mockModeEnabled ? mockData.feilOversikt : dashboardOversikt ?? []
+		: (dashboardDollyTeams ?? [])
+	const activeDashboardOversikt = mockModeEnabled
+		? mockData.feilOversikt
+		: (dashboardOversikt ?? [])
 
 	const latestAvailableDateValue = activeDashboardPersoner
 		.map((personData) => personData.dato)

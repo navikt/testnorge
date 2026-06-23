@@ -3,7 +3,10 @@ import { format, parseISO } from 'date-fns'
 import { useDashboard, useDashboardFeilForDager } from '@/utils/hooks/useDashboard'
 import {
 	asNumber,
+	buildMonthlyDistributionView,
+	filterMonthlyTeamPoints,
 	getPreviousBusinessPeriod,
+	makeYearChangeHandler,
 	MONTH_SCOPE_ALL,
 	MONTH_SCOPE_LAST_12,
 	toDisplayDate,
@@ -29,34 +32,6 @@ const MONTH_SCOPE_LAST_12_CONST = MONTH_SCOPE_LAST_12
 const MONTH_SCOPE_ALL_CONST = MONTH_SCOPE_ALL
 const DAY_SCOPE_YESTERDAY = 'YESTERDAY'
 const DAY_SCOPE_TODAY = 'TODAY'
-
-const buildMonthlyDistributionView = (monthlyPoints: any[], selectedInterval: string) => {
-	const yearOptions = Array.from(new Set(monthlyPoints.map((p) => p.year))).sort((a, b) => b - a)
-	const selectedYear =
-		yearOptions
-			.find((y) => monthlyPoints.some((p) => p.year === y && p.interval === selectedInterval))
-			?.toString() ??
-		yearOptions[0]?.toString() ??
-		''
-	const monthOptions = monthlyPoints
-		.filter((p) => p.year === parseInt(selectedYear))
-		.map((p) => ({ interval: p.interval, display: p.monthName }))
-		.sort((a, b) => a.interval.localeCompare(b.interval))
-	const intervalOptions = monthlyPoints
-		.filter((p) => p.year === parseInt(selectedYear))
-		.map((p) => p.interval)
-		.sort((a, b) => a.localeCompare(b))
-	const selectedPoint = monthlyPoints.find((p) => p.interval === selectedInterval)
-	const distribution = selectedPoint?.distribution ?? []
-	return {
-		yearOptions,
-		selectedYear,
-		monthOptions,
-		intervalOptions,
-		selectedPoint,
-		distribution,
-	}
-}
 
 const buildFeilPeriodView = (periodeOptions: FeilPeriodeOption[], selectedInterval: string) => {
 	const intervalOptions = periodeOptions.map((option) => ({
@@ -85,26 +60,18 @@ const useAutoSelectLatestInterval = (
 	}, [intervalOptions, selectedInterval, setSetter])
 }
 
-const makeYearChangeHandler =
-	(intervalOptions: any[], setSetter: (value: string) => void) => (year: string) => {
-		const yearIntervals = intervalOptions.filter((interval) => interval.startsWith(year))
-		if (yearIntervals.length > 0) {
-			setSetter(yearIntervals[yearIntervals.length - 1])
-		}
-	}
-
 export const useDashboardDataCore = () => {
 	const {
-		dashboardPersoner,
+		dashboardBestillinger,
 		dashboardTeams,
 		dashboardOrganisasjoner,
 		dashboardDollyTeams,
 		dashboardOversikt,
-		loadingDashboardPersoner,
+		loadingDashboardBestillinger,
 		loadingDashboardTeams,
 		loadingDashboardOrganisasjoner,
 		loadingDashboardDollyTeams,
-		dashboardPersonerError,
+		dashboardBestillingerError,
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
@@ -130,9 +97,9 @@ export const useDashboardDataCore = () => {
 	const [mockModeEnabled, setMockModeEnabled] = useState(false)
 	const [mockData, setMockData] = useState(() => createDashboardMockData(0))
 
-	const activeDashboardPersoner = mockModeEnabled
-		? mockData.dashboardPersoner
-		: (dashboardPersoner ?? [])
+	const activeDashboardBestillinger = mockModeEnabled
+		? mockData.dashboardBestillinger
+		: (dashboardBestillinger ?? [])
 	const activeDashboardTeams = mockModeEnabled ? mockData.dashboardTeams : (dashboardTeams ?? [])
 	const activeDashboardOrganisasjoner = mockModeEnabled
 		? mockData.dashboardOrganisasjoner
@@ -154,7 +121,7 @@ export const useDashboardDataCore = () => {
 	const previousBusinessPeriod = getPreviousBusinessPeriod(new Date())
 	const selectedDayDates =
 		selectedDayScope === DAY_SCOPE_TODAY ? [todayDate] : previousBusinessPeriod.dates
-	const previousDayPeriodData = activeDashboardPersoner
+	const previousDayPeriodData = activeDashboardBestillinger
 		.filter((personData) => selectedDayDates.includes(personData.dato))
 		.sort((a, b) => a.dato.localeCompare(b.dato))
 	const selectedDayDisplayLabel =
@@ -206,6 +173,11 @@ export const useDashboardDataCore = () => {
 		[activeDashboardOrganisasjoner],
 	)
 
+	const filteredOrganisasjonPoints = useMemo(
+		() => filterMonthlyTeamPoints(organisasjonMonthlyPoints, organisasjonMonthScope),
+		[organisasjonMonthlyPoints, organisasjonMonthScope],
+	)
+
 	const organisasjonView = useMemo(
 		() => buildMonthlyDistributionView(organisasjonMonthlyPoints, selectedOrganisasjonInterval),
 		[organisasjonMonthlyPoints, selectedOrganisasjonInterval],
@@ -213,21 +185,12 @@ export const useDashboardDataCore = () => {
 
 	const organisasjonMonthlyTrendChartOptions = useMemo(
 		() =>
-			createMonthlyTeamTrendChartOptions(
-				toMonthlyTrendData(
-					organisasjonMonthlyPoints.filter(
-						(p) =>
-							organisasjonMonthScope === MONTH_SCOPE_ALL_CONST ||
-							new Date(p.interval) > new Date(new Date().getFullYear() - 1, new Date().getMonth()),
-					),
-				),
-				{
-					description:
-						'Linjediagram med månedlig utvikling i unike brukere og antall organisasjoner fra organisasjonsendepunktet.',
-					secondSeriesName: 'Antall organisasjoner',
-				},
-			),
-		[organisasjonMonthlyPoints, organisasjonMonthScope],
+			createMonthlyTeamTrendChartOptions(toMonthlyTrendData(filteredOrganisasjonPoints), {
+				description:
+					'Linjediagram med månedlig utvikling i unike brukere og antall organisasjoner fra organisasjonsendepunktet.',
+				secondSeriesName: 'Antall organisasjoner',
+			}),
+		[filteredOrganisasjonPoints],
 	)
 
 	const organisasjonDistributionChartOptions = useMemo(
@@ -323,22 +286,14 @@ export const useDashboardDataCore = () => {
 		reloadDashboard()
 	}
 
-	const filteredOrganisasjonPoints = organisasjonMonthlyPoints.filter(
-		(p) =>
-			organisasjonMonthScope === MONTH_SCOPE_ALL_CONST ||
-			new Date(p.interval) > new Date(new Date().getFullYear() - 1, new Date().getMonth()),
+	const filteredDollyTeamsPoints = useMemo(
+		() => filterMonthlyTeamPoints(dollyTeamsMonthlyPoints, dollyTeamsMonthScope),
+		[dollyTeamsMonthlyPoints, dollyTeamsMonthScope],
 	)
 
-	const filteredDollyTeamsPoints = dollyTeamsMonthlyPoints.filter(
-		(p) =>
-			dollyTeamsMonthScope === MONTH_SCOPE_ALL_CONST ||
-			new Date(p.interval) > new Date(new Date().getFullYear() - 1, new Date().getMonth()),
-	)
-
-	const filteredMonthlyTeamPoints = monthlyTeamPoints.filter(
-		(p) =>
-			monthScope === MONTH_SCOPE_ALL_CONST ||
-			new Date(p.interval) > new Date(new Date().getFullYear() - 1, new Date().getMonth()),
+	const filteredMonthlyTeamPoints = useMemo(
+		() => filterMonthlyTeamPoints(monthlyTeamPoints, monthScope),
+		[monthlyTeamPoints, monthScope],
 	)
 
 	return {
@@ -353,13 +308,13 @@ export const useDashboardDataCore = () => {
 
 		// Loading & errors
 		isAnyLoading:
-			(loadingDashboardPersoner ||
+			(loadingDashboardBestillinger ||
 				loadingDashboardTeams ||
 				loadingDashboardOrganisasjoner ||
 				loadingDashboardDollyTeams) &&
 			!mockModeEnabled,
-		loadingDashboardPersoner,
-		dashboardPersonerError,
+		loadingDashboardBestillinger,
+		dashboardBestillingerError,
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
@@ -434,7 +389,7 @@ export const useDashboardDataCore = () => {
 		feilDetaljertError: undefined,
 
 		// Data for context providers
-		activeDashboardPersoner,
+		activeDashboardBestillinger,
 		activeDashboardOversikt,
 		buildFeilPeriodView,
 		makeYearChangeHandler,

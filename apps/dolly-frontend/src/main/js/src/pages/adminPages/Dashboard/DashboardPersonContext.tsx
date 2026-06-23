@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { format, isValid, parseISO, subDays, subYears } from 'date-fns'
 import {
 	asNumber,
@@ -7,7 +7,7 @@ import {
 	withinDateRange,
 } from './dashboardUtils'
 import { createPersonTrendChartOptions } from './dashboardChartOptions'
-import type { DashboardPerson } from '@/types/Dashboard'
+import type { DashboardBestillingerDTO } from '@/utils/hooks/useDashboard'
 
 interface DashboardPersonContextType {
 	// Date range
@@ -22,9 +22,12 @@ interface DashboardPersonContextType {
 	// Summary
 	filteredPersonerLength: number
 	summary: {
+		bestillinger: number
 		personerTotalt: number
 		nye: number
 		gjenopprettede: number
+		navIdenter: number
+		testnorgeIdenter: number
 	}
 
 	// Chart
@@ -50,21 +53,21 @@ const isQuickRangeValue = (value: string): value is QuickRangeValue =>
 
 interface DashboardPersonProviderProps {
 	children: ReactNode
-	dashboardPersoner: DashboardPerson[]
+	dashboardBestillinger: DashboardBestillingerDTO[]
 }
 
 export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = ({
 	children,
-	dashboardPersoner,
+	dashboardBestillinger,
 }) => {
 	const [selectedQuickRange, setSelectedQuickRange] = useState<string | null>(null)
 	const [fraDato, setFraDato] = useState('')
 	const [tilDato, setTilDato] = useState('')
 
-	// Initialize date range on first mount
-	useMemo(() => {
-		if (!fraDato && !tilDato && dashboardPersoner.length > 0) {
-			const latestAvailableDateValue = dashboardPersoner
+	// Initialize date range once data is available
+	useEffect(() => {
+		if (!fraDato && !tilDato && dashboardBestillinger.length > 0) {
+			const latestAvailableDateValue = dashboardBestillinger
 				.map((personData) => personData.dato)
 				.filter((dateValue): dateValue is string => Boolean(dateValue))
 				.sort((a, b) => a.localeCompare(b))
@@ -84,16 +87,16 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 			setTilDato(todayValue)
 			setSelectedQuickRange('month')
 		}
-	}, [])
+	}, [dashboardBestillinger, fraDato, tilDato])
 
 	const latestAvailableDateValue = useMemo(
 		() =>
-			dashboardPersoner
+			dashboardBestillinger
 				.map((personData) => personData.dato)
 				.filter((dateValue): dateValue is string => Boolean(dateValue))
 				.sort((a, b) => a.localeCompare(b))
 				.at(-1),
-		[dashboardPersoner],
+		[dashboardBestillinger],
 	)
 
 	const latestAvailableDate = useMemo(
@@ -108,12 +111,12 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 
 	const earliestAvailableDateValue = useMemo(
 		() =>
-			dashboardPersoner
+			dashboardBestillinger
 				.map((personData) => personData.dato)
 				.filter((dateValue): dateValue is string => Boolean(dateValue))
 				.sort((a, b) => a.localeCompare(b))
 				.at(0),
-		[dashboardPersoner],
+		[dashboardBestillinger],
 	)
 
 	const todayDate = format(new Date(), 'yyyy-MM-dd')
@@ -142,10 +145,10 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 	// Filter and aggregate person data
 	const filteredPersoner = useMemo(
 		() =>
-			dashboardPersoner
+			dashboardBestillinger
 				.filter((personData) => withinDateRange(personData.dato, fraDato, tilDato))
 				.sort((a, b) => a.dato.localeCompare(b.dato)),
-		[dashboardPersoner, fraDato, tilDato],
+		[dashboardBestillinger, fraDato, tilDato],
 	)
 
 	const completeFilteredPersoner = useMemo(
@@ -157,12 +160,22 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 		() =>
 			completeFilteredPersoner.reduce(
 				(acc, personData) => {
+					acc.bestillinger += asNumber(personData.bestillinger)
 					acc.personerTotalt += asNumber(personData.personerTotalt)
 					acc.nye += asNumber(personData.nye)
 					acc.gjenopprettede += asNumber(personData.gjenopprettede)
+					acc.navIdenter += asNumber(personData.navIdenter)
+					acc.testnorgeIdenter += asNumber(personData.testnorgeIdenter)
 					return acc
 				},
-				{ personerTotalt: 0, nye: 0, gjenopprettede: 0 },
+				{
+					bestillinger: 0,
+					personerTotalt: 0,
+					nye: 0,
+					gjenopprettede: 0,
+					navIdenter: 0,
+					testnorgeIdenter: 0,
+				},
 			),
 		[completeFilteredPersoner],
 	)
