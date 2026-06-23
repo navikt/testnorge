@@ -48,7 +48,7 @@ export const PersonVisning = ({
 	setInkluderPartnere,
 }: PersonVisningProps) => {
 	if (loading) {
-		return <Loading label="Laster person ..." />
+		return <Loading label="Laster person ..." panel />
 	}
 
 	if (error) {
