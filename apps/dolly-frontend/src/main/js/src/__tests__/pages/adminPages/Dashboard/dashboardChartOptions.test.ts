@@ -108,14 +108,14 @@ describe('dashboardChartOptions', () => {
 				feilNokkel: 'pdlPersonFeil',
 				label: 'PDL Person',
 				rader: [
-					{ ident: '1', bestillingId: 1, sistOppdatert: '', master: 'PDL', verdi: 'feil' },
-					{ ident: '2', bestillingId: 2, sistOppdatert: '', master: 'PDL', verdi: 'feil' },
+					{ ident: '1', bestillingId: 1, sistOppdatert: '', type: 'PDL', verdi: 'feil' },
+					{ ident: '2', bestillingId: 2, sistOppdatert: '', type: 'PDL', verdi: 'feil' },
 				],
 			},
 			{
 				feilNokkel: 'andreFeil',
 				label: 'Andre feil',
-				rader: [{ ident: '3', bestillingId: 3, sistOppdatert: '', master: 'PDL', verdi: 'feil' }],
+				rader: [{ ident: '3', bestillingId: 3, sistOppdatert: '', type: 'PDL', verdi: 'feil' }],
 			},
 		])
 

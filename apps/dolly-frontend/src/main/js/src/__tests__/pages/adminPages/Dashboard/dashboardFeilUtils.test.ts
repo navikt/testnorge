@@ -106,7 +106,7 @@ describe('dashboardFeilUtils', () => {
 				sistOppdatert: '2026-06-03T10:00:00',
 				bestillingId: 1,
 				ident: '02',
-				master: 'PDL',
+				type: 'PDL',
 				pdlPersonStatus: 'Feilet',
 				feil: 'Ukjent feil',
 			},
@@ -114,7 +114,7 @@ describe('dashboardFeilUtils', () => {
 				sistOppdatert: '2026-06-03T11:00:00',
 				bestillingId: 2,
 				ident: '01',
-				master: 'TPS',
+				type: 'TPS',
 				pdlPersonStatus: 'Feilet igjen',
 			},
 		]

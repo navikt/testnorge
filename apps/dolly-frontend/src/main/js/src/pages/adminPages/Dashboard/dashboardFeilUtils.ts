@@ -27,7 +27,7 @@ export type MonthName = (typeof MONTH_NAMES)[number]
 export const monthNumberToName = (month: number): MonthName | null =>
 	month >= 1 && month <= 12 ? MONTH_NAMES[month - 1] : null
 
-const IDENTITETSFELT = new Set(['sistOppdatert', 'bestillingId', 'ident', 'master'])
+const IDENTITETSFELT = new Set(['sistOppdatert', 'bestillingId', 'ident', 'type', 'master'])
 
 const FAGSYSTEM_FEIL_LABELS: Record<string, string> = {
 	andreFeil: 'Andre feil',
@@ -227,7 +227,8 @@ export type FeilDetaljRad = {
 	ident: string
 	bestillingId: number
 	sistOppdatert: string
-	master: string
+	type: string
+	master?: string
 	verdi: FeilVerdi
 }
 
@@ -247,11 +248,12 @@ export const toFeilGrupper = (detaljert: DashboardFeilDetaljertRad[]): FeilGrupp
 			}
 			const feilNokkel = statusFeltTilFeilNokkel(nokkel)
 			const eksisterende = grupper.get(feilNokkel) ?? []
+			const typeVerdi = rad.type ?? rad.master ?? ''
 			eksisterende.push({
 				ident: rad.ident,
 				bestillingId: rad.bestillingId,
 				sistOppdatert: rad.sistOppdatert,
-				master: rad.master,
+				type: typeVerdi,
 				verdi,
 			})
 			grupper.set(feilNokkel, eksisterende)

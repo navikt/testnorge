@@ -31,9 +31,19 @@ const FeilDetaljRadVisning = ({
 	fagsystemNavn: string
 }) => {
 	const feilmelding = feilVerdiTilMelding(rad.verdi)
+	const errorMetaFormatter: Parameters<typeof BestillingResultat>[0]['errorMetaFormatter'] = ({
+		errEnv,
+		errIdents,
+	}) => {
+		const identTekst = errIdents.length > 0 ? `${errIdents.join(', ')} feilet` : 'feilet'
+		const erNavIdentEnv = errEnv?.toLowerCase().includes('nav-ident')
+		const metaTekst =
+			errIdents.length > 0 && !erNavIdentEnv ? `Nav-ident: ${identTekst}` : identTekst
+		return errEnv ? `${errEnv}: ${metaTekst}` : metaTekst
+	}
 	const bestilling = {
 		id: rad.bestillingId,
-		environments: rad.master ? [rad.master] : [],
+		environments: rad.type ? [rad.type] : [],
 		antallIdenter: 1,
 		antallIdenterOpprettet: 0,
 		antallLevert: 0,
@@ -53,10 +63,10 @@ const FeilDetaljRadVisning = ({
 					{
 						melding: feilmelding,
 						identer: [rad.ident],
-						detaljert: rad.master
+						detaljert: rad.type
 							? [
 									{
-										miljo: rad.master,
+										miljo: rad.type,
 										identer: [rad.ident],
 									},
 								]
@@ -74,6 +84,7 @@ const FeilDetaljRadVisning = ({
 			lukkBestilling={() => undefined}
 			erOrganisasjon={false}
 			compact
+			errorMetaFormatter={errorMetaFormatter}
 		/>
 	)
 }

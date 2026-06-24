@@ -74,7 +74,8 @@ export type DashboardFeilDetaljertRad = {
 	sistOppdatert: string
 	bestillingId: number
 	ident: string
-	master: string
+	type: string
+	master?: string
 } & Record<string, FeilVerdi>
 
 export const useDashboard = () => {

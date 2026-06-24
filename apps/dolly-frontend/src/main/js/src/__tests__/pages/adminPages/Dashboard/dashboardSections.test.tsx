@@ -166,7 +166,7 @@ describe('dashboard sections', () => {
 		).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: 'Siste hverdag + helg' })).toBeInTheDocument()
 		expect(screen.getByText('Personer opprettet/gjenopprettet')).toBeInTheDocument()
-		expect(screen.getByText('Feilende bestillinger totalt')).toBeInTheDocument()
+		expect(screen.getByText('Bestillinger med feil')).toBeInTheDocument()
 		expect(screen.getByText('Opprettet og gjenopprettet for valgt dag')).toBeInTheDocument()
 		expect(screen.getByText('Ingen feil registrert for valgt periode.')).toBeInTheDocument()
 	})
@@ -242,8 +242,15 @@ describe('dashboard sections', () => {
 								ident: '12345678901',
 								bestillingId: 1,
 								sistOppdatert: '2026-06-08T10:00:00',
-								master: 'PDL',
+								type: 'PDL',
 								verdi: 'Teknisk feil mot PDL',
+							},
+							{
+								ident: '10987654321',
+								bestillingId: 2,
+								sistOppdatert: '2026-06-08T11:00:00',
+								type: 'Nav-ident',
+								verdi: 'Teknisk feil mot NAV-ident',
 							},
 						],
 					},
@@ -254,7 +261,9 @@ describe('dashboard sections', () => {
 		)
 
 		expect(screen.getByRole('heading', { name: 'Feil registrert 08.06.2026' })).toBeInTheDocument()
-		expect(screen.getByText('PDL Forvalter (1)')).toBeInTheDocument()
+		expect(screen.getByText('PDL Forvalter (2)')).toBeInTheDocument()
+		expect(screen.getByText('PDL: Nav-ident: 12345678901 feilet')).toBeInTheDocument()
+		expect(screen.getByText('NAV-IDENT: 10987654321 feilet')).toBeInTheDocument()
 		expect(
 			screen.getByText('1 bestilling(er) med feil, fordelt over 1 fagsystem.'),
 		).toBeInTheDocument()

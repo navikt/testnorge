@@ -40,6 +40,7 @@ type ResultatProps = {
 	lukkBestilling: Function
 	erOrganisasjon: boolean
 	compact?: boolean
+	errorMetaFormatter?: Parameters<typeof BestillingStatus>[0]['errorMetaFormatter']
 }
 
 const ERROR_KEYWORDS = ['feil', 'error']
@@ -60,6 +61,7 @@ export default function BestillingResultat({
 	lukkBestilling,
 	erOrganisasjon,
 	compact = false,
+	errorMetaFormatter,
 }: ResultatProps) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [showConfetti, setShowConfetti] = useState(false)
@@ -106,7 +108,11 @@ export default function BestillingResultat({
 					</div>
 				)}
 				<hr />
-				<BestillingStatus bestilling={bestilling} erOrganisasjon={erOrganisasjon} />
+				<BestillingStatus
+					bestilling={bestilling}
+					erOrganisasjon={erOrganisasjon}
+					errorMetaFormatter={errorMetaFormatter}
+				/>
 				{!compact && (
 					<>
 						{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}

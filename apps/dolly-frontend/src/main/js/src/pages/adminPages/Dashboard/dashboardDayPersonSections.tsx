@@ -128,7 +128,7 @@ export const PreviousDaySection = ({
 					</VStack>
 					<Box style={{ display: 'flex', flexDirection: 'column', minHeight: 0, height: '100%' }}>
 						<VStack gap="space-16" style={{ height: '100%', minHeight: 0 }}>
-							<DashboardKpiCard label="Feilende bestillinger totalt" value={selectedDayFeilCount} />
+							<DashboardKpiCard label="Bestillinger med feil" value={selectedDayFeilCount} />
 							{selectedDayFeilGrupper.length > 0 ? (
 								<Box style={{ flex: 1, minHeight: 0 }}>
 									<DashboardChartPanel

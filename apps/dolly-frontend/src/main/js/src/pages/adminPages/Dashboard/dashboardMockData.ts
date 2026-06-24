@@ -57,7 +57,7 @@ const FEIL_FAGSYSTEMER: {
 	},
 ]
 
-const MASTER_VERDIER = ['PDL', 'TPS', 'DOLLY']
+const TYPE_VERDIER = ['PDL', 'TPS', 'DOLLY']
 
 const pickSubset = <T>(items: T[], min: number, max: number): T[] => {
 	const count = Math.floor(Math.random() * (max - min + 1)) + min
@@ -117,7 +117,7 @@ const buildFeilMockData = (): {
 					).padStart(2, '0')}:00`,
 					bestillingId,
 					ident,
-					master: MASTER_VERDIER[Math.floor(Math.random() * MASTER_VERDIER.length)],
+					type: TYPE_VERDIER[Math.floor(Math.random() * TYPE_VERDIER.length)],
 				}
 				valgteFagsystemer.forEach((fagsystem) => {
 					rad[fagsystem.statusFelt] = fagsystem.verdi()
