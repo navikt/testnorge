@@ -359,7 +359,7 @@ public class PdlOrdreService {
                 deployService.createOrdre(PDL_DOEDFOEDT_BARN, ident, person.getDoedfoedtBarn()),
                 deployService.createOrdre(PDL_SIKKERHETSTILTAK, ident, person.getSikkerhetstiltak()),
                 deployService.createOrdre(PDL_NAVPERSONIDENTIFIKATOR, ident, person.getNavPersonIdentifikator().stream()
-                        .filter(navPersonIdentifikator -> isNpidIdent(ident))
+                        .filter(_ -> isNpidIdent(ident))
                         .filter(navPersonIdentifikator -> Objects.equals(navPersonIdentifikator.getIdentifikator(), ident))
                         .toList())
         );
