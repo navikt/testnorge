@@ -95,6 +95,7 @@ export const useDashboardDataCore = () => {
 		loadingDashboardTeams,
 		loadingDashboardOrganisasjoner,
 		loadingDashboardDollyTeams,
+		loadingDashboardOversikt,
 		dashboardBestillingerError,
 		dashboardTeamsError,
 		dashboardOrganisasjonerError,
