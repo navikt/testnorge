@@ -1,8 +1,8 @@
 import {
 	erStrukturertFeilVerdi,
 	fagsystemFeilLabel,
+	feilVerdiTilMelding,
 	feilVerdiTilTekst,
-	monthNameToNumber,
 	monthNumberToName,
 	statusFeltTilFeilNokkel,
 	toFeilGrupper,
@@ -16,12 +16,9 @@ import type {
 } from '@/utils/hooks/useDashboard'
 
 describe('dashboardFeilUtils', () => {
-	it('should round-trip month name and number', () => {
-		expect(monthNameToNumber('JUNE')).toBe(6)
+	it('should map month number to name', () => {
 		expect(monthNumberToName(6)).toBe('JUNE')
-		expect(monthNameToNumber('JANUARY')).toBe(1)
 		expect(monthNumberToName(12)).toBe('DECEMBER')
-		expect(monthNameToNumber('NOTAMONTH')).toBeNull()
 		expect(monthNumberToName(0)).toBeNull()
 		expect(monthNumberToName(13)).toBeNull()
 	})
@@ -55,6 +52,35 @@ describe('dashboardFeilUtils', () => {
 		expect(options[1].aar).toBe(2026)
 		expect(options[1].maaned).toBe(6)
 		expect(options[1].maanedNavn).toBe('JUNE')
+	})
+
+	it('should build period options when maaned is an english month name', () => {
+		const oversikt: DashboardOversiktDTO[] = [
+			{ aar: 2026, maaned: 'JUNE', totaltAntallPersoner: 10, nye: 6, gjenopprettede: 4 },
+			{ aar: 2022, maaned: 'January', totaltAntallPersoner: 5, nye: 3, gjenopprettede: 2 },
+		]
+
+		const options = toFeilPeriodeOptions(oversikt)
+
+		expect(options).toHaveLength(2)
+		expect(options[0].interval).toBe('2022-01')
+		expect(options[0].maaned).toBe(1)
+		expect(options[1].interval).toBe('2026-06')
+		expect(options[1].maaned).toBe(6)
+	})
+
+	it('should handle non-array oversikt payloads without crashing', () => {
+		const row: DashboardOversiktDTO = {
+			aar: 2026,
+			maaned: '06',
+			totaltAntallPersoner: 10,
+			nye: 6,
+			gjenopprettede: 4,
+		}
+		expect(toFeilPeriodeOptions({ content: [row] })).toHaveLength(1)
+		expect(toFeilPeriodeOptions({ data: [row] })).toHaveLength(1)
+		expect(toFeilPeriodeOptions(row)).toHaveLength(1)
+		expect(toFeilPeriodeOptions(null)).toEqual([])
 	})
 
 	it('should aggregate summert rows into per-day points with dynamic fagsystem keys', () => {
@@ -111,5 +137,18 @@ describe('dashboardFeilUtils', () => {
 		expect(erStrukturertFeilVerdi('tekst')).toBe(false)
 		expect(erStrukturertFeilVerdi({ status: 'ERROR' })).toBe(true)
 		expect(feilVerdiTilTekst({ status: 'ERROR' })).toContain('"status": "ERROR"')
+	})
+
+	it('should extract a readable melding from structured feil values', () => {
+		expect(
+			feilVerdiTilMelding({
+				status: 'ERROR',
+				melding: 'Ordre avvist av PDL',
+				kilde: 'pdl-forvalter',
+			}),
+		).toBe('Ordre avvist av PDL')
+		expect(feilVerdiTilMelding('Feilet mot PDL person')).toBe('Feilet mot PDL person')
+		expect(feilVerdiTilMelding({ status: 'ERROR' })).toContain('"status": "ERROR"')
+		expect(feilVerdiTilMelding(null)).toBe('')
 	})
 })

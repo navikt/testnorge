@@ -5,6 +5,7 @@ import {
 	getPreviousBusinessPeriod,
 	MONTH_SCOPE_ALL,
 	MONTH_SCOPE_LAST_12,
+	monthsInRange,
 	toMonthlyDollyTeamPoints,
 	toMonthlyIntervalOptions,
 	toMonthlyOrganisasjonPoints,
@@ -20,6 +21,28 @@ describe('dashboardUtils', () => {
 	it('should include dates within selected range even when dates are reversed', () => {
 		expect(withinDateRange('2026-05-10', '2026-05-12', '2026-05-01')).toBe(true)
 		expect(withinDateRange('2026-05-20', '2026-05-12', '2026-05-01')).toBe(false)
+	})
+
+	it('should list every calendar month spanned by a multi-month range', () => {
+		expect(monthsInRange('2026-04-15', '2026-06-10')).toEqual([
+			{ year: 2026, month: 'APRIL' },
+			{ year: 2026, month: 'MAY' },
+			{ year: 2026, month: 'JUNE' },
+		])
+	})
+
+	it('should span a year boundary and return a single month for a same-month range', () => {
+		expect(monthsInRange('2025-12-20', '2026-01-05')).toEqual([
+			{ year: 2025, month: 'DECEMBER' },
+			{ year: 2026, month: 'JANUARY' },
+		])
+		expect(monthsInRange('2026-06-01', '2026-06-23')).toEqual([{ year: 2026, month: 'JUNE' }])
+	})
+
+	it('should return no months for empty or invalid ranges', () => {
+		expect(monthsInRange('', '2026-06-10')).toEqual([])
+		expect(monthsInRange('2026-06-10', '')).toEqual([])
+		expect(monthsInRange('2026-06-10', '2026-06-01')).toEqual([])
 	})
 
 	it('should use the previous business period with monday covering the weekend', () => {

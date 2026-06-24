@@ -3,5 +3,12 @@ export {
 	createMonthlyTeamTrendChartOptions,
 	createPersonTrendChartOptions,
 } from './dashboardTrendChartOptions'
-export { createPreviousDayChartOptions } from './dashboardPreviousDayChartOptions'
-export { createFeilSummertChartOptions } from './dashboardFeilChartOptions'
+export {
+	createIdenterDonutChartOptions,
+	createNyeGjenopprettedeDonutChartOptions,
+	createOpprettetGjenopprettetDonutChartOptions,
+} from './dashboardDonutChartOptions'
+export {
+	createFeilPerFagsystemChartOptions,
+	createFeilSummertChartOptions,
+} from './dashboardFeilChartOptions'

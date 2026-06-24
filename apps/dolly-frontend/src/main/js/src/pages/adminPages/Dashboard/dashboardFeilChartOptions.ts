@@ -5,7 +5,7 @@ import {
 	TOOLTIP_OPTIONS,
 	withBaseChart,
 } from './dashboardChartBase'
-import { fagsystemFeilLabel, type FeilDagPunkt } from './dashboardFeilUtils'
+import { fagsystemFeilLabel, type FeilDagPunkt, type FeilGruppe } from './dashboardFeilUtils'
 
 export const createFeilSummertChartOptions = (
 	punkter: FeilDagPunkt[],
@@ -72,3 +72,46 @@ export const createFeilSummertChartOptions = (
 		series,
 	}
 }
+
+export const createFeilPerFagsystemChartOptions = (feilGrupper: FeilGruppe[]): Options => ({
+	...withBaseChart('Søylediagram med antall feil per fagsystem for valgt periode.', {
+		type: 'column',
+		height: 360,
+	}),
+	xAxis: {
+		categories: feilGrupper.map((gruppe) => gruppe.label),
+		...ROTATED_CATEGORY_LABELS,
+	},
+	yAxis: {
+		title: { text: undefined },
+		allowDecimals: false,
+		min: 0,
+	},
+	legend: { enabled: false },
+	tooltip: {
+		...TOOLTIP_OPTIONS,
+		shared: false,
+		headerFormat: '',
+		pointFormat: '<b>{point.name}:</b> {point.y}',
+	},
+	plotOptions: {
+		column: {
+			...BAR_COLUMN_PLOT_OPTIONS,
+			colorByPoint: true,
+			dataLabels: {
+				enabled: true,
+				formatter: function () {
+					const pointValue = Number(this.y ?? 0)
+					return pointValue > 0 ? `${pointValue}` : ''
+				},
+			},
+		},
+	},
+	series: [
+		{
+			type: 'column',
+			name: 'Antall feil',
+			data: feilGrupper.map((gruppe) => ({ name: gruppe.label, y: gruppe.rader.length })),
+		},
+	],
+})

@@ -1,13 +1,4 @@
-import {
-	Alert,
-	BodyShort,
-	Button,
-	Heading,
-	HGrid,
-	HStack,
-	TextField,
-	VStack,
-} from '@navikt/ds-react'
+import { Alert, Box, Heading, HGrid, Skeleton, TextField, VStack } from '@navikt/ds-react'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import { type Options } from 'highcharts'
 import {
@@ -18,15 +9,11 @@ import {
 } from './dashboardSharedComponents'
 import { FeilGrupperVisning } from './dashboardFeilSection'
 import { type FeilGruppe } from './dashboardFeilUtils'
-import { createPreviousDayFeilDonutChartOptions } from './dashboardPreviousDayChartOptions'
+import { createFeilPerFagsystemChartOptions } from './dashboardChartOptions'
 import { type DashboardBestillingerDTO } from '@/utils/hooks/useDashboard'
 import { useDashboardPerson } from './DashboardPersonContext'
+import { QUICK_RANGE_OPTIONS } from './dashboardUtils'
 import dollyImg from '@/assets/img/dolly-sheep-confetti.svg'
-
-export type QuickRangeOption = {
-	value: string
-	label: string
-}
 
 export type PersonSummary = {
 	bestillinger: number
@@ -141,8 +128,8 @@ export const PreviousDaySection = ({
 					</VStack>
 					{selectedDayFeilGrupper.length > 0 ? (
 						<DashboardChartPanel
-							options={createPreviousDayFeilDonutChartOptions(selectedDayFeilGrupper)}
-							ariaLabel="Feilfordeling per fagsystem"
+							options={createFeilPerFagsystemChartOptions(selectedDayFeilGrupper)}
+							ariaLabel="Feil per fagsystem"
 						/>
 					) : (
 						<Box
@@ -195,16 +182,7 @@ export const PreviousDaySection = ({
 	</DashboardSectionCard>
 )
 
-const QUICK_RANGE_OPTIONS = [
-	{ value: 'week', label: 'Siste uke' },
-	{ value: 'month', label: 'Siste måned' },
-	{ value: 'threeMonths', label: 'Siste 3 måneder' },
-	{ value: 'sixMonths', label: 'Siste 6 måneder' },
-	{ value: 'year', label: 'Siste år' },
-	{ value: 'all', label: 'All historikk' },
-] as const
-
-export const PersonAnalysisSection = () => {
+export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boolean } = {}) => {
 	const {
 		selectedQuickRange,
 		fraDato,
@@ -217,6 +195,10 @@ export const PersonAnalysisSection = () => {
 		summary,
 		personTrendDataLength,
 		personTrendChartOptions,
+		identerTotal,
+		identerDonutChartOptions,
+		nyeGjenopprettedeTotal,
+		nyeGjenopprettedeDonutChartOptions,
 	} = useDashboardPerson()
 
 	return (
@@ -225,45 +207,91 @@ export const PersonAnalysisSection = () => {
 				<Heading level="2" size="small">
 					Statistikk for perioder
 				</Heading>
-				<DashboardSelectButtons
-					label="Velg periode"
-					selected={selectedQuickRange}
-					onSelect={onQuickRangeClick}
-					options={QUICK_RANGE_OPTIONS}
-				/>
-				<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-16" align="end">
-					<TextField
-						label="Fra dato"
-						type="date"
-						max={todayDate}
-						value={fraDato}
-						onChange={(event) => onFraDatoChange(event.target.value)}
-					/>
-					<TextField
-						label="Til dato"
-						type="date"
-						value={tilDato}
-						max={todayDate}
-						onChange={(event) => onTilDatoChange(event.target.value)}
-					/>
-				</HGrid>
-				<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
-					<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
-					<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
-					<DashboardKpiCard label="Nye personer" value={summary.nye} />
-					<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
-				</HGrid>
-				<HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
-					<DashboardKpiCard label="Bestillinger" value={summary.bestillinger} />
-					<DashboardKpiCard label="NAV-identer" value={summary.navIdenter} />
-					<DashboardKpiCard label="Testnorge-identer" value={summary.testnorgeIdenter} />
-				</HGrid>
-				{personTrendDataLength === 0 ? (
-					<Alert variant="info" inline>
-						Ingen persondata i valgt periode.
-					</Alert>
+				{isLoading ? (
+					<DollySpinner size={120} label="Laster statistikk..." />
 				) : (
-					<DashboardChartPanel options={personTrendChartOptions} ariaLabel="Personer per dag" />
+					<>
+						<DashboardSelectButtons
+							label="Velg periode"
+							selected={selectedQuickRange}
+							onSelect={onQuickRangeClick}
+							options={QUICK_RANGE_OPTIONS}
+						/>
+						<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-16" align="end">
+							<TextField
+								label="Fra dato"
+								type="date"
+								max={todayDate}
+								value={fraDato}
+								onChange={(event) => onFraDatoChange(event.target.value)}
+							/>
+							<TextField
+								label="Til dato"
+								type="date"
+								value={tilDato}
+								max={todayDate}
+								onChange={(event) => onTilDatoChange(event.target.value)}
+							/>
+						</HGrid>
+						<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
+							<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
+							<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
+							<DashboardKpiCard label="Nye personer" value={summary.nye} />
+							<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
+						</HGrid>
+						<HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
+							<DashboardKpiCard label="Bestillinger" value={summary.bestillinger} />
+							<DashboardKpiCard label="NAV-identer" value={summary.navIdenter} />
+							<DashboardKpiCard label="Testnorge-identer" value={summary.testnorgeIdenter} />
+						</HGrid>
+						{personTrendDataLength === 0 ? (
+							<Alert variant="info" inline>
+								Ingen persondata i valgt periode.
+							</Alert>
+						) : (
+							<VStack gap="space-16">
+								<HGrid
+									columns={{ xs: '1fr', md: 'repeat(auto-fit, minmax(340px, 1fr))' }}
+									gap="space-16"
+									align="start"
+								>
+									<VStack gap="space-8">
+										{identerTotal === 0 ? (
+											<Alert variant="info" inline>
+												Ingen identer i valgt periode.
+											</Alert>
+										) : (
+											<DashboardChartPanel
+												options={identerDonutChartOptions}
+												ariaLabel="Fordeling av NAV-identer og Testnorge-identer"
+											/>
+										)}
+									</VStack>
+									<VStack gap="space-8">
+										{nyeGjenopprettedeTotal === 0 ? (
+											<Alert variant="info" inline>
+												Ingen nye eller gjenopprettede personer i valgt periode.
+											</Alert>
+										) : (
+											<DashboardChartPanel
+												options={nyeGjenopprettedeDonutChartOptions}
+												ariaLabel="Fordeling av nye og gjenopprettede personer"
+											/>
+										)}
+									</VStack>
+								</HGrid>
+								<VStack gap="space-8">
+									<Heading level="3" size="xsmall">
+										Personer per dag
+									</Heading>
+									<DashboardChartPanel
+										options={personTrendChartOptions}
+										ariaLabel="Personer per dag"
+									/>
+								</VStack>
+							</VStack>
+						)}
+					</>
 				)}
 			</VStack>
 		</DashboardSectionCard>

@@ -1,9 +1,12 @@
 import {
+	createFeilPerFagsystemChartOptions,
 	createFeilSummertChartOptions,
+	createIdenterDonutChartOptions,
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
+	createNyeGjenopprettedeDonutChartOptions,
+	createOpprettetGjenopprettetDonutChartOptions,
 	createPersonTrendChartOptions,
-	createPreviousDayChartOptions,
 } from '@/pages/adminPages/Dashboard/dashboardChartOptions'
 import type Highcharts from 'highcharts'
 
@@ -45,45 +48,88 @@ describe('dashboardChartOptions', () => {
 		expect(series[0].data).toEqual([10])
 	})
 
-	it('should create yesterday comparison chart with two key metrics', () => {
-		const options = createPreviousDayChartOptions({
+	it('should create opprettet/gjenopprettet donut with two coloured slices', () => {
+		const options = createOpprettetGjenopprettetDonutChartOptions({
 			nye: 9,
 			gjenopprettede: 3,
 		})
 
+		const series = options.series?.[0] as Highcharts.SeriesPieOptions
+
+		expect(options.chart?.type).toBe('pie')
+		expect(options.chart?.height).toBe(300)
+		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
+		expect(options.series).toHaveLength(1)
+		expect(series.data).toEqual([
+			{ name: 'Opprettet', y: 9, color: 'var(--ax-accent-700)' },
+			{ name: 'Gjenopprettet', y: 3, color: 'var(--ax-info-700)' },
+		])
+		expect(options.tooltip?.outside).toBe(true)
+	})
+
+	it('should create nye/gjenopprettede donut with two coloured slices', () => {
+		const options = createNyeGjenopprettedeDonutChartOptions({
+			nye: 14,
+			gjenopprettede: 6,
+		})
+
+		const series = options.series?.[0] as Highcharts.SeriesPieOptions
+
+		expect(options.chart?.type).toBe('pie')
+		expect(options.chart?.height).toBe(400)
+		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
+		expect(series.data).toEqual([
+			{ name: 'Nye personer', y: 14, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettede', y: 6, color: 'var(--ax-accent-700)' },
+		])
+	})
+
+	it('should create identer donut with NAV and Testnorge slices', () => {
+		const options = createIdenterDonutChartOptions({
+			navIdenter: 12,
+			testnorgeIdenter: 4,
+		})
+
+		const series = options.series?.[0] as Highcharts.SeriesPieOptions
+
+		expect(options.chart?.type).toBe('pie')
+		expect(options.chart?.height).toBe(400)
+		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
+		expect(series.data).toEqual([
+			{ name: 'NAV-identer', y: 12, color: 'var(--ax-accent-700)' },
+			{ name: 'Testnorge-identer', y: 4, color: 'var(--ax-success-700)' },
+		])
+	})
+
+	it('should create feil-per-fagsystem column chart with one coloured bar per fagsystem', () => {
+		const options = createFeilPerFagsystemChartOptions([
+			{
+				feilNokkel: 'pdlPersonFeil',
+				label: 'PDL Person',
+				rader: [
+					{ ident: '1', bestillingId: 1, sistOppdatert: '', master: 'PDL', verdi: 'feil' },
+					{ ident: '2', bestillingId: 2, sistOppdatert: '', master: 'PDL', verdi: 'feil' },
+				],
+			},
+			{
+				feilNokkel: 'andreFeil',
+				label: 'Andre feil',
+				rader: [{ ident: '3', bestillingId: 3, sistOppdatert: '', master: 'PDL', verdi: 'feil' }],
+			},
+		])
+
 		const series = options.series?.[0] as Highcharts.SeriesColumnOptions
 
-		expect(options.series).toHaveLength(1)
+		expect(options.chart?.type).toBe('column')
+		expect(options.legend?.enabled).toBe(false)
+		expect(options.plotOptions?.column?.colorByPoint).toBe(true)
 		expect(
 			options.xAxis && !Array.isArray(options.xAxis) ? options.xAxis.categories : undefined,
-		).toEqual(['Opprettet', 'Gjenopprettet'])
-		expect(series.name).toBe('Antall')
+		).toEqual(['PDL Person', 'Andre feil'])
 		expect(series.data).toEqual([
-			{ y: 9, color: 'var(--ax-accent-700)' },
-			{ y: 3, color: 'var(--ax-info-700)' },
+			{ name: 'PDL Person', y: 2 },
+			{ name: 'Andre feil', y: 1 },
 		])
-		expect(options.tooltip?.shared).toBe(false)
-		expect(options.tooltip?.headerFormat).toBe('')
-		expect(options.tooltip?.pointFormat).toBe('{point.key}: <b>{point.y}</b>')
-		expect(options.chart?.height).toBe(300)
-		expect(options.chart?.marginBottom).toBe(40)
-		expect(
-			options.xAxis && !Array.isArray(options.xAxis)
-				? options.xAxis.labels?.reserveSpace
-				: undefined,
-		).toBe(true)
-		expect(
-			options.xAxis && !Array.isArray(options.xAxis) ? options.xAxis.labels?.align : undefined,
-		).toBe('center')
-		expect(
-			options.xAxis && !Array.isArray(options.xAxis) ? options.xAxis.labels?.x : undefined,
-		).toBe(0)
-		expect(
-			options.xAxis && !Array.isArray(options.xAxis) ? options.xAxis.labels?.y : undefined,
-		).toBe(16)
-		expect(
-			options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.labels?.y : undefined,
-		).toBe(0)
 	})
 
 	it('should create stacked feil-per-day chart with one series per fagsystem and day-click wiring', () => {

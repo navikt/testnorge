@@ -1,4 +1,3 @@
-import { format, parseISO } from 'date-fns'
 import {
 	Accordion,
 	Alert,
@@ -9,80 +8,75 @@ import {
 	Heading,
 	HGrid,
 	HStack,
-	Label,
 	Skeleton,
-	Tag,
 	VStack,
 } from '@navikt/ds-react'
+import BestillingResultat from '@/components/bestilling/statusListe/BestillingResultat/BestillingResultat'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
 import {
 	DashboardChartPanel,
 	DashboardKpiCard,
 	DashboardSectionCard,
 	DashboardSelectButtons,
 } from './dashboardSharedComponents'
-import {
-	erStrukturertFeilVerdi,
-	type FeilDetaljRad,
-	type FeilGruppe,
-	feilVerdiTilTekst,
-} from './dashboardFeilUtils'
-import { type FeilVerdi } from '@/utils/hooks/useDashboard'
+import { type FeilDetaljRad, type FeilGruppe, feilVerdiTilMelding } from './dashboardFeilUtils'
 import { useDashboardFeil } from './DashboardFeilContext'
+import type { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
 
-const toDateTimeDisplay = (value: string): string => {
-	try {
-		return format(parseISO(value), 'dd.MM.yyyy HH:mm')
-	} catch {
-		return value
-	}
+const FeilDetaljRadVisning = ({
+	rad,
+	fagsystemNavn,
+}: {
+	rad: FeilDetaljRad
+	fagsystemNavn: string
+}) => {
+	const feilmelding = feilVerdiTilMelding(rad.verdi)
+	const bestilling = {
+		id: rad.bestillingId,
+		environments: rad.master ? [rad.master] : [],
+		antallIdenter: 1,
+		antallIdenterOpprettet: 0,
+		antallLevert: 0,
+		bestilling: {},
+		bruker: {},
+		gruppeId: 0,
+		ferdig: false,
+		sistOppdatert: new Date(rad.sistOppdatert),
+		opprettetFraGruppeId: 0,
+		gjenopprettetFraIdent: 0,
+		opprettetFraId: 0,
+		status: [
+			{
+				id: rad.feilNokkel ?? `feil-${rad.bestillingId}`,
+				navn: fagsystemNavn,
+				statuser: [
+					{
+						melding: feilmelding,
+						identer: [rad.ident],
+						detaljert: rad.master
+							? [
+									{
+										miljo: rad.master,
+										identer: [rad.ident],
+									},
+								]
+							: undefined,
+					},
+				],
+			},
+		],
+		systeminfo: '',
+		stoppet: false,
+	} as Bestillingsstatus
+	return (
+		<BestillingResultat
+			bestilling={bestilling}
+			lukkBestilling={() => undefined}
+			erOrganisasjon={false}
+			compact
+		/>
+	)
 }
-
-const FeilVerdiVisning = ({ verdi }: { verdi: FeilVerdi }) => {
-	const tekst = feilVerdiTilTekst(verdi)
-	if (!tekst) {
-		return <Detail textColor="subtle">Ingen feilmelding</Detail>
-	}
-	if (erStrukturertFeilVerdi(verdi)) {
-		return (
-			<Box
-				background="neutral-soft"
-				borderRadius="4"
-				padding="space-8"
-				maxHeight="240px"
-				overflow="auto"
-			>
-				<pre
-					style={{
-						margin: 0,
-						fontSize: '12px',
-						whiteSpace: 'pre-wrap',
-						wordBreak: 'break-word',
-					}}
-				>
-					{tekst}
-				</pre>
-			</Box>
-		)
-	}
-	return <BodyShort size="small">{tekst}</BodyShort>
-}
-
-const FeilDetaljRadVisning = ({ rad }: { rad: FeilDetaljRad }) => (
-	<Box borderWidth="1" borderColor="neutral-subtle" borderRadius="8" padding="space-12">
-		<VStack gap="space-4">
-			<HStack gap="space-8" align="center" wrap>
-				<Label size="small">{rad.ident}</Label>
-				{rad.master && (
-					<Tag size="xsmall" variant="neutral">
-						{rad.master}
-					</Tag>
-				)}
-				<Detail textColor="subtle">Sist oppdatert: {toDateTimeDisplay(rad.sistOppdatert)}</Detail>
-			</HStack>
-			<FeilVerdiVisning verdi={rad.verdi} />
-		</VStack>
-	</Box>
-)
 
 export const FeilGrupperVisning = ({
 	feilGrupper,
@@ -102,14 +96,13 @@ export const FeilGrupperVisning = ({
 						{gruppe.label} ({gruppe.rader.length})
 					</Accordion.Header>
 					<Accordion.Content>
-						<VStack gap="space-12">
-							{gruppe.rader.map((rad) => (
-								<FeilDetaljRadVisning
-									key={`${gruppe.feilNokkel}-${rad.bestillingId}-${rad.ident}`}
-									rad={rad}
-								/>
-							))}
-						</VStack>
+						{gruppe.rader.map((rad) => (
+							<FeilDetaljRadVisning
+								key={`${gruppe.feilNokkel}-${rad.bestillingId}-${rad.ident}`}
+								rad={rad}
+								fagsystemNavn={gruppe.label}
+							/>
+						))}
 					</Accordion.Content>
 				</Accordion.Item>
 			))}
@@ -119,8 +112,10 @@ export const FeilGrupperVisning = ({
 
 export const DashboardFeilSection = ({
 	title = 'Feil per måned og dag',
+	isLoading = false,
 }: {
 	title?: string
+	isLoading?: boolean
 } = {}) => {
 	const {
 		feilYearOptions,
@@ -148,7 +143,9 @@ export const DashboardFeilSection = ({
 				<Heading level="2" size="small">
 					{title}
 				</Heading>
-				{feilYearOptions.length === 0 ? (
+				{isLoading ? (
+					<DollySpinner size={120} label="Laster feildata..." />
+				) : feilYearOptions.length === 0 ? (
 					<Alert variant="info" inline>
 						Ingen feildata tilgjengelig.
 					</Alert>

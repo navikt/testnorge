@@ -3,11 +3,20 @@ import { format, isValid, parseISO, subDays, subYears } from 'date-fns'
 import {
 	asNumber,
 	fillMissingPersonDays,
+	isQuickRangeValue,
+	monthsInRange,
 	toPersonTrendData,
 	withinDateRange,
 } from './dashboardUtils'
-import { createPersonTrendChartOptions } from './dashboardChartOptions'
-import type { DashboardBestillingerDTO } from '@/utils/hooks/useDashboard'
+import {
+	createIdenterDonutChartOptions,
+	createNyeGjenopprettedeDonutChartOptions,
+	createPersonTrendChartOptions,
+} from './dashboardChartOptions'
+import {
+	type DashboardBestillingerDTO,
+	useDashboardBestillingerForMonths,
+} from '@/utils/hooks/useDashboard'
 
 interface DashboardPersonContextType {
 	// Date range
@@ -33,36 +42,52 @@ interface DashboardPersonContextType {
 	// Chart
 	personTrendDataLength: number
 	personTrendChartOptions: any
+	identerTotal: number
+	identerDonutChartOptions: any
+	nyeGjenopprettedeTotal: number
+	nyeGjenopprettedeDonutChartOptions: any
 }
 
 const DashboardPersonContext = createContext<DashboardPersonContextType | undefined>(undefined)
 
-const QUICK_RANGE_OPTIONS = [
-	{ value: 'week', label: 'Siste uke' },
-	{ value: 'month', label: 'Siste måned' },
-	{ value: 'threeMonths', label: 'Siste 3 måneder' },
-	{ value: 'sixMonths', label: 'Siste 6 måneder' },
-	{ value: 'year', label: 'Siste år' },
-	{ value: 'all', label: 'All historikk' },
-] as const
-
-type QuickRangeValue = (typeof QUICK_RANGE_OPTIONS)[number]['value']
-
-const isQuickRangeValue = (value: string): value is QuickRangeValue =>
-	QUICK_RANGE_OPTIONS.some((option) => option.value === value)
+const DATA_START_DATE = '2020-01-01'
 
 interface DashboardPersonProviderProps {
 	children: ReactNode
 	dashboardBestillinger: DashboardBestillingerDTO[]
+	mockModeEnabled?: boolean
 }
 
 export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = ({
 	children,
 	dashboardBestillinger,
+	mockModeEnabled = false,
 }) => {
 	const [selectedQuickRange, setSelectedQuickRange] = useState<string | null>(null)
 	const [fraDato, setFraDato] = useState('')
 	const [tilDato, setTilDato] = useState('')
+
+	const requestedMonths = useMemo(
+		() => (mockModeEnabled ? [] : monthsInRange(fraDato, tilDato)),
+		[mockModeEnabled, fraDato, tilDato],
+	)
+
+	const { bestillingerForMonths } = useDashboardBestillingerForMonths(requestedMonths)
+
+	const mergedBestillinger = useMemo(() => {
+		const byDato = new Map<string, DashboardBestillingerDTO>()
+		for (const personData of dashboardBestillinger) {
+			if (personData.dato) {
+				byDato.set(personData.dato, personData)
+			}
+		}
+		for (const personData of bestillingerForMonths) {
+			if (personData.dato) {
+				byDato.set(personData.dato, personData)
+			}
+		}
+		return Array.from(byDato.values())
+	}, [dashboardBestillinger, bestillingerForMonths])
 
 	// Initialize date range once data is available
 	useEffect(() => {
@@ -109,23 +134,13 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 		[latestAvailableDate],
 	)
 
-	const earliestAvailableDateValue = useMemo(
-		() =>
-			dashboardBestillinger
-				.map((personData) => personData.dato)
-				.filter((dateValue): dateValue is string => Boolean(dateValue))
-				.sort((a, b) => a.localeCompare(b))
-				.at(0),
-		[dashboardBestillinger],
-	)
-
 	const todayDate = format(new Date(), 'yyyy-MM-dd')
 
 	const applyQuickRange = (quickRangeValue: string) => {
 		const toDateValue = format(quickRangeAnchorDate, 'yyyy-MM-dd')
 		const fromDateValue =
 			quickRangeValue === 'all'
-				? (earliestAvailableDateValue ?? format(subYears(quickRangeAnchorDate, 1), 'yyyy-MM-dd'))
+				? DATA_START_DATE
 				: quickRangeValue === 'week'
 					? format(subDays(quickRangeAnchorDate, 6), 'yyyy-MM-dd')
 					: quickRangeValue === 'month'
@@ -145,10 +160,10 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 	// Filter and aggregate person data
 	const filteredPersoner = useMemo(
 		() =>
-			dashboardBestillinger
+			mergedBestillinger
 				.filter((personData) => withinDateRange(personData.dato, fraDato, tilDato))
 				.sort((a, b) => a.dato.localeCompare(b.dato)),
-		[dashboardBestillinger, fraDato, tilDato],
+		[mergedBestillinger, fraDato, tilDato],
 	)
 
 	const completeFilteredPersoner = useMemo(
@@ -190,6 +205,24 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 		[personTrendData],
 	)
 
+	const identerDonutChartOptions = useMemo(
+		() =>
+			createIdenterDonutChartOptions({
+				navIdenter: summary.navIdenter,
+				testnorgeIdenter: summary.testnorgeIdenter,
+			}),
+		[summary.navIdenter, summary.testnorgeIdenter],
+	)
+
+	const nyeGjenopprettedeDonutChartOptions = useMemo(
+		() =>
+			createNyeGjenopprettedeDonutChartOptions({
+				nye: summary.nye,
+				gjenopprettede: summary.gjenopprettede,
+			}),
+		[summary.nye, summary.gjenopprettede],
+	)
+
 	const value: DashboardPersonContextType = {
 		// Date range
 		selectedQuickRange,
@@ -213,6 +246,10 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 		// Chart
 		personTrendDataLength: personTrendData.length,
 		personTrendChartOptions,
+		identerTotal: summary.navIdenter + summary.testnorgeIdenter,
+		identerDonutChartOptions,
+		nyeGjenopprettedeTotal: summary.nye + summary.gjenopprettede,
+		nyeGjenopprettedeDonutChartOptions,
 	}
 
 	return <DashboardPersonContext.Provider value={value}>{children}</DashboardPersonContext.Provider>

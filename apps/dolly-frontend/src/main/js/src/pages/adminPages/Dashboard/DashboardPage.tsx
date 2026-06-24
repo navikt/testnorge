@@ -56,7 +56,10 @@ export default () => {
 	}
 
 	return (
-		<DashboardPersonProvider dashboardBestillinger={coreData.activeDashboardBestillinger}>
+		<DashboardPersonProvider
+			dashboardBestillinger={coreData.activeDashboardBestillinger}
+			mockModeEnabled={coreData.mockModeEnabled}
+		>
 			<DashboardFeilProvider
 				dashboardOversikt={coreData.activeDashboardOversikt}
 				mockModeEnabled={coreData.mockModeEnabled}
@@ -94,9 +97,13 @@ export default () => {
 							isLoading={coreData.loadingDashboardBestillinger && !coreData.mockModeEnabled}
 						/>
 
-						<PersonAnalysisSection isLoading={coreData.loadingDashboardPersoner && !coreData.mockModeEnabled} />
+						<PersonAnalysisSection
+							isLoading={coreData.loadingDashboardPersoner && !coreData.mockModeEnabled}
+						/>
 
-						<DashboardFeilSection />
+						<DashboardFeilSection
+							isLoading={coreData.loadingDashboardOversikt && !coreData.mockModeEnabled}
+						/>
 
 						{coreData.isAnyLoading && (
 							<Box aria-busy="true" aria-live="polite">
@@ -146,6 +153,7 @@ export default () => {
 							monthScope={coreData.monthScope}
 							onMonthScopeChange={coreData.onMonthScopeChange}
 							monthlyTrendChartOptions={coreData.monthlyTrendChartOptions}
+							isLoading={coreData.loadingDashboardTeams && !coreData.mockModeEnabled}
 						/>
 
 						<MonthlyTeamDistributionSection
@@ -158,6 +166,7 @@ export default () => {
 							selectedMonthlyPoint={coreData.selectedMonthlyPoint}
 							teamDistribution={coreData.teamDistribution}
 							monthlyDistributionChartOptions={coreData.monthlyDistributionChartOptions}
+							isLoading={coreData.loadingDashboardTeams && !coreData.mockModeEnabled}
 						/>
 
 						<MonthlyTeamTrendSection
@@ -167,6 +176,7 @@ export default () => {
 							monthScope={coreData.organisasjonMonthScope}
 							onMonthScopeChange={coreData.onOrganisasjonMonthScopeChange}
 							monthlyTrendChartOptions={coreData.organisasjonMonthlyTrendChartOptions}
+							isLoading={coreData.loadingDashboardOrganisasjoner && !coreData.mockModeEnabled}
 						/>
 
 						<MonthlyTeamDistributionSection
@@ -183,6 +193,7 @@ export default () => {
 							selectedMonthlyPoint={coreData.selectedOrganisasjonPoint}
 							teamDistribution={coreData.organisasjonDistribution}
 							monthlyDistributionChartOptions={coreData.organisasjonDistributionChartOptions}
+							isLoading={coreData.loadingDashboardOrganisasjoner && !coreData.mockModeEnabled}
 						/>
 
 						<MonthlyTeamTrendSection
@@ -192,6 +203,7 @@ export default () => {
 							monthScope={coreData.dollyTeamsMonthScope}
 							onMonthScopeChange={coreData.onDollyTeamsMonthScopeChange}
 							monthlyTrendChartOptions={coreData.dollyTeamsMonthlyTrendChartOptions}
+							isLoading={coreData.loadingDashboardDollyTeams && !coreData.mockModeEnabled}
 						/>
 
 						<MonthlyTeamDistributionSection
@@ -208,6 +220,7 @@ export default () => {
 							selectedMonthlyPoint={coreData.selectedDollyTeamsPoint}
 							teamDistribution={coreData.dollyTeamsDistribution}
 							monthlyDistributionChartOptions={coreData.dollyTeamsDistributionChartOptions}
+							isLoading={coreData.loadingDashboardDollyTeams && !coreData.mockModeEnabled}
 						/>
 					</VStack>
 				</>
