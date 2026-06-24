@@ -54,8 +54,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
     private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
             NPID, 0,
-            DNR,  1,
-            FNR,  2
+            DNR, 1,
+            FNR, 2
     );
 
     private final CreatePersonService createPersonService;
@@ -148,8 +148,14 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         return createPersonService.execute(nyRequest);
                     }
                 })
-                .flatMap(dbPerson ->
-                        swopIdentsService.execute(person.getIdent(), dbPerson.getIdent()))
+                .flatMap(dbPerson -> {
+                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) < IDENT_PRIORITET.get(dbPerson.getPerson().getIdenttype())) {
+                        log.info("Her skal ident {} bli swoppet med ident {}. ", person.getIdent(), dbPerson.getIdent());
+                    } else {
+                        log.info("Her skal ident {} ikke bli swoppet med ident {}. ", dbPerson.getIdent(), person.getIdent());
+                    }
+                    return swopIdentsService.execute(person.getIdent(), dbPerson.getIdent());
+                })
                 .flatMap(dbPerson ->
                         relasjonService.setRelasjoner(dbPerson.getIdent(), GAMMEL_IDENTITET,
                                 person.getIdent(), NY_IDENTITET)
