@@ -61,7 +61,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DashboardService {
 
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
-    private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident", "master");
+    private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident");
     private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
@@ -348,6 +348,9 @@ public class DashboardService {
                 resultat.set(navn, verdi);
             } else if (verdi.isString() && verdi.asString().toLowerCase().contains("feil")) {
                 resultat.set(navn, tilJsonEllerTekst(verdi, navn));
+            } else if ("master".equals(navn) && isNotBlank(verdi.asString())) {
+                resultat.set("type", new StringNode("PDLF".equals(verdi.asString()) ?
+                        "NAV-ident" : "Testnorge-ident"));
             }
         });
         return Mono.just(resultat);
