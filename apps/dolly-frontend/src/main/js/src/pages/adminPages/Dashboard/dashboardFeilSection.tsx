@@ -35,11 +35,11 @@ const FeilDetaljRadVisning = ({
 		errEnv,
 		errIdents,
 	}) => {
+		const envTekst = errEnv
+			? `${errEnv.charAt(0).toUpperCase()}${errEnv.slice(1).toLowerCase()}`
+			: null
 		const identTekst = errIdents.length > 0 ? `${errIdents.join(', ')} feilet` : 'feilet'
-		const erNavIdentEnv = errEnv?.toLowerCase().includes('nav-ident')
-		const metaTekst =
-			errIdents.length > 0 && !erNavIdentEnv ? `Nav-ident: ${identTekst}` : identTekst
-		return errEnv ? `${errEnv}: ${metaTekst}` : metaTekst
+		return envTekst ? `${envTekst} ${identTekst}` : identTekst
 	}
 	const bestilling = {
 		id: rad.bestillingId,
