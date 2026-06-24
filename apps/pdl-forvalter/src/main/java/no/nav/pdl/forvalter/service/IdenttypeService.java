@@ -38,6 +38,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.getCommonPrefix;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -148,18 +149,22 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         return createPersonService.execute(nyRequest);
                     }
                 })
-                .flatMap(dbPerson -> {
-                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) < IDENT_PRIORITET.get(dbPerson.getPerson().getIdenttype())) {
-                        log.info("Her skal ident {} bli swoppet med ident {}. ", person.getIdent(), dbPerson.getIdent());
+                .flatMap(nyPerson -> {
+
+                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) < IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
+                        log.info("Her skal ident {} bli swoppet med ident {}. ", person.getIdent(), nyPerson.getIdent());
+                        return swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
+                                .zipWith(Mono.just(person));
                     } else {
-                        log.info("Her skal ident {} ikke bli swoppet med ident {}. ", dbPerson.getIdent(), person.getIdent());
+                        log.info("Her skal ident {} ikke bli swoppet med ident {}. ", nyPerson.getIdent(), person.getIdent());
+                        return Mono.just(person)
+                                .zipWith(Mono.just(nyPerson));
                     }
-                    return swopIdentsService.execute(person.getIdent(), dbPerson.getIdent());
                 })
-                .flatMap(dbPerson ->
-                        relasjonService.setRelasjoner(dbPerson.getIdent(), GAMMEL_IDENTITET,
-                                person.getIdent(), NY_IDENTITET)
-                        .thenReturn(dbPerson));
+                .flatMap(personer ->
+                        relasjonService.setRelasjoner(personer.getT1().getIdent(), GAMMEL_IDENTITET,
+                                personer.getT2().getIdent(), NY_IDENTITET)
+                        .then(Mono.just(personer.getT1())));
     }
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
