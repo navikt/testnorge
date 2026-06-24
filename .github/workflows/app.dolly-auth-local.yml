@@ -3,15 +3,32 @@ name: dolly-auth-local
 on:
   push:
     paths:
-      - plugins/**
-      - .nais/dolly-auth-local.yaml
-      - .github/workflows/app.dolly-auth-lokal.yml
+      - .nais/dolly-auth-local.yml
+      - .github/workflows/app.dolly-auth-local.yml
+  workflow_dispatch: {}
 
 jobs:
-  deploy:
-    name: Deploy dolly-auth-local
+  start:
+    name: Evaluate deploy
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: "Logging"
+        run: |
+          echo "ref:    ${{ github.ref }}"
+          echo "event:  ${{ github.event_name }}"
+          echo "commit: ${{ github.event.head_commit.message }}"
+    outputs:
+      do-deploy: ${{ github.event_name == 'workflow_dispatch' || (!contains(github.event.head_commit.message, '#nodeploy') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-dolly-auth-local'))) }}
+
+  deploy:
+    name: Deploy dolly-auth-local
+    needs: start
+    if: needs.start.outputs.do-deploy == 'true'
+    concurrency: dolly-auth-local
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       id-token: write

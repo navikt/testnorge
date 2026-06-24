@@ -4,7 +4,7 @@ metadata:
   name: "dolly-auth-local"
   namespace: "dolly"
 spec:
-  image: "europe-north1-docker.pkg.dev/nais-management-233d/nais/localauth:latest"
+  image: "europe-north1-docker.pkg.dev/nais-management-233d/nais/localauth:v1.0.0"
   port: 8080
   replicas:
     min: 1
@@ -13,6 +13,10 @@ spec:
     path: "/internal/healthz"
   readiness:
     path: "/internal/healthz"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-oversikt-frontend
   resources:
     limits:
       memory: "256Mi"
@@ -25,6 +29,7 @@ spec:
     application:
       enabled: true
       allowAllUsers: true
+      tenant: nav.no
   env:
     - name: LOCALAUTH_PUBLIC_URL
       value: "https://dolly-auth-local.intern.dev.nav.no"

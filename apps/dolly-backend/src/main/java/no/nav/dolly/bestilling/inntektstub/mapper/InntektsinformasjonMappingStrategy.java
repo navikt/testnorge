@@ -13,11 +13,13 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Component
 public class InntektsinformasjonMappingStrategy implements MappingStrategy {
@@ -50,6 +52,10 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
                                         inntektsinformasjon1.setAarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT));
                                         inntektsinformasjon1.setNorskIdent((String) context.getProperty("ident"));
+                                        if (nonNull(inntektsinformasjon.getRapporteringsdato())) {
+                                            inntektsinformasjon1.setRapporteringsdato(
+                                                    inntektsinformasjon.getRapporteringsdato().atOffset(ZoneOffset.UTC));
+                                        }
 
                                         inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinformasjon1);
 
@@ -65,7 +71,8 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                                         .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
                                                         .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
                                                         .versjon(versjon.addAndGet(1))
-                                                        .rapporteringsdato(historikk.getRapporteringsdato())
+                                                        .rapporteringsdato(nonNull(historikk.getRapporteringsdato()) ?
+                                                                historikk.getRapporteringsdato().atOffset(ZoneOffset.UTC) : null)
                                                         .build())
                                         );
 

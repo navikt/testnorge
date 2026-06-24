@@ -20,7 +20,7 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-idporten
         - application: dolly-texas-proxy
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-budpro-service
         - application: testnav-endringsmelding-service
         - application: testnav-organisasjon-forvalter
