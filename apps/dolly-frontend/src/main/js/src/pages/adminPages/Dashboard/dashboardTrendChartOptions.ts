@@ -1,4 +1,4 @@
-import { type Options, type SeriesLineOptions } from 'highcharts'
+import { type Options, type SeriesSplineOptions } from 'highcharts'
 import { ROTATED_CATEGORY_LABELS, TOOLTIP_OPTIONS, withBaseChart } from './dashboardChartBase'
 import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
@@ -10,15 +10,15 @@ const createLineTrendChartOptions = ({
 }: {
 	description: string
 	categories: string[]
-	series: SeriesLineOptions[]
+	series: SeriesSplineOptions[]
 	legend?: Options['legend']
 }): Options => ({
-	...withBaseChart(description, { type: 'line', height: 360, spacing: [16, 16, 4, 16] }),
+	...withBaseChart(description, { type: 'spline', height: 360, spacing: [16, 16, 4, 16] }),
 	xAxis: { categories, ...ROTATED_CATEGORY_LABELS },
 	yAxis: { title: { text: undefined }, allowDecimals: false, min: 0 },
 	legend,
 	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
-	plotOptions: { series: { marker: { enabled: true, radius: 3 } } },
+	plotOptions: { spline: { marker: { enabled: true, radius: 3 } } },
 	series,
 })
 
@@ -36,31 +36,31 @@ export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[
 		},
 		series: [
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'Personer totalt',
 				data: personTrendData.map((point) => point.personerTotalt),
 				visible: true,
 			},
-			{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
+			{ type: 'spline', name: 'Nye', data: personTrendData.map((point) => point.nye) },
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'Gjenopprettede',
 				data: personTrendData.map((point) => point.gjenopprettede),
 			},
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'NAV-identer',
 				data: personTrendData.map((point) => point.navIdenter),
 				visible: true,
 			},
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'Testnorge-identer',
 				data: personTrendData.map((point) => point.testnorgeIdenter),
 				visible: true,
 			},
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'Bestillinger',
 				data: personTrendData.map((point) => point.bestillinger),
 				visible: true,
@@ -82,12 +82,12 @@ export const createMonthlyTeamTrendChartOptions = (
 		categories: teamTrendData.map((point) => point.intervalVisning),
 		series: [
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'Unike brukere',
 				data: teamTrendData.map((point) => point.totaltUnikeBrukere),
 			},
 			{
-				type: 'line',
+				type: 'spline',
 				name: options?.secondSeriesName || 'Antall teams',
 				data: teamTrendData.map((point) => point.totaltAntallTeams),
 			},

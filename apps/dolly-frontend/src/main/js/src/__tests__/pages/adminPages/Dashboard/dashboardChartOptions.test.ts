@@ -36,7 +36,7 @@ describe('dashboardChartOptions', () => {
 				: undefined,
 		).toEqual([-45])
 		expect(options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.min : undefined).toBe(0)
-		const series = options.series as Highcharts.SeriesLineOptions[]
+		const series = options.series as Highcharts.SeriesSplineOptions[]
 		expect(series).toHaveLength(6)
 		expect(series[0].name).toBe('Personer totalt')
 		expect(series[1].name).toBe('Nye')
@@ -46,6 +46,7 @@ describe('dashboardChartOptions', () => {
 		expect(series[5].name).toBe('Bestillinger')
 		expect(series[0].visible).toBe(true)
 		expect(series[0].data).toEqual([10])
+		expect(options.chart?.type).toBe('spline')
 	})
 
 	it('should create opprettet/gjenopprettet donut with two coloured slices', () => {
@@ -185,6 +186,7 @@ describe('dashboardChartOptions', () => {
 
 		expect(options.tooltip?.outside).toBe(true)
 		expect(options.chart?.height).toBe(360)
+		expect(options.chart?.type).toBe('spline')
 		expect(options.legend?.enabled).toBe(false)
 		expect(
 			options.xAxis && !Array.isArray(options.xAxis)

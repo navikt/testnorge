@@ -85,22 +85,31 @@ export const DashboardChartPanel = ({
 	options,
 	ariaLabel,
 	isLoading = false,
+	stretchHeight = false,
 }: {
 	options: Options
 	ariaLabel: string
 	isLoading?: boolean
+	stretchHeight?: boolean
 }) => {
 	const chartRef = useRef<HighchartsReact.RefObject>(null)
 	const chartHeightOption = options.chart?.height
-	const containerHeight =
-		typeof chartHeightOption === 'number'
+	const containerHeight = stretchHeight
+		? '100%'
+		: typeof chartHeightOption === 'number'
 			? `${chartHeightOption}px`
 			: typeof chartHeightOption === 'string'
 				? chartHeightOption
 				: '320px'
 
 	const optionsSignature = JSON.stringify(options)
-	const stableOptions = useMemo(() => options, [optionsSignature])
+	const stableOptions = useMemo(() => {
+		if (!stretchHeight || !options.chart) {
+			return options
+		}
+		const { height: _height, ...chartWithoutHeight } = options.chart
+		return { ...options, chart: chartWithoutHeight }
+	}, [optionsSignature, stretchHeight])
 
 	useEffect(() => {
 		const chart = chartRef.current?.chart
@@ -113,8 +122,8 @@ export const DashboardChartPanel = ({
 	}, [isLoading])
 
 	return (
-		<Box as="section" aria-label={ariaLabel}>
-			<Box width="100%">
+		<Box as="section" aria-label={ariaLabel} height={stretchHeight ? '100%' : undefined}>
+			<Box width="100%" height={stretchHeight ? '100%' : undefined}>
 				<HighchartsReact
 					ref={chartRef}
 					highcharts={Highcharts}

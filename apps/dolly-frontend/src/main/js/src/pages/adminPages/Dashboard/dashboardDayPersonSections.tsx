@@ -115,7 +115,7 @@ export const PreviousDaySection = ({
 					Ingen data tilgjengelig for valgt dag.
 				</Alert>
 			) : (
-				<HGrid columns={{ xs: 1, sm: 2 }} gap="space-16">
+				<HGrid columns={{ xs: 1, sm: 2 }} gap="space-16" align="stretch">
 					<VStack gap="space-16">
 						<DashboardKpiCard
 							label="Personer opprettet/gjenopprettet"
@@ -126,50 +126,59 @@ export const PreviousDaySection = ({
 							ariaLabel="Opprettet og gjenopprettet for valgt dag"
 						/>
 					</VStack>
-					{selectedDayFeilGrupper.length > 0 ? (
-						<DashboardChartPanel
-							options={createFeilPerFagsystemChartOptions(selectedDayFeilGrupper)}
-							ariaLabel="Feil per fagsystem"
-						/>
-					) : (
-						<Box
-							padding="space-16"
-							background="neutral-soft"
-							borderRadius="8"
-							borderWidth="1"
-							borderColor="neutral-subtle"
-							asChild
-						>
-							<div
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'center',
-									alignItems: 'center',
-									minHeight: '320px',
-									gap: 'var(--ax-space-16)',
-								}}
-							>
-								<img
-									src={dollyImg}
-									alt="Ingen feil observert"
-									style={{
-										width: '280px',
-										height: '280px',
-										filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.12))',
-									}}
-								/>
-								<VStack gap="space-4" align="center">
-									<Heading level="3" size="small">
-										Ingen feil observert, hurra!
-									</Heading>
-									<Heading level="3" size="xsmall">
-										Dette burde feires med kake!
-									</Heading>
-								</VStack>
-							</div>
-						</Box>
-					)}
+					<Box style={{ display: 'flex', flexDirection: 'column', minHeight: 0, height: '100%' }}>
+						<VStack gap="space-16" style={{ height: '100%', minHeight: 0 }}>
+							<DashboardKpiCard label="Feil totalt" value={selectedDayFeilCount} />
+							{selectedDayFeilGrupper.length > 0 ? (
+								<Box style={{ flex: 1, minHeight: 0 }}>
+									<DashboardChartPanel
+										options={createFeilPerFagsystemChartOptions(selectedDayFeilGrupper)}
+										ariaLabel="Feil per fagsystem"
+										stretchHeight
+									/>
+								</Box>
+							) : (
+								<Box
+									padding="space-16"
+									background="neutral-soft"
+									borderRadius="8"
+									borderWidth="1"
+									borderColor="neutral-subtle"
+									asChild
+									style={{ flex: 1, minHeight: 0 }}
+								>
+									<div
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+											justifyContent: 'center',
+											alignItems: 'center',
+											minHeight: '320px',
+											gap: 'var(--ax-space-16)',
+										}}
+									>
+										<img
+											src={dollyImg}
+											alt="Ingen feil observert"
+											style={{
+												width: '280px',
+												height: '280px',
+												filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.12))',
+											}}
+										/>
+										<VStack gap="space-4" align="center">
+											<Heading level="3" size="small">
+												Ingen feil observert, hurra!
+											</Heading>
+											<Heading level="3" size="xsmall">
+												Dette burde feires med kake!
+											</Heading>
+										</VStack>
+									</div>
+								</Box>
+							)}
+						</VStack>
+					</Box>
 				</HGrid>
 			)}
 			<PreviousDayFeilBlock
