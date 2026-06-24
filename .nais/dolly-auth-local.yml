@@ -13,6 +13,10 @@ spec:
     path: "/internal/healthz"
   readiness:
     path: "/internal/healthz"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-oversikt-frontend
   resources:
     limits:
       memory: "256Mi"
