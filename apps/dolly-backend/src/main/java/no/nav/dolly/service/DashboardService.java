@@ -350,7 +350,7 @@ public class DashboardService {
                 resultat.set(navn, tilJsonEllerTekst(verdi, navn));
             } else if ("master".equals(navn) && isNotBlank(verdi.asString())) {
                 resultat.set("type", new StringNode("PDLF".equals(verdi.asString()) ?
-                        "NAV-ident" : "Testnorge-ident"));
+                        "Nav-ident" : "Testnorge-ident"));
             }
         });
         return Mono.just(resultat);
