@@ -390,6 +390,9 @@ public class DashboardService {
         return OrdreResponseDTO.builder()
                 .hovedperson(getError(response.getHovedperson()))
                 .relasjoner(response.getRelasjoner().stream()
+                        .filter(personHendelse -> personHendelse.getOrdrer().stream()
+                                .anyMatch(ordre -> ordre.getHendelser().stream()
+                                        .anyMatch(hendelse -> isNotBlank(hendelse.getError()))))
                         .map(DashboardService::getError)
                         .toList())
                 .build();
