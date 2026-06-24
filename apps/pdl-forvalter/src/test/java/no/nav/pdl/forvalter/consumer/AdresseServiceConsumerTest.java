@@ -424,6 +424,159 @@ class AdresseServiceConsumerTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldReturnDefaultVegadresseWhenServiceReturnsResultWithBlankAdressenavn()
+            throws JsonProcessingException {
+
+        var inputVegadresse = VegadresseDTO.builder()
+                .kommunenummer("0301")
+                .build();
+        var mappedVegadresse = VegadresseDTO.builder()
+                .kommunenummer("0301")
+                .build();
+
+        when(mapperFacade.map(inputVegadresse, VegadresseDTO.class)).thenReturn(mappedVegadresse);
+        when(kodeverkConsumer.getKommunerMedHistoriske())
+                .thenReturn(Mono.just(Map.of("0301", "Oslo")));
+
+        var responseAdresse = no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
+                .matrikkelId("12345")
+                .adressenavn(null)
+                .kommunenummer("0301")
+                .postnummer("0101")
+                .build();
+
+        mockExchangeResponse(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO[]{responseAdresse});
+
+        StepVerifier.create(adresseServiceConsumer.getVegadresse(inputVegadresse, null))
+                .assertNext(result -> {
+                    assertThat(result.getAdressenavn()).isEqualTo("FYRSTIKKALLÉEN");
+                    assertThat(result.getPostnummer()).isEqualTo("0661");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnDefaultVegadresseWhenServiceReturns404() {
+
+        var inputVegadresse = VegadresseDTO.builder()
+                .kommunenummer("0301")
+                .build();
+        var mappedVegadresse = VegadresseDTO.builder()
+                .kommunenummer("0301")
+                .build();
+
+        when(mapperFacade.map(inputVegadresse, VegadresseDTO.class)).thenReturn(mappedVegadresse);
+        when(kodeverkConsumer.getKommunerMedHistoriske())
+                .thenReturn(Mono.just(Map.of("0301", "Oslo")));
+        when(exchangeFunction.exchange(any()))
+                .thenReturn(Mono.just(ClientResponse.create(HttpStatus.NOT_FOUND)
+                        .header("Content-Type", "application/json")
+                        .body("")
+                        .build()));
+
+        StepVerifier.create(adresseServiceConsumer.getVegadresse(inputVegadresse, null))
+                .assertNext(result -> {
+                    assertThat(result.getAdressenavn()).isEqualTo("FYRSTIKKALLÉEN");
+                    assertThat(result.getKommunenummer()).isEqualTo("0301");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldNotOverrideKommunenummerWhenServiceExplicitlyReturnsFyrstikkalleen()
+            throws JsonProcessingException {
+
+        var inputVegadresse = VegadresseDTO.builder()
+                .kommunenummer("4601")
+                .build();
+        var mappedVegadresse = VegadresseDTO.builder()
+                .kommunenummer("4601")
+                .build();
+
+        when(mapperFacade.map(inputVegadresse, VegadresseDTO.class)).thenReturn(mappedVegadresse);
+        when(kodeverkConsumer.getKommunerMedHistoriske())
+                .thenReturn(Mono.just(Map.of("4601", "Bergen")));
+
+        var responseAdresse = no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
+                .matrikkelId("285693617")
+                .adressenavn("FYRSTIKKALLÉEN")
+                .postnummer("0661")
+                .kommunenummer("0301")
+                .build();
+
+        mockExchangeResponse(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO[]{responseAdresse});
+
+        StepVerifier.create(adresseServiceConsumer.getVegadresse(inputVegadresse, null))
+                .assertNext(result -> {
+                    assertThat(result.getAdressenavn()).isEqualTo("FYRSTIKKALLÉEN");
+                    assertThat(result.getKommunenummer()).isEqualTo("0301");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldNotOverrideKommunenummerWhenServiceExplicitlyReturnsValen()
+            throws JsonProcessingException {
+
+        var inputAdresse = MatrikkeladresseDTO.builder()
+                .kommunenummer("4601")
+                .build();
+
+        when(mapperFacade.map(inputAdresse, MatrikkeladresseDTO.class)).thenReturn(inputAdresse);
+        when(kodeverkConsumer.getKommunerMedHistoriske())
+                .thenReturn(Mono.just(Map.of("4601", "Bergen")));
+
+        var responseAdresse = no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.builder()
+                .matrikkelId("24867173")
+                .tilleggsnavn("VALEN")
+                .kommunenummer("4626")
+                .build();
+
+        mockExchangeResponse(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO[]{responseAdresse});
+
+        StepVerifier.create(adresseServiceConsumer.getMatrikkeladresse(inputAdresse, null))
+                .assertNext(result -> {
+                    assertThat(result.getTilleggsnavn()).isEqualTo("VALEN");
+                    assertThat(result.getKommunenummer()).isEqualTo("4626");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldResolveHistoriskKommuneForMatrikkeladresse() throws JsonProcessingException {
+
+        var inputAdresse = MatrikkeladresseDTO.builder()
+                .kommunenummer("0624")
+                .build();
+        var mappedAdresse = MatrikkeladresseDTO.builder()
+                .kommunenummer("0624")
+                .build();
+
+        when(mapperFacade.map(inputAdresse, MatrikkeladresseDTO.class)).thenReturn(mappedAdresse);
+        when(kodeverkConsumer.getKommunerMedHistoriske())
+                .thenReturn(Mono.just(Map.of(
+                        "0624", "Numedal(historisk)",
+                        "3817", "Numedal"
+                )));
+
+        var responseAdresse = no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.builder()
+                .matrikkelId("44444")
+                .kommunenummer("3817")
+                .gaardsnummer("12")
+                .bruksnummer("3")
+                .build();
+
+        mockExchangeResponse(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO[]{responseAdresse});
+
+        StepVerifier.create(adresseServiceConsumer.getMatrikkeladresse(inputAdresse, null))
+                .assertNext(result -> {
+                    assertThat(result.getMatrikkelId()).isEqualTo("44444");
+                    assertThat(result.getKommunenummer()).isEqualTo("0624");
+                })
+                .verifyComplete();
+    }
+
     private <T> void mockExchangeResponse(T body) throws JsonProcessingException {
 
         var json = OBJECT_MAPPER.writeValueAsString(body);
