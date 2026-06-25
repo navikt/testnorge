@@ -37,6 +37,7 @@ export const GjenopprettModal = ({
 	disabledTitle = undefined,
 }: GjenopprettModalProps) => {
 	const [open, setOpen] = useState(false)
+	const [gjenopprettLoading, setGjenopprettLoading] = useState(false)
 
 	const { currentBruker } = useCurrentBruker()
 
@@ -110,8 +111,10 @@ export const GjenopprettModal = ({
 							<form
 								id="gjenopprett-form"
 								onSubmit={formMethods.handleSubmit(async (...args) => {
+									setGjenopprettLoading(true)
 									await submitForm(...args)
 									setOpen(false)
+									setGjenopprettLoading(false)
 								})}
 							>
 								<MiljoVelger
@@ -139,7 +142,7 @@ export const GjenopprettModal = ({
 						<Button
 							data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
 							form="gjenopprett-form"
-							loading={false}
+							loading={gjenopprettLoading}
 						>
 							Gjenopprett
 						</Button>
