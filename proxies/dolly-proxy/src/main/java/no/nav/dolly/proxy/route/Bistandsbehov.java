@@ -11,11 +11,11 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-class Oppfoelging {
+class Bistandsbehov {
 
     private static final String CLUSTER = "dev-gcp";
-    private static final String NAMESPACE = "poao";
-    private static final String NAME = "veilarboppfolging";
+    private static final String NAMESPACE = "obo";
+    private static final String NAME = "veilarbvedtaksstotte";
 
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;
@@ -24,12 +24,12 @@ class Oppfoelging {
 
         var bearerAuthenticationFilter = authenticationFilterService
                 .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE,
-                        NAME, targets.getOppfoelging());
+                        NAME, targets.getBistandsbehov());
 
         return spec -> spec
-                .path("/oppfoelging/**")
+                .path("/bistandsbehov/**")
                 .filters(f -> f.stripPrefix(1)
                         .filter(bearerAuthenticationFilter))
-                .uri(targets.getOppfoelging());
+                .uri(targets.getBistandsbehov());
     }
 }

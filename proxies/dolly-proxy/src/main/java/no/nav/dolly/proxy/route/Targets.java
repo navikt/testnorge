@@ -20,6 +20,7 @@ class Targets {
     String arenaForvalteren;
     String arenaOrds;
     String batch;
+    String bistandsbehov;
     String brregstub;
     String dokarkiv;
     String ereg;
