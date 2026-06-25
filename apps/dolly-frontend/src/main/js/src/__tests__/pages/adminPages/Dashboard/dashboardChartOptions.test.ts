@@ -58,12 +58,12 @@ describe('dashboardChartOptions', () => {
 		const series = options.series?.[0] as Highcharts.SeriesPieOptions
 
 		expect(options.chart?.type).toBe('pie')
-		expect(options.chart?.height).toBe(300)
+		expect(options.chart?.height).toBe(400)
 		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
 		expect(options.series).toHaveLength(1)
 		expect(series.data).toEqual([
-			{ name: 'Opprettet', y: 9, color: 'var(--ax-accent-700)' },
-			{ name: 'Gjenopprettet', y: 3, color: 'var(--ax-info-700)' },
+			{ name: 'Opprettet', y: 9, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettet', y: 3, color: 'var(--ax-accent-700)' },
 		])
 		expect(options.tooltip?.outside).toBe(true)
 	})
