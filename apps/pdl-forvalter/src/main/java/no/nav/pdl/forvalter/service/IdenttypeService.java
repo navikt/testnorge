@@ -42,8 +42,8 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class IdenttypeService implements Validation<IdentRequestDTO> {
 
@@ -153,12 +153,14 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 })
                 .flatMap(nyPerson -> {
 
-                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) < IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
-                        log.info("Her skal ident {} bli swoppet med ident {}. ", person.getIdent(), nyPerson.getIdent());
+                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <
+                        IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
+
                         return swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
                                 .zipWith(Mono.just(person));
+
                     } else {
-                        log.info("Her skal ident {} ikke bli swoppet med ident {}. ", nyPerson.getIdent(), person.getIdent());
+
                         return Mono.just(person)
                                 .zipWith(Mono.just(nyPerson));
                     }
@@ -171,8 +173,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         .thenReturn(personer))
                 .flatMap(personer ->
                         relasjonService.setRelasjoner(personer.getT1().getIdent(), GAMMEL_IDENTITET,
-                                personer.getT2().getIdent(), NY_IDENTITET)
-                        .then(Mono.just(personer.getT1())));
+                                        personer.getT2().getIdent(), NY_IDENTITET)
+                                .then(Mono.just(personer.getT1())));
     }
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
