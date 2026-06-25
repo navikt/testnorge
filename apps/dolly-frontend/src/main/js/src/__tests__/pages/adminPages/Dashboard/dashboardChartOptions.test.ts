@@ -62,8 +62,8 @@ describe('dashboardChartOptions', () => {
 		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
 		expect(options.series).toHaveLength(1)
 		expect(series.data).toEqual([
-			{ name: 'Opprettet', y: 9, color: 'var(--ax-success-700)' },
-			{ name: 'Gjenopprettet', y: 3, color: 'var(--ax-accent-700)' },
+			{ name: 'Nye personer', y: 9, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettede', y: 3, color: 'var(--ax-accent-700)' },
 		])
 		expect(options.tooltip?.outside).toBe(true)
 	})

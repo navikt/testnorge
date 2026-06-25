@@ -118,7 +118,7 @@ export const PreviousDaySection = ({
 				<HGrid columns={{ xs: 1, sm: 2 }} gap="space-16" align="stretch">
 					<VStack gap="space-16">
 						<DashboardKpiCard
-							label="Personer opprettet/gjenopprettet"
+							label="Personer nye/gjenopprettede"
 							value={previousDaySummary.nyeInklGjenopprettede}
 						/>
 						<DashboardChartPanel

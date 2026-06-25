@@ -165,7 +165,7 @@ describe('dashboard sections', () => {
 			screen.getByRole('heading', { name: /Statistikk for siste hverdag \+ helg/ }),
 		).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: 'Siste hverdag + helg' })).toBeInTheDocument()
-		expect(screen.getByText('Personer opprettet/gjenopprettet')).toBeInTheDocument()
+		expect(screen.getByText('Personer nye/gjenopprettede')).toBeInTheDocument()
 		expect(screen.getByText('Bestillinger med feil')).toBeInTheDocument()
 		expect(screen.getByText('Opprettet og gjenopprettet for valgt dag')).toBeInTheDocument()
 		expect(screen.getByText('Ingen feil registrert for valgt periode.')).toBeInTheDocument()
