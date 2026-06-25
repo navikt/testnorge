@@ -1,6 +1,8 @@
 import * as React from 'react'
 import './Loading.less'
 import Spinner from './Spinner'
+import DollySpinner from './DollySpinner'
+import { Loader } from '@navikt/ds-react'
 
 interface Loading {
 	label?: string
@@ -15,25 +17,35 @@ export default ({ onlySpinner, size, className, label, panel, fullpage }: Loadin
 	if (onlySpinner) {
 		return <Spinner size={size || 18} />
 	}
-	const Loader = () => (
-		<div className={className ? className : 'loading-component'}>
-			{label || 'Laster'}
-			<Spinner size={size || 18} />
-		</div>
-	)
-	if (panel) {
-		return (
-			<div className="panel-loading-container">
-				<Loader />
-			</div>
-		)
-	}
 	if (fullpage) {
 		return (
 			<div className="fullpage-loading-container">
-				<Loader />
+				<DollySpinner size={size || 120} label={label || 'Laster'} />
 			</div>
 		)
 	}
-	return <Loader />
+	if (panel) {
+		return (
+			<div className="panel-loading-container">
+				<DollySpinner size={size || 100} label={label || 'Laster'} />
+			</div>
+		)
+	}
+	if (label) {
+		return (
+			<div
+				className={className ? className : 'inline-loading-container'}
+				role="status"
+				aria-label={label}
+			>
+				<Loader size="small" aria-hidden />
+				<span className="inline-loading-label">{label}</span>
+			</div>
+		)
+	}
+	return (
+		<div className={className ? className : 'loading-component'}>
+			<Spinner size={size || 18} />
+		</div>
+	)
 }

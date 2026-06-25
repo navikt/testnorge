@@ -36,7 +36,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
         return webClient
                 .get()
                 .uri(builder -> builder.path(ADRESSER_VEG_URL).queryParams(getQuery()).build())
-                .header("antall", "1")
+                .header("antall", "5")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
@@ -45,7 +45,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
                                 throwable instanceof WebClientResponseException.BadRequest ||
                                 Exceptions.isRetryExhausted(throwable),
-                        throwable -> Mono.just(new VegadresseDTO[]{defaultAdresse()}));
+                        _ -> Mono.just(new VegadresseDTO[]{defaultAdresse()}));
     }
 
     public static VegadresseDTO defaultAdresse() {

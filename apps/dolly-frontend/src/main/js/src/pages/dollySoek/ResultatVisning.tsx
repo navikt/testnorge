@@ -27,7 +27,7 @@ export const ResultatVisning = ({
 	if (loading) {
 		return (
 			<ContentContainer>
-				<Loading label={'Laster personer ...'} />
+				<Loading label={'Laster personer ...'} panel />
 			</ContentContainer>
 		)
 	}

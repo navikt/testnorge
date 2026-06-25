@@ -57,7 +57,7 @@ spec:
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-endringsmelding-service
         - application: testnav-ident-pool
         - application: testnav-organisasjon-forvalter

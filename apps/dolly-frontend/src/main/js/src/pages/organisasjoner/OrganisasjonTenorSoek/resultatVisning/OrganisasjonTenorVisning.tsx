@@ -44,7 +44,7 @@ export const OrganisasjonTenorVisning = ({
 	error,
 }: OrganisasjonVisningProps) => {
 	if (loading) {
-		return <Loading label="Laster organisasjon ..." />
+		return <Loading label="Laster organisasjon ..." panel />
 	}
 
 	if (error) {

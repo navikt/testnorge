@@ -14,7 +14,7 @@ public class TokenService {
     private final TokenExchange tokenExchange;
 
     public Mono<AccessToken> getMagicToken() {
-        return tokenExchange.exchange(ServerProperties.of("dev-gcp", "dolly", "team-dolly-lokal-app", "http://valid.but.not.used"));
+        return tokenExchange.exchange(ServerProperties.of("dev-gcp", "dolly", "dolly-auth-local", "http://valid.but.not.used"));
     }
 
     public Mono<AccessToken> getToken(Application application) {

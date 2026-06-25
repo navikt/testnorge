@@ -37,7 +37,7 @@ spec:
           cluster: dev-gcp
         - application: dolly-texas-proxy
           cluster: dev-gcp
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
           cluster: dev-gcp
         - application: testnav-altinn3-tilgang-proxy
           cluster: dev-gcp

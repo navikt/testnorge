@@ -31,7 +31,7 @@ spec:
         - application: dolly-idporten
         - application: etterlatte-testdata
           namespace: etterlatte
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-faste-data-frontend
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter

@@ -9,6 +9,6 @@ type CurrentBrukerType = {
 export const useErDollyAdmin = () => {
 	const { currentBruker }: CurrentBrukerType = useCurrentBruker()
 	const grupper = currentBruker?.grupper
-	const teamDollyGruppe = '9c7efec1-1599-4216-a67e-6fd53a6a951c'
-	return grupper?.includes(teamDollyGruppe)
+	const adminGruppe = '728ae02e-04e8-48b9-ab65-ee6233b5003f'
+	return grupper?.includes(adminGruppe)
 }

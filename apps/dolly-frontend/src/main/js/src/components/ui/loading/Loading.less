@@ -23,7 +23,8 @@
 
 .panel-loading-container {
 	padding: 15px;
-	border: 1px solid @color-bg-grey-border;
+	display: flex;
+	justify-content: center;
 }
 
 .loading-white {
@@ -31,6 +32,15 @@
 	margin: 18px 0;
 	.loading-spinner {
 		border-top-color: white;
+	}
+	.inline-loading-label {
+		color: white;
+	}
+	.aksel-loader__foreground {
+		stroke: white;
+	}
+	.aksel-loader__background {
+		stroke: rgba(255, 255, 255, 0.3);
 	}
 }
 
@@ -42,6 +52,20 @@
 	.loading-spinner {
 		margin-left: 10px;
 	}
+}
+
+.inline-loading-container {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 0;
+	font-size: 14px;
+	color: #555;
+}
+
+.inline-loading-label {
+	font-size: 14px;
+	color: #555;
 }
 
 .loading-spinner {

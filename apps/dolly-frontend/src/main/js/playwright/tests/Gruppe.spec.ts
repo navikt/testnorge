@@ -79,9 +79,7 @@ test('Opprett gruppe og start bestilling med alle mulige tilvalg', async ({ page
 	await page.getByTestId(TestComponentSelectors.TITLE_SEND_KOMMENTAR).click()
 	await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
 
-	await expect(page.locator('[class="loading-component"]')).toContainText(
-		'Oppretter bestilling ...',
-	)
+	await expect(page.getByText('Oppretter bestilling ...')).toBeVisible()
 
 	await page.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING).click()
 

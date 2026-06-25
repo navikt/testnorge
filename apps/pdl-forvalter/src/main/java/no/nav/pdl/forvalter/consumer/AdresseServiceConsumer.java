@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static java.lang.System.currentTimeMillis;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.remove;
+import static org.apache.commons.lang3.Strings.CS;
 
 @Slf4j
 @Service
@@ -67,9 +67,10 @@ public class AdresseServiceConsumer {
                         .flatMap(token ->
                                 new VegadresseServiceCommand(webClient, vegadresseDTO, matrikkelId, token.getTokenValue()).call())
                         .flatMapMany(Flux::fromArray)
+                        .filter(adresse -> isNotBlank(adresse.getAdressenavn()))
                         .next()
                         .switchIfEmpty(Mono.defer(() -> Mono.just(VegadresseServiceCommand.defaultAdresse())))
-                        .doOnNext(adresse -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
+                        .doOnNext(_ -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
                         .map(adresse -> {
                             if (isNotBlank(vegadresseDTO.getKommunenummer()) &&
                                 isNotBlank(vegadresse.getKommunenummer()) &&
@@ -103,7 +104,7 @@ public class AdresseServiceConsumer {
                         .flatMapMany(Flux::fromArray)
                         .next()
                         .switchIfEmpty(Mono.defer(() -> Mono.just(MatrikkeladresseServiceCommand.defaultAdresse())))
-                        .doOnNext(adresseDTO -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
+                        .doOnNext(_ -> log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime))
                         .map(adresseDTO -> {
                             if (isNotBlank(matrikkeladresseDTO.getKommunenummer()) &&
                                 isNotBlank(adresse.getKommunenummer()) &&
@@ -121,7 +122,7 @@ public class AdresseServiceConsumer {
             return kodeverkConsumer.getKommunerMedHistoriske()
                     .flatMap(historiske -> Mono.just(historiske.get(kommunenummer))
                             .filter(kommunenavn -> isNotBlank(kommunenavn) && kommunenavn.endsWith(HISTORISK))
-                            .map(kommunenavn -> remove(kommunenavn, HISTORISK).trim())
+                            .map(kommunenavn -> CS.remove(kommunenavn, HISTORISK).trim())
                             .map(this::historiskeKommunerMedNyttNavn)
                             .zipWith(Mono.just(historiske)))
                     .flatMap(tuple -> Mono.just(tuple.getT2())

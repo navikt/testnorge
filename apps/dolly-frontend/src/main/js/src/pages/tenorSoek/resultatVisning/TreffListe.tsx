@@ -74,7 +74,7 @@ export const TreffListe = ({
 	if ((!personListe || personListe?.length === 0) && loading) {
 		return (
 			<div style={{ marginTop: '-70px' }}>
-				<Loading label="Laster treff ..." />
+				<Loading label="Laster treff ..." panel />
 			</div>
 		)
 	}
@@ -170,7 +170,7 @@ export const TreffListe = ({
 				</VStack>
 				{loading && (
 					<div style={{ margin: '10px 0' }}>
-						<Loading label="Laster treff ..." />
+						<Loading label="Laster treff ..." panel />
 					</div>
 				)}
 				{!nesteSide && antallTreff > 200 && (

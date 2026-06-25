@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
 import Loading from '@/components/ui/loading/Loading'
 
+const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
+
 const TabsVisningFormatter = styled.div`
 	width: 100%;
 
@@ -21,8 +23,6 @@ const TabsVisningFormatter = styled.div`
 `
 
 export const TabsVisning = ({ children, kildedata }: any) => {
-	const PrettyCode = lazy(() => import('@/components/codeView/PrettyCode'))
-
 	if (!kildedata) {
 		return <div className="person-visning_content">{children}</div>
 	}
@@ -67,7 +67,7 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 						marginBottom: '15px',
 					}}
 				>
-					<Suspense fallback={<Loading label={'Laster kildedata...'} />}>
+					<Suspense fallback={<Loading label={'Laster kildedata...'} panel />}>
 						<PrettyCode language={'json'} codeString={kildedataPretty} wrapLongLines />
 					</Suspense>
 				</Tabs.Panel>

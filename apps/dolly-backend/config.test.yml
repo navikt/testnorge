@@ -17,10 +17,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-auth-local
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
-        - application: dolly-auth-local
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
@@ -68,7 +67,7 @@ spec:
       claims:
         groups:
           - id: '2d7f1c0d-5784-4f81-8bb2-8f3a79f8f949' #everyone else
-          - id: '9c7efec1-1599-4216-a67e-6fd53a6a951c' #admins
+          - id: '728ae02e-04e8-48b9-ab65-ee6233b5003f' #admins
   image: "{{image}}"
   openSearch:
     instance: bestillinger

@@ -1,10 +1,11 @@
 import Title from '../../../components/title'
 import { useTenorOversiktOrganisasjoner } from '@/utils/hooks/useTenorSoek'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { TreffListeOrg } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/TreffListeOrg'
 import { SoekFormOrg } from '@/pages/organisasjoner/OrganisasjonTenorSoek/SoekFormOrg'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
+import Loading from '@/components/ui/loading/Loading'
 
 const NavigateButton = styled(Button)`
 	position: sticky;
@@ -83,31 +84,33 @@ export default () => {
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter organisasjoner i Tenor (Test-Norge)" />
 			</div>
-			<div className="flexbox--flex-wrap" id="soek">
-				<NavigateButton
-					className="gaa-til-treff"
-					onClick={() => navigateTo('treff')}
-					kind="chevron-down-double-circle"
-				>
-					GÅ TIL TREFF
-				</NavigateButton>
-				<SoekFormOrg setRequest={setRequest} mutate={mutate} />
-			</div>
-			<div id="treff">
-				<NavigateButton
-					className="gaa-til-soek"
-					onClick={() => navigateTo('soek')}
-					kind="chevron-up-double-circle"
-				>
-					GÅ TIL SØK
-				</NavigateButton>
-				<TreffListeOrg
-					response={response?.data}
-					organisasjonListe={state.organisasjonListe}
-					loading={loading}
-					error={error}
-				/>
-			</div>
+			<Suspense fallback={<Loading label="Laster søkeside" panel />}>
+				<div className="flexbox--flex-wrap" id="soek">
+					<NavigateButton
+						className="gaa-til-treff"
+						onClick={() => navigateTo('treff')}
+						kind="chevron-down-double-circle"
+					>
+						GÅ TIL TREFF
+					</NavigateButton>
+					<SoekFormOrg setRequest={setRequest} mutate={mutate} />
+				</div>
+				<div id="treff">
+					<NavigateButton
+						className="gaa-til-soek"
+						onClick={() => navigateTo('soek')}
+						kind="chevron-up-double-circle"
+					>
+						GÅ TIL SØK
+					</NavigateButton>
+					<TreffListeOrg
+						response={response?.data}
+						organisasjonListe={state.organisasjonListe}
+						loading={loading}
+						error={error}
+					/>
+				</div>
+			</Suspense>
 		</div>
 	)
 }
