@@ -265,18 +265,6 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 									align="start"
 								>
 									<VStack gap="space-8">
-										{identerTotal === 0 ? (
-											<Alert variant="info" inline>
-												Ingen identer i valgt periode.
-											</Alert>
-										) : (
-											<DashboardChartPanel
-												options={identerDonutChartOptions}
-												ariaLabel="Fordeling av NAV-identer og Testnorge-identer"
-											/>
-										)}
-									</VStack>
-									<VStack gap="space-8">
 										{nyeGjenopprettedeTotal === 0 ? (
 											<Alert variant="info" inline>
 												Ingen nye eller gjenopprettede personer i valgt periode.
@@ -285,6 +273,18 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 											<DashboardChartPanel
 												options={nyeGjenopprettedeDonutChartOptions}
 												ariaLabel="Fordeling av nye og gjenopprettede personer"
+											/>
+										)}
+									</VStack>
+									<VStack gap="space-8">
+										{identerTotal === 0 ? (
+											<Alert variant="info" inline>
+												Ingen identer i valgt periode.
+											</Alert>
+										) : (
+											<DashboardChartPanel
+												options={identerDonutChartOptions}
+												ariaLabel="Fordeling av NAV-identer og Testnorge-identer"
 											/>
 										)}
 									</VStack>

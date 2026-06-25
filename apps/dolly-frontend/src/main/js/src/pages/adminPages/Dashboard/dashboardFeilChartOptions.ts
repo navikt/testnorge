@@ -7,6 +7,15 @@ import {
 } from './dashboardChartBase'
 import { fagsystemFeilLabel, type FeilDagPunkt, type FeilGruppe } from './dashboardFeilUtils'
 
+const FEIL_CHART_COLORS = [
+	'var(--ax-danger-700)',
+	'var(--ax-warning-700)',
+	'var(--ax-meta-purple-700)',
+	'var(--ax-info-700)',
+	'var(--ax-accent-700)',
+	'var(--ax-neutral-600)',
+]
+
 export const createFeilSummertChartOptions = (
 	punkter: FeilDagPunkt[],
 	fagsystemNokler: string[],
@@ -23,6 +32,7 @@ export const createFeilSummertChartOptions = (
 			'Stablet søylediagram med antall feil per dag i valgt måned, fordelt på fagsystem. Klikk en dag for detaljer.',
 			{ type: 'column', height: 360 },
 		),
+		colors: FEIL_CHART_COLORS,
 		xAxis: {
 			categories: punkter.map((punkt) => String(punkt.dag).padStart(2, '0')),
 			...ROTATED_CATEGORY_LABELS,
@@ -78,6 +88,7 @@ export const createFeilPerFagsystemChartOptions = (feilGrupper: FeilGruppe[]): O
 		type: 'column',
 		height: 360,
 	}),
+	colors: FEIL_CHART_COLORS,
 	xAxis: {
 		categories: feilGrupper.map((gruppe) => gruppe.label),
 		...ROTATED_CATEGORY_LABELS,

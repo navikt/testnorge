@@ -73,10 +73,11 @@ export const createOpprettetGjenopprettetDonutChartOptions = ({
 		'Sirkeldiagram som viser fordelingen mellom opprettede og gjenopprettede personer for valgt dag.',
 		'Personer',
 		[
-			{ name: 'Opprettet', y: nye, color: 'var(--ax-accent-700)' },
-			{ name: 'Gjenopprettet', y: gjenopprettede, color: 'var(--ax-info-700)' },
+			{ name: 'Opprettet', y: nye, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettet', y: gjenopprettede, color: 'var(--ax-accent-700)' },
 		],
-		300,
+		400,
+		true,
 	)
 
 export const createNyeGjenopprettedeDonutChartOptions = ({
