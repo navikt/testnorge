@@ -3,7 +3,9 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -58,6 +60,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
             FNR, 2
     );
 
+    private final AliasRepository aliasRepository;
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final SwopIdentsService swopIdentsService;
@@ -160,6 +163,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                                 .zipWith(Mono.just(nyPerson));
                     }
                 })
+                .flatMap(personer -> aliasRepository.save(DbAlias.builder()
+                                .tidligereIdent(personer.getT2().getIdent())
+                                .personId(personer.getT1().getId())
+                                .sistOppdatert(LocalDateTime.now())
+                                .build())
+                        .thenReturn(personer))
                 .flatMap(personer ->
                         relasjonService.setRelasjoner(personer.getT1().getIdent(), GAMMEL_IDENTITET,
                                 personer.getT2().getIdent(), NY_IDENTITET)
