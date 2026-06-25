@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BestillingerFragment {
+public class OversiktFragment {
 
-    private LocalDate dato;
-    private Long personer;
-    private Long bestillingid;
+    private String maaned;
+    private Long antall;
     private String gjenopprettstatus;
-    private String master;
 }

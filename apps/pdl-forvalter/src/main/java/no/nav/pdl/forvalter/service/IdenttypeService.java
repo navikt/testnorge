@@ -2,9 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -23,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.LocalDate.now;
@@ -40,8 +42,8 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class IdenttypeService implements Validation<IdentRequestDTO> {
 
@@ -50,9 +52,15 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                                                           "er fødsel mellom 1.1.1900 og dagens dato";
     private static final String VALIDATION_DATO_INTERVAL_INVALID = "Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere " +
                                                                    "enn fødtEtter";
-    private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller BOST";
+    private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller NPID";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
+    private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
+            NPID, 0,
+            DNR, 1,
+            FNR, 2
+    );
 
+    private final AliasRepository aliasRepository;
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final SwopIdentsService swopIdentsService;
@@ -126,7 +134,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
                     } else {
 
-                        val nyRequest = PersonRequestDTO.builder()
+                        var nyRequest = PersonRequestDTO.builder()
                                 .eksisterendeIdent(request.getEksisterendeIdent())
                                 .identtype(getIdenttype(request, person.getIdent()))
                                 .kjoenn(getKjoenn(request, person.getPerson()))
@@ -143,12 +151,30 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         return createPersonService.execute(nyRequest);
                     }
                 })
-                .flatMap(dbPerson ->
-                        swopIdentsService.execute(person.getIdent(), dbPerson.getIdent()))
-                .flatMap(dbPerson ->
-                        relasjonService.setRelasjoner(dbPerson.getIdent(), GAMMEL_IDENTITET,
-                                person.getIdent(), NY_IDENTITET)
-                        .thenReturn(dbPerson));
+                .flatMap(nyPerson -> {
+
+                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <
+                        IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
+
+                        return swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
+                                .zipWith(Mono.just(person));
+
+                    } else {
+
+                        return Mono.just(person)
+                                .zipWith(Mono.just(nyPerson));
+                    }
+                })
+                .flatMap(personer -> aliasRepository.save(DbAlias.builder()
+                                .tidligereIdent(personer.getT2().getIdent())
+                                .personId(personer.getT1().getId())
+                                .sistOppdatert(LocalDateTime.now())
+                                .build())
+                        .thenReturn(personer))
+                .flatMap(personer ->
+                        relasjonService.setRelasjoner(personer.getT1().getIdent(), GAMMEL_IDENTITET,
+                                        personer.getT2().getIdent(), NY_IDENTITET)
+                                .then(Mono.just(personer.getT1())));
     }
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
@@ -197,18 +223,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private Comparator<IdentRequestDTO> sortIdenter() {
 
-        return (ir1, ir2) -> {
-            if (ir1.getIdenttype() == (ir2.getIdenttype())) {
-                return 0;
-            } else if (ir1.getIdenttype() == NPID) {
-                return -1;
-            } else if (ir2.getIdenttype() == NPID) {
-                return 1;
-            } else if (ir1.getIdenttype() == DNR && ir2.getIdenttype() == FNR) {
-                return -1;
-            } else {
-                return 1;
-            }
-        };
+        return Comparator.comparingInt(ir ->
+                IDENT_PRIORITET.getOrDefault(ir.getIdenttype(), Integer.MAX_VALUE));
     }
 }

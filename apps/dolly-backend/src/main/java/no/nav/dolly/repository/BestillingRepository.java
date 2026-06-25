@@ -4,6 +4,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
+import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import org.springframework.data.domain.Pageable;
@@ -139,37 +140,22 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     @Query("""
             select count(*) personer,
                    b.sist_oppdatert::date dato,
+                   b.id bestillingId,
                    case
                       when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
                       when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
                       when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                      when b.best_kriterier = '{}' then 'GJENOPPRETTING'
                       else 'NYBESTILLING'
                    end as gjenopprettStatus,
-                   case
-                      when lower(bp.pdl_person_status) not like 'synkronisering%' then 'FEIL'
-                      when lower(bp.pdl_forvalter_status) like '%feil%' then 'FEIL'
-                      when lower(bp.pdl_ordre_status) like '%feil%' then 'FEIL'
-                      else 'OK'
-                   end as pdlStatus,
-                   case
-                      when lower(bp.pensjonforvalter_status) like '%feil%' then 'FEIL'
-                      when lower(bp.aareg_status) like '%feil%' then 'FEIL'
-                      when lower(bp.arenaforvalter_status) like '%feil%' then 'FEIL'
-                      when lower(bp.instdata_status) like '%feil%' then 'FEIL'
-                      when lower(bp.inntektsstub_status) like '%feil%' then 'FEIL'
-                      when lower(bp.inntektsmelding_status) like '%feil%' then 'FEIL'
-                      when lower(bp.sigrunstub_status) like '%feil%' then 'FEIL'
-                      when lower(bp.dokarkiv_status) like '%feil%' then 'FEIL'
-                      when lower(bp.feil) like '%feil%' then 'FEIL'
-                      else 'OK'
-                   end as annenStatus
+                   bp.master as master
             from bestilling b
             join bestilling_progress bp on b.id = bp.bestilling_id
-            group by dato, gjenopprettStatus, pdlStatus, annenStatus
-            order by dato desc
+            and to_char(b.sist_oppdatert, 'YYYY-MM') = :yearMonth
+            group by dato, bestillingId, gjenopprettStatus, master
+            order by dato
             """)
-    Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert();
-
+    Flux<BestillingerFragment> findBestillingerOrderBySistOppdatert(String yearMonth);
 
     @Query("""
             select count(*) antall, to_char(b.sist_oppdatert, 'YYYY-MM') interval, br.epost
@@ -203,4 +189,21 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             order by interval desc;
             """)
     Flux<DollyTeamFragment> findBestillingerForDollyTeamsOrderBySistOppdatert();
+
+    @Query("""
+            SELECT TO_CHAR(b.sist_oppdatert, 'YYYY-MM') maaned,
+               COUNT(*) antall,
+               CASE
+                    when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
+                    when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
+                    when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                    when b.best_kriterier = '{}' then 'GJENOPPRETTING'
+                    else 'NYBESTILLING'
+                 END gjenopprettStatus
+            FROM bestilling b
+            JOIN bestilling_progress bp ON b.id = bp.bestilling_id
+            GROUP BY maaned, gjenopprettStatus
+            ORDER BY maaned DESC;
+          """)
+    Flux<OversiktFragment> findByAvailIntervals();
 }
