@@ -197,6 +197,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                     when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
                     when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
                     when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                    when b.best_kriterier = '{}' then 'GJENOPPRETTING'
                     else 'NYBESTILLING'
                  END gjenopprettStatus
             FROM bestilling b
