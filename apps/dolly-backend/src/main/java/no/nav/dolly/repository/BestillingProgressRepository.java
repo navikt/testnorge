@@ -52,4 +52,15 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
 
     @Query(value = "select * from bestilling_progress where id = :id for update")
     Mono<BestillingProgress> findByIdAndLock(@Param("id") Long id);
+
+    @Query("""
+            SELECT DISTINCT column_name
+            FROM information_schema.columns
+            WHERE table_name = 'bestilling_progress'
+            AND column_name NOT LIKE 'tps_messaging_status'
+            AND (column_name LIKE '%status%'
+            OR column_name = 'feil')
+            ORDER BY column_name;
+            """)
+    Flux<String> findStatusColumns();
 }
