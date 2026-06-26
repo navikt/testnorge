@@ -1,19 +1,15 @@
-import useBoolean from '@/utils/hooks/useBoolean'
-import Button from '@/components/ui/button/Button'
 import { BestillingSammendrag } from '@/components/bestilling/sammendrag/BestillingSammendrag'
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
-import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
+import { malTyper } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
 import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
-import { TestComponentSelectors } from '#/mocks/Selectors'
+import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
-	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
-
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0 || bestilling.antallLevert > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
@@ -58,16 +54,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						!harRelatertPersonVedSivilstand &&
 						!harEksisterendeNyIdent &&
 						!harRelatertPersonBarn &&
-						!gjenopprettingsId && (
-							<Button
-								data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
-								onClick={openMalModal}
-								kind={'maler'}
-								className="svg-icon-blue"
-							>
-								OPPRETT MAL
-							</Button>
-						)}
+						!gjenopprettingsId && <OpprettMal id={bestilling.id} malType={malTyper.BESTILLING} />}
 					<SlettModal
 						action={DollyApi.slettBestilling}
 						bestillingId={bestilling.id}
@@ -91,18 +78,8 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								: undefined
 						}
 					/>
-					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-						OPPRETT MAL
-					</Button>
+					<OpprettMal id={bestilling.id} malType={malTyper.ORGANISASJON} />
 				</div>
-			)}
-
-			{isMalModalOpen && (
-				<MalModal
-					id={bestilling.id}
-					malType={erOrganisasjon ? malTyper.ORGANISASJON : malTyper.BESTILLING}
-					closeModal={closeMalModal}
-				/>
 			)}
 		</div>
 	)

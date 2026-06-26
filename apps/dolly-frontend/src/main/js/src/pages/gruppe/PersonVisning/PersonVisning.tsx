@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
@@ -86,7 +85,6 @@ import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
@@ -119,6 +117,10 @@ import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
 import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
 import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
+import { Button } from '@navikt/ds-react'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
+import { malTyper } from '@/pages/minSide/maler/MalModal'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -513,6 +515,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
+							size="xsmall"
+							variant="tertiary"
+							icon={<PlusCircleIcon aria-hidden />}
 							onClick={() => {
 								const personData = { ...data }
 								if (pdlforvalterPerson) {
@@ -552,10 +557,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 									navigate,
 								)
 							}}
-							kind="add-circle"
 							loading={isLoadingFagsystemer}
 						>
-							LEGG TIL/ENDRE
+							Legg til / endre
 						</Button>
 					)}
 					<GjenopprettPerson
@@ -573,9 +577,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 					)}
 					{bestillingIdListe?.length > 0 && (
 						<>
-							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-								OPPRETT MAL
-							</Button>
+							<OpprettMal id={ident?.ident} malType={malTyper.PERSON} />
 							<BestillingSammendragModal bestillinger={ident?.bestillinger} />
 						</>
 					)}
@@ -763,9 +765,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<HendelseIdPersonMiljoeInfo ident={ident.ident} relatertePersoner={relatertePersoner} />
 				<TidligereBestillinger ids={ident.bestillingId} erOrg={false} />
 				<BeskrivelseConnector ident={ident} closeModal={() => {}} />
-				{isMalModalOpen && (
-					<MalModal id={ident.ident} malType={malTyper.PERSON} closeModal={closeMalModal} />
-				)}
 			</div>
 		</ErrorBoundary>
 	)
