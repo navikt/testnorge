@@ -16,8 +16,8 @@ public class BistandVedtakRequestDTO {
     private String fnr;
     private String innsatsgruppe;
     private String hovedmal;
-    private String vedtakFattet;
-    private LocalDateTime oppfolgingsEnhet;
+    private LocalDateTime vedtakFattet;
+    private String oppfolgingsEnhet;
     private String begrunnelse;
     private String veilederIdent;
 }

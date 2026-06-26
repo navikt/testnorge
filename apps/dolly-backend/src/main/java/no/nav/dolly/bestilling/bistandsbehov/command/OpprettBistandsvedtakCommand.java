@@ -19,7 +19,8 @@ import static java.time.Duration.ofSeconds;
 @RequiredArgsConstructor
 public class OpprettBistandsvedtakCommand implements Callable<Mono<ResponseStatusDTO>> {
 
-    private static final String OPPFOELGING_URL = "/bistandsbehov/veilarbvedtaksstotte/api/v1/test/vedtak";
+    private static final String BISTANDSVEDTAK_URL = "/bistandsbehov/veilarbvedtaksstotte/api/v1/test/vedtak";
+
     private final WebClient webClient;
     private final BistandVedtakRequestDTO request;
     private final String token;
@@ -28,7 +29,7 @@ public class OpprettBistandsvedtakCommand implements Callable<Mono<ResponseStatu
     public Mono<ResponseStatusDTO> call() {
 
         return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path(OPPFOELGING_URL)
+                .uri(uriBuilder -> uriBuilder.path(BISTANDSVEDTAK_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OppfoelgingRequestDTO {
+public class RequestDTO {
 
     private String fnr;
 }

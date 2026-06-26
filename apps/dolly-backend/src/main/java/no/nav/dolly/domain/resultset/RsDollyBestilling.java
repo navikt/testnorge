@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
@@ -36,9 +37,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,6 +92,7 @@ public class RsDollyBestilling {
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
     private List<EtterlatteYtelse> etterlatteYtelser;
     private RsKelvinAapRequestDTO kelvinAap;
+    private RsBistandsbehovDTO bistandsbehov;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -172,21 +172,5 @@ public class RsDollyBestilling {
     @JsonIgnore
     public boolean isExistInntekstsmelding() {
         return nonNull(inntektsmelding);
-    }
-
-    @JsonIgnore
-    public boolean isNonEmpty() {
-
-        return Arrays.stream(RsDollyBestilling.class.getMethods())
-                .filter(method -> "get".equals(method.getName().substring(0, 3)))
-                .filter(method -> !EXCLUDE_METHODS.contains(method.getName()))
-                .anyMatch(method -> {
-                    try {
-                        var object = method.invoke(this);
-                        return nonNull(object) && (!(object instanceof List) || !((List<?>) object).isEmpty());
-                    } catch (IllegalAccessException | InvocationTargetException _) {
-                        return true;
-                    }
-                });
     }
 }

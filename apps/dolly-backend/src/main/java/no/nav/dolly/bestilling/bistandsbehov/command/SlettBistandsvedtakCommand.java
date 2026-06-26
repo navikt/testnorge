@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.bistandsbehov.dto.RequestDTO;
 import no.nav.dolly.bestilling.bistandsbehov.dto.ResponseStatusDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -17,9 +18,9 @@ import java.util.concurrent.Callable;
 import static java.time.Duration.ofSeconds;
 
 @RequiredArgsConstructor
-public class StartOppfoelgingsperiodeCommand implements Callable<Mono<ResponseStatusDTO>> {
+public class SlettBistandsvedtakCommand implements Callable<Mono<ResponseStatusDTO>> {
 
-    private static final String OPPFOELGING_URL = "/oppfoelging/veilarboppfolging/api/v1/dolly/startOppfolgingsperiode";
+    private static final String BISTANDSVEDTAK_URL = "/bistandsbehov/veilarbvedtaksstotte/api/v1/test/vedtak";
 
     private final WebClient webClient;
     private final String ident;
@@ -28,11 +29,11 @@ public class StartOppfoelgingsperiodeCommand implements Callable<Mono<ResponseSt
     @Override
     public Mono<ResponseStatusDTO> call() {
 
-        return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path(OPPFOELGING_URL)
+        return webClient
+                .method(HttpMethod.DELETE)
+                .uri(uriBuilder -> uriBuilder.path(BISTANDSVEDTAK_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .header("Nav-Consumer-Id", "dolly-proxy")
                 .bodyValue(RequestDTO.builder()
                         .fnr(ident)
                         .build())
