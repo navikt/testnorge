@@ -6,15 +6,12 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.bistandsbehov.dto.BistandVedtakRequestDTO;
 import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
 import no.nav.dolly.mapper.MappingStrategy;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Random;
 
-import static java.time.LocalDateTime.*;
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -41,7 +38,9 @@ public class BistandsbehovMappingStrategy implements MappingStrategy {
                             destinasjon.setVedtakFattet(now());
                         }
 
-                        
+                        if (isBlank(destinasjon.getBegrunnelse())) {
+                            destinasjon.setBegrunnelse("Automatisk opprettet av Dolly");
+                        }
                     }
                 })
                 .exclude("oppfolgingsEnhet")

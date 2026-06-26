@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.bistandsbehov.dto.BistandVedtakRequestDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
-import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -22,11 +21,10 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.BISTANDSBEHOV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.poi.util.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -78,13 +76,7 @@ public class BistandsbehovClient implements ClientRegister {
                 .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
                 .map(BistandsbehovClient::getEnhet)
                 .flatMap(norg2Consumer::getNorgEnhet)
-                .map(response -> {
-                    if (nonNull(response.getHttpStatus())) {
-                        response.setEnhetNr("0315");
-                    }
-                    return response;
-                })
-                .map(Norg2EnhetResponse::getEnhetNr);
+                .map(response -> isNull(response.getHttpStatus()) ? response.getEnhetNr() : "0315");
     }
 
     private static String getEnhet(PdlPersonBolk.GeografiskTilknytning tilknytning) {
@@ -112,6 +104,7 @@ public class BistandsbehovClient implements ClientRegister {
 
         bistandsbehovConsumer.slettBistandsvedtak(identer)
                 .collectList()
-                .subscribe(_ -> log.info("Slettet bistandbehov for {} identer", identer.size()));
+                .subscribe(_ -> log.info("Slettet bistandbehov for {} identer", identer.size()),
+                        error -> log.error("Feil ved sletting av bistandbehov for {} identer {}", identer.size(), error.getMessage()));
     }
 }
