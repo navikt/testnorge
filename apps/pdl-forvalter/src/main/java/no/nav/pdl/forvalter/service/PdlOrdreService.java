@@ -385,7 +385,7 @@ public class PdlOrdreService {
     private List<? extends DbVersjonDTO> utenHistorikk(List<? extends DbVersjonDTO> artifacter) {
 
         return artifacter.stream()
-                .max(Comparator.comparing(DbVersjonDTO::getId))
+                .max(Comparator.comparing(DbVersjonDTO::getId, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .stream().toList();
     }
 
