@@ -45,7 +45,13 @@ function genererTitleValueFelter(data: any) {
 		}
 		if (_.get(value, key) && key === 'tilleggsinformasjon' && !data.tilleggsinformasjon) {
 			return Object?.entries(value)?.map(([innerKey, innerValue]) => {
-				return <TitleValue key={`${key}-${innerKey}`} title="Tilleggsinformasjonstype" value={texts(innerKey)} />
+				return (
+					<TitleValue
+						key={`${key}-${innerKey}`}
+						title="Tilleggsinformasjonstype"
+						value={texts(innerKey)}
+					/>
+				)
 			})
 		}
 		if (typeof value === 'object') {

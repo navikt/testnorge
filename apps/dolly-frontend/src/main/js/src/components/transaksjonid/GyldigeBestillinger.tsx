@@ -3,7 +3,5 @@ export const harGyldigTransaksjonsid = (
 	allTransaksjonsid: any[] | undefined,
 ) => {
 	if (!allTransaksjonsid) return false
-	return allTransaksjonsid.some(
-		(t: any) => t.bestillingId === bestillingId && t.transaksjonId,
-	)
+	return allTransaksjonsid.some((t: any) => t.bestillingId === bestillingId && t.transaksjonId)
 }
