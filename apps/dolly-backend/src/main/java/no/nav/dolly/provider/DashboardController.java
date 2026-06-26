@@ -23,8 +23,6 @@ import static no.nav.dolly.config.CachingConfig.CACHE_DASHBOARD_ORGANISASJONER;
 import static no.nav.dolly.config.CachingConfig.CACHE_DASHBOARD_OVERSIKT;
 import static no.nav.dolly.config.CachingConfig.CACHE_DASHBOARD_TEAMS;
 
-import java.util.Map;
-
 @RequestMapping("/api/v1/dashboard")
 @RestController
 @RequiredArgsConstructor
@@ -87,10 +85,4 @@ public class DashboardController {
         return dashboardService.getDollyTeamsStatus();
     }
 
-    @GetMapping(value = "/oversikt")
-    @Operation(description = "Henter oversikt over år og måneder hvor det finnes persondata.")
-    public Flux<Map<String, Object>> getDashboardOversikt() {
-
-        return dashboardService.getOversikt();
-    }
 }
