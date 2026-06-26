@@ -151,6 +151,7 @@ export const FlyttPersonForm = ({
 						<Button
 							variant="tertiary"
 							size="small"
+							type="button"
 							onClick={() => {
 								formMethods.setValue('identer', gruppeIdenterListe)
 								formMethods.trigger('identer')
@@ -162,6 +163,7 @@ export const FlyttPersonForm = ({
 							data-testid={TestComponentSelectors.BUTTON_FLYTT_PERSONER_NULLSTILL}
 							variant="tertiary"
 							size="small"
+							type="button"
 							onClick={() => {
 								formMethods.setValue('identer', [])
 								formMethods.trigger('identer')
