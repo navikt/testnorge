@@ -65,7 +65,13 @@ export const KodeverkTitleValue = ({ kodeverkstype, value, label }: KodeverkType
 	return <TitleValue title={label} value={visningValue} />
 }
 
-export const SkattekortData = ({ liste, data }: { liste?: SkattekortDTO[]; data?: SkattekortDTO[] }) => {
+export const SkattekortData = ({
+	liste,
+	data,
+}: {
+	liste?: SkattekortDTO[]
+	data?: SkattekortDTO[]
+}) => {
 	const items = data || liste || []
 	return (
 		<DollyFieldArray header="" data={items} expandable={items.length > 5} nested>
@@ -103,8 +109,11 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 		return null
 	}
 
-	const manglerFagsystemdata = liste?.every((miljoData) => !miljoData?.data || miljoData.data.length < 1)
-	const forsteMiljo = liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
+	const manglerFagsystemdata = liste?.every(
+		(miljoData) => !miljoData?.data || miljoData.data.length < 1,
+	)
+	const forsteMiljo =
+		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
 	return (
 		<>

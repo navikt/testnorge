@@ -8,12 +8,12 @@ import {
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import type { SykmeldingType } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import {
 	SykemeldingAktivitet,
 	SykemeldingBestilling,
 	sykmeldingTypeLabels,
 } from '@/components/fagsystem/sykdom/SykemeldingTypes'
-import type { SykmeldingType } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 type SykemeldingProps = {
 	sykemelding: SykemeldingBestilling
@@ -36,8 +36,7 @@ export const Sykemelding = ({ sykemelding }: SykemeldingProps) => {
 							title="Type"
 							value={
 								nySykemelding.type
-									? sykmeldingTypeLabels[nySykemelding.type as SykmeldingType] ||
-										nySykemelding.type
+									? sykmeldingTypeLabels[nySykemelding.type as SykmeldingType] || nySykemelding.type
 									: undefined
 							}
 						/>

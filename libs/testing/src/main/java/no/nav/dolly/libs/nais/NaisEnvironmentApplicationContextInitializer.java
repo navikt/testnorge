@@ -14,7 +14,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
     // Konfigurasjon for lokal kjøring er hentet herfra: https://github.com/navikt/localauth
 
     private static final String APP_CLIENT_ID = "3a974fc8-2295-4a7c-ba67-5b2603d07419";
-    private static final String AUDIENCE = "3cbdd4cb-d048-420f-889e-2b32b7add652";
     private static final String DOLLY_AUTH_LOCAL = "https://dolly-auth-local.intern.dev.nav.no";
     private static final String DUMMY = "dummy";
     private static final String FALSE = "false";
@@ -46,10 +45,6 @@ public class NaisEnvironmentApplicationContextInitializer implements Application
         properties.putIfAbsent("dolly.texas.url.token", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token");
         properties.putIfAbsent("dolly.texas.url.exchange", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/token/exchange");
         properties.putIfAbsent("dolly.texas.url.introspect", "https://dolly-texas-proxy.intern.dev.nav.no/api/v1/introspect");
-
-        // backend
-        properties.putIfAbsent("spring.security.oauth2.resourceserver.aad.accepted-audience",
-                "%s, api://%s".formatted(AUDIENCE, AUDIENCE));
 
         // Emulating NAIS provided environment variables.
         properties.putIfAbsent("AZURE_APP_CLIENT_ID", APP_CLIENT_ID);
