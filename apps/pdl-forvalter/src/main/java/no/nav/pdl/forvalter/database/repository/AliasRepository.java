@@ -20,7 +20,7 @@ public interface AliasRepository extends ReactiveCrudRepository<DbAlias, Long> {
 
     Flux<DbAlias> findByTidligereIdentIn(List<String> ident);
 
-    Mono<Boolean> existsByPersonId(Long personId);
+    Mono<Boolean> existsByTidligereIdent(String ident);
 
     @Modifying
     @Query("""
