@@ -54,7 +54,7 @@ export const DashboardSectionCard = ({ children }: { children: ReactNode }) => (
 		borderWidth="1"
 		borderColor="neutral-subtle"
 		minWidth="0"
-		style={{ paddingTop: '10px', paddingBottom: '5px' }}
+		style={{ paddingTop: '15px', paddingBottom: '20px' }}
 	>
 		{children}
 	</Box>
