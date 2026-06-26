@@ -1,4 +1,5 @@
 import { Alert, BodyShort, Heading, HGrid, VStack } from '@navikt/ds-react'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
 import { type Options } from 'highcharts'
 import {
 	DashboardChartPanel,
@@ -12,18 +13,22 @@ export const MonthlyTeamTrendSection = ({
 	title = 'Nav-team statistikk',
 	description,
 	showScopeToggle = true,
+	emptyStateMessage = 'Ingen teamdata tilgjengelig.',
 	filteredMonthlyTeamPointsLength,
 	monthScope,
 	onMonthScopeChange,
 	monthlyTrendChartOptions,
+	isLoading = false,
 }: {
 	title?: string
 	description?: string
 	showScopeToggle?: boolean
+	emptyStateMessage?: string
 	filteredMonthlyTeamPointsLength: number
 	monthScope: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 	onMonthScopeChange: (value: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL) => void
 	monthlyTrendChartOptions: Options
+	isLoading?: boolean
 }) => (
 	<DashboardSectionCard>
 		<VStack gap="space-16">
@@ -31,9 +36,11 @@ export const MonthlyTeamTrendSection = ({
 				{title}
 			</Heading>
 			{description && <BodyShort>{description}</BodyShort>}
-			{filteredMonthlyTeamPointsLength === 0 ? (
+			{isLoading ? (
+				<DollySpinner size={120} label="Laster statistikk..." />
+			) : filteredMonthlyTeamPointsLength === 0 ? (
 				<Alert variant="info" inline>
-					Ingen teamdata tilgjengelig.
+					{emptyStateMessage}
 				</Alert>
 			) : (
 				<>
@@ -67,13 +74,14 @@ export const MonthlyTeamDistributionSection = ({
 	secondaryTotalLabel = 'Antall teams totalt',
 	yearOptions,
 	selectedYear,
-	monthOptions,
 	onSelectedYearChange,
-	selectedInterval,
+	monthOptions,
 	onSelectedIntervalChange,
+	selectedInterval,
 	selectedMonthlyPoint,
 	teamDistribution,
 	monthlyDistributionChartOptions,
+	isLoading = false,
 }: {
 	title?: string
 	monthLabel?: string
@@ -81,10 +89,10 @@ export const MonthlyTeamDistributionSection = ({
 	secondaryTotalLabel?: string
 	yearOptions: string[]
 	selectedYear: string
-	monthOptions: { value: string; label: string }[]
 	onSelectedYearChange: (value: string) => void
-	selectedInterval: string
+	monthOptions: { value: string; label: string }[]
 	onSelectedIntervalChange: (value: string) => void
+	selectedInterval: string
 	selectedMonthlyPoint: {
 		interval: string
 		intervalVisning: string
@@ -93,13 +101,16 @@ export const MonthlyTeamDistributionSection = ({
 	} | null
 	teamDistribution: TeamDistributionPoint[]
 	monthlyDistributionChartOptions: Options
+	isLoading?: boolean
 }) => (
 	<DashboardSectionCard>
 		<VStack gap="space-16">
 			<Heading level="2" size="small">
 				{title}
 			</Heading>
-			{yearOptions.length === 0 ? (
+			{isLoading ? (
+				<DollySpinner size={120} label="Laster statistikk..." />
+			) : yearOptions.length === 0 ? (
 				<Alert variant="info" inline>
 					Ingen teamfordeling tilgjengelig.
 				</Alert>
@@ -120,12 +131,12 @@ export const MonthlyTeamDistributionSection = ({
 					{selectedMonthlyPoint && (
 						<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
 							<DashboardKpiCard
-								label={primaryTotalLabel}
-								value={selectedMonthlyPoint.totaltUnikeBrukere}
-							/>
-							<DashboardKpiCard
 								label={secondaryTotalLabel}
 								value={selectedMonthlyPoint.totaltAntallTeams}
+							/>
+							<DashboardKpiCard
+								label={primaryTotalLabel}
+								value={selectedMonthlyPoint.totaltUnikeBrukere}
 							/>
 						</HGrid>
 					)}

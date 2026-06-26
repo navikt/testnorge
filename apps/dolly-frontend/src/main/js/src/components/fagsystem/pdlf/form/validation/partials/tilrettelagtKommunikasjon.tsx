@@ -19,6 +19,6 @@ export const tilrettelagtKommunikasjon = Yup.array().of(
 				otherwise: () => Yup.string().nullable(),
 			}),
 		},
-		['spraakForTaletolk', 'spraakForTegnspraakTolk']
-	)
+		['spraakForTaletolk', 'spraakForTegnspraakTolk'],
+	),
 )

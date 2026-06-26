@@ -3,10 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
-import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.ArtifactUtils;
@@ -39,7 +37,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 public class SwopIdentsService {
 
     private final PersonRepository personRepository;
-    private final AliasRepository aliasRepository;
     private final RelasjonRepository relasjonRepository;
     private final MapperFacade mapperFacade;
 
@@ -250,12 +247,6 @@ public class SwopIdentsService {
                     return swopOpplysninger(oppdatertPerson1, oppdatertPerson2)
                             .then(Mono.defer(() -> personRepository.saveAll(List.of(oppdatertPerson1, oppdatertPerson2))
                                     .collectList()))
-                            .flatMap(personer -> aliasRepository.save(DbAlias.builder()
-                                            .tidligereIdent(ident1)
-                                            .personId(oppdatertPerson1.getId())
-                                            .sistOppdatert(now())
-                                            .build())
-                                    .thenReturn(personer))
                             .flatMap(personer -> relasjonRepository.deleteByPersonIdentIn(List.of(oppdatertPerson2.getIdent()))
                                     .then(Mono.just(personer)))
                             .flatMap(personer -> Flux.fromIterable(personer)

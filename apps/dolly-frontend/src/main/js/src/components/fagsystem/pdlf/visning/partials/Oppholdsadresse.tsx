@@ -8,7 +8,7 @@ import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/
 import * as _ from 'lodash-es'
 import { getInitialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type OppholdsadresseTypes = {

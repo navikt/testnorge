@@ -1,11 +1,5 @@
-import { type Options, type SeriesLineOptions } from 'highcharts'
-import {
-	ERROR_PRIMARY_COLOR,
-	ERROR_SECONDARY_COLOR,
-	ROTATED_CATEGORY_LABELS,
-	TOOLTIP_OPTIONS,
-	withBaseChart,
-} from './dashboardChartBase'
+import { type Options, type SeriesSplineOptions } from 'highcharts'
+import { ROTATED_CATEGORY_LABELS, TOOLTIP_OPTIONS, withBaseChart } from './dashboardChartBase'
 import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
 const createLineTrendChartOptions = ({
@@ -16,32 +10,22 @@ const createLineTrendChartOptions = ({
 }: {
 	description: string
 	categories: string[]
-	series: SeriesLineOptions[]
+	series: SeriesSplineOptions[]
 	legend?: Options['legend']
 }): Options => ({
-	...withBaseChart(description, { type: 'line', height: 360, spacing: [16, 16, 4, 16] }),
+	...withBaseChart(description, { type: 'spline', height: 360, spacing: [16, 16, 4, 16] }),
 	xAxis: { categories, ...ROTATED_CATEGORY_LABELS },
 	yAxis: { title: { text: undefined }, allowDecimals: false, min: 0 },
 	legend,
 	tooltip: { ...TOOLTIP_OPTIONS, shared: true },
-	plotOptions: { series: { marker: { enabled: true, radius: 3 } } },
+	plotOptions: { spline: { marker: { enabled: true, radius: 3 } } },
 	series,
 })
 
-type PersonTrendVisibilityOptions = {
-	personerTotaltVisible?: boolean
-	feilTotaltVisible?: boolean
-	onPersonerTotaltVisibilityChange?: (visible: boolean) => void
-	onFeilTotaltVisibilityChange?: (visible: boolean) => void
-}
-
-export const createPersonTrendChartOptions = (
-	personTrendData: PersonTrendPoint[],
-	visibilityOptions?: PersonTrendVisibilityOptions,
-): Options =>
+export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[]): Options =>
 	createLineTrendChartOptions({
 		description:
-			'Linjediagram med daglig utvikling av nye, gjenopprettede, PDL-feil og andre feil i valgt periode.',
+			'Linjediagram med daglig utvikling av bestillinger, identer og personer i valgt periode.',
 		categories: personTrendData.map((point) => point.datoVisning),
 		legend: {
 			enabled: true,
@@ -51,43 +35,35 @@ export const createPersonTrendChartOptions = (
 			itemMarginBottom: 4,
 		},
 		series: [
-			{ type: 'line', name: 'Nye', data: personTrendData.map((point) => point.nye) },
 			{
-				type: 'line',
+				type: 'spline',
+				name: 'Personer totalt',
+				data: personTrendData.map((point) => point.personerTotalt),
+				visible: true,
+			},
+			{ type: 'spline', name: 'Nye', data: personTrendData.map((point) => point.nye) },
+			{
+				type: 'spline',
 				name: 'Gjenopprettede',
 				data: personTrendData.map((point) => point.gjenopprettede),
 			},
 			{
-				type: 'line',
-				name: 'PDL-feil',
-				data: personTrendData.map((point) => point.pdlFeil),
-				color: ERROR_PRIMARY_COLOR,
+				type: 'spline',
+				name: 'NAV-identer',
+				data: personTrendData.map((point) => point.navIdenter),
+				visible: true,
 			},
 			{
-				type: 'line',
-				name: 'Andre feil',
-				data: personTrendData.map((point) => point.andreFeil),
-				color: ERROR_SECONDARY_COLOR,
+				type: 'spline',
+				name: 'Testnorge-identer',
+				data: personTrendData.map((point) => point.testnorgeIdenter),
+				visible: true,
 			},
 			{
-				type: 'line',
-				name: 'Personer totalt',
-				data: personTrendData.map((point) => point.personerTotalt),
-				visible: visibilityOptions?.personerTotaltVisible ?? false,
-				events: {
-					show: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(true),
-					hide: () => visibilityOptions?.onPersonerTotaltVisibilityChange?.(false),
-				},
-			},
-			{
-				type: 'line',
-				name: 'Feil totalt',
-				data: personTrendData.map((point) => point.pdlFeil + point.andreFeil),
-				visible: visibilityOptions?.feilTotaltVisible ?? false,
-				events: {
-					show: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(true),
-					hide: () => visibilityOptions?.onFeilTotaltVisibilityChange?.(false),
-				},
+				type: 'spline',
+				name: 'Bestillinger',
+				data: personTrendData.map((point) => point.bestillinger),
+				visible: true,
 			},
 		],
 	})
@@ -106,12 +82,12 @@ export const createMonthlyTeamTrendChartOptions = (
 		categories: teamTrendData.map((point) => point.intervalVisning),
 		series: [
 			{
-				type: 'line',
+				type: 'spline',
 				name: 'Unike brukere',
 				data: teamTrendData.map((point) => point.totaltUnikeBrukere),
 			},
 			{
-				type: 'line',
+				type: 'spline',
 				name: options?.secondSeriesName || 'Antall teams',
 				data: teamTrendData.map((point) => point.totaltAntallTeams),
 			},

@@ -11,17 +11,20 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.concurrent.TimeUnit;
 
-@Configuration(enforceUniqueMethods = false)
+@Configuration
 @EnableCaching
 @SuppressWarnings("java:S3740")
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";
-    public static final String CACHE_LEGACY_BESTILLING_MAL = "bestilling-legacy-mal";
     public static final String CACHE_BESTILLING_MAL = "bestilling-mal";
     public static final String CACHE_BRUKER = "bruker";
+    public static final String CACHE_DASHBOARD_DOLLYTEAMS = "dashboard-dollyteams";
+    public static final String CACHE_DASHBOARD_ORGANISASJONER = "dashboard-organisasjoner";
+    public static final String CACHE_DASHBOARD_OVERSIKT = "dashboard-oversikt";
+    public static final String CACHE_DASHBOARD_TEAMS = "dashboard-teams";
     public static final String CACHE_GRUPPE = "gruppe";
-    public static final String CACHE_HELSEPERSONELL = "helsepersonell";
+    public static final String CACHE_LEGACY_BESTILLING_MAL = "bestilling-legacy-mal";
 
     @Bean
     @Profile({ "dev", "prod" })
@@ -29,10 +32,13 @@ public class CachingConfig {
         var caffeineCacheManager = new CaffeineCacheManager(
                 CACHE_BESTILLING,
                 CACHE_BESTILLING_MAL,
-                CACHE_LEGACY_BESTILLING_MAL,
                 CACHE_BRUKER,
+                CACHE_DASHBOARD_DOLLYTEAMS,
+                CACHE_DASHBOARD_ORGANISASJONER,
+                CACHE_DASHBOARD_OVERSIKT,
+                CACHE_DASHBOARD_TEAMS,
                 CACHE_GRUPPE,
-                CACHE_HELSEPERSONELL
+                CACHE_LEGACY_BESTILLING_MAL
         );
         caffeineCacheManager.setCaffeine(caffeine);
         caffeineCacheManager.setAsyncCacheMode(true);
@@ -41,7 +47,7 @@ public class CachingConfig {
 
     @Bean
     @Profile("local")
-    public CacheManager cacheManager() {
+    public CacheManager cacheManagerLocal() {
         return new NoOpCacheManager();
     }
 

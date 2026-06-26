@@ -40,9 +40,19 @@ const FagsystemText = styled.div`
 export const BestillingStatus = ({
 	bestilling,
 	erOrganisasjon = false,
+	errorMetaFormatter,
 }: {
 	bestilling: any
 	erOrganisasjon?: boolean
+	errorMetaFormatter?: (args: {
+		fagsystem: any
+		status: Status
+		errEnv: string | null
+		errIdents: string[]
+		antallBestilteIdenter: number
+		erOrganisasjon: boolean
+		isGjenopprett: boolean
+	}) => React.ReactNode
 }) => {
 	const IconTypes = {
 		oppretter: 'loading-circle',
@@ -180,6 +190,23 @@ export const BestillingStatus = ({
 								const errEnv = getEnvironments([status])
 								const errIdents = getErrorIdents(status)
 								const iconKind = isWarningMessage(status.melding) ? IconTypes.avvik : IconTypes.feil
+								const errorMeta =
+									errorMetaFormatter?.({
+										fagsystem,
+										status,
+										errEnv,
+										errIdents,
+										antallBestilteIdenter,
+										erOrganisasjon,
+										isGjenopprett,
+									}) ??
+									(errIdents.length > 0
+										? `${errEnv && `${errEnv} \u00B7 `}${errIdents.length} ${
+												errIdents.length === 1 ? 'ident' : 'identer'
+											} feilet`
+										: !errIdents.length && errEnv
+											? errEnv
+											: null)
 								return (
 									<FagsystemStatus
 										key={`${idx}-err-${errIdx}`}
@@ -191,13 +218,7 @@ export const BestillingStatus = ({
 										<div style={{ width: '96%', marginBottom: '8px' }}>
 											<FagsystemText>
 												<h5>{fagsystem.navn}</h5>
-												{errIdents.length > 0 && (
-													<p>
-														{errEnv && `${errEnv} \u00B7 `}
-														{errIdents.length} {errIdents.length === 1 ? 'ident' : 'identer'} feilet
-													</p>
-												)}
-												{!errIdents.length && errEnv && <p>{errEnv}</p>}
+												{errorMeta && <p>{errorMeta}</p>}
 											</FagsystemText>
 											<ApiFeilmelding feilmelding={status?.melding} />
 										</div>

@@ -22,7 +22,7 @@ type Relasjon = [
 			kjonn: string
 		}
 		relasjonTypeNavn: string
-	}
+	},
 ]
 
 type Person = {
@@ -111,5 +111,5 @@ const finnBarn = (relasjoner: Relasjon) =>
 				relasjon.personRelasjonMed.etternavn +
 				' (' +
 				(relasjon.personRelasjonMed.kjonn.includes('K') ? 'DATTER' : 'SØNN') +
-				')'
+				')',
 		)

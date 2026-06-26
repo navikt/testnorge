@@ -6,11 +6,9 @@
 			"#/*": ["./playwright/*"]
 		},
 		"types": [
-			"@vitest/browser/providers/playwright",
 			"vitest/globals",
 			"vite/client",
 			"node",
-			"./support",
 			"@testing-library/jest-dom"
 		],
 		"noEmit": true,
@@ -20,12 +18,12 @@
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
 		"removeComments": true,
-		"esModuleInterop": false,
+		"esModuleInterop": true,
 		"noFallthroughCasesInSwitch": true,
 		"strict": true,
 		"allowSyntheticDefaultImports": true,
 		"module": "ESNext",
-		"moduleResolution": "Node",
+		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx"

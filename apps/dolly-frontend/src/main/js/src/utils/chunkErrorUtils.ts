@@ -12,11 +12,7 @@ export const isChunkLoadError = (error: unknown): boolean => {
 	if (!error) return false
 
 	const message =
-		error instanceof Error
-			? error.message
-			: typeof error === 'string'
-				? error
-				: String(error)
+		error instanceof Error ? error.message : typeof error === 'string' ? error : String(error)
 
 	return CHUNK_ERROR_PATTERNS.some((pattern) =>
 		message.toLowerCase().includes(pattern.toLowerCase()),

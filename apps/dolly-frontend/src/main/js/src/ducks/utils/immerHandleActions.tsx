@@ -7,5 +7,5 @@ export const handleActions = (actions, state) =>
 			acc[key] = produce(actions[key])
 			return acc
 		}, {}),
-		state
+		state,
 	)

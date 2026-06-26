@@ -36,6 +36,7 @@ import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -128,7 +129,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -157,8 +158,8 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.just(false));
         when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
@@ -196,7 +197,7 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -232,8 +233,8 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.just(false));
         when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
@@ -271,7 +272,9 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(kodeverkConsumer.getFylkesmannsembeter()).thenReturn(Mono.just(Map.of()));
+        when(personRepository.findByIdentInOrderBySistOppdatertDesc(anyList())).thenReturn(Flux.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -307,7 +310,7 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -343,7 +346,7 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -372,8 +375,8 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.just(false));
         when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
@@ -392,7 +395,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -411,7 +414,7 @@ class PdlOrdreServiceTest {
         when(aliasRepository.findByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.empty());
         when(personRepository.findByIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(dbPerson));
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -438,7 +441,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceForSlettingAndSendOrders(List.of(pdlStatus));
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -540,7 +543,7 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -590,7 +593,7 @@ class PdlOrdreServiceTest {
         when(personRepository.findByIdent(barnIdent)).thenReturn(Mono.just(dbBarn));
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -619,7 +622,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -661,7 +664,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -692,7 +695,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         when(mapperFacade.mapAsList(any(Iterable.class), any(Class.class))).thenReturn(new ArrayList<>());
         when(mapperFacade.mapAsList(anyList(), org.mockito.ArgumentMatchers.eq(FoedestedDTO.class)))
                 .thenReturn(List.of(mappedFoedested));
@@ -726,7 +729,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         when(mapperFacade.mapAsList(any(Iterable.class), any(Class.class))).thenReturn(new ArrayList<>());
         when(mapperFacade.mapAsList(anyList(), org.mockito.ArgumentMatchers.eq(FoedselDTO.class)))
                 .thenReturn(List.of(mappedFoedselsdato));
@@ -765,7 +768,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -801,7 +804,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -843,7 +846,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceForSlettingAndSendOrders(List.of(hovedpersonStatus, relatertStatus));
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -882,8 +885,8 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.just(false));
         when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceForSlettingAndSendOrders(List.of(relatertStatus));
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
@@ -907,7 +910,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(true));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -989,7 +992,7 @@ class PdlOrdreServiceTest {
 
         stubBasicSendFlow(dbPerson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.empty());
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());
 
@@ -1036,9 +1039,9 @@ class PdlOrdreServiceTest {
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon1, dbRelasjon2));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson1));
         when(personRepository.findById(thirdPersonId)).thenReturn(Mono.just(dbRelatertPerson2));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(thirdPersonId)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(thirdPersonIdent)).thenReturn(Mono.just(false));
         when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         when(aliasRepository.findByTidligereIdent(thirdPersonIdent)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
@@ -1074,8 +1077,8 @@ class PdlOrdreServiceTest {
         stubBasicSendFlow(dbHovedperson);
         when(relasjonRepository.findByPersonId(HOVEDPERSON_ID)).thenReturn(Flux.just(dbRelasjon1, dbRelasjon2));
         when(personRepository.findById(RELATERT_PERSON_ID)).thenReturn(Mono.just(dbRelatertPerson));
-        when(aliasRepository.existsByPersonId(HOVEDPERSON_ID)).thenReturn(Mono.just(false));
-        when(aliasRepository.existsByPersonId(RELATERT_PERSON_ID)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(HOVEDPERSON_IDENT)).thenReturn(Mono.just(false));
+        when(aliasRepository.existsByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.just(false));
         when(aliasRepository.findByTidligereIdent(RELATERT_PERSON_IDENT)).thenReturn(Mono.empty());
         stubDeployServiceDefaults();
         when(hendelseIdService.oppdaterPerson(any(OrdreResponseDTO.class))).thenReturn(Mono.empty());

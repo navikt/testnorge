@@ -30,8 +30,6 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
 
-    private static final String GATEWAY_ORIGINAL_REQUEST_URL = "org.springframework.web.reactive.HandlerMapping.pathWithinHandlerMapping";
-
     public HttpExceptionAdvice(ErrorAttributes errorAttributes,
                                WebProperties webProperties,
                                ErrorProperties errorProperties,
@@ -47,7 +45,7 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
                 .error(status.getReasonPhrase())
                 .status(status.value())
                 .message(exception.getMessage())
-                .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
+                .path(serverWebExchange.getRequest().getURI().getPath())
                 .timestamp(LocalDateTime.now())
                 .build();
         log.warn("HttpException: {}", exceptionInfo);
@@ -86,12 +84,12 @@ public class HttpExceptionAdvice extends DefaultErrorWebExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     ExceptionInformation internalServerError(ServerWebExchange serverWebExchange, Exception exception) {
-        log.error("Uventet feil ved request til {}", serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL), exception);
+        log.error("Uventet feil ved request til {}", serverWebExchange.getRequest().getURI().getPath(), exception);
         return ExceptionInformation.builder()
                 .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(exception.getMessage())
-                .path(serverWebExchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL))
+                .path(serverWebExchange.getRequest().getURI().getPath())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
