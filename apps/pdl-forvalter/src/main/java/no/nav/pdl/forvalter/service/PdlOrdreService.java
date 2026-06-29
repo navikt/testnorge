@@ -178,19 +178,23 @@ public class PdlOrdreService {
         return Flux.concat(
                         Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                                 .filter(SivilstandDTO::isEksisterendePerson)
+                                .filter(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))
                                 .map(SivilstandDTO::getRelatertVedSivilstand),
                         Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
-                                .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                 .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
+                                .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                 .map(ForelderBarnRelasjonDTO::getRelatertPerson),
                         Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
                                 .filter(ForeldreansvarDTO::isEksisterendePerson)
+                                .filter(foreldreansvar -> isNotBlank(foreldreansvar.getAnsvarlig()))
                                 .map(ForeldreansvarDTO::getAnsvarlig),
                         Flux.fromIterable(dbPerson.getPerson().getVergemaal())
                                 .filter(VergemaalDTO::isEksisterendePerson)
+                                .filter(vergemaal -> isNotBlank(vergemaal.getVergeIdent()))
                                 .map(VergemaalDTO::getVergeIdent),
                         Flux.fromIterable(dbPerson.getPerson().getFullmakt())
                                 .filter(FullmaktDTO::isEksisterendePerson)
+                                .filter(fullmakt -> isNotBlank(fullmakt.getMotpartsPersonident()))
                                 .map(FullmaktDTO::getMotpartsPersonident),
                         Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
                                 .filter(kontaktinformasjon -> nonNull(kontaktinformasjon.getPersonSomKontakt()))
