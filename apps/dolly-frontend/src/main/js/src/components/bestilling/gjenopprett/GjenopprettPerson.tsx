@@ -1,6 +1,4 @@
 import DollyService from '@/service/services/dolly/DollyService'
-import Button from '@/components/ui/button/Button'
-import useBoolean from '@/utils/hooks/useBoolean'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
@@ -8,8 +6,6 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
-import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { arrayToString } from '@/utils/DataFormatter'
 import {
 	useBestilteMiljoerAlleFagsystemer,
 	useIkkeFerdigBestillingerGruppe,
@@ -37,7 +33,6 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 	const { bestilteMiljoer } = useBestilteMiljoerAlleFagsystemer(bestillinger)
 	const { sideStoerrelse } = useSideStoerrelse()
 	const sidetall = useReduxSelector((state) => state?.finnPerson?.sidetall) || 0
-	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId,
@@ -77,22 +72,8 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 
 		await DollyService.gjenopprettPerson(ident.ident, miljoerString).then(() => {
 			mutate(REGEX_BACKEND_BESTILLINGER)
-			closeGjenoprettModal()
 		})
 	}
-
-	const gjenopprettHeader = (
-		<div style={{ paddingLeft: 20, paddingRight: 20 }}>
-			<h1>Gjenopprett person {ident.ident}</h1>
-			{bestilteMiljoer?.length > 0 && (
-				<>
-					<br />
-					<TitleValue title="Bestilt miljø" value={arrayToString(bestilteMiljoer)?.toUpperCase()} />
-					<hr />
-				</>
-			)}
-		</div>
-	)
 
 	const getBestillingerSamlet = () => {
 		const samlet = {
@@ -106,26 +87,12 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 	const bestillingerSamlet = getBestillingerSamlet()
 
 	return (
-		<>
-			<Button
-				onClick={openGjenopprettModal}
-				kind="synchronize"
-				loading={ikkeFerdigBestillinger && Object.keys(ikkeFerdigBestillinger).length > 0}
-			>
-				GJENOPPRETT
-			</Button>
-			{isGjenopprettModalOpen && (
-				<GjenopprettModal
-					gjenopprettHeader={gjenopprettHeader}
-					environments={bestilteMiljoer}
-					submitForm={handleSubmit}
-					closeModal={() => {
-						closeGjenoprettModal()
-						mutate(REGEX_BACKEND_GRUPPER)
-					}}
-					bestilling={bestillingerSamlet}
-				/>
-			)}
-		</>
+		<GjenopprettModal
+			environments={bestilteMiljoer}
+			submitForm={handleSubmit}
+			title={`Gjenopprett person: ${ident.ident}`}
+			bestilling={bestillingerSamlet}
+			bestilteMiljoer={bestilteMiljoer}
+		/>
 	)
 }

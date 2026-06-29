@@ -1,33 +1,44 @@
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import React, { Fragment } from 'react'
-import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
+import React, { useState } from 'react'
+import { erMiljouavhengig, MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import * as yup from 'yup'
-import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Alert } from '@navikt/ds-react'
+import { Alert, BodyLong, Button, Dialog } from '@navikt/ds-react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
+import { ArrowsCirclepathIcon } from '@navikt/aksel-icons'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { arrayToString } from '@/utils/DataFormatter'
 
 type GjenopprettModalProps = {
-	gjenopprettHeader: any
 	environments?: Array<string>
 	submitForm: any
-	closeModal: any
+	title: string
+	beskrivelse?: string
 	bestilling?: any
+	antallIdenter?: number
+	bestilteMiljoer?: Array<string>
+	disabled?: boolean
+	disabledTitle?: string
 }
 
 export const GjenopprettModal = ({
-	gjenopprettHeader,
 	environments,
 	submitForm,
-	closeModal,
+	title,
+	beskrivelse,
 	bestilling,
+	antallIdenter,
+	bestilteMiljoer,
+	disabled = false,
+	disabledTitle = undefined,
 }: GjenopprettModalProps) => {
+	const [open, setOpen] = useState(false)
+	const [gjenopprettLoading, setGjenopprettLoading] = useState(false)
+
 	const { currentBruker } = useCurrentBruker()
 
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
@@ -60,40 +71,84 @@ export const GjenopprettModal = ({
 
 	const warningText = getWarningText()
 
+	const miljoeUavhengig = erMiljouavhengig(bestilling?.bestilling || null)
+
+	const gjenopprettHeader = (
+		<div className="flexbox" style={{ margin: '10px 0 25px 0' }}>
+			<TitleValue title="Antall identer" value={antallIdenter} />
+			<TitleValue
+				title="Bestilte miljøer"
+				value={arrayToString(bestilteMiljoer)?.toUpperCase()}
+				size="medium"
+			/>
+		</div>
+	)
+
 	return (
-		<FormProvider {...formMethods}>
-			<DollyModal isOpen={true} closeModal={closeModal} width="50%" overflow="auto">
-				<ErrorBoundary>
-					{gjenopprettHeader}
-					<Fragment>
-						<MiljoVelger
-							bestillingsdata={bestilling ? bestilling.bestilling : null}
-							heading="Velg miljø å gjenopprette i"
-							currentBruker={currentBruker}
-							gyldigeMiljoer={gyldigeEnvironments}
-							tilgjengeligeMiljoer={tilgjengeligeMiljoer}
-							loading={loading}
-						/>
-						{warningText && (
-							<div style={{ padding: '0 20px' }}>
-								<Alert variant={'warning'}>{warningText}</Alert>
-							</div>
+		<>
+			<Button
+				data-testid={TestComponentSelectors.BUTTON_GJENOPPRETT_GRUPPE}
+				size="xsmall"
+				variant="tertiary"
+				icon={<ArrowsCirclepathIcon aria-hidden />}
+				onClick={() => setOpen(true)}
+				disabled={disabled}
+				title={disabledTitle}
+			>
+				Gjenopprett
+			</Button>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<Dialog.Popup>
+					<Dialog.Header>
+						<Dialog.Title>{title}</Dialog.Title>
+					</Dialog.Header>
+					<Dialog.Body>
+						{(antallIdenter || bestilteMiljoer?.length > 0) && gjenopprettHeader}
+						{beskrivelse && !miljoeUavhengig && (
+							<BodyLong style={{ marginBottom: '25px' }}>{beskrivelse}</BodyLong>
 						)}
-						<div className="dollymodal_buttons">
-							<NavButton variant={'danger'} onClick={closeModal}>
-								Avbryt
-							</NavButton>
-							<NavButton
-								data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
-								variant={'primary'}
-								onClick={formMethods.handleSubmit(submitForm)}
+						<FormProvider {...formMethods}>
+							<form
+								id="gjenopprett-form"
+								onSubmit={formMethods.handleSubmit(async (...args) => {
+									setGjenopprettLoading(true)
+									await submitForm(...args)
+									setOpen(false)
+									setGjenopprettLoading(false)
+								})}
 							>
-								Utfør
-							</NavButton>
-						</div>
-					</Fragment>
-				</ErrorBoundary>
-			</DollyModal>
-		</FormProvider>
+								<MiljoVelger
+									bestillingsdata={bestilling ? bestilling.bestilling : null}
+									currentBruker={currentBruker}
+									gyldigeMiljoer={gyldigeEnvironments}
+									tilgjengeligeMiljoer={tilgjengeligeMiljoer}
+									miljoeLabel={'Velg miljø å gjenopprette i'}
+									loading={loading}
+								/>
+								{warningText && (
+									<div style={{ padding: '0 20px' }}>
+										<Alert variant={'warning'}>{warningText}</Alert>
+									</div>
+								)}
+							</form>
+						</FormProvider>
+					</Dialog.Body>
+					<Dialog.Footer>
+						<Dialog.CloseTrigger>
+							<Button type="button" variant="secondary">
+								Avbryt
+							</Button>
+						</Dialog.CloseTrigger>
+						<Button
+							data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
+							form="gjenopprett-form"
+							loading={gjenopprettLoading}
+						>
+							Gjenopprett
+						</Button>
+					</Dialog.Footer>
+				</Dialog.Popup>
+			</Dialog>
+		</>
 	)
 }
