@@ -16,6 +16,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingInntektstubStatusMapper {
@@ -24,10 +25,13 @@ public final class BestillingInntektstubStatusMapper {
 
         Map<String, Set<String>> statusMap = new HashMap<>();
 
-        progressList.forEach(progress ->
+        progressList.forEach(progress -> {
+            if (isNotBlank(progress.getInntektstubStatus())) {
                 Arrays.stream(progress.getInntektstubStatus().split(","))
                         .filter(melding -> statusMap.keySet().stream().noneMatch(status -> status.contains(melding)))
-                        .forEach(melding -> statusMap.computeIfAbsent(melding, _ -> new HashSet<>()).add(progress.getIdent())));
+                        .forEach(melding -> statusMap.computeIfAbsent(melding, _ -> new HashSet<>()).add(progress.getIdent()));
+            }
+        });
 
         return statusMap.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(INNTK).navn(INNTK.getBeskrivelse())
