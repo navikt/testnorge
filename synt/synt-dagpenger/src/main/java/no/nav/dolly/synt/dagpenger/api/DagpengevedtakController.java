@@ -15,7 +15,6 @@ import no.nav.dolly.synt.dagpenger.dto.DagpengevedtakDto;
 import no.nav.dolly.synt.dagpenger.onnx.OnnxService;
 import no.nav.dolly.synt.dagpenger.onnx.RettighetType;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,7 +52,7 @@ class DagpengevedtakController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = DagpengevedtakDto.class)))
             )
     )
-    ResponseEntity<List<DagpengevedtakDto>> generateVedtak(
+    List<DagpengevedtakDto> generateVedtak(
             @PathVariable
             @Parameter(
                     name = "rettighet",
@@ -66,7 +65,7 @@ class DagpengevedtakController {
 
         var generated = onnxService.generateVedtak(rettighet.name(), startDates);
         log.info("Generated {} result(s) based on request for {} with {} start date(s)", generated.size(), rettighet, startDates.size());
-        return ResponseEntity.ok(generated);
+        return generated;
 
     }
 
