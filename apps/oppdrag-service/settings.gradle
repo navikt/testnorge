@@ -1,0 +1,18 @@
+plugins {
+    id "com.gradle.enterprise" version "3.12.3"
+}
+
+rootProject.name = 'oppdrag-service'
+
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/vault'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
