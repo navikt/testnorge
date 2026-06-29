@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: testnav-trygdeetaten-nav-proxy
+    description: Proxy for å nå nav tenant fra trygdeetaten.
+  config:
+    import: "classpath:dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        trygdeetaten:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+  codec:
+    max-in-memory-size: 15MB
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
+
+consumers:
+  #TODO: Legge til alle applikasjoner som skal kunne kalle proxy
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.intern.dev.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-meldekort
