@@ -580,6 +580,7 @@ public class BestillingService {
                                     .arbeidssoekerregisteret(request2.getArbeidssoekerregisteret())
                                     .arenaforvalter(request2.getArenaforvalter())
                                     .bankkonto(request2.getBankkonto())
+                                    .bistandsbehov(request2.getBistandsbehov())
                                     .brregstub(request2.getBrregstub())
                                     .dokarkiv(request2.getDokarkiv())
                                     .etterlatteYtelser(request2.getEtterlatteYtelser())
