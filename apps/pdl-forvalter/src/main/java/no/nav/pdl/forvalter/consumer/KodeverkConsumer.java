@@ -46,7 +46,8 @@ public class KodeverkConsumer {
 
         return hentKodeverk(KOMMUNER)
                 .map(verdier -> verdier.keySet().stream().toList())
-                .map(list -> list.get(random.nextInt(list.size())));
+                .map(list -> list.get(random.nextInt(list.size())))
+                .switchIfEmpty(Mono.just("0301"));
     }
 
     public Mono<String> getTilfeldigLand() {
@@ -55,7 +56,8 @@ public class KodeverkConsumer {
                 .map(landkoder -> landkoder.keySet().stream()
                         .filter(landkode -> !landkode.equals("9999") && !landkode.contains("???"))
                         .toList())
-                .map(list -> list.get(random.nextInt(list.size())));
+                .map(list -> list.get(random.nextInt(list.size())))
+                .switchIfEmpty(Mono.just("NAM"));
     }
 
     public Mono<Map<String,String>> getPoststedNavn() {
