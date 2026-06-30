@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.SamboerRequest;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,7 +20,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 @Slf4j
 @RequiredArgsConstructor
 public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>> {
-    private static final String PEN_SAMBOER_URL = "/pensjon/{miljoe}/api/samboer/{ident}";
+    private static final String PEN_SAMBOER_URL = "/pensjon/{miljoe}/api/samboer/hentSamboerforhold";
 
     private final WebClient webClient;
     private final String ident;
@@ -28,14 +29,14 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
 
     public Mono<PensjonSamboerResponse> call() {
         return webClient
-                .get()
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PEN_SAMBOER_URL)
-                        .queryParam("historikk", true)
-                        .build(miljoe, ident))
+                        .build(miljoe))
                 .headers(WebClientHeader.bearer(token))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .bodyValue(new SamboerRequest(ident))
                 .retrieve()
                 .bodyToMono(PensjonSamboerResponse.class)
                 .doOnError(error -> !(error instanceof WebClientResponseException.NotFound), WebClientError.logTo(log))
