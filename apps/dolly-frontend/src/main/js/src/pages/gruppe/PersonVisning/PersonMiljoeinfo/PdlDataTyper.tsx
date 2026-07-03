@@ -9,6 +9,15 @@ import {
 	SivilstandData,
 } from '@/components/fagsystem/pdlf/PdlTypes'
 
+export type Folkeregistermetadata = {
+	aarsak?: string
+	ajourholdstidspunkt?: string
+	gyldighetstidspunkt?: string
+	kilde?: string
+	opphoerstidspunkt?: string
+	sekvens?: number
+}
+
 export type PdlDataWrapper = {
 	errors: any
 	data: {
@@ -86,6 +95,7 @@ export type BostedData = {
 	ukjentBosted?: UkjentBostedData
 	utenlandskAdresse?: UtenlandskAdresseData
 	metadata?: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 	id?: number
 }
 
@@ -97,6 +107,7 @@ export type DeltBostedData = {
 	matrikkeladresse?: MatrikkeladresseData
 	ukjentBosted?: UkjentBostedData
 	metadata?: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 	adressetype?: string
 	master?: string
 }
@@ -110,6 +121,7 @@ export type OppholdsadresseData = {
 	coAdressenavn?: string
 	gyldigFraOgMed?: Date
 	metadata?: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 	id?: number
 }
 
@@ -125,6 +137,7 @@ export type KontaktadresseData = {
 	utenlandskAdresse?: UtenlandskAdresseData
 	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormatData
 	metadata?: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 	id?: number
 }
 
@@ -284,15 +297,14 @@ export type Statsborgerskap = {
 	gyldigFraOgMed: Date
 	gyldigTilOgMed?: Date
 	metadata: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 }
 
 export type InnflyttingTilNorge = {
 	fraflyttingsland: string
 	fraflyttingsstedIUtlandet: string
 	metadata: Metadata
-	folkeregistermetadata?: {
-		gyldighetstidspunkt: string
-	}
+	folkeregistermetadata?: Folkeregistermetadata
 }
 
 export type UtflyttingFraNorge = {
@@ -300,6 +312,7 @@ export type UtflyttingFraNorge = {
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
 	metadata: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 }
 
 type Doedsfall = {
@@ -327,6 +340,7 @@ export type Folkeregisterpersonstatus = {
 	status: string
 	forenkletStatus: string
 	metadata: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 }
 
 export type KjoennValues = {
@@ -341,16 +355,14 @@ type Navn = {
 	etternavn: string
 	forkortetNavn?: string
 	metadata: Metadata
+	folkeregistermetadata?: Folkeregistermetadata
 }
 
 export type VergemaalData = {
 	type: string
 	embete: string
 	vergeEllerFullmektig: VergeEllerFullmektig
-	folkeregistermetadata: {
-		gyldighetstidspunkt: string
-		opphoerstidspunkt?: string
-	}
+	folkeregistermetadata?: Folkeregistermetadata
 	metadata: Metadata
 }
 

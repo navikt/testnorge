@@ -10,6 +10,7 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { Verge } from './Verge'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type VergemaalProps = {
 	data: Array<VergemaalData>
@@ -73,9 +74,11 @@ export const PdlVergemaal = ({ data }: VergemaalProps) => {
 		return null
 	}
 
-	const gyldigeVergemaal = data.filter((vergemaal: VergemaalData) => !vergemaal.metadata?.historisk)
-	const historiskeVergemaal = data.filter(
-		(vergemaal: VergemaalData) => vergemaal.metadata?.historisk,
+	const gyldigeVergemaal = sortPdlItems(
+		data.filter((vergemaal: VergemaalData) => !vergemaal.metadata?.historisk),
+	)
+	const historiskeVergemaal = sortPdlItems(
+		data.filter((vergemaal: VergemaalData) => vergemaal.metadata?.historisk),
 	)
 
 	return (
