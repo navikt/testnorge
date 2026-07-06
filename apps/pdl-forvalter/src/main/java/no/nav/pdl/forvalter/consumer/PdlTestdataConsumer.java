@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.consumer;
 
+import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
@@ -21,15 +22,19 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +69,16 @@ public class PdlTestdataConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(
+                                        ConnectionProvider.builder("pdl-ordre")
+                                                .maxConnections(50)
+                                                .maxIdleTime(Duration.ofSeconds(20))      // < PDL sin idle timeout
+                                                .maxLifeTime(Duration.ofSeconds(60))
+                                                .evictInBackground(Duration.ofSeconds(30))
+                                                .build())
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                                .responseTimeout(Duration.ofSeconds(30))))
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.jsonMapper = jsonMapper;
@@ -185,7 +200,7 @@ public class PdlTestdataConsumer {
                     ).call();
 
             case PDL_PERSON_MERGE -> personServiceConsumer.syncIdent(value.getIdent())
-                    .flatMap(syncIdent ->
+                    .flatMap(_ ->
                             new PdlNpidCommand(webClient,
                                     getBestillingUrl().get(value.getArtifact()),
                                     value.getIdent(),

@@ -6,10 +6,10 @@ export default {
 		name: hostname.includes('localhost')
 			? 'metrics-disabled'
 			: hostname.includes('idporten')
-			? 'dolly-idporten'
-			: hostname.includes('ekstern')
-			? 'dolly-frontend'
-			: 'dolly-frontend-dev',
+				? 'dolly-idporten'
+				: hostname.includes('ekstern')
+					? 'dolly-frontend'
+					: 'dolly-frontend-dev',
 		version: 'dev',
 	},
 }

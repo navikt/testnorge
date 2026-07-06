@@ -34,7 +34,7 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 	}, [organisasjonListe?.[0]])
 
 	if ((!organisasjonListe || organisasjonListe?.length === 0) && loading) {
-		return <Loading label="Laster treff ..." />
+		return <Loading label="Laster treff ..." panel />
 	}
 
 	if (error || response?.error) {
@@ -107,7 +107,7 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 				</VStack>
 				{loading && (
 					<div style={{ margin: '10px 0' }}>
-						<Loading label="Laster treff ..." />
+						<Loading label="Laster treff ..." panel />
 					</div>
 				)}
 				{organisasjonListe?.length === 200 && antallTreff > 200 && (

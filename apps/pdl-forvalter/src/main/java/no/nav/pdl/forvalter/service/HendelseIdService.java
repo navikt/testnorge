@@ -13,6 +13,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -31,6 +32,7 @@ public class HendelseIdService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final RelasjonRepository relasjonRepository;
 
+    @Transactional
     public Mono<Void> oppdaterPerson(OrdreResponseDTO response) {
 
         return Flux.concat(Mono.just(response.getHovedperson()),
@@ -126,7 +128,7 @@ public class HendelseIdService {
                         try {
                             val method = person.getClass().getMethod("get" + artifact);
                             return Mono.just(method.invoke(person));
-                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException _) {
                             log.error("Feilet å hente get{} fra person med ident {}", artifact, ident);
                             return Mono.empty();
                         }

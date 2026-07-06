@@ -12,6 +12,7 @@ import * as Yup from 'yup'
 import { ifPresent, requiredBoolean } from '@/utils/YupValidations'
 import styled from 'styled-components'
 import { useEffect } from 'react'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 const CheckboxWrapper = styled.div`
 	display: flex;
@@ -51,7 +52,13 @@ export const KelvinAapForm = () => {
 				informasjonstekst="Feltene gjelder hva bruker fyller ut i søknaden."
 			>
 				<h3 style={{ marginTop: 0 }}>Generelt</h3>
+				<FormDatepicker name={`${kelvinAapPath}.soeknadsdato`} label="Søknadsdato" />
 				<CheckboxWrapper>
+					<FormCheckbox
+						name={`${kelvinAapPath}.automatiskMeldekort`}
+						label="Automatisk meldekort"
+						size="small"
+					/>
 					<FormCheckbox name={`${kelvinAapPath}.erStudent`} label="Er student" size="small" />
 					<FormCheckbox
 						name={`${kelvinAapPath}.harMedlemskap`}
@@ -104,6 +111,8 @@ KelvinAapForm.validation = {
 				loenn: Yup.string().nullable(),
 				stoenad: Yup.array().of(Yup.string()).min(1, 'Velg minst én stønad'),
 			}),
+			soeknadsdato: Yup.date().nullable(),
+			automatiskMeldekort: requiredBoolean,
 			erStudent: requiredBoolean,
 			harMedlemskap: requiredBoolean,
 			harYrkesskade: requiredBoolean,

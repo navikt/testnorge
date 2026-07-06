@@ -24,7 +24,7 @@ const InntektVisning = ({ pensjonsgivendeInntekt, id }) => {
 	})
 }
 
-export const SigrunstubPensjonsgivendeVisning = ({ data, loading }) => {
+export const SigrunstubPensjonsgivendeVisning = ({ data, loading, harBestilling = false }) => {
 	if (loading) return <Loading label="Laster sigrunstub-data" />
 	if (!data) {
 		return null
@@ -33,6 +33,9 @@ export const SigrunstubPensjonsgivendeVisning = ({ data, loading }) => {
 		return null
 	}
 	const manglerFagsystemdata = data.length < 1
+	if (manglerFagsystemdata && !harBestilling) {
+		return null
+	}
 
 	return (
 		<>

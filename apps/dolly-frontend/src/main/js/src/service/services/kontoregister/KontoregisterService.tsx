@@ -37,7 +37,7 @@ export default {
 				if (response != null) {
 					return response
 				}
-			}
+			},
 		)
 	},
 }

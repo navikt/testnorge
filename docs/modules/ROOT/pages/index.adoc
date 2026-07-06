@@ -690,6 +690,22 @@ Mer komplekse strukturer:
 
 For disse scenariene, bygg opp familien steg for steg ved å bruke "Legg til/endre" funksjonalitet og "Relasjoner". Se også xref:index.adoc#demo_legg-til-endre[Demo - Legg til/endre].
 
+[[faq_altinn_dolly_samarbeidspartner]]
+=== Hvorfor finner jeg ikke "Navs Dolly for samarbeidspartnere" i Altinn?
+
+Altinn lar deg velge "Hvem vil du bruke Altinn på vegne av", og det er organisasjonsnummer som Dolly har gitt tilgang for som benyttes.
+
+For riktig organisasjon:
+
+1. Velg *Tilgangsstyring* og *Brukere*
+2. Opprett bruker eller velg en eksisterende, og i åpen personvisning velg *Enkelttjenester*
+3. Velg *+ Gi fullmakt*, og søk etter tjeneste *Dolly*
+4. Når denne er funnet → *+ Gi fullmakt* en gang til, og *Gi fullmakt* en gang til
+
+Slik skal resultatet se ut når det har blitt lagt til riktig:
+
+image::dolly/altinn_fullmakt_result.png[Skjermbilde av Altinn fullmakt-tjeneste for Dolly, role=bordered]
+
 [[proxyer]]
 == Proxyer
 

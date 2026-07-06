@@ -7,10 +7,13 @@ import { useNavigate } from 'react-router'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	BestillingsveilederContext,
-	BestillingsveilederContextType
+	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext, useWatch } from 'react-hook-form'
-import { ShowErrorContext, ShowErrorContextType } from '@/components/bestillingsveileder/ShowErrorContext'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 interface NavigationProps {
 	step: number

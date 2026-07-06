@@ -13,6 +13,7 @@ import {
 	harMedlBestilling,
 	harUdistubBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
+import { sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
 
 interface UseTimedOutParams {
 	data: any
@@ -24,6 +25,7 @@ interface UseTimedOutParams {
 	uforetrygdData: any
 	brregstub: any
 	instData: any
+	kdiData: any
 	yrkesskadeData: any
 	arbeidsplassencvData: any
 	arbeidsplassencvError: any
@@ -49,6 +51,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		uforetrygdData,
 		brregstub,
 		instData,
+		kdiData,
 		poppData,
 		yrkesskadeData,
 		arbeidsplassencvData,
@@ -83,6 +86,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 	if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) list.push('PEN_UT')
 	if (brregstub && sjekkManglerBrregData(brregstub)) list.push('BRREG')
 	if (instData && sjekkManglerInstData(instData)) list.push('INST')
+	if (kdiData && sjekkManglerKdiData(kdiData)) list.push('INST_KDI')
 	if (yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)) list.push('YRKESSKADE')
 	if (
 		harArbeidsplassenBestilling(bestillingerFagsystemer) &&

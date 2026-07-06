@@ -28,7 +28,7 @@ spec:
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
+        - application: dolly-auth-local
         - application: testnav-faste-data-frontend
         - application: testnav-oversikt-frontend
         - application: testnav-synt-vedtakshistorikk-service
