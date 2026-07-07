@@ -88,6 +88,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.arena-forvalteren", () -> wireMockServer.baseUrl());
         registry.add("app.targets.arena-ords", () -> wireMockServer.baseUrl());
         registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.bistandsbehov", () -> wireMockServer.baseUrl());
         registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.dokarkiv", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
@@ -102,6 +103,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
         registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.oppfoelging", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-api", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-api-q1", () -> wireMockServer.baseUrl());
         registry.add("app.targets.pdl-identhendelse", () -> wireMockServer.baseUrl());
@@ -270,6 +272,31 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
+
+    }
+
+    @Test
+    void testBistandsbehov() {
+
+        var downstreamPath = "/api/v1/vedtak";
+        var responseBody = "Success from mocked bistandsbehov";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/bistandsbehov" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
@@ -957,6 +984,31 @@ class RouteLocatorConfigTest {
                 .isNotFound();
 
         wireMockServer.verify(0, getRequestedFor(urlMatching("/non-existing-service/.*")));
+
+    }
+
+    @Test
+    void testOppfoelging() {
+
+        var downstreamPath = "/api/v2/person/hent";
+        var responseBody = "Success from mocked oppfoelging";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/oppfoelging" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
     }
 
