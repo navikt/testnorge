@@ -41,13 +41,15 @@ public class PdlProxyConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    static ExchangeStrategies getJacksonStrategy(JsonMapper jsonMapper) {
-        return ExchangeStrategies.builder()
-                .codecs(config -> {
-                    config.defaultCodecs().maxInMemorySize(32 * 1024 * 1024);
-                    config.defaultCodecs().jacksonJsonDecoder(new JacksonJsonDecoder(jsonMapper));
-                    config.defaultCodecs().jacksonJsonEncoder(new JacksonJsonEncoder(jsonMapper));
-                })
+    private static ExchangeStrategies getJacksonStrategy(JsonMapper jsonMapper) {
+        return ExchangeStrategies
+                .builder()
+                .codecs(
+                        config -> {
+                            config.defaultCodecs().maxInMemorySize(32 * 1024 * 1024);
+                            config.defaultCodecs().jacksonJsonDecoder(new JacksonJsonDecoder(jsonMapper));
+                            config.defaultCodecs().jacksonJsonEncoder(new JacksonJsonEncoder(jsonMapper));
+                        })
                 .build();
     }
 
