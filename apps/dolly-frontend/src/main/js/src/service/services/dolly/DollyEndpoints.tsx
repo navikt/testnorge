@@ -235,4 +235,37 @@ export default class DollyEndpoints {
 	static lagreSoek(soekType: string) {
 		return `${uri}/soek?soekType=${soekType}`
 	}
+
+	static dashboardBestillinger(year: number, month: string) {
+		return `${uri}/dashboard/bestillinger?year=${year}&month=${month}`
+	}
+
+	static dashboardTeams() {
+		return `${uri}/dashboard/teams`
+	}
+
+	static dashboardOrganisasjoner() {
+		return `${uri}/dashboard/organisasjoner`
+	}
+
+	static dashboardDollyTeams() {
+		return `${uri}/dashboard/dollyteams`
+	}
+
+	static dashboardOversikt() {
+		return `${uri}/dashboard/oversikt`
+	}
+
+	static dashboardFeilSummert(year: number, month: string) {
+		return `${uri}/dashboard/feil/summert?year=${year}&month=${month}`
+	}
+
+	static dashboardFeilDetaljert(year: number, month: string, day: number) {
+		return `${uri}/dashboard/feil/detaljert?year=${year}&month=${month}&day=${day}`
+	}
+
+	static hendelseId(ident: string, relatertIdent?: string) {
+		const base = `${uri}/hendelseid/ident/${ident}`
+		return relatertIdent ? `${base}?relatertIdent=${relatertIdent}` : base
+	}
 }

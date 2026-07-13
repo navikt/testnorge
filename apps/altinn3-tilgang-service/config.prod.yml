@@ -27,19 +27,23 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
-        - application: team-dolly-lokal-app
+        - application: dolly-texas-proxy
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
+        - application: dolly-auth-local
           cluster: dev-gcp
         - application: testnav-altinn3-tilgang-proxy
           cluster: dev-gcp
         - application: testnav-dolly-proxy
           cluster: dev-fss
-        - application: dolly-texas-proxy
+        - application: testnav-oversikt-frontend
           cluster: dev-gcp
     outbound:
       external:

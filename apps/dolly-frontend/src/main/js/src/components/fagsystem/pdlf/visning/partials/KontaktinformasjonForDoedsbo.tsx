@@ -8,7 +8,7 @@ import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/Rel
 import * as _ from 'lodash-es'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { formatDate } from '@/utils/DataFormatter'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import React from 'react'
@@ -38,6 +38,7 @@ const KontaktinformasjonForDoedsboLes = ({
 		advokatSomKontakt,
 		organisasjonSomKontakt,
 		personSomKontakt,
+		id,
 	} = data
 
 	const getKontakttype = () => {
@@ -59,6 +60,7 @@ const KontaktinformasjonForDoedsboLes = ({
 						title="Utstedelsesdato skifteattest"
 						value={formatDate(attestutstedelsesdato)}
 					/>
+					<TitleValue title="ID" value={id} />
 				</div>
 				{!kontaktperson && !kontaktpersonRedigert && (
 					<div className="person-visning_content">

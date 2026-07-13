@@ -50,7 +50,7 @@ public class InntektstubCheckImportCommand implements Callable<Mono<CheckImportR
                 .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
                         .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
                                 responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((retryBackoffSpec, lastSignal) ->
+                        .onRetryExhaustedThrow(((_, lastSignal) ->
                                 new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);

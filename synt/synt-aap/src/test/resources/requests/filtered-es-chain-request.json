@@ -1,0 +1,38 @@
+[
+  {
+    "fraDato": "2018-01-01",
+    "tilDato": "2018-06-01",
+    "utfall": "JA",
+    "vedtakDato": "2018-01-02",
+    "vedtakTypeKode": "O"
+  },
+  {
+    "fraDato": "2018-06-02",
+    "tilDato": "2018-09-01",
+    "utfall": "JA",
+    "vedtakDato": "2018-06-03",
+    "vedtakTypeKode": "S"
+  },
+  {
+    "fraDato": "2018-09-02",
+    "tilDato": "2018-12-01",
+    "utfall": "JA",
+    "vedtakDato": "2018-09-03",
+    "vedtakTypeKode": "E"
+  },
+  {
+    "fraDato": "2018-12-02",
+    "tilDato": "2019-03-01",
+    "utfall": "NEI",
+    "vedtakDato": "2018-12-03",
+    "vedtakTypeKode": "S"
+  },
+  {
+    "fraDato": "2019-03-02",
+    "tilDato": "2019-06-01",
+    "utfall": "JA",
+    "vedtakDato": "2019-03-03",
+    "vedtakTypeKode": "E"
+  }
+]
+

@@ -11,6 +11,7 @@ import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -18,8 +19,9 @@ import java.time.LocalDateTime;
 @Service("userServiceV2")
 @RequiredArgsConstructor
 public class UserService {
+
     private final CryptographyService cryptographyService;
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public Mono<User> create(BrukerDTO bruker) {
@@ -35,7 +37,7 @@ public class UserService {
                     entity.setNew(true);
                     return entity;
                 })
-                .flatMap(repository::save)
+                .flatMap(userRepository::save)
                 .map(User::new);
 
     }
@@ -47,17 +49,22 @@ public class UserService {
                 .flatMap(this::getUser);
     }
 
+    public Flux<User> getAllUsers() {
+
+        return userRepository.findAll()
+                .map(User::new);
+    }
 
     public Mono<User> getUser(String id) {
         return getUser(id, false);
     }
 
     public Mono<User> getUser(String id, boolean loggedIn) {
-        return repository.findById(id).flatMap(entity -> {
+        return userRepository.findById(id).flatMap(entity -> {
             if (loggedIn) {
                 entity.setNew(false);
                 entity.setSistInnlogget(LocalDateTime.now());
-                return repository.save(entity);
+                return userRepository.save(entity);
             }
             return Mono.just(entity);
         }).map(User::new);
@@ -67,26 +74,26 @@ public class UserService {
         return getAuthenticatedUserId
                 .call()
                 .map(userId -> cryptographyService.createId(userId, bruker.organisasjonsnummer()))
-                .flatMap(repository::findById)
+                .flatMap(userRepository::findById)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Bruker ikke funnet.")))
                 .flatMap(entity -> {
                     entity.setEpost(bruker.epost());
-                    return repository.save(entity);
+                    return userRepository.save(entity);
                 })
                 .map(User::new);
     }
 
     public Mono<User> getUserByBrukernavn(String username) {
-        return repository.findByBrukernavn(username).map(User::new);
+        return userRepository.findByBrukernavn(username).map(User::new);
     }
 
     public Mono<Void> delete(String id) {
-        return repository.deleteById(id);
+        return userRepository.deleteById(id);
     }
 
     private Mono<Void> validateCreateUser(String userId, String representing) {
         var id = cryptographyService.createId(userId, representing);
-        return repository.existsById(id)
+        return userRepository.existsById(id)
                 .doOnNext(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
                         throw new UserAlreadyExistsException(id);

@@ -24,7 +24,6 @@ public class SykemeldingResponseDTO {
     private String sykmeldingId;
     private SykmeldingType type;
     private List<Aktivitet> aktivitet;
-    private SykemeldingRequestDTO sykemeldingRequest;
     private String ident;
 
     public static Mono<SykemeldingResponseDTO> of(WebClientError.Description description, String ident) {

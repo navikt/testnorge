@@ -8,12 +8,14 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.projection.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -25,6 +27,7 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.util.UtledFagsystemUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +39,11 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -90,6 +95,12 @@ public class BestillingService {
                         }));
     }
 
+    public Mono<Bestilling> fetchBestillingByIdMedUtlededeFagsystemer(Long bestillingId) {
+
+        return fetchBestillingById(bestillingId)
+                .flatMap(this::resolveUtlededeFagsystemerForBestilling);
+    }
+
     public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
 
         var searchQueries = bestillingFragment.split(" ");
@@ -105,7 +116,7 @@ public class BestillingService {
                 .collect(Collectors.joining(" "));
 
         return Mono.just(bestillingFragment)
-                .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(bestillingID) ?
+                .flatMapMany(_ -> isNotBlank(gruppeNavn) && isNotBlank(bestillingID) ?
                         bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn) :
                         Flux.merge(
                                 bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
@@ -177,7 +188,7 @@ public class BestillingService {
                                 .stoppet(true)
                                 .bestillingId(bestillingId)
                                 .build()))
-                        .flatMap(bestKontroll -> Mono.just(bestilling))
+                        .flatMap(_ -> Mono.just(bestilling))
                         .zipWith(brukerService.fetchOrCreateBruker())
                         .map(tuple2 -> {
                             tuple2.getT1().setStoppet(true);
@@ -238,7 +249,7 @@ public class BestillingService {
 
         return identRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testident %s ble ikke funnet", ident))))
-                .doOnNext(tuple -> fixAaregAbstractClassProblem(request.getAareg()))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -283,8 +294,8 @@ public class BestillingService {
                                            List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -342,7 +353,8 @@ public class BestillingService {
                             .noneMatch(progress -> isNotBlank(progress.getIdent()))) {
                         return Mono.error(new NotFoundException(format("Ingen testidenter funnet på bestilling: %d", bestillingId)));
                     }
-                    return Mono.just(Bestilling.builder()
+                    var originalBestKriterier = tuple.getT1().getBestKriterier();
+                    var newBestilling = Bestilling.builder()
                             .gruppeId(tuple.getT1().getGruppeId())
                             .antallIdenter(tuple.getT1().getAntallIdenter())
                             .opprettFraIdenter(tuple.getT1().getOpprettFraIdenter())
@@ -352,7 +364,9 @@ public class BestillingService {
                             .bestKriterier(EMPTY_JSON)
                             .bruker(tuple.getT2())
                             .brukerId(tuple.getT2().getId())
-                            .build());
+                            .build();
+                    newBestilling.setUtlededeFagsystemer(resolveUtlededeFagsystemer(originalBestKriterier, newBestilling));
+                    return Mono.just(newBestilling);
                 })
                 .flatMap(bestillingRepository::save)
                 .flatMap(bestilling1 -> getBestillingProgresser(bestilling1)
@@ -371,18 +385,26 @@ public class BestillingService {
                 .flatMap(testident -> Mono.zip(
                         Mono.just(testident),
                         brukerService.fetchOrCreateBruker(),
-                        miljoerConsumer.getMiljoer()))
-                .map(tuple -> Bestilling.builder()
-                        .gruppeId(tuple.getT1().getGruppeId())
-                        .ident(ident)
-                        .antallIdenter(1)
-                        .bestKriterier(EMPTY_JSON)
-                        .sistOppdatert(now())
-                        .miljoer(filterAvailable(miljoer, tuple.getT3()))
-                        .gjenopprettetFraIdent(ident)
-                        .bruker(tuple.getT2())
-                        .brukerId(tuple.getT2().getId())
-                        .build())
+                        miljoerConsumer.getMiljoer(),
+                        identRepository.getBestillingerByIdent(ident).collectList()))
+                .map(tuple -> {
+                    var bestilling = Bestilling.builder()
+                            .gruppeId(tuple.getT1().getGruppeId())
+                            .ident(ident)
+                            .antallIdenter(1)
+                            .bestKriterier(EMPTY_JSON)
+                            .sistOppdatert(now())
+                            .miljoer(filterAvailable(miljoer, tuple.getT3()))
+                            .gjenopprettetFraIdent(ident)
+                            .bruker(tuple.getT2())
+                            .brukerId(tuple.getT2().getId())
+                            .build();
+                    var kriterierList = tuple.getT4().stream()
+                            .map(GruppeBestillingIdent::getBestkriterier)
+                            .toList();
+                    bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
+                    return bestilling;
+                })
                 .flatMap(bestillingRepository::save)
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
@@ -396,12 +418,13 @@ public class BestillingService {
     public Mono<Bestilling> createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .flatMap(testgruppe -> Mono.zip(
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.findByGruppeId(gruppeId, Pageable.unpaged())
                                 .collectList(),
-                        miljoerConsumer.getMiljoer()))
+                        miljoerConsumer.getMiljoer(),
+                        identRepository.getBestillingerFromGruppe(gruppeId).collectList()))
                 .flatMap(tuple -> {
                     if (tuple.getT2().isEmpty()) {
                         return Mono.error(new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId)));
@@ -409,16 +432,23 @@ public class BestillingService {
                         return Mono.just(tuple);
                     }
                 })
-                .map(tuple -> Bestilling.builder()
-                        .gruppeId(gruppeId)
-                        .antallIdenter(tuple.getT2().size())
-                        .bestKriterier(EMPTY_JSON)
-                        .sistOppdatert(now())
-                        .miljoer(filterAvailable(miljoer, tuple.getT3()))
-                        .opprettetFraGruppeId(gruppeId)
-                        .bruker(tuple.getT1())
-                        .brukerId(tuple.getT1().getId())
-                        .build())
+                .map(tuple -> {
+                    var bestilling = Bestilling.builder()
+                            .gruppeId(gruppeId)
+                            .antallIdenter(tuple.getT2().size())
+                            .bestKriterier(EMPTY_JSON)
+                            .sistOppdatert(now())
+                            .miljoer(filterAvailable(miljoer, tuple.getT3()))
+                            .opprettetFraGruppeId(gruppeId)
+                            .bruker(tuple.getT1())
+                            .brukerId(tuple.getT1().getId())
+                            .build();
+                    var kriterierList = tuple.getT4().stream()
+                            .map(GruppeBestillingIdent::getBestkriterier)
+                            .toList();
+                    bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
+                    return bestilling;
+                })
                 .flatMap(bestillingRepository::save)
                 .flatMap(bestilling -> getBestillingProgresser(bestilling)
                         .map(progresser -> {
@@ -431,9 +461,9 @@ public class BestillingService {
     public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
-                .flatMap(testgruppe -> Mono.zip(
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
                 .map(tuple -> Bestilling.builder()
@@ -466,9 +496,9 @@ public class BestillingService {
     public Mono<Bestilling> saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
         return testgruppeRepository.findById(gruppeId)
-                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE + gruppeId)))
-                .doOnNext(testgruppe -> fixAaregAbstractClassProblem(request.getAareg()))
-                .flatMap(testgruppe -> Mono.zip(
+                .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
+                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
+                .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(gruppeId),
                         miljoerConsumer.getMiljoer()))
@@ -558,6 +588,8 @@ public class BestillingService {
                                     .inntektsmelding(request2.getInntektsmelding())
                                     .inntektstub(request2.getInntektstub())
                                     .instdata(request2.getInstdata())
+                                    .instdataKdi(request2.getInstdataKdi())
+                                    .kelvinAap(request2.getKelvinAap())
                                     .krrstub(request2.getKrrstub())
                                     .medl(request2.getMedl())
                                     .nomdata(request2.getNomdata())
@@ -572,7 +604,6 @@ public class BestillingService {
                                     .tpsMessaging(request2.getTpsMessaging())
                                     .udistub(request2.getUdistub())
                                     .yrkesskader(request2.getYrkesskader())
-                                    .kelvinAap(request2.getKelvinAap())
                                     .build());
                             return Mono.just(isNotBlank(bestKriterier) ? bestKriterier : "{}");
                         }));
@@ -617,7 +648,7 @@ public class BestillingService {
                         if (isNotBlank(dokument.getFysiskDokument())) {
                             return lagreDokument(dokument.getFysiskDokument(), request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
-                                    .doOnNext(id -> dokument.setFysiskDokument(null));
+                                    .doOnNext(_ -> dokument.setFysiskDokument(null));
                         } else if (isNotBlank(dokument.getUploadReferanse())) {
                             var contents = dokumentService.resolveUpload(dokument.getUploadReferanse());
                             if (isNull(contents)) {
@@ -625,7 +656,7 @@ public class BestillingService {
                             }
                             return lagreDokument(contents, request.getId(), DokumentType.BESTILLING_HISTARK)
                                     .doOnNext(dokument::setDokumentReferanse)
-                                    .doOnNext(id -> dokument.setUploadReferanse(null));
+                                    .doOnNext(_ -> dokument.setUploadReferanse(null));
                         }
                         return Mono.empty();
                     })
@@ -686,6 +717,90 @@ public class BestillingService {
 
         return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
                 .collectList();
+    }
+
+    private String resolveUtlededeFagsystemer(String bestKriterierJson, Bestilling bestilling) {
+
+        if (StringUtils.isBlank(bestKriterierJson) || "{}".equals(bestKriterierJson)) {
+            return null;
+        }
+        try {
+            var kriterier = objectMapper.readValue(bestKriterierJson, BestilteKriterier.class);
+            if (isNull(kriterier)) {
+                return null;
+            }
+            return UtledFagsystemUtil.serialize(UtledFagsystemUtil.resolve(kriterier, bestilling));
+        } catch (RuntimeException e) {
+            log.warn("Kunne ikke utlede fagsystemer fra bestKriterier: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String resolveUnionFagsystemer(List<String> kriterierList, Bestilling gjenopprettContext) {
+
+        var union = EnumSet.noneOf(SystemTyper.class);
+        for (var json : kriterierList) {
+            if (StringUtils.isBlank(json) || "{}".equals(json)) {
+                continue;
+            }
+            try {
+                var kriterier = objectMapper.readValue(json, BestilteKriterier.class);
+                if (nonNull(kriterier)) {
+                    union.addAll(UtledFagsystemUtil.resolve(kriterier, gjenopprettContext));
+                }
+            } catch (RuntimeException e) {
+                log.warn("Kunne ikke parse bestKriterier under union-resolve: {}", e.getMessage());
+            }
+        }
+        return UtledFagsystemUtil.serialize(new ArrayList<>(union));
+    }
+
+    private Mono<Bestilling> resolveUtlededeFagsystemerForBestilling(Bestilling bestilling) {
+
+        if (isNotBlank(bestilling.getUtlededeFagsystemer())) {
+            return Mono.just(bestilling);
+        }
+
+        var bestKriterier = bestilling.getBestKriterier();
+        if (isNotBlank(bestKriterier) && !"{}".equals(bestKriterier)) {
+            bestilling.setUtlededeFagsystemer(resolveUtlededeFagsystemer(bestKriterier, bestilling));
+            return Mono.just(bestilling);
+        }
+
+        if (nonNull(bestilling.getOpprettetFraId())) {
+            return bestillingRepository.findById(bestilling.getOpprettetFraId())
+                    .map(original -> {
+                        bestilling.setUtlededeFagsystemer(resolveUtlededeFagsystemer(original.getBestKriterier(), bestilling));
+                        return bestilling;
+                    })
+                    .defaultIfEmpty(bestilling);
+        }
+
+        if (isNotBlank(bestilling.getGjenopprettetFraIdent())) {
+            return identRepository.getBestillingerByIdent(bestilling.getGjenopprettetFraIdent())
+                    .collectList()
+                    .map(historiske -> {
+                        var kriterierList = historiske.stream()
+                                .map(GruppeBestillingIdent::getBestkriterier)
+                                .toList();
+                        bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
+                        return bestilling;
+                    });
+        }
+
+        if (nonNull(bestilling.getOpprettetFraGruppeId())) {
+            return identRepository.getBestillingerFromGruppe(bestilling.getOpprettetFraGruppeId())
+                    .collectList()
+                    .map(historiske -> {
+                        var kriterierList = historiske.stream()
+                                .map(GruppeBestillingIdent::getBestkriterier)
+                                .toList();
+                        bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
+                        return bestilling;
+                    });
+        }
+
+        return Mono.just(bestilling);
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {

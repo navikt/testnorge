@@ -3,6 +3,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { ProgressBar } from '@navikt/ds-react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Icon from '@/components/ui/icon/Icon'
+import DollySpinner from '@/components/ui/loading/DollySpinner'
 
 import './BestillingProgresjon.less'
 import { useBestillingStream } from '@/utils/hooks/useBestillingStream'
@@ -12,8 +13,7 @@ import { BestillingStatus } from '@/components/bestilling/statusListe/Bestilling
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	calculateProgress,
-	getExpectedFagsystemer,
-	mergeStatusWithExpected,
+	sortFagsystemer,
 } from '@/components/bestilling/statusListe/BestillingProgresjon/fagsystemUtils'
 
 type ProgresjonProps = {
@@ -73,13 +73,14 @@ export const BestillingProgresjon = ({
 	}, [bestillingStatus])
 
 	useEffect(() => {
-		if (!sistOppdatert) return
-		const elapsed = (Date.now() - new Date(sistOppdatert).getTime()) / 1000
-		const grense = erOrganisasjon ? SECONDS_BEFORE_WARNING_ORG : SECONDS_BEFORE_WARNING
-		if (elapsed > grense) {
+		if (!sistOppdatert || timedOut) return
+		const grense = (erOrganisasjon ? SECONDS_BEFORE_WARNING_ORG : SECONDS_BEFORE_WARNING) * 1000
+		const remaining = grense - (Date.now() - new Date(sistOppdatert).getTime())
+		if (remaining <= 0) {
 			setTimedOut(true)
+			return
 		}
-	}, [sistOppdatert, erOrganisasjon])
+	}, [sistOppdatert, erOrganisasjon, timedOut])
 
 	useEffect(() => {
 		if (isFerdig && !hasFinished) {
@@ -101,35 +102,26 @@ export const BestillingProgresjon = ({
 		cancelBestilling(bestillingID, erOrganisasjon)
 		if (!hasFinished) {
 			setHasFinished(true)
-			onFinishBestilling?.(data)
+			onFinishBestilling?.({ ...data, ferdig: true, stoppet: true })
 		}
 	}
 
-	const expectedFagsystemer = useMemo(
-		() => (!erOrganisasjon ? getExpectedFagsystemer(data?.bestilling) : []),
-		[data?.bestilling, erOrganisasjon],
-	)
+	const statusList = data?.status || []
 
-	const mergedStatus = useMemo(
-		() => mergeStatusWithExpected(data?.status || [], expectedFagsystemer),
-		[data?.status, expectedFagsystemer],
-	)
+	const displayStatus = useMemo(() => sortFagsystemer(statusList), [statusList])
 
 	const progress = useMemo(() => {
 		const { percent, text } = calculateProgress({
 			antallIdenter,
 			antallLevert,
 			erOrganisasjon,
-			statusList: mergedStatus,
-			expectedTotal: expectedFagsystemer.length,
+			statusList: displayStatus,
+			totalFagsystemer: statusList.length,
 		})
 
 		let title: string
 		if (isFerdig) {
 			title = 'FERDIG'
-		} else if (erSykemelding) {
-			title =
-				'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 		} else if (erOrganisasjon) {
 			title = `AKTIV BESTILLING (${orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'})`
 		} else {
@@ -144,8 +136,8 @@ export const BestillingProgresjon = ({
 		erSykemelding,
 		erOrganisasjon,
 		orgStatus,
-		mergedStatus,
-		expectedFagsystemer,
+		displayStatus,
+		statusList,
 	])
 
 	if (loading) {
@@ -167,7 +159,7 @@ export const BestillingProgresjon = ({
 			</div>
 			<div>
 				<BestillingStatus
-					bestilling={{ ...data, status: mergedStatus }}
+					bestilling={{ ...data, status: displayStatus }}
 					erOrganisasjon={erOrganisasjon}
 				/>
 			</div>
@@ -177,8 +169,19 @@ export const BestillingProgresjon = ({
 				</h5>
 				<span>{isFerdig ? 'Ferdigstiller bestilling' : progress.text}</span>
 			</div>
-			<div style={{ marginTop: '10px' }}>
+			<div style={{ position: 'relative', marginTop: '10px' }}>
 				<ProgressBar value={progress.percent} size="small" aria-label="Bestillingsfremgang" />
+				<div
+					style={{
+						position: 'absolute',
+						top: '50%',
+						left: `${progress.percent}%`,
+						transform: 'translate(-50%, -50%) scaleX(-1)',
+						pointerEvents: 'none',
+					}}
+				>
+					<DollySpinner size={50} label="" />
+				</div>
 			</div>
 			<div className="cancel-container">
 				{timedOut && !erOrganisasjon && (

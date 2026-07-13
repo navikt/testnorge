@@ -20,7 +20,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.ARENA_AAP;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA_AAP115;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA_BRUKER;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA_DAGP;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

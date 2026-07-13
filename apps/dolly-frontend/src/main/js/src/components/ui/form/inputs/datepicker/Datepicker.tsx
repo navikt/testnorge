@@ -99,7 +99,12 @@ export const DollyDatepicker = ({
 		const value = e.target.value
 		setInput(value)
 
-		if (value && value.length >= 10) {
+		if (!value) {
+			setFormDate(null)
+			return
+		}
+
+		if (value.length >= 10) {
 			try {
 				const date = convertInputToDate(value, false, dateFormat)
 				if (date?.isValid?.()) {

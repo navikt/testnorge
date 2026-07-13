@@ -25,30 +25,21 @@ import static java.util.Objects.isNull;
 public class InstdataResponse {
 
     private HttpStatus status;
-    private String personident;
-    private Map<String, List<Instdata>> institusjonsopphold;
-    private Instdata instdata;
     private String feilmelding;
 
+    private String personident;
+    private Map<String, List<Instdata>> institusjonsopphold;
     private List<String> environments;
 
-    public static Mono<InstdataResponse> of(WebClientError.Description description, Instdata instdata, List<String> miljoe) {
+    public static Mono<InstdataResponse> of(WebClientError.Description description, String ident, List<String> miljoer) {
+
         return Mono.just(InstdataResponse
                 .builder()
-                .personident(instdata.getNorskident())
-                .instdata(instdata)
+                .personident(ident)
                 .status(description.getStatus())
                 .feilmelding(description.getMessage())
-                .environments(miljoe)
+                .environments(miljoer)
                 .build());
-    }
-
-    public Map<String, List<Instdata>> getInstitusjonsopphold() {
-
-        if (isNull(institusjonsopphold)) {
-            institusjonsopphold = new HashedMap<>();
-        }
-        return institusjonsopphold;
     }
 
     public List<String> getEnvironments() {
@@ -57,5 +48,13 @@ public class InstdataResponse {
             environments = new ArrayList<>();
         }
         return environments;
+    }
+
+    public Map<String, List<Instdata>> getInstitusjonsopphold() {
+
+        if (isNull(institusjonsopphold)) {
+            institusjonsopphold = new HashedMap<>();
+        }
+        return institusjonsopphold;
     }
 }

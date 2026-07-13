@@ -17,7 +17,7 @@ export const falskIdentitet = Yup.array().of(
 			personnavn: personnavnSchema.nullable(),
 			statsborgerskap: Yup.array().of(Yup.string()),
 		}).nullable(),
-	})
+	}),
 )
 
 export const utenlandskId = Yup.object({

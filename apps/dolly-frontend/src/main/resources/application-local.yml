@@ -26,10 +26,11 @@ spring:
             redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
             scope: openid, offline_access,  ${AZURE_APP_CLIENT_ID}/.default
             client-id: ${AZURE_APP_CLIENT_ID}
-            client-secret: ${AZURE_APP_CLIENT_SECRET}
         provider:
           aad:
-            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+            authorization-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/authorize
+            token-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token
+            jwk-set-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/discovery/v2.0/keys
 
 consumers:
   testnav-altinn3-tilgang-service:
@@ -73,8 +74,6 @@ consumers:
     url: https://testnav-adresse-service.intern.dev.nav.no
   testnorge-tilbakemelding-api:
     url: https://testnorge-tilbakemelding-api.intern.dev.nav.no
-  testnav-helsepersonell-service:
-    url: https://testnav-helsepersonell-service.intern.dev.nav.no
   generer-navn-service:
     url: https://generer-navn-service.intern.dev.nav.no
   testnav-person-service:
@@ -89,13 +88,8 @@ consumers:
     url: https://testnav-levende-arbeidsforhold-scheduler.intern.dev.nav.no
   testnav-yrkesskade-proxy:
     url: https://testnav-yrkesskade-proxy.intern.dev.nav.no
-  testnav-sykemelding-api:
-    name: testnav-sykemelding-api-dev
-    url: https://testnav-sykemelding-api-dev.intern.dev.nav.no
   testnav-arbeidssoekerregisteret-proxy:
     url: https://testnav-arbeidssoekerregisteret-proxy.intern.dev.nav.no
-  testnav-sykemelding-proxy:
-    url: https://testnav-sykemelding-proxy.intern.dev.nav.no
   testnav-api-oversikt-service:
     url: https://testnav-oversikt-service.intern.dev.nav.no
   testnav-nom-proxy:

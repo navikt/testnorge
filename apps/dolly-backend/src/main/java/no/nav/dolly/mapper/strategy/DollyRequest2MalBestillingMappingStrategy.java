@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
@@ -76,6 +77,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
+                .field("instdataKdi", "instdataKdi")
                 .field("kelvinAap", "kelvinAap")
                 .field("krrstub", "krrstub")
                 .field("medl", "medl")
@@ -258,6 +260,21 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulertDTO.getUtenlandskIdentifikasjonsnummer().addAll(mapperFacade.mapAsList(personDTO.getUtenlandskIdentifikasjonsnummer(), UtenlandskIdentifikasjonsnummerDTO.class));
                         akkumulertDTO.getUtflytting().addAll(mapperFacade.mapAsList(personDTO.getUtflytting(), UtflyttingDTO.class));
                         akkumulertDTO.getVergemaal().addAll(mapperFacade.mapAsList(personDTO.getVergemaal(), VergemaalDTO.class));
+                    }
+                })
+                .register();
+
+        factory.classMap(RsInstdataKdi.class, RsInstdataKdi.class)
+                .mapNulls(false)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsInstdataKdi rsInstdataKdi, RsInstdataKdi akkumulertDTO, MappingContext context) {
+                        akkumulertDTO.getInnsettelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getInnsettelse(), RsInstdataKdi.Innsettelse.class));
+                        akkumulertDTO.getAvbruddStart().addAll(mapperFacade.mapAsList(rsInstdataKdi.getAvbruddStart(), RsInstdataKdi.AvbruddStart.class));
+                        akkumulertDTO.getAvbruddSlutt().addAll(mapperFacade.mapAsList(rsInstdataKdi.getAvbruddSlutt(), RsInstdataKdi.AvbruddSlutt.class));
+                        akkumulertDTO.getForventetLoeslatelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getForventetLoeslatelse(), RsInstdataKdi.ForventetLoeslatelse.class));
+                        akkumulertDTO.getLoeslatelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getLoeslatelse(), RsInstdataKdi.Loeslatelse.class));
+                        akkumulertDTO.getAnnullering().addAll(mapperFacade.mapAsList(rsInstdataKdi.getAnnullering(), RsInstdataKdi.Annullering.class));
                     }
                 })
                 .register();

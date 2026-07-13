@@ -7,7 +7,7 @@ import { DoedfoedtBarnData, PersonData } from '@/components/fagsystem/pdlf/PdlTy
 import * as _ from 'lodash-es'
 import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import React from 'react'
 
 type DataListe = {
@@ -30,13 +30,12 @@ const DoedfoedtBarnLes = ({ data, idx }: Data) => {
 		return null
 	}
 	return (
-		<>
-			<ErrorBoundary>
-				<div className="person-visning_content" key={idx}>
-					<TitleValue title="Dødsdato" value={formatDate(data.dato)} />
-				</div>
-			</ErrorBoundary>
-		</>
+		<ErrorBoundary>
+			<div className="person-visning_content" key={idx}>
+				<TitleValue title="Dødsdato" value={formatDate(data.dato)} />
+				<TitleValue title="ID" value={data.id} />
+			</div>
+		</ErrorBoundary>
 	)
 }
 

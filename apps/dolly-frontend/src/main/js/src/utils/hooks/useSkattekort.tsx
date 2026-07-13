@@ -1,8 +1,7 @@
 import useSWR from 'swr'
-import axios from 'axios'
+import { postFetcher } from '@/api'
 
-const skattekortUrl = (miljoe: string) =>
-	`/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
+const skattekortUrl = (miljoe: string) => `/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
 
 const SKATTEKORT_MILJOER = ['q1', 'q2']
 
@@ -71,25 +70,8 @@ const SKATTEKORT_KODEVERK: Record<string, Record<string, string>> = {
 	},
 }
 
-const fetchSkattekortFromMiljoe = async (miljoe: string, fnr: string) => {
-	try {
-		const res = await axios.post(
-			`${skattekortUrl(miljoe)}/hent-skattekort`,
-			{ fnr },
-			{
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			},
-		)
-		return res.data || []
-	} catch (e: unknown) {
-		if (axios.isAxiosError(e) && e.response?.status === 404) {
-			return []
-		}
-		throw e
-	}
-}
+const fetchSkattekortFromMiljoe = async (miljoe: string, fnr: string) =>
+	postFetcher(`${skattekortUrl(miljoe)}/hent-skattekort`, { fnr })
 
 interface MiljoSkattekortData {
 	miljo: string

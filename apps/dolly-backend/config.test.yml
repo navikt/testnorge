@@ -17,9 +17,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-auth-local
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
@@ -35,10 +35,6 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
-        - application: testnav-sykemelding-api-dev
-        - application: testnav-synt-sykemelding-api
-        - application: testnav-synt-sykemelding-api-dev
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api-dev
         - application: etterlatte-testdata
@@ -47,10 +43,17 @@ spec:
           namespace: nais-system
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
-        - application: testnav-sykemelding-proxy
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
+        - application: team-catalog-backend
+          namespace: org
+          cluster: prod-gcp
+        - application: testnav-altinn3-tilgang-service-prod
+          namespace: dolly
+          cluster: prod-gcp
       external:
+        - host: teamkatalog-api.intern.nav.no
+        - host: testnav-altinn3-tilgang-service.nav.no
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
@@ -64,7 +67,7 @@ spec:
       claims:
         groups:
           - id: '2d7f1c0d-5784-4f81-8bb2-8f3a79f8f949' #everyone else
-          - id: '9c7efec1-1599-4216-a67e-6fd53a6a951c' #admins
+          - id: '728ae02e-04e8-48b9-ab65-ee6233b5003f' #admins
   image: "{{image}}"
   openSearch:
     instance: bestillinger

@@ -26,7 +26,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_PENSJONSAVTALE;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_SAMBOER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
 import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

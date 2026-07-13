@@ -32,7 +32,6 @@ spec:
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-bruker-service
         - application: testnav-bruker-service-dev
-        - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
@@ -43,7 +42,6 @@ spec:
         - application: testnav-person-faste-data-service
         - application: testnav-dolly-search-service
         - application: testnav-person-service
-        - application: testnav-sykemelding-api
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
@@ -53,7 +51,6 @@ spec:
         - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-proxy
         - application: testnav-arbeidssoekerregisteret-proxy
-        - application: testnav-sykemelding-proxy
         - application: testnav-api-oversikt-service
         - application: logging
           namespace: nais-system

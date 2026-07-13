@@ -227,6 +227,7 @@ export type TilrettelagtKommunikasjonData = {
 	tegnspraaktolk: { spraak: string }
 	spraakForTaletolk: string
 	spraakForTegnspraakTolk: string
+	id?: number
 	master?: string
 }
 
