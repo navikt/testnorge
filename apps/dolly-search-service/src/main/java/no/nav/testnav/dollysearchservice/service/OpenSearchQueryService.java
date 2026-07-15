@@ -26,7 +26,8 @@ import static java.util.Objects.nonNull;
 public class OpenSearchQueryService {
 
     private final OpenSearchClient openSearchClient;
-    private final JsonMapper jsonMapper;
+
+    private static final JsonMapper JACKSON3_MAPPER = JsonMapper.builder().build();
 
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
@@ -97,6 +98,6 @@ public class OpenSearchQueryService {
         if (jackson2Node == null) {
             return null;
         }
-        return jsonMapper.readTree(jackson2Node.toString());
+        return JACKSON3_MAPPER.readTree(jackson2Node.toString());
     }
 }
