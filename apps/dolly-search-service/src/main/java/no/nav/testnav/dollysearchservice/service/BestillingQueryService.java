@@ -8,7 +8,9 @@ import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.FieldSort;
+import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.SortOptions;
+import org.opensearch.client.opensearch._types.mapping.FieldType;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
@@ -81,7 +83,7 @@ public class BestillingQueryService {
             var searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                     .index(bestillingIndex)
                     .query(query)
-                    .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                    .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id").unmappedType(FieldType.Long)))))
                     .size(QUERY_SIZE)
                     .timeout("3s")
                     .build(), BestillingIdenter.class);
@@ -98,14 +100,14 @@ public class BestillingQueryService {
                 searchResponse = opensearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                         .index(bestillingIndex)
                         .query(query)
-                        .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id")))))
+                        .sort(SortOptions.of(s -> s.field(FieldSort.of(fs -> fs.field("id").unmappedType(FieldType.Long)))))
                         .size(QUERY_SIZE)
                         .searchAfter(lastHit.sort())
                         .timeout("3s")
                         .build(), BestillingIdenter.class);
             }
 
-        } catch (IOException e) {
+        } catch (IOException | OpenSearchException e) {
             log.error("Feil ved henting av identer", e);
             identer = Set.of("99999999999");
         }
