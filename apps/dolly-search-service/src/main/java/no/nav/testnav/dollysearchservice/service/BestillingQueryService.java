@@ -38,11 +38,13 @@ public class BestillingQueryService {
 
     private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
+    private static final String OPENSEARCH_ERROR_FALLBACK_IDENT = "99999999999";
     private final OpenSearchClient opensearchClient;
     @Value("${open.search.index}")
     private String bestillingIndex;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}",
+            unless = "#result.contains('" + OPENSEARCH_ERROR_FALLBACK_IDENT + "')")
     public Set<String> execRegisterCacheQuery(SearchRequest request) {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
@@ -109,7 +111,7 @@ public class BestillingQueryService {
 
         } catch (IOException | OpenSearchException e) {
             log.error("Feil ved henting av identer", e);
-            identer = Set.of();
+            identer = Set.of(OPENSEARCH_ERROR_FALLBACK_IDENT);
         }
 
         log.info("Uthenting av {} identer tok {} ms", identer.size(), System.currentTimeMillis() - now);
