@@ -3,7 +3,7 @@ export const getTidspunktLabel = (meldingstype?: string) => {
 		case 'innsettelse':
 			return 'Innsettelsestidspunkt'
 		case 'loeslatelse':
-			return 'Loeslatelsestidspunkt'
+			return 'Løslatelsestidspunkt'
 		case 'avbruddStart':
 			return 'Tidspunkt for start på straffeavbrudd'
 		case 'avbruddSlutt':

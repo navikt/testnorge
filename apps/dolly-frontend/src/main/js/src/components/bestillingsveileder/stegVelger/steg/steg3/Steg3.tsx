@@ -86,14 +86,16 @@ const Steg3 = ({ loadingBestilling }: { loadingBestilling: boolean }) => {
 				</div>
 			)}
 			{visMiljoeVelger && (
-				<MiljoVelger
-					bestillingsdata={formMethods.getValues()}
-					heading="Hvilke miljøer vil du opprette i?"
-					currentBruker={currentBruker}
-					gyldigeMiljoer={gyldigeEnvironments}
-					tilgjengeligeMiljoer={tilgjengeligeMiljoer}
-					loading={loading}
-				/>
+				<div className="miljoer">
+					<MiljoVelger
+						bestillingsdata={formMethods.getValues()}
+						heading="Hvilke miljøer vil du opprette i?"
+						currentBruker={currentBruker}
+						gyldigeMiljoer={gyldigeEnvironments}
+						tilgjengeligeMiljoer={tilgjengeligeMiljoer}
+						loading={loading}
+					/>
+				</div>
 			)}
 			{!erOrganisasjon &&
 				!importTestnorge &&

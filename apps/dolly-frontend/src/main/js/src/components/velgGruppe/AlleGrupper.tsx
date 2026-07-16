@@ -1,16 +1,11 @@
-import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { useAlleBrukere } from '@/utils/hooks/useBruker'
 import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React, { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { Box, HStack, UNSAFE_Combobox as Combobox } from '@navikt/ds-react'
 
 interface AlleGrupper {
 	fraGruppe?: number | null
-}
-
-type Options = {
-	value: string
-	label: string
 }
 
 export default ({ fraGruppe = null }: AlleGrupper) => {
@@ -37,37 +32,42 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 		}
 	})
 
+	const valgtGruppeId = formMethods.watch('gruppeId')
+	const selectedBruker = brukerOptions?.filter((option) => option.value === valgtBruker) ?? []
+	const selectedGruppe = gruppeOptions?.filter((option) => option.value === valgtGruppeId) ?? []
+
 	return (
-		<div className="flexbox--flex-wrap">
-			<DollySelect
-				name={'bruker'}
-				label={'Bruker/team'}
-				options={brukerOptions}
-				size="medium"
-				onChange={(bruker) => {
-					formMethods?.setValue('bruker', bruker?.value)
-					formMethods?.trigger('bruker')
-					setValgtBruker(bruker?.value || '')
-				}}
-				value={valgtBruker || formMethods?.watch('bruker')}
-				isLoading={loadingBrukere}
-				placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
-			/>
-			<DollySelect
-				name="gruppeId"
-				label="Gruppe"
-				options={gruppeOptions}
-				value={formMethods?.watch('gruppeId')}
-				onChange={(gruppe: Options) => {
-					formMethods?.setValue('gruppeId', gruppe?.value)
-					formMethods.trigger('gruppeId')
-				}}
-				size={fraGruppe ? 'grow' : 'large'}
-				isClearable={false}
-				isDisabled={!valgtBruker}
-				isLoading={loadingGrupper}
-				placeholder={loadingGrupper ? 'Laster grupper ...' : 'Velg gruppe ...'}
-			/>
-		</div>
+		<HStack gap="space-16" width="100%" wrap={false}>
+			<Box flexGrow="1" flexBasis="0">
+				<Combobox
+					name={'bruker'}
+					label={'Bruker/team'}
+					options={brukerOptions ?? []}
+					selectedOptions={selectedBruker}
+					onToggleSelected={(bruker) => {
+						formMethods?.setValue('bruker', bruker)
+						formMethods?.trigger('bruker')
+						setValgtBruker(bruker || '')
+					}}
+					isLoading={loadingBrukere}
+					placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
+				/>
+			</Box>
+			<Box flexGrow="1" flexBasis="0">
+				<Combobox
+					name="gruppeId"
+					label="Gruppe"
+					options={gruppeOptions ?? []}
+					selectedOptions={selectedGruppe}
+					onToggleSelected={(gruppe) => {
+						formMethods?.setValue('gruppeId', gruppe)
+						formMethods.trigger('gruppeId')
+					}}
+					isLoading={loadingGrupper}
+					placeholder={loadingGrupper ? 'Laster grupper ...' : 'Velg gruppe ...'}
+					disabled={!valgtBruker}
+				/>
+			</Box>
+		</HStack>
 	)
 }
