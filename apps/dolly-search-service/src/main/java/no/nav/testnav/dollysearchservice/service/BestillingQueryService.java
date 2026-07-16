@@ -109,7 +109,7 @@ public class BestillingQueryService {
 
         } catch (IOException | OpenSearchException e) {
             log.error("Feil ved henting av identer", e);
-            identer = Set.of("99999999999");
+            identer = Set.of();
         }
 
         log.info("Uthenting av {} identer tok {} ms", identer.size(), System.currentTimeMillis() - now);
