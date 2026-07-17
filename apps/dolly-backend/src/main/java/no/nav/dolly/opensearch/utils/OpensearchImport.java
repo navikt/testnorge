@@ -85,7 +85,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                         !"{}".equals(bestilling.getBestKriterier()))
                 .flatMap(bestilling -> openSearchService.exists(bestilling.getId())
                         .zipWith(Mono.just(bestilling)))
-                .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
+                .filter(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
                 .flatMap(tuple ->
                         bestillingProgressRepository.findAllByBestillingId(tuple.getT2().getId())
                                 .collectList()
