@@ -23,16 +23,17 @@ export const sortPdlItems = <T extends PdlSortItem>(items: T[]): T[] => {
 		}
 		const getTimestamp = (item: PdlSortItem): number => {
 			if (item?.metadata?.master === 'PDL') {
-				const endringer = item?.metadata?.endringer
-				if (endringer && endringer.length > 0) {
-					return new Date(endringer[0].registrert).getTime()
+				const registrertTimestamps =
+					item?.metadata?.endringer
+						?.map((endring) => new Date(endring.registrert).getTime())
+						?.filter((timestamp) => !Number.isNaN(timestamp)) ?? []
+				if (registrertTimestamps.length > 0) {
+					return Math.max(...registrertTimestamps)
 				}
 			}
 			const gyldighetstidspunkt = item?.folkeregistermetadata?.gyldighetstidspunkt
-			if (gyldighetstidspunkt) {
-				return new Date(gyldighetstidspunkt).getTime()
-			}
-			return 0
+			const timestamp = gyldighetstidspunkt ? new Date(gyldighetstidspunkt).getTime() : 0
+			return Number.isNaN(timestamp) ? 0 : timestamp
 		}
 		return getTimestamp(b) - getTimestamp(a)
 	})
