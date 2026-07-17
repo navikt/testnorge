@@ -4,6 +4,11 @@ export {
 	createPersonTrendChartOptions,
 } from './dashboardTrendChartOptions'
 export {
-	createPreviousDayChartOptions,
-	createPreviousDayErrorBreakdownChartOptions,
-} from './dashboardPreviousDayChartOptions'
+	createIdenterDonutChartOptions,
+	createNyeGjenopprettedeDonutChartOptions,
+	createOpprettetGjenopprettetDonutChartOptions,
+} from './dashboardDonutChartOptions'
+export {
+	createFeilPerFagsystemChartOptions,
+	createFeilSummertChartOptions,
+} from './dashboardFeilChartOptions'

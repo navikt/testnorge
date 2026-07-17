@@ -66,13 +66,13 @@ export const InntektVisning = ({ data }) => {
 											<TitleValue
 												title="Etterbetaling start"
 												value={formatStringDates(
-													id.tilleggsinformasjon.etterbetalingsperiode.startdato
+													id.tilleggsinformasjon.etterbetalingsperiode.startdato,
 												)}
 											/>
 											<TitleValue
 												title="Etterbetaling slutt"
 												value={formatStringDates(
-													id.tilleggsinformasjon.etterbetalingsperiode.sluttdato
+													id.tilleggsinformasjon.etterbetalingsperiode.sluttdato,
 												)}
 											/>
 										</React.Fragment>

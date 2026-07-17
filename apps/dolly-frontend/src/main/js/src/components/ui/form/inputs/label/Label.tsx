@@ -49,7 +49,7 @@ export const Label = ({
 	const wrapClass = cn('skjemaelement', containerClass, {
 		error: Boolean(
 			(!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched || hasSubmitted)) ||
-				manualError,
+			manualError,
 		),
 		'label-offscreen': _.isNil(label),
 	})

@@ -1,5 +1,7 @@
 import { type Options } from 'highcharts'
 
+export const CHART_TEXT_COLOR = '#23262A'
+
 export const CHART_COLORS = [
 	'var(--ax-accent-700)',
 	'var(--ax-success-700)',
@@ -8,8 +10,6 @@ export const CHART_COLORS = [
 	'var(--ax-meta-purple-700)',
 	'var(--ax-info-700)',
 ]
-export const ERROR_PRIMARY_COLOR = 'var(--ax-danger-700)'
-export const ERROR_SECONDARY_COLOR = 'var(--ax-warning-700)'
 
 const BASE_CHART_CONFIG: Options['chart'] = {
 	backgroundColor: 'transparent',
@@ -75,7 +75,7 @@ export const TOOLTIP_OPTIONS: Options['tooltip'] = {
 	padding: 12,
 	shadow: false,
 	style: {
-		color: '#23262A',
+		color: CHART_TEXT_COLOR,
 		fontSize: '13px',
 	},
 	outside: true,

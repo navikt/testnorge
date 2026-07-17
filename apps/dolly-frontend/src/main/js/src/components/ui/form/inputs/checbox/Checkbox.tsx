@@ -23,8 +23,10 @@ const SpacedSwitch = styled(Switch)`
 `
 
 export type CheckboxSize = 'small' | 'medium'
-export interface BaseCheckboxProps
-	extends Omit<React.ComponentProps<typeof DsCheckbox>, 'children'> {
+export interface BaseCheckboxProps extends Omit<
+	React.ComponentProps<typeof DsCheckbox>,
+	'children'
+> {
 	label: React.ReactNode
 	id?: string
 	attributtCheckbox?: boolean
@@ -79,8 +81,10 @@ export const DollyCheckbox: React.FC<DollyCheckboxProps> = ({
 	)
 }
 
-export interface FormCheckboxProps
-	extends Omit<DollyCheckboxProps, 'checked' | 'defaultChecked' | 'onChange' | 'name'> {
+export interface FormCheckboxProps extends Omit<
+	DollyCheckboxProps,
+	'checked' | 'defaultChecked' | 'onChange' | 'name'
+> {
 	name: string
 	afterChange?: (checked: boolean) => void
 }

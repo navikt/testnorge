@@ -1,9 +1,11 @@
 import {
+	buildMonthlyDistributionView,
 	fillMissingPersonDays,
 	filterMonthlyTeamPoints,
 	getPreviousBusinessPeriod,
 	MONTH_SCOPE_ALL,
 	MONTH_SCOPE_LAST_12,
+	monthsInRange,
 	toMonthlyDollyTeamPoints,
 	toMonthlyIntervalOptions,
 	toMonthlyOrganisasjonPoints,
@@ -19,6 +21,28 @@ describe('dashboardUtils', () => {
 	it('should include dates within selected range even when dates are reversed', () => {
 		expect(withinDateRange('2026-05-10', '2026-05-12', '2026-05-01')).toBe(true)
 		expect(withinDateRange('2026-05-20', '2026-05-12', '2026-05-01')).toBe(false)
+	})
+
+	it('should list every calendar month spanned by a multi-month range', () => {
+		expect(monthsInRange('2026-04-15', '2026-06-10')).toEqual([
+			{ year: 2026, month: 'APRIL' },
+			{ year: 2026, month: 'MAY' },
+			{ year: 2026, month: 'JUNE' },
+		])
+	})
+
+	it('should span a year boundary and return a single month for a same-month range', () => {
+		expect(monthsInRange('2025-12-20', '2026-01-05')).toEqual([
+			{ year: 2025, month: 'DECEMBER' },
+			{ year: 2026, month: 'JANUARY' },
+		])
+		expect(monthsInRange('2026-06-01', '2026-06-23')).toEqual([{ year: 2026, month: 'JUNE' }])
+	})
+
+	it('should return no months for empty or invalid ranges', () => {
+		expect(monthsInRange('', '2026-06-10')).toEqual([])
+		expect(monthsInRange('2026-06-10', '')).toEqual([])
+		expect(monthsInRange('2026-06-10', '2026-06-01')).toEqual([])
 	})
 
 	it('should use the previous business period with monday covering the weekend', () => {
@@ -83,20 +107,22 @@ describe('dashboardUtils', () => {
 		const trend = toPersonTrendData([
 			{
 				dato: '2026-05-01',
+				bestillinger: 12,
 				personerTotalt: 10,
 				nye: 4,
 				gjenopprettede: 1,
-				pdlFeil: 0,
-				andreFeil: 2,
+				navIdenter: 7,
+				testnorgeIdenter: 5,
 			},
 		])
 
 		expect(trend).toHaveLength(1)
+		expect(trend[0].bestillinger).toBe(12)
 		expect(trend[0].personerTotalt).toBe(10)
 		expect(trend[0].nye).toBe(4)
 		expect(trend[0].gjenopprettede).toBe(1)
-		expect(trend[0].pdlFeil).toBe(0)
-		expect(trend[0].andreFeil).toBe(2)
+		expect(trend[0].navIdenter).toBe(7)
+		expect(trend[0].testnorgeIdenter).toBe(5)
 	})
 
 	it('should fill missing days in selected period with zero values', () => {
@@ -104,19 +130,21 @@ describe('dashboardUtils', () => {
 			[
 				{
 					dato: '2026-05-01',
+					bestillinger: 8,
 					personerTotalt: 10,
 					nye: 4,
 					gjenopprettede: 1,
-					pdlFeil: 0,
-					andreFeil: 2,
+					navIdenter: 6,
+					testnorgeIdenter: 2,
 				},
 				{
 					dato: '2026-05-03',
+					bestillinger: 4,
 					personerTotalt: 5,
 					nye: 2,
 					gjenopprettede: 0,
-					pdlFeil: 1,
-					andreFeil: 0,
+					navIdenter: 3,
+					testnorgeIdenter: 1,
 				},
 			],
 			'2026-05-01',
@@ -126,27 +154,30 @@ describe('dashboardUtils', () => {
 		expect(completedDays).toEqual([
 			{
 				dato: '2026-05-01',
+				bestillinger: 8,
 				personerTotalt: 10,
 				nye: 4,
 				gjenopprettede: 1,
-				pdlFeil: 0,
-				andreFeil: 2,
+				navIdenter: 6,
+				testnorgeIdenter: 2,
 			},
 			{
 				dato: '2026-05-02',
+				bestillinger: 0,
 				personerTotalt: 0,
 				nye: 0,
 				gjenopprettede: 0,
-				pdlFeil: 0,
-				andreFeil: 0,
+				navIdenter: 0,
+				testnorgeIdenter: 0,
 			},
 			{
 				dato: '2026-05-03',
+				bestillinger: 4,
 				personerTotalt: 5,
 				nye: 2,
 				gjenopprettede: 0,
-				pdlFeil: 1,
-				andreFeil: 0,
+				navIdenter: 3,
+				testnorgeIdenter: 1,
 			},
 		])
 	})
@@ -195,29 +226,67 @@ describe('dashboardUtils', () => {
 		])
 	})
 
+	it('should build monthly distribution view with ordered years and month buttons', () => {
+		const points = toMonthlyTeamPoints([
+			{
+				interval: '2024-05',
+				totaltUnikeBrukere: 1,
+				totaltAntallTeams: 1,
+				teams: [{ team: 'Team Old', unikeBrukere: 1 }],
+			},
+			{
+				interval: '2025-01',
+				totaltUnikeBrukere: 2,
+				totaltAntallTeams: 1,
+				teams: [{ team: 'Team Mid', unikeBrukere: 2 }],
+			},
+			{
+				interval: '2025-06',
+				totaltUnikeBrukere: 3,
+				totaltAntallTeams: 2,
+				teams: [
+					{ team: 'Team A', unikeBrukere: 2 },
+					{ team: 'Team B', unikeBrukere: 1 },
+				],
+			},
+		])
+
+		const view = buildMonthlyDistributionView(points, '2025-06')
+
+		expect(view.yearOptions).toEqual(['2024', '2025'])
+		expect(view.selectedYear).toBe('2025')
+		expect(view.monthOptions.map((option) => option.value)).toEqual(['2025-01', '2025-06'])
+		expect(view.monthOptions.every((option) => !/\d{4}$/.test(option.label))).toBe(true)
+		expect(view.selectedPoint?.interval).toBe('2025-06')
+		expect(view.distribution).toEqual([
+			{ team: 'Team A', unikeBrukere: 2 },
+			{ team: 'Team B', unikeBrukere: 1 },
+		])
+	})
+
 	it('should generate rich mock data and vary by cycle', () => {
 		const first = createDashboardMockData(0)
 		const second = createDashboardMockData(1)
 
-		expect(first.dashboardPersoner.length).toBe(300)
+		expect(first.dashboardBestillinger.length).toBe(300)
 		expect(first.dashboardTeams.length).toBe(24)
 		expect(first.dashboardOrganisasjoner.length).toBe(24)
 		expect(first.dashboardDollyTeams.length).toBe(12)
-		expect(first.dashboardPersoner[0].dato <= first.dashboardPersoner[299].dato).toBe(true)
+		expect(first.dashboardBestillinger[0].dato <= first.dashboardBestillinger[299].dato).toBe(true)
 		expect(first.dashboardTeams[0].interval <= first.dashboardTeams[23].interval).toBe(true)
 		expect(first.dashboardOrganisasjoner[0].organisasjoner[0]).toHaveProperty('navn')
 		expect(first.dashboardOrganisasjoner[0].organisasjoner[0]).toHaveProperty('organisasjonsnummer')
 		expect(first.dashboardOrganisasjoner[0].organisasjoner[0]).toHaveProperty('organisasjonsform')
 		expect(first.dashboardDollyTeams[0].teams[0]).toHaveProperty('navn')
 		expect(first.dashboardDollyTeams[0].teams[0]).toHaveProperty('beskrivelse')
-		expect(
-			first.dashboardPersoner.every((person) => person.pdlFeil === 0 && person.andreFeil === 0),
-		).toBe(true)
-		expect(
-			second.dashboardPersoner.some((person) => person.pdlFeil > 0 || person.andreFeil > 0),
-		).toBe(true)
-		expect(first.dashboardPersoner[0].personerTotalt).not.toBe(
-			second.dashboardPersoner[0].personerTotalt,
+		expect(first.dashboardBestillinger[0]).toHaveProperty('bestillinger')
+		expect(first.dashboardBestillinger[0]).toHaveProperty('navIdenter')
+		expect(first.dashboardBestillinger[0]).toHaveProperty('testnorgeIdenter')
+		expect(first.dashboardBestillinger[0].personerTotalt).not.toBe(
+			second.dashboardBestillinger[0].personerTotalt,
+		)
+		expect(first.dashboardBestillinger[0].bestillinger).not.toBe(
+			second.dashboardBestillinger[0].bestillinger,
 		)
 		expect(first.dashboardTeams[0].totaltUnikeBrukere).not.toBe(
 			second.dashboardTeams[0].totaltUnikeBrukere,

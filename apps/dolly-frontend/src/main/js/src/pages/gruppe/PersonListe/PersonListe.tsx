@@ -321,7 +321,7 @@ export default function PersonListe({
 					visPerson={location?.state?.visPerson || visPerson}
 					hovedperson={location?.state?.hovedperson || hovedperson}
 					onExpand={(bruker) => (
-						<Suspense fallback={<Loading label={'Laster ident...'} />}>
+						<Suspense fallback={<Loading label={'Laster ident...'} panel />}>
 							<PersonVisningConnector
 								ident={bruker.ident}
 								personId={bruker.identNr}

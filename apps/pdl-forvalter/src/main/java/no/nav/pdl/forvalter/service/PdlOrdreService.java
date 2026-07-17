@@ -89,8 +89,8 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_TILRETTELA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -169,7 +169,7 @@ public class PdlOrdreService {
                         .build())
                 .flatMap(response -> hendelseIdService.oppdaterPerson(response)
                         .thenReturn(response))
-                .doOnNext(response ->
+                .doOnNext(_ ->
                         log.info("PDL ordre for ident: {} tid: {} ms", ident, System.currentTimeMillis() - timestamp));
     }
 
@@ -178,19 +178,23 @@ public class PdlOrdreService {
         return Flux.concat(
                         Flux.fromIterable(dbPerson.getPerson().getSivilstand())
                                 .filter(SivilstandDTO::isEksisterendePerson)
+                                .filter(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))
                                 .map(SivilstandDTO::getRelatertVedSivilstand),
                         Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
-                                .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                 .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
+                                .filter(relasjon -> isNotBlank(relasjon.getRelatertPerson()))
                                 .map(ForelderBarnRelasjonDTO::getRelatertPerson),
                         Flux.fromIterable(dbPerson.getPerson().getForeldreansvar())
                                 .filter(ForeldreansvarDTO::isEksisterendePerson)
+                                .filter(foreldreansvar -> isNotBlank(foreldreansvar.getAnsvarlig()))
                                 .map(ForeldreansvarDTO::getAnsvarlig),
                         Flux.fromIterable(dbPerson.getPerson().getVergemaal())
                                 .filter(VergemaalDTO::isEksisterendePerson)
+                                .filter(vergemaal -> isNotBlank(vergemaal.getVergeIdent()))
                                 .map(VergemaalDTO::getVergeIdent),
                         Flux.fromIterable(dbPerson.getPerson().getFullmakt())
                                 .filter(FullmaktDTO::isEksisterendePerson)
+                                .filter(fullmakt -> isNotBlank(fullmakt.getMotpartsPersonident()))
                                 .map(FullmaktDTO::getMotpartsPersonident),
                         Flux.fromIterable(dbPerson.getPerson().getKontaktinformasjonForDoedsbo())
                                 .filter(kontaktinformasjon -> nonNull(kontaktinformasjon.getPersonSomKontakt()))
@@ -249,10 +253,9 @@ public class PdlOrdreService {
                                 .flatMap(this::npidMerge)
                                 .collectList(),
                         Flux.fromIterable(sorterteOpprettinger)
-                                .flatMap(oppretting -> aliasRepository.existsByPersonId(oppretting.getPerson().getId())
+                                .flatMap(oppretting -> aliasRepository.existsByTidligereIdent(oppretting.getPerson().getIdent())
                                         .zipWith(Mono.just(oppretting)))
-                                .filter(exist -> exist.getT2().isNotNpidIdent() ||
-                                                 isTrue(exist.getT1()))
+                                .filter(exist -> isFalse(exist.getT1()))
                                 .flatMap(oppretting -> getOrdrer(oppretting.getT2()))
                                 .collectList()))
                 .flatMapMany(tuple -> deployService.sendOrders(
@@ -359,7 +362,7 @@ public class PdlOrdreService {
                 deployService.createOrdre(PDL_DOEDFOEDT_BARN, ident, person.getDoedfoedtBarn()),
                 deployService.createOrdre(PDL_SIKKERHETSTILTAK, ident, person.getSikkerhetstiltak()),
                 deployService.createOrdre(PDL_NAVPERSONIDENTIFIKATOR, ident, person.getNavPersonIdentifikator().stream()
-                        .filter(navPersonIdentifikator -> isNpidIdent(ident))
+                        .filter(_ -> isNpidIdent(ident))
                         .filter(navPersonIdentifikator -> Objects.equals(navPersonIdentifikator.getIdentifikator(), ident))
                         .toList())
         );
@@ -386,7 +389,7 @@ public class PdlOrdreService {
     private List<? extends DbVersjonDTO> utenHistorikk(List<? extends DbVersjonDTO> artifacter) {
 
         return artifacter.stream()
-                .max(Comparator.comparing(DbVersjonDTO::getId))
+                .max(Comparator.comparing(DbVersjonDTO::getId, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .stream().toList();
     }
 

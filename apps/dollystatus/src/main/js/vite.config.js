@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
+import { fileURLToPath } from 'url'
 
 /** @type {import('vite').UserConfig} */
 
@@ -26,6 +27,9 @@ export default defineConfig(({ mode }) => ({
 	},
 	resolve: {
 		tsconfigPaths: true,
+		alias: {
+			'@': fileURLToPath(new URL('./src', import.meta.url)),
+		},
 	},
 	server: mode === 'local-dev' && {
 		port: 3000,

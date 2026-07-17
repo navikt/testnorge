@@ -15,12 +15,12 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-auth-local
         - application: dolly-backend
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: team-dolly-lokal-app
         - application: testnav-faste-data-frontend
         - application: testnav-organisasjon-forvalter
         - application: testnav-orgnummer-service

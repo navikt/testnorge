@@ -2,9 +2,10 @@ import Title from '../../components/title'
 import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
 import { SoekForm } from '@/pages/tenorSoek/SoekForm'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
+import Loading from '@/components/ui/loading/Loading'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useForm } from 'react-hook-form'
 import { isDate } from 'date-fns'
@@ -244,47 +245,49 @@ export default () => {
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter personer i Tenor (Test-Norge)" />
 			</div>
-			<SisteSoek
-				type={soekType.tenor}
-				formValues={formMethods.watch()}
-				handleChange={handleChange}
-				handleChangeList={handleChangeList}
-			/>
-			<div className="flexbox--flex-wrap" id="soek">
-				<NavigateButton
-					className="gaa-til-treff"
-					onClick={() => navigateTo('treff')}
-					kind="chevron-down-double-circle"
-				>
-					GÅ TIL TREFF
-				</NavigateButton>
-				<SoekForm
-					formMethods={formMethods}
+			<Suspense fallback={<Loading label="Laster søkeside" panel />}>
+				<SisteSoek
+					type={soekType.tenor}
+					formValues={formMethods.watch()}
 					handleChange={handleChange}
 					handleChangeList={handleChangeList}
-					emptyCategory={emptyCategory}
 				/>
-			</div>
-			<div id="treff">
-				<NavigateButton
-					className="gaa-til-soek"
-					onClick={() => navigateTo('soek')}
-					kind="chevron-up-double-circle"
-				>
-					GÅ TIL SØK
-				</NavigateButton>
-				<TreffListe
-					response={response?.data}
-					personListe={state.personListe}
-					markertePersoner={markertePersoner}
-					setMarkertePersoner={setMarkertePersoner}
-					inkluderPartnere={inkluderPartnere}
-					setInkluderPartnere={setInkluderPartnere}
-					nesteSide={state.nesteSide}
-					loading={loading}
-					error={error}
-				/>
-			</div>
+				<div className="flexbox--flex-wrap" id="soek">
+					<NavigateButton
+						className="gaa-til-treff"
+						onClick={() => navigateTo('treff')}
+						kind="chevron-down-double-circle"
+					>
+						GÅ TIL TREFF
+					</NavigateButton>
+					<SoekForm
+						formMethods={formMethods}
+						handleChange={handleChange}
+						handleChangeList={handleChangeList}
+						emptyCategory={emptyCategory}
+					/>
+				</div>
+				<div id="treff">
+					<NavigateButton
+						className="gaa-til-soek"
+						onClick={() => navigateTo('soek')}
+						kind="chevron-up-double-circle"
+					>
+						GÅ TIL SØK
+					</NavigateButton>
+					<TreffListe
+						response={response?.data}
+						personListe={state.personListe}
+						markertePersoner={markertePersoner}
+						setMarkertePersoner={setMarkertePersoner}
+						inkluderPartnere={inkluderPartnere}
+						setInkluderPartnere={setInkluderPartnere}
+						nesteSide={state.nesteSide}
+						loading={loading}
+						error={error}
+					/>
+				</div>
+			</Suspense>
 		</div>
 	)
 }
