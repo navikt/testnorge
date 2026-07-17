@@ -6,6 +6,7 @@ import {
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import * as _ from 'lodash-es'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type PdlOppholdsadresseProps = {
 	data: Array<OppholdsadresseData>
@@ -77,11 +78,11 @@ export const PdlOppholdsadresse = ({
 		return null
 	}
 
-	const gyldigeAdresser = data.filter(
-		(adresse: OppholdsadresseData) => !adresse.metadata?.historisk,
+	const gyldigeAdresser = sortPdlItems(
+		data.filter((adresse: OppholdsadresseData) => !adresse.metadata?.historisk),
 	)
-	const historiskeAdresser = data.filter(
-		(adresse: OppholdsadresseData) => adresse.metadata?.historisk,
+	const historiskeAdresser = sortPdlItems(
+		data.filter((adresse: OppholdsadresseData) => adresse.metadata?.historisk),
 	)
 
 	return (

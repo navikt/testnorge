@@ -3,6 +3,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { InnflyttingTilNorge } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import { formatDate } from '@/utils/DataFormatter'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type InnflyttingProps = {
 	data: InnflyttingTilNorge
@@ -38,11 +39,11 @@ export const PdlInnflytting = ({ innflytting }: VisningProps) => {
 		return null
 	}
 
-	const gyldigeInnflyttinger = innflytting?.filter(
-		(flytting: InnflyttingTilNorge) => !flytting.metadata?.historisk,
+	const gyldigeInnflyttinger = sortPdlItems(
+		innflytting?.filter((flytting: InnflyttingTilNorge) => !flytting.metadata?.historisk) ?? [],
 	)
-	const historiskeInnflyttinger = innflytting?.filter(
-		(flytting: InnflyttingTilNorge) => flytting.metadata?.historisk,
+	const historiskeInnflyttinger = sortPdlItems(
+		innflytting?.filter((flytting: InnflyttingTilNorge) => flytting.metadata?.historisk) ?? [],
 	)
 
 	return (

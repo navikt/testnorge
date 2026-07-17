@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
-import { getSortedSivilstand } from '@/components/fagsystem/pdl/visning/partials/utils'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import { Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -36,13 +36,17 @@ const Visning = ({ data, idx }: VisningProps) => {
 }
 
 export const PdlPartner = ({ data }: PdlPartnerProps) => {
-	const partnere = getSortedSivilstand(data)
+	const partnere = sortPdlItems(data ?? [])
 	if (!partnere || partnere.length === 0) {
 		return null
 	}
 
-	const gjeldendePartnere = partnere.filter((partner: Sivilstand) => !partner.metadata?.historisk)
-	const historiskePartnere = partnere.filter((partner: Sivilstand) => partner.metadata?.historisk)
+	const gjeldendePartnere = sortPdlItems(
+		partnere.filter((partner: Sivilstand) => !partner.metadata?.historisk),
+	)
+	const historiskePartnere = sortPdlItems(
+		partnere.filter((partner: Sivilstand) => partner.metadata?.historisk),
+	)
 
 	return (
 		<div>
