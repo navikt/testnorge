@@ -67,6 +67,7 @@ public class BestillingQueryService {
         queryBuilder.must(q -> q.regexp(regexpQuery("identer", TESTNORGE_FORMAT)));
 
         return execQuery(queryBuilder).stream()
+                .filter(ident -> !ident.equals(OPENSEARCH_ERROR_FALLBACK_IDENT))
                 .filter(ident -> ident.matches(TESTNORGE_FORMAT))
                 .collect(Collectors.toSet());
     }
