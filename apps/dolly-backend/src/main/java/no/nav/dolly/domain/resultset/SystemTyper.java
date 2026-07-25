@@ -16,6 +16,7 @@ public enum SystemTyper {
     ARENA_AAP115("Arena AAP115 rettighet"),
     ARENA_BRUKER("Arena bruker"),
     ARENA_DAGP("Arena dagpenger"),
+    BISTANDSBEHOV("Bistandsbehov 14a"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
     ETTERLATTE("Etterlatte (Gjenny)"),

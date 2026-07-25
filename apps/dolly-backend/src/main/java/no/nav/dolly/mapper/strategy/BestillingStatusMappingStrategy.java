@@ -30,6 +30,7 @@ import static no.nav.dolly.mapper.ArbeidsplassenCVStatusMapper.buildArbeidsplass
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArbeidssoekerregisteretStatusMapper.buildArbeidssoekerregisteretStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
+import static no.nav.dolly.mapper.BestillingBistandsbehovStatusMapper.buildBistandsbehovStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
 import static no.nav.dolly.mapper.BestillingEtterlatteStatusMapper.buildEtterlatteStatusMap;
@@ -123,6 +124,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildBistandsbehovStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKelvinAapStatusMap(progresser));
 
                         if (!bestilling.isFerdig()) {

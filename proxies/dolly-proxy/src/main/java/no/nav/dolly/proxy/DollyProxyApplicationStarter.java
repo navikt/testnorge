@@ -14,7 +14,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 @EnableWebFluxSecurity
 public class DollyProxyApplicationStarter {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         new SpringApplicationBuilder(DollyProxyApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
