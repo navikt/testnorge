@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nav.no/system/os/entiteter/typer/simpleTypes"
+           xmlns:typer="http://nav.no/system/os/entiteter/typer/simpleTypes"
+           version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+    <xs:annotation>
+        <xs:documentation>Oppdrag spesifikasjon Simple Types som blir brukt i pÃ¥ attribut/felt nivÃ¥ for Oppdrag</xs:documentation>
+    </xs:annotation>
+
+    <xs:simpleType name="dato">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til dato elementer.</xs:documentation>
+            <xs:documentation>Datoformat dd-MM-yyyy</xs:documentation>
+            <xs:documentation>Noen programmeringsspråk allokerer minne statisk og allokerer standard 26 tegn for hver eneste type xsd:date pga. mulighet for tidssone</xs:documentation>
+            <xs:documentation>For¨å forsere dato uten timezone er det benyttet string.</xs:documentation>
+            <xs:documentation>Både konsument og produsent må caste til felt/property av type dato.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:length value="10" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="oppdragsId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til oppdragsid.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long">
+            <xs:maxInclusive value="9999999999" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="fnrOrgnr">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til fnr og orgnr.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="9" />
+            <xs:maxLength value="11" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="enhet">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til enhet (tknr evnt orgnr+avd).</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="4" />
+            <xs:maxLength value="13" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="saksbehId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til saksbehandlerId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="8" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="feilreg">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til feilreg.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="fagsystemId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til fagsystemId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="vedtakId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til vedtakId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="10" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="utbetFrekvens">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til utbetalingsfrekvens.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DAG" />
+            <xs:enumeration value="UKE" />
+            <xs:enumeration value="MND" />
+            <xs:enumeration value="14DG" />
+            <xs:enumeration value="ENG" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="delytelseId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til delytelseId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="belop">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til beløp.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="11" />
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="fradragTillegg">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til fradragTillegg.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F" />
+            <xs:enumeration value="T" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="grad">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til grad.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:integer">
+            <xs:maxInclusive value="100" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeStatus">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til kodeStatus.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NY" />
+            <xs:enumeration value="LOPE" />
+            <xs:enumeration value="HVIL" />
+            <xs:enumeration value="SPER" />
+            <xs:enumeration value="IKAT" />
+            <xs:enumeration value="ATTE" />
+            <xs:enumeration value="ANNU" />
+            <xs:enumeration value="OPPH" />
+            <xs:enumeration value="FBER" />
+            <xs:enumeration value="REAK" />
+            <xs:enumeration value="KORR" />
+            <xs:enumeration value="FEIL" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="tidspktReg">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til tidspktReg.</xs:documentation>
+            <xs:documentation>TidspktReg tilsvarer standard DB2 timestamp.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="26" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeStatusLinje">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til kodeStatusLinje.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OPPH" />
+            <xs:enumeration value="HVIL" />
+            <xs:enumeration value="SPER" />
+            <xs:enumeration value="REAK" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeKlassifik">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til kodeKlassifik.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="50" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kid">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til KID.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="26" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeFagomraade">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til kodeFagomraade.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="8" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="stonadId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til stonadId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="10" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="typeEnhet">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til typeEnhet.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="4" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="linjeId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til linjeId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:integer">
+            <xs:maxInclusive value="99999" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="sats">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til sats.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="13" />
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="typeSats">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til typeSats.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DAG" />
+            <xs:enumeration value="UKE" />
+            <xs:enumeration value="14DB" />
+            <xs:enumeration value="MND" />
+            <xs:enumeration value="AAR" />
+            <xs:enumeration value="ENG" />
+            <xs:enumeration value="AKTO" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="antallSats">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til antall sats.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="7" />
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="brukKjoreplan">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til brukKjoreplan.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:length value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeArbeidsgiver">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til kodeArbeidsgiver.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="A" />
+            <xs:enumeration value="S" />
+            <xs:enumeration value="P" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="henvisning">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til henvisning.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="30" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="tekstLnr">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til tekstlnr.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:integer">
+            <xs:maxInclusive value="99" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="navn">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver navn, typisk navn for felt som gjelderId eller utbetalesTilId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+            <xs:maxLength value="30" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeFaggruppe">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver faggruppe, f.eks PEN .</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="8" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeBilagsType">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver type bilag</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="trekkVedtakId">
+        <xs:annotation>
+            <xs:documentation>Typen beskriver formatet og begrensningene til trekkVedtakId.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long" />
+    </xs:simpleType>
+    <xs:simpleType name="string1">
+        <xs:annotation>
+            <xs:documentation>Generisk type for tekstattribut lengde 1</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+            <xs:maxLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeKlasse">
+        <xs:annotation>
+            <xs:documentation>Type for klassekode</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+            <xs:maxLength value="20" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="kodeKlasseBeskrivelse">
+        <xs:annotation>
+            <xs:documentation>Type for klassekode beskrivelse</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+            <xs:maxLength value="50" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="typeKlasse">
+        <xs:annotation>
+            <xs:documentation>Type for type klasse</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+            <xs:maxLength value="4" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="typeKlasseBeskrivelse">
+        <xs:annotation>
+            <xs:documentation>Type for type klasse beskrivelse</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0" />
+            <xs:maxLength value="50" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
