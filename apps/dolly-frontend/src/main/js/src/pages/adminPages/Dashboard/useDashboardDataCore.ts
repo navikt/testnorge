@@ -8,6 +8,7 @@ import {
 	type DashboardOversiktDTO,
 	type DashboardTeamsDTO,
 	useDashboard,
+	useDashboardBestillingerForMonths,
 	useDashboardFeilForDager,
 } from '@/utils/hooks/useDashboard'
 import {
@@ -149,7 +150,45 @@ export const useDashboardDataCore = () => {
 	const previousBusinessPeriod = getPreviousBusinessPeriod(new Date())
 	const selectedDayDates =
 		selectedDayScope === DAY_SCOPE_TODAY ? [todayDate] : previousBusinessPeriod.dates
-	const previousDayPeriodData = activeDashboardBestillinger
+
+	const currentMonthPrefix = todayDate.slice(0, 7)
+	const extraMonthsForPeriod = useMemo(() => {
+		if (mockModeEnabled) {
+			return []
+		}
+		const seen = new Set<string>()
+		return previousBusinessPeriod.dates
+			.map((dato) => {
+				const monthPrefix = dato.slice(0, 7)
+				if (monthPrefix === currentMonthPrefix || seen.has(monthPrefix)) {
+					return null
+				}
+				seen.add(monthPrefix)
+				const parsed = parseISO(dato)
+				const month = monthNumberToName(parsed.getMonth() + 1)
+				return month ? { year: parsed.getFullYear(), month } : null
+			})
+			.filter((entry): entry is { year: number; month: string } => entry !== null)
+	}, [mockModeEnabled, previousBusinessPeriod.dates, currentMonthPrefix])
+
+	const { bestillingerForMonths: bestillingerForExtraMonths } =
+		useDashboardBestillingerForMonths(extraMonthsForPeriod)
+
+	const bestillingerForDaySection = useMemo(() => {
+		if (bestillingerForExtraMonths.length === 0) {
+			return activeDashboardBestillinger
+		}
+		const byDato = new Map<string, DashboardBestillingerDTO>()
+		for (const row of bestillingerForExtraMonths) {
+			byDato.set(row.dato, row)
+		}
+		for (const row of activeDashboardBestillinger) {
+			byDato.set(row.dato, row)
+		}
+		return Array.from(byDato.values())
+	}, [activeDashboardBestillinger, bestillingerForExtraMonths])
+
+	const previousDayPeriodData = bestillingerForDaySection
 		.filter((personData) => selectedDayDates.includes(personData.dato))
 		.sort((a, b) => a.dato.localeCompare(b.dato))
 	const selectedDayDisplayLabel =
