@@ -27,7 +27,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -49,15 +49,15 @@ public class MetadataTidspunkterService {
     private final RelasjonRepository relasjonRepository;
     private final MapperFacade mapperFacade;
 
+    @Transactional
     public Mono<Void> updateMetadata(String ident) {
 
         return fixPerson(ident)
                 .flatMap(dbPerson -> relasjonRepository.findByPersonId(dbPerson.getId())
-                        .collectList()
-                        .flatMapMany(Flux::fromIterable)
                         .map(DbRelasjon::getRelatertPersonId)
                         .collect(Collectors.toSet())
                         .flatMapMany(personRepository::findByIdIn)
+                        .sort(Comparator.comparing(DbPerson::getId))
                         .map(DbPerson::getIdent)
                         .flatMap(this::fixPerson)
                         .collectList())

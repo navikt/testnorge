@@ -42,6 +42,8 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
             and (:partialNavn1 is null or :partialNavn1 is not null and (upper(p.etternavn) like concat('%', :partialNavn1, '%') or upper(p.fornavn) like concat('%', :partialNavn1,'%')))
             and (:partialNavn2 is null or :partialNavn2 is not null and (upper(p.etternavn) like concat('%', :partialNavn2, '%') or upper(p.fornavn) like concat('%', :partialNavn2,'%')))
             and (not exists (select * from alias a where a.tidligere_ident = p.ident) or :partialNavn1 is null and :partialNavn2 is null)
+            order by p.sist_oppdatert desc
+            limit :#{#pageable.pageSize} offset :#{#pageable.offset}
             """)
     Flux<DbPerson> findByWildcardIdent(@Param("partialIdent") String partialIdent,
                                        @Param("partialNavn1") String partialNavn1,

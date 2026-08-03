@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
+import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
@@ -47,6 +48,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
@@ -54,7 +56,6 @@ import java.util.List;
 import java.util.Set;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @Slf4j
 @Service
@@ -74,8 +75,16 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
         serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(
+                                        ConnectionProvider.builder("pensjon-forvalteren")
+                                                .maxConnections(50)
+                                                .maxIdleTime(Duration.ofSeconds(20))
+                                                .maxLifeTime(Duration.ofSeconds(60))
+                                                .evictInBackground(Duration.ofSeconds(30))
+                                                .build())
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                                .responseTimeout(Duration.ofSeconds(30))))
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
@@ -169,7 +178,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                                 .map(index -> new SletteTpForholdCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call())))
                 .flatMap((Flux::from))
                 .collectList()
-                .subscribe(response -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
+                .subscribe(_ -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
@@ -193,7 +202,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .flatMap(ident -> new SlettePensjonsavtaleCommand(webClient, ident, token.getTokenValue()).call()))
                 .collectList()
-                .subscribe(resultat -> log.info("Slettet pensjonsavtaler (PEN), alle miljøer"));
+                .subscribe(_ -> log.info("Slettet pensjonsavtaler (PEN), alle miljøer"));
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_slettePoppinntekt"})
@@ -204,7 +213,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                         .flatMap(miljoer -> Flux.fromIterable(identer)
                                 .flatMap(ident -> new SlettePoppInntektCommand(webClient, ident, miljoer, token.getTokenValue()).call()))
                         .collectList())
-                .subscribe(resultat -> log.info("Slettet POPP-inntekt, alle miljøer"));
+                .subscribe(_ -> log.info("Slettet POPP-inntekt, alle miljøer"));
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_hentVedtak"})
@@ -233,7 +242,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                                 .map(ident -> new SletteAfpOffentligCommand(webClient, ident, miljoe, token.getTokenValue()).call()))
                         .flatMap(Flux::from))
                 .collectList()
-                .subscribe(resultat -> log.info("Slettet AfpOffentlig (PEN), alle miljøer"));
+                .subscribe(_ -> log.info("Slettet AfpOffentlig (PEN), alle miljøer"));
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreRevurderingVedtakAP"})

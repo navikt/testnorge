@@ -2,6 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DeltBostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import { Adresse } from '@/components/fagsystem/pdlf/visning/partials/DeltBosted'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type PdlDeltBostedProps = {
 	data: Array<DeltBostedData>
@@ -25,8 +26,12 @@ export const PdlDeltBosted = ({ data }: PdlDeltBostedProps) => {
 		return null
 	}
 
-	const gyldigeAdresser = data.filter((adresse: DeltBostedData) => !adresse.metadata?.historisk)
-	const historiskeAdresser = data.filter((adresse: DeltBostedData) => adresse.metadata?.historisk)
+	const gyldigeAdresser = sortPdlItems(
+		data.filter((adresse: DeltBostedData) => !adresse.metadata?.historisk),
+	)
+	const historiskeAdresser = sortPdlItems(
+		data.filter((adresse: DeltBostedData) => adresse.metadata?.historisk),
+	)
 
 	return (
 		<>
