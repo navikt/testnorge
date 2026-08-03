@@ -13,11 +13,11 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -27,18 +27,16 @@ public class OpenSearchQueryService {
 
     private final OpenSearchClient openSearchClient;
 
-    private static final JsonMapper JACKSON3_MAPPER = JsonMapper.builder().build();
-
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
 
     public SearchInternalResponse execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
 
-        if (request.getSide() == null) {
+        if (isNull(request.getSide())) {
             request.setSide(0);
         }
 
-        if (request.getAntall() == null) {
+        if (isNull(request.getAntall())) {
             request.setAntall(10);
         }
 
@@ -53,7 +51,7 @@ public class OpenSearchQueryService {
                     .from(request.getSide() * request.getAntall())
                     .size(request.getAntall())
                     .timeout("3s")
-                    .build(), com.fasterxml.jackson.databind.JsonNode.class);
+                    .build(), JsonNode.class);
 
             log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
@@ -65,10 +63,10 @@ public class OpenSearchQueryService {
         }
     }
 
-    private SearchInternalResponse formatResponse(SearchResponse<com.fasterxml.jackson.databind.JsonNode> response, SearchRequest request) {
+    private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
 
         var hits = response.hits();
-        if (hits == null) {
+        if (isNull(hits)) {
             return SearchInternalResponse.builder()
                     .took(Long.toString(response.took()))
                     .totalHits(0L)
@@ -89,15 +87,7 @@ public class OpenSearchQueryService {
                 .seed(request.getSeed())
                 .personer(nonNull(hitsList) ? hitsList.stream()
                         .map(Hit::source)
-                        .map(this::toJackson3)
                         .toList() : List.of())
                 .build();
-    }
-
-    private JsonNode toJackson3(com.fasterxml.jackson.databind.JsonNode jackson2Node) {
-        if (jackson2Node == null) {
-            return null;
-        }
-        return JACKSON3_MAPPER.readTree(jackson2Node.toString());
     }
 }
