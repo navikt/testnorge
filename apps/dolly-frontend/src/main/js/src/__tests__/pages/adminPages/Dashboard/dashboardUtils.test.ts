@@ -1,4 +1,5 @@
 import {
+	asNumber,
 	buildMonthlyDistributionView,
 	fillMissingPersonDays,
 	filterMonthlyTeamPoints,
@@ -15,6 +16,7 @@ import {
 	toTeamDistributionForInterval,
 	withinDateRange,
 } from '@/pages/adminPages/Dashboard/dashboardUtils'
+import { toFeilGrupper } from '@/pages/adminPages/Dashboard/dashboardFeilUtils'
 import { createDashboardMockData } from '@/pages/adminPages/Dashboard/dashboardMockData'
 
 describe('dashboardUtils', () => {
@@ -344,5 +346,101 @@ describe('dashboardUtils', () => {
 		expect(
 			filterMonthlyTeamPoints(points, MONTH_SCOPE_LAST_12).map((point) => point.interval),
 		).toEqual(['2025-01', '2026-02'])
+	})
+
+	describe('Monday period aggregation (siste hverdag + helg)', () => {
+		const monday = new Date('2026-06-08T08:00:00')
+		const period = getPreviousBusinessPeriod(monday)
+
+		const fridayData = {
+			dato: '2026-06-05',
+			bestillinger: 5,
+			personerTotalt: 4,
+			nye: 3,
+			gjenopprettede: 1,
+			navIdenter: 3,
+			testnorgeIdenter: 1,
+		}
+		const saturdayData = {
+			dato: '2026-06-06',
+			bestillinger: 0,
+			personerTotalt: 0,
+			nye: 0,
+			gjenopprettede: 0,
+			navIdenter: 0,
+			testnorgeIdenter: 0,
+		}
+		const sundayData = {
+			dato: '2026-06-07',
+			bestillinger: 0,
+			personerTotalt: 0,
+			nye: 0,
+			gjenopprettede: 0,
+			navIdenter: 0,
+			testnorgeIdenter: 0,
+		}
+
+		it('should return three dates covering friday, saturday and sunday', () => {
+			expect(period.dates).toEqual(['2026-06-05', '2026-06-06', '2026-06-07'])
+			expect(period.title).toBe('Siste hverdag + helg')
+		})
+
+		it('should aggregate bestillinger summary correctly across all three days', () => {
+			const periodData = [fridayData, saturdayData, sundayData].filter((row) =>
+				period.dates.includes(row.dato),
+			)
+
+			const summary = periodData.reduce(
+				(acc, row) => {
+					acc.nye += asNumber(row.nye)
+					acc.gjenopprettede += asNumber(row.gjenopprettede)
+					return acc
+				},
+				{ nye: 0, gjenopprettede: 0 },
+			)
+
+			expect(summary.nye).toBe(3)
+			expect(summary.gjenopprettede).toBe(1)
+			expect(summary.nye + summary.gjenopprettede).toBe(4)
+		})
+
+		it('should aggregate feil groups from all three days', () => {
+			const feilRader = [
+				{
+					ident: '10000000001',
+					bestillingId: 10,
+					sistOppdatert: '2026-06-05T09:00:00',
+					type: 'PDL',
+					pdlForvalterFeil: 'Feil på fredag',
+				},
+				{
+					ident: '10000000002',
+					bestillingId: 20,
+					sistOppdatert: '2026-06-07T11:00:00',
+					type: 'Aareg TESTNORGE-IDENT',
+					aaregFeil: 'Feil på søndag',
+				},
+			]
+
+			const feilGrupper = toFeilGrupper(feilRader)
+			const nokler = feilGrupper.map((gruppe) => gruppe.feilNokkel)
+
+			expect(feilGrupper).toHaveLength(2)
+			expect(nokler).toContain('pdlForvalterFeil')
+			expect(nokler).toContain('aaregFeil')
+
+			const pdlGruppe = feilGrupper.find((gruppe) => gruppe.feilNokkel === 'pdlForvalterFeil')!
+			const aaregGruppe = feilGrupper.find((gruppe) => gruppe.feilNokkel === 'aaregFeil')!
+
+			expect(pdlGruppe.rader).toHaveLength(1)
+			expect(pdlGruppe.rader[0].ident).toBe('10000000001')
+			expect(aaregGruppe.rader).toHaveLength(1)
+			expect(aaregGruppe.rader[0].ident).toBe('10000000002')
+
+			const uniqueBestillingIds = new Set(
+				feilGrupper.flatMap((gruppe) => gruppe.rader.map((rad) => rad.bestillingId)),
+			)
+			expect(uniqueBestillingIds.size).toBe(2)
+		})
 	})
 })

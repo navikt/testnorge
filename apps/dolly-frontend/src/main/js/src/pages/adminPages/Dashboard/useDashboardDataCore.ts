@@ -101,6 +101,7 @@ export const useDashboardDataCore = () => {
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
 		dashboardOversiktError,
+		mutateDashboardBestillinger,
 		reloadDashboard,
 	} = useDashboard()
 
@@ -185,9 +186,8 @@ export const useDashboardDataCore = () => {
 		return month ? [{ year: parsed.getFullYear(), month, day: parsed.getDate() }] : []
 	})
 
-	const { feilForDager, loadingFeilForDager, feilForDagerError } = useDashboardFeilForDager(
-		mockModeEnabled ? [] : selectedDayFeilDager,
-	)
+	const { feilForDager, loadingFeilForDager, feilForDagerError, mutateFeilForDager } =
+		useDashboardFeilForDager(mockModeEnabled ? [] : selectedDayFeilDager)
 	const activeSelectedDayFeil = mockModeEnabled
 		? selectedDayDates.flatMap((dato) =>
 				tilListe<DashboardFeilDetaljertRad>(mockData.feilDetaljertByDate[dato]),
@@ -340,7 +340,14 @@ export const useDashboardDataCore = () => {
 		selectedDayPeriodTitle,
 		selectedDayButtonLabel,
 		selectedDayScope,
-		onSelectedDayScopeChange: setSelectedDayScope,
+		onSelectedDayScopeChange: (scope: typeof DAY_SCOPE_YESTERDAY | typeof DAY_SCOPE_TODAY) => {
+			setSelectedDayScope(scope)
+			if (scope === DAY_SCOPE_TODAY && !mockModeEnabled) {
+				mutateDashboardBestillinger()
+				mutateFeilForDager()
+			}
+		},
+		selectedDayDatesCount: selectedDayDates.length,
 		previousDayPeriodData,
 		previousDaySummary: previousDaySummaryWithTotals,
 		previousDayChartOptions,
