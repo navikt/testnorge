@@ -77,6 +77,7 @@ export const PreviousDaySection = ({
 	selectedDayFeilGrupper,
 	selectedDayFeilCount,
 	loadingSelectedDayFeil,
+	selectedDayDatesCount,
 	isLoading = false,
 }: {
 	selectedDayDisplayLabel: string
@@ -90,6 +91,7 @@ export const PreviousDaySection = ({
 	selectedDayFeilGrupper: FeilGruppe[]
 	selectedDayFeilCount: number
 	loadingSelectedDayFeil: boolean
+	selectedDayDatesCount: number
 	isLoading?: boolean
 }) => (
 	<DashboardSectionCard>
@@ -110,7 +112,7 @@ export const PreviousDaySection = ({
 			/>
 			{isLoading ? (
 				<DollySpinner size={120} label="Laster statistikk..." />
-			) : previousDayPeriodData.length === 0 ? (
+			) : selectedDayDatesCount === 0 ? (
 				<Alert variant="info" inline>
 					Ingen data tilgjengelig for valgt dag.
 				</Alert>
@@ -121,10 +123,12 @@ export const PreviousDaySection = ({
 							label="Personer nye/gjenopprettede"
 							value={previousDaySummary.nyeInklGjenopprettede}
 						/>
-						<DashboardChartPanel
-							options={previousDayChartOptions}
-							ariaLabel="Opprettet og gjenopprettet for valgt dag"
-						/>
+						{previousDaySummary.nyeInklGjenopprettede > 0 && (
+							<DashboardChartPanel
+								options={previousDayChartOptions}
+								ariaLabel="Opprettet og gjenopprettet for valgt dag"
+							/>
+						)}
 					</VStack>
 					<Box style={{ display: 'flex', flexDirection: 'column', minHeight: 0, height: '100%' }}>
 						<VStack gap="space-16" style={{ height: '100%', minHeight: 0 }}>
