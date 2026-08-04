@@ -27,6 +27,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_REGISTRE;
 import static no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils.addIdentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regexpQuery;
@@ -39,7 +41,9 @@ public class BestillingQueryService {
     private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
     private static final String OPENSEARCH_ERROR_FALLBACK_IDENT = "99999999999";
+
     private final OpenSearchClient opensearchClient;
+
     @Value("${open.search.index}")
     private String bestillingIndex;
 
@@ -96,7 +100,7 @@ public class BestillingQueryService {
                 identer.addAll(getIdenter(searchResponse));
 
                 var lastHit = searchResponse.hits().hits().getLast();
-                if (lastHit == null || lastHit.sort() == null) {
+                if (isNull(lastHit)) {
                     break;
                 }
 
@@ -123,7 +127,7 @@ public class BestillingQueryService {
     private Set<String> getIdenter(SearchResponse<BestillingIdenter> response) {
 
         var hits = response.hits();
-        if (hits == null || hits.hits() == null) {
+        if (isNull(hits)) {
             return Set.of();
         }
 
@@ -137,8 +141,8 @@ public class BestillingQueryService {
     }
 
     private static boolean hasHits(SearchResponse<BestillingIdenter> response) {
-        return response.hits() != null
-                && response.hits().hits() != null
+
+        return nonNull(response.hits())
                 && !response.hits().hits().isEmpty();
     }
 
