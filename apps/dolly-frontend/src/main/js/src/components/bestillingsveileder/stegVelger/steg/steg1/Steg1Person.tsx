@@ -31,12 +31,14 @@ export const identFraTestnorge = (opts: any) => {
 	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 
-export const Steg1Person = ({ stateModifier }: any) => {
+export const Steg1Person = ({ stateModifier, filterText }: any) => {
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const { watch } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
 	const personFoerLeggTil = opts?.personFoerLeggTil
 	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
+
+	console.log('filterText: ', filterText) //TODO - SLETT MEG
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -71,8 +73,12 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
-			<AdressePanel stateModifier={stateModifier} formValues={formValues} />
+			<PersoninformasjonPanel
+				stateModifier={stateModifier}
+				testnorgeIdent={testnorgeIdent}
+				filterText={filterText}
+			/>
+			<AdressePanel stateModifier={stateModifier} formValues={formValues} filterText={filterText} />
 			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
 			<NavAnsattPanel stateModifier={stateModifier} formValues={formValues} />
