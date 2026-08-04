@@ -88,21 +88,22 @@ const FeilDetaljRadVisning = ({
 		systeminfo: '',
 		stoppet: false,
 	} as Bestillingsstatus
+	const timeOnly = toTimeOnly(rad.sistOppdatert)
 	return (
-		<VStack gap="space-8">
-			<HStack gap="space-8" align="center">
-				<Tag variant="neutral" size="xsmall">
-					{toTimeOnly(rad.sistOppdatert)}
-				</Tag>
-			</HStack>
-			<BestillingResultat
-				bestilling={bestilling}
-				lukkBestilling={() => undefined}
-				erOrganisasjon={false}
-				compact
-				errorMetaFormatter={errorMetaFormatter}
-			/>
-		</VStack>
+		<BestillingResultat
+			bestilling={bestilling}
+			lukkBestilling={() => undefined}
+			erOrganisasjon={false}
+			compact
+			compactHeaderRight={
+				timeOnly ? (
+					<Tag variant="neutral" size="xsmall">
+						{timeOnly}
+					</Tag>
+				) : undefined
+			}
+			errorMetaFormatter={errorMetaFormatter}
+		/>
 	)
 }
 
