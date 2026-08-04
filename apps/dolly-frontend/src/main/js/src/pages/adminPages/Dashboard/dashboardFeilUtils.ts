@@ -264,11 +264,7 @@ export const toFeilGrupper = (detaljert: DashboardFeilDetaljertRad[]): FeilGrupp
 		.map(([feilNokkel, rader]) => ({
 			feilNokkel,
 			label: fagsystemFeilLabel(feilNokkel),
-			rader: rader.sort((a, b) => {
-				const aIdent = a.ident ?? ''
-				const bIdent = b.ident ?? ''
-				return aIdent.localeCompare(bIdent)
-			}),
+			rader: rader.sort((a, b) => b.bestillingId - a.bestillingId),
 		}))
 		.sort((a, b) => {
 			const aLabel = a.label ?? ''
