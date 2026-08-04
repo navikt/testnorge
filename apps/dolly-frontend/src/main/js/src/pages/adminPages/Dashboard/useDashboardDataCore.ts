@@ -153,7 +153,7 @@ export const useDashboardDataCore = () => {
 
 	const currentMonthPrefix = todayDate.slice(0, 7)
 	const extraMonthsForPeriod = useMemo(() => {
-		if (mockModeEnabled) {
+		if (mockModeEnabled || selectedDayScope === DAY_SCOPE_TODAY) {
 			return []
 		}
 		const seen = new Set<string>()
@@ -169,7 +169,7 @@ export const useDashboardDataCore = () => {
 				return month ? { year: parsed.getFullYear(), month } : null
 			})
 			.filter((entry): entry is { year: number; month: string } => entry !== null)
-	}, [mockModeEnabled, previousBusinessPeriod.dates, currentMonthPrefix])
+	}, [mockModeEnabled, selectedDayScope, previousBusinessPeriod.dates, currentMonthPrefix])
 
 	const { bestillingerForMonths: bestillingerForExtraMonths } =
 		useDashboardBestillingerForMonths(extraMonthsForPeriod)
@@ -225,7 +225,7 @@ export const useDashboardDataCore = () => {
 		return month ? [{ year: parsed.getFullYear(), month, day: parsed.getDate() }] : []
 	})
 
-	const { feilForDager, loadingFeilForDager, feilForDagerError, mutateFeilForDager } =
+	const { feilForDager, loadingFeilForDager, feilForDagerError } =
 		useDashboardFeilForDager(mockModeEnabled ? [] : selectedDayFeilDager)
 	const activeSelectedDayFeil = mockModeEnabled
 		? selectedDayDates.flatMap((dato) =>
@@ -383,7 +383,6 @@ export const useDashboardDataCore = () => {
 			setSelectedDayScope(scope)
 			if (scope === DAY_SCOPE_TODAY && !mockModeEnabled) {
 				mutateDashboardBestillinger()
-				mutateFeilForDager()
 			}
 		},
 		selectedDayDatesCount: selectedDayDates.length,

@@ -237,7 +237,7 @@ describe('dashboard sections', () => {
 				previousDayChartOptions={{}}
 				selectedDayFeilGrupper={[
 					{
-						feilNokkel: 'pdlForvalterFeil',
+						feilNoekkel: 'pdlForvalterFeil',
 						label: 'PDL Forvalter',
 						rader: [
 							{
@@ -318,7 +318,7 @@ describe('dashboard sections', () => {
 				previousDayChartOptions={{}}
 				selectedDayFeilGrupper={[
 					{
-						feilNokkel: 'pdlForvalterFeil',
+						feilNoekkel: 'pdlForvalterFeil',
 						label: 'PDL Forvalter',
 						rader: [
 							{
@@ -331,7 +331,7 @@ describe('dashboard sections', () => {
 						],
 					},
 					{
-						feilNokkel: 'aaregFeil',
+						feilNoekkel: 'aaregFeil',
 						label: 'Aareg',
 						rader: [
 							{

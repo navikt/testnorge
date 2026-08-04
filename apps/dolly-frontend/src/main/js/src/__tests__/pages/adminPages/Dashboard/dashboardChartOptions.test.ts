@@ -105,7 +105,7 @@ describe('dashboardChartOptions', () => {
 	it('should create feil-per-fagsystem column chart with one coloured bar per fagsystem', () => {
 		const options = createFeilPerFagsystemChartOptions([
 			{
-				feilNokkel: 'pdlPersonFeil',
+				feilNoekkel: 'pdlPersonFeil',
 				label: 'PDL Person',
 				rader: [
 					{ ident: '1', bestillingId: 1, sistOppdatert: '', type: 'PDL', verdi: 'feil' },
@@ -113,7 +113,7 @@ describe('dashboardChartOptions', () => {
 				],
 			},
 			{
-				feilNokkel: 'andreFeil',
+				feilNoekkel: 'andreFeil',
 				label: 'Andre feil',
 				rader: [{ ident: '3', bestillingId: 3, sistOppdatert: '', type: 'PDL', verdi: 'feil' }],
 			},

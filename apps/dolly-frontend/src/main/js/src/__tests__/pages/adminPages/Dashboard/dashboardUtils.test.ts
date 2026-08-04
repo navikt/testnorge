@@ -423,14 +423,14 @@ describe('dashboardUtils', () => {
 			]
 
 			const feilGrupper = toFeilGrupper(feilRader)
-			const nokler = feilGrupper.map((gruppe) => gruppe.feilNokkel)
+			const noekler = feilGrupper.map((gruppe) => gruppe.feilNoekkel)
 
 			expect(feilGrupper).toHaveLength(2)
-			expect(nokler).toContain('pdlForvalterFeil')
-			expect(nokler).toContain('aaregFeil')
+			expect(noekler).toContain('pdlForvalterFeil')
+			expect(noekler).toContain('aaregFeil')
 
-			const pdlGruppe = feilGrupper.find((gruppe) => gruppe.feilNokkel === 'pdlForvalterFeil')!
-			const aaregGruppe = feilGrupper.find((gruppe) => gruppe.feilNokkel === 'aaregFeil')!
+			const pdlGruppe = feilGrupper.find((gruppe) => gruppe.feilNoekkel === 'pdlForvalterFeil')!
+			const aaregGruppe = feilGrupper.find((gruppe) => gruppe.feilNoekkel === 'aaregFeil')!
 
 			expect(pdlGruppe.rader).toHaveLength(1)
 			expect(pdlGruppe.rader[0].ident).toBe('10000000001')

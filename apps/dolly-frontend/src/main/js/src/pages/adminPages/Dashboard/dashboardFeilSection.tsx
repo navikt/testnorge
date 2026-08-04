@@ -67,7 +67,7 @@ const FeilDetaljRadVisning = ({
 		opprettetFraId: 0,
 		status: [
 			{
-				id: rad.feilNokkel ?? `feil-${rad.bestillingId}`,
+				id: rad.feilNoekkel ?? `feil-${rad.bestillingId}`,
 				navn: fagsystemNavn,
 				statuser: [
 					{
@@ -120,14 +120,14 @@ export const FeilGrupperVisning = ({
 		</Detail>
 		<Accordion size="small">
 			{feilGrupper.map((gruppe) => (
-				<Accordion.Item key={gruppe.feilNokkel}>
+				<Accordion.Item key={gruppe.feilNoekkel}>
 					<Accordion.Header>
 						{gruppe.label} ({gruppe.rader.length})
 					</Accordion.Header>
 					<Accordion.Content>
 						{gruppe.rader.map((rad) => (
 							<FeilDetaljRadVisning
-								key={`${gruppe.feilNokkel}-${rad.bestillingId}-${rad.ident}`}
+								key={`${gruppe.feilNoekkel}-${rad.bestillingId}-${rad.ident}`}
 								rad={rad}
 								fagsystemNavn={gruppe.label}
 							/>

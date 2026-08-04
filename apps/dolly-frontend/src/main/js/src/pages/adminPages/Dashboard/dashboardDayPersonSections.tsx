@@ -77,7 +77,7 @@ export const PreviousDaySection = ({
 	selectedDayFeilGrupper,
 	selectedDayFeilCount,
 	loadingSelectedDayFeil,
-	selectedDayDatesCount = 0,
+	selectedDayDatesCount,
 	isLoading = false,
 }: {
 	selectedDayDisplayLabel: string
@@ -91,7 +91,7 @@ export const PreviousDaySection = ({
 	selectedDayFeilGrupper: FeilGruppe[]
 	selectedDayFeilCount: number
 	loadingSelectedDayFeil: boolean
-	selectedDayDatesCount?: number
+	selectedDayDatesCount: number
 	isLoading?: boolean
 }) => (
 	<DashboardSectionCard>
