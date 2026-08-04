@@ -1,10 +1,23 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
+import * as path from 'path'
+
+const rootDir = import.meta.dirname
 
 export default defineConfig({
 	resolve: {
+		alias: {
+			'@': path.resolve(rootDir, 'src'),
+		},
 		tsconfigPaths: true,
+	},
+	css: {
+		preprocessorOptions: {
+			less: {
+				paths: [path.resolve(rootDir, 'src')],
+			},
+		},
 	},
 	plugins: [react()],
 	optimizeDeps: {
