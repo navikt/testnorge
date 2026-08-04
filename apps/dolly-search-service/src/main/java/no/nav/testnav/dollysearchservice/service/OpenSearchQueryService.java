@@ -88,7 +88,7 @@ public class OpenSearchQueryService {
                 .seed(request.getSeed())
                 .personer(hitsList.stream()
                         .map(Hit::source)
-                        .map(node -> jsonMapper.readTree(nonNull(node) ? node.toString() : null ))
+                        .map(node -> nonNull(node) ? jsonMapper.readTree(node.toString()) : null)
                         .toList())
                 .build();
     }
