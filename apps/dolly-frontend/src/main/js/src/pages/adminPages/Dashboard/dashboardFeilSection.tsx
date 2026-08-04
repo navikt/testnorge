@@ -9,6 +9,7 @@ import {
 	HGrid,
 	HStack,
 	Skeleton,
+	Tag,
 	VStack,
 } from '@navikt/ds-react'
 import BestillingResultat from '@/components/bestilling/statusListe/BestillingResultat/BestillingResultat'
@@ -22,6 +23,15 @@ import {
 import { type FeilDetaljRad, type FeilGruppe, feilVerdiTilMelding } from './dashboardFeilUtils'
 import { useDashboardFeil } from './DashboardFeilContext'
 import type { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
+import { format } from 'date-fns'
+
+const toTimeOnly = (value: string) => {
+	const parsedDate = new Date(value)
+	if (Number.isNaN(parsedDate.getTime())) {
+		return ''
+	}
+	return format(parsedDate, 'HH:mm')
+}
 
 const FeilDetaljRadVisning = ({
 	rad,
@@ -79,13 +89,20 @@ const FeilDetaljRadVisning = ({
 		stoppet: false,
 	} as Bestillingsstatus
 	return (
-		<BestillingResultat
-			bestilling={bestilling}
-			lukkBestilling={() => undefined}
-			erOrganisasjon={false}
-			compact
-			errorMetaFormatter={errorMetaFormatter}
-		/>
+		<VStack gap="space-8">
+			<HStack gap="space-8" align="center">
+				<Tag variant="neutral" size="xsmall">
+					{toTimeOnly(rad.sistOppdatert)}
+				</Tag>
+			</HStack>
+			<BestillingResultat
+				bestilling={bestilling}
+				lukkBestilling={() => undefined}
+				erOrganisasjon={false}
+				compact
+				errorMetaFormatter={errorMetaFormatter}
+			/>
+		</VStack>
 	)
 }
 
