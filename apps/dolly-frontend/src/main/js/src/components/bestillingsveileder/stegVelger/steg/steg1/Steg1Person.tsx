@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
@@ -23,6 +23,8 @@ import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
 import { NavAnsattPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/NavAnsatt'
+import { PanelFilterContext } from '@/components/ui/panel/PanelFilterContext'
+import { Search } from '@navikt/ds-react'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -69,34 +71,46 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	const formValues = watch()
 
+	const [filterText, setFilterText] = useState('')
+
 	return (
-		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
-			<AdressePanel stateModifier={stateModifier} formValues={formValues} />
-			<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
-			<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
-			<NavAnsattPanel stateModifier={stateModifier} formValues={formValues} />
-			<BankinformasjonPanel stateModifier={stateModifier} formValues={formValues} />
-			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
-			<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />
-			<PensjonPanel stateModifier={stateModifier} formValues={formValues} />
-			<ArenaPanel stateModifier={stateModifier} formValues={formValues} />
-			<SykdomPanel stateModifier={stateModifier} formValues={formValues} />
-			<BrregPanel stateModifier={stateModifier} formValues={formValues} />
-			<KontaktDoedsboPanel
-				stateModifier={stateModifier}
-				formValues={formValues}
-				testnorgeIdent={testnorgeIdent}
-			/>
-			<InstitusjonsoppholdPanel stateModifier={stateModifier} formValues={formValues} />
-			<KontaktReservasjonsPanel stateModifier={stateModifier} formValues={formValues} />
-			<MedlPanel stateModifier={stateModifier} formValues={formValues} />
-			<UdiPanel
-				stateModifier={stateModifier}
-				testnorgeIdent={testnorgeIdent}
-				formValues={formValues}
-			/>
-			<DokarkivPanel stateModifier={stateModifier} formValues={formValues} />
-		</AttributtVelger>
+		<PanelFilterContext.Provider value={{ filterText }}>
+			<search style={{ marginBottom: '20px' }}>
+				<Search
+					label="Filtrer egenskaper ..."
+					placeholder="Filtrer egenskaper ..."
+					variant="simple"
+					onChange={(e) => setFilterText(e)}
+				/>
+			</search>
+			<AttributtVelger checked={checked}>
+				<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
+				<AdressePanel stateModifier={stateModifier} formValues={formValues} />
+				<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
+				<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
+				<NavAnsattPanel stateModifier={stateModifier} formValues={formValues} />
+				<BankinformasjonPanel stateModifier={stateModifier} formValues={formValues} />
+				<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
+				<ArbeidssoekerPanel stateModifier={stateModifier} formValues={formValues} />
+				<PensjonPanel stateModifier={stateModifier} formValues={formValues} />
+				<ArenaPanel stateModifier={stateModifier} formValues={formValues} />
+				<SykdomPanel stateModifier={stateModifier} formValues={formValues} />
+				<BrregPanel stateModifier={stateModifier} formValues={formValues} />
+				<KontaktDoedsboPanel
+					stateModifier={stateModifier}
+					formValues={formValues}
+					testnorgeIdent={testnorgeIdent}
+				/>
+				<InstitusjonsoppholdPanel stateModifier={stateModifier} formValues={formValues} />
+				<KontaktReservasjonsPanel stateModifier={stateModifier} formValues={formValues} />
+				<MedlPanel stateModifier={stateModifier} formValues={formValues} />
+				<UdiPanel
+					stateModifier={stateModifier}
+					testnorgeIdent={testnorgeIdent}
+					formValues={formValues}
+				/>
+				<DokarkivPanel stateModifier={stateModifier} formValues={formValues} />
+			</AttributtVelger>
+		</PanelFilterContext.Provider>
 	)
 }
