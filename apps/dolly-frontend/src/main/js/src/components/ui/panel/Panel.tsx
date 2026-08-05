@@ -10,8 +10,13 @@ import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import { useContext } from 'react'
+import { useEffect, useContext, useRef } from 'react'
 import { InlineMessage } from '@navikt/ds-react'
+import {
+	containsCheckedAttributt,
+	countMatchingAttributter,
+	PanelFilterContext,
+} from '@/components/ui/panel/PanelFilterContext'
 
 export default function Panel({
 	startOpen = false,
@@ -28,10 +33,23 @@ export default function Panel({
 	...rest
 }) {
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const { filterText } = useContext(PanelFilterContext)
 	const [isOpen, toggleOpen] = useToggle(startOpen)
-	const shouldOpen = isOpen || forceOpen
 
 	const renderContent = children ? children : content
+
+	const hasCheckedAttributt = containsCheckedAttributt(renderContent)
+	const hadCheckedAttributt = useRef(hasCheckedAttributt)
+	useEffect(() => {
+		if (!hadCheckedAttributt.current && hasCheckedAttributt) {
+			toggleOpen(true)
+		}
+		hadCheckedAttributt.current = hasCheckedAttributt
+	}, [hasCheckedAttributt, toggleOpen])
+
+	const filtering = !!filterText
+	const matchCount = filtering ? countMatchingAttributter(renderContent, filterText) : 0
+	const shouldOpen = isOpen || forceOpen || (filtering && matchCount > 0)
 
 	const check = (e) => {
 		e.stopPropagation()
@@ -41,6 +59,10 @@ export default function Panel({
 	const uncheck = (e) => {
 		e.stopPropagation()
 		uncheckAttributeArray()
+	}
+
+	if (filtering && matchCount === 0) {
+		return null
 	}
 
 	const erAvhengigAvQ1EllerQ2 = (heading: string) => {

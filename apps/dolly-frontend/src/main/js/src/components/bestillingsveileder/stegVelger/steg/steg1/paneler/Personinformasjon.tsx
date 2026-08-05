@@ -21,7 +21,6 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { useFormContext } from 'react-hook-form'
-import { visEgenskap } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Steg1'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -34,7 +33,7 @@ const ignoreKeysTestnorge = [
 const utvandret = 'utvandretTilLand'
 
 // @ts-ignore
-export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent, filterText }) => {
+export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const formMethods = useFormContext()
 	const sm: any = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
@@ -85,35 +84,18 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent, filterTe
 			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.alder}
-					vis={
-						!testnorgeIdent &&
-						!opprettFraEksisterende &&
-						!leggTil &&
-						visEgenskap(sm.attrs.alder.label, filterText)
-					}
+					vis={!testnorgeIdent && !opprettFraEksisterende && !leggTil}
 				/>
-				<Attributt
-					attr={sm.attrs.foedested}
-					vis={visEgenskap(sm.attrs.foedested.label, filterText)}
-				/>
-				<Attributt
-					attr={sm.attrs.foedselsdato}
-					vis={visEgenskap(sm.attrs.foedselsdato.label, filterText)}
-				/>
-				<Attributt
-					attr={sm.attrs.doedsdato}
-					vis={visEgenskap(sm.attrs.doedsdato.label, filterText)}
-				/>
+				<Attributt attr={sm.attrs.foedested} />
+				<Attributt attr={sm.attrs.foedselsdato} />
+				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.statsborgerskap}
-					vis={visEgenskap(sm.attrs.statsborgerskap.label, filterText)}
-				/>
+				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					vis={!testnorgeIdent && visEgenskap(sm.attrs.innvandretFraLand.label, filterText)}
+					vis={!testnorgeIdent}
 					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(!harFnr &&
@@ -124,7 +106,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent, filterTe
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					vis={!testnorgeIdent && visEgenskap(sm.attrs.utvandretTilLand.label, filterText)}
+					vis={!testnorgeIdent}
 					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(!harFnr &&
@@ -135,18 +117,12 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent, filterTe
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse" attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.kjonn}
-					vis={!opprettFraEksisterende && visEgenskap(sm.attrs.kjonn.label, filterText)}
-				/>
-				<Attributt attr={sm.attrs.navn} vis={visEgenskap(sm.attrs.navn.label, filterText)} />
-				<Attributt
-					attr={sm.attrs.telefonnummer}
-					vis={visEgenskap(sm.attrs.telefonnummer.label, filterText)}
-				/>
+				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
+				<Attributt attr={sm.attrs.navn} />
+				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
-					vis={!testnorgeIdent && visEgenskap(sm.attrs.vergemaal.label, filterText)}
+					vis={!testnorgeIdent}
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
@@ -156,18 +132,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent, filterTe
 				/>
 				<Attributt
 					attr={sm.attrs.fullmakt}
-					vis={visEgenskap(sm.attrs.fullmakt.label, filterText)}
 					disabled={testnorgeIdent && ukjentGruppe}
 					title={(testnorgeIdent && ukjentGruppe && tekstUkjentGruppe) || ''}
 				/>
-				<Attributt
-					attr={sm.attrs.sikkerhetstiltak}
-					vis={visEgenskap(sm.attrs.sikkerhetstiltak.label, filterText)}
-				/>
-				<Attributt
-					attr={sm.attrs.tilrettelagtKommunikasjon}
-					vis={visEgenskap(sm.attrs.tilrettelagtKommunikasjon.label, filterText)}
-				/>
+				<Attributt attr={sm.attrs.sikkerhetstiltak} />
+				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
 		</Panel>
 	)

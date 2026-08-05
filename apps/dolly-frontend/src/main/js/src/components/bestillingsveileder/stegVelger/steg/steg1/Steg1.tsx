@@ -6,10 +6,7 @@ import {
 import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
 import { Search } from '@navikt/ds-react'
-
-export const visEgenskap = (label, filterText) => {
-	return !filterText || label?.toLowerCase().includes(filterText.toLowerCase())
-}
+import { PanelFilterContext } from '@/components/ui/panel/PanelFilterContext'
 
 const Steg1 = ({ stateModifier }) => {
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
@@ -17,7 +14,7 @@ const Steg1 = ({ stateModifier }) => {
 	const [filterText, setFilterText] = useState('')
 
 	return (
-		<>
+		<PanelFilterContext.Provider value={{ filterText }}>
 			<search style={{ marginBottom: '20px' }}>
 				<Search
 					label="Filtrer egenskaper ..."
@@ -31,9 +28,9 @@ const Steg1 = ({ stateModifier }) => {
 			opts?.is?.nyOrganisasjonFraMal ? (
 				<Steg1Organisasjon stateModifier={stateModifier} />
 			) : (
-				<Steg1Person stateModifier={stateModifier} filterText={filterText} />
+				<Steg1Person stateModifier={stateModifier} />
 			)}
-		</>
+		</PanelFilterContext.Provider>
 	)
 }
 

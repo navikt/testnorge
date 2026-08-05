@@ -16,7 +16,7 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const AdressePanel = ({ stateModifier, formValues, filterText }: any) => {
+export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
 	const opts: any = useContext(BestillingsveilederContext)
 	const { currentBruker } = useCurrentBruker()
