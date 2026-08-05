@@ -14,6 +14,7 @@ interface AttrItem {
 	add: () => void
 	remove: () => void
 }
+
 interface AttributtProps {
 	attr: AttrItem
 	vis?: boolean
@@ -24,6 +25,7 @@ interface AttributtProps {
 	infoTekst?: string
 	[key: string]: any
 }
+
 export const Attributt: React.FC<AttributtProps> = ({
 	attr,
 	vis = true,
@@ -58,6 +60,7 @@ interface AttributtKategoriProps {
 	children: React.ReactNode
 	attr: Record<string, AttrItem>
 }
+
 export const AttributtKategori: React.FC<AttributtKategoriProps> = ({
 	title = undefined,
 	children,
