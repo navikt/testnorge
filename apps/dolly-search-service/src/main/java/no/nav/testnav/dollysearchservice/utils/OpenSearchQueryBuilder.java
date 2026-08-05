@@ -2,8 +2,12 @@ package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
+import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionBoostMode;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScore;
 import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch._types.query_dsl.RandomScoreFunction;
 
@@ -12,6 +16,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseMatrikkelQuery;
@@ -52,26 +57,34 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addSivilstandQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addStatsborgerskapQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addVergemaalQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.termsQuery;
 
 @UtilityClass
 public class OpenSearchQueryBuilder {
 
-    private static final Random SEED = new SecureRandom();
+    private static final Random RANDOM = new SecureRandom();
 
-    public static BoolQuery.Builder buildSearchQuery(SearchRequest request) {
+    public static FunctionScoreQuery.Builder buildSearchQuery(SearchRequest request) {
 
-        var queryBuilder = QueryBuilders.bool()
-                .must(q -> q.functionScore(getRandomScoreQueryBuilder(request)));
-
+        var queryBuilder = QueryBuilders.bool();
         setPersonQuery(queryBuilder, request);
+        addIdenterQuery(queryBuilder, request.getIdenter());
+        tagsMustQuery(queryBuilder, request);
+        tagsMustNotQuery(queryBuilder, request);
 
-        return queryBuilder;
+        return new FunctionScoreQuery.Builder()
+                .functions(getRandomScore(request))
+                .boostMode(FunctionBoostMode.Replace)
+                .query(Query.builder()
+                        .bool(queryBuilder.build())
+                        .build());
     }
 
     private static void setPersonQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest())
-                .ifPresent(value -> {
+                .ifPresent(_ -> {
 
                     addAlderQuery(queryBuilder, request);
                     addFoedselsdatoQuery(queryBuilder, request);
@@ -117,15 +130,31 @@ public class OpenSearchQueryBuilder {
                 });
     }
 
-    private static FunctionScoreQuery getRandomScoreQueryBuilder(SearchRequest request) {
+    private static FunctionScore getRandomScore(SearchRequest request) {
 
-        if (isNull(request.getSeed())){
-            request.setSeed(SEED.nextInt());
+        if (isNull(request.getSeed())) {
+            request.setSeed(RANDOM.nextInt());
         }
 
-        return QueryBuilders.functionScore()
-                .functions(q1 -> q1.randomScore(
-                        RandomScoreFunction.of(q2 -> q2.seed(request.getSeed().toString()))))
+        return new FunctionScore.Builder()
+                .randomScore(new RandomScoreFunction.Builder()
+                        .seed(JsonData.of(request.getSeed()))  // Keeps the random order consistent for a single user/session
+                        .field("_seq_no")     // Recommended unique field to avoid document duplicates within shards
+                        .build())
                 .build();
+    }
+
+    private static void tagsMustQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        if (!request.getMustHaveTags().isEmpty()) {
+            queryBuilder.must(q -> q.match(matchQuery("tags", request.getMustHaveTags())));
+        }
+    }
+
+    private static void tagsMustNotQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        if (!request.getMustNotHaveTags().isEmpty()) {
+            queryBuilder.mustNot(q -> q.terms(termsQuery("tags", request.getMustNotHaveTags())));
+        }
     }
 }

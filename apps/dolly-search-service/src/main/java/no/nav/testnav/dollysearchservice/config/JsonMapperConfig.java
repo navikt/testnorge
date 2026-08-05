@@ -1,15 +1,20 @@
 package no.nav.testnav.dollysearchservice.config;
 
-import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.ValueDeserializer;
 import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 
 import java.time.LocalDate;
@@ -23,13 +28,24 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class JsonMapperConfig {
 
     @Bean
-    public CaseInsensitiveEnumModule caseInsensitiveEnumModule() {
-        return new CaseInsensitiveEnumModule();
+    @Primary
+    public JsonMapper jsonMapper() {
+        return JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+                .addModule(dollyDateTimeModule())
+                .build();
     }
 
     @Bean
     public SimpleModule dollyDateTimeModule() {
-        return new SimpleModule("dollyDateTimeModule")
+        return new SimpleModule()
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer())
                 .addDeserializer(LocalDate.class, new DollyLocalDateDeserializer())
@@ -63,10 +79,10 @@ public class JsonMapperConfig {
         @Override
         public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            if (isBlank(node.asString())) {
                 return null;
             }
-            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
+            return ZonedDateTime.parse(node.asString(), DateTimeFormatter.ISO_DATE_TIME);
         }
     }
 
@@ -74,10 +90,10 @@ public class JsonMapperConfig {
         @Override
         public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            if (isBlank(node.asString())) {
                 return null;
             }
-            var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
+            var dateTime = node.asString().length() > 10 ? node.asString().substring(0, 10) : node.asString();
             return LocalDate.parse(dateTime);
         }
     }
@@ -86,10 +102,10 @@ public class JsonMapperConfig {
         @Override
         public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
             JsonNode node = jsonParser.readValueAsTree();
-            if (isBlank(node.asText())) {
+            if (isBlank(node.asString())) {
                 return null;
             }
-            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            var dateTime = node.asString().length() > 19 ? node.asString().substring(0, 19) : node.asString();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }
