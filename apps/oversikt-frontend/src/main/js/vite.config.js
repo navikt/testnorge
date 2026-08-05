@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
-import proxyRoutes from './proxy-routes.json'
+import proxyRoutes from './proxy-routes.json' with { type: 'json' }
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 

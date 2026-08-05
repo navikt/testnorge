@@ -61,21 +61,21 @@ const FAGSYSTEM_FEIL_LABELS: Record<string, string> = {
 	yrkesskadeFeil: 'Yrkesskade',
 }
 
-export const statusFeltTilFeilNokkel = (key: string): string => {
+export const statusFeltTilFeilNoekkel = (key: string): string => {
 	if (key === 'feil') {
 		return 'andreFeil'
 	}
 	return key.endsWith('Status') ? key.replace(/Status$/, 'Feil') : key
 }
 
-const humanizeFeilNokkel = (feilKey: string): string => {
+const humanizeFeilNoekkel = (feilKey: string): string => {
 	const utenSuffix = feilKey.replace(/Feil$/, '')
 	const medMellomrom = utenSuffix.replace(/([a-z])([A-Z])/g, '$1 $2')
 	return medMellomrom.charAt(0).toUpperCase() + medMellomrom.slice(1)
 }
 
 export const fagsystemFeilLabel = (feilKey: string): string =>
-	FAGSYSTEM_FEIL_LABELS[feilKey] ?? humanizeFeilNokkel(feilKey)
+	FAGSYSTEM_FEIL_LABELS[feilKey] ?? humanizeFeilNoekkel(feilKey)
 
 export type FeilPeriodeOption = {
 	interval: string
@@ -159,7 +159,7 @@ export type FeilDagPunkt = {
 
 export type FeilSummertView = {
 	punkter: FeilDagPunkt[]
-	fagsystemNokler: string[]
+	fagsystemNoekler: string[]
 }
 
 const asAntall = (value: number | string | undefined): number => {
@@ -171,7 +171,7 @@ const asAntall = (value: number | string | undefined): number => {
 }
 
 export const toFeilSummertView = (summert: DashboardFeilSummertRad[]): FeilSummertView => {
-	const totalPerNokkel = new Map<string, number>()
+	const totalPerNoekkel = new Map<string, number>()
 
 	const punkter = summert
 		.map((rad) => {
@@ -180,17 +180,17 @@ export const toFeilSummertView = (summert: DashboardFeilSummertRad[]): FeilSumme
 			const perFagsystem: Record<string, number> = {}
 			let total = 0
 
-			Object.entries(rad).forEach(([nokkel, verdi]) => {
-				if (nokkel === 'bestillingDato') {
+			Object.entries(rad).forEach(([noekkel, verdi]) => {
+				if (noekkel === 'bestillingDato') {
 					return
 				}
 				const antall = asAntall(verdi)
 				if (antall <= 0) {
 					return
 				}
-				perFagsystem[nokkel] = antall
+				perFagsystem[noekkel] = antall
 				total += antall
-				totalPerNokkel.set(nokkel, (totalPerNokkel.get(nokkel) ?? 0) + antall)
+				totalPerNoekkel.set(noekkel, (totalPerNoekkel.get(noekkel) ?? 0) + antall)
 			})
 
 			return {
@@ -204,15 +204,15 @@ export const toFeilSummertView = (summert: DashboardFeilSummertRad[]): FeilSumme
 		.filter((punkt) => Number.isFinite(punkt.dag))
 		.sort((a, b) => a.dag - b.dag)
 
-	const fagsystemNokler = [...totalPerNokkel.entries()]
+	const fagsystemNoekler = [...totalPerNoekkel.entries()]
 		.sort((a, b) => {
 			const aKey = a[0] ?? ''
 			const bKey = b[0] ?? ''
 			return b[1] - a[1] || aKey.localeCompare(bKey)
 		})
-		.map(([nokkel]) => nokkel)
+		.map(([noekkel]) => noekkel)
 
-	return { punkter, fagsystemNokler }
+	return { punkter, fagsystemNoekler }
 }
 
 const intervalDagVisning = (dato: string): string => {
@@ -233,7 +233,7 @@ export type FeilDetaljRad = {
 }
 
 export type FeilGruppe = {
-	feilNokkel: string
+	feilNoekkel: string
 	label: string
 	rader: FeilDetaljRad[]
 }
@@ -242,12 +242,12 @@ export const toFeilGrupper = (detaljert: DashboardFeilDetaljertRad[]): FeilGrupp
 	const grupper = new Map<string, FeilDetaljRad[]>()
 
 	detaljert.forEach((rad) => {
-		Object.entries(rad).forEach(([nokkel, verdi]) => {
-			if (IDENTITETSFELT.has(nokkel)) {
+		Object.entries(rad).forEach(([noekkel, verdi]) => {
+			if (IDENTITETSFELT.has(noekkel)) {
 				return
 			}
-			const feilNokkel = statusFeltTilFeilNokkel(nokkel)
-			const eksisterende = grupper.get(feilNokkel) ?? []
+			const feilNoekkel = statusFeltTilFeilNoekkel(noekkel)
+			const eksisterende = grupper.get(feilNoekkel) ?? []
 			const typeVerdi = rad.type ?? rad.master ?? ''
 			eksisterende.push({
 				ident: rad.ident,
@@ -256,19 +256,15 @@ export const toFeilGrupper = (detaljert: DashboardFeilDetaljertRad[]): FeilGrupp
 				type: typeVerdi,
 				verdi,
 			})
-			grupper.set(feilNokkel, eksisterende)
+			grupper.set(feilNoekkel, eksisterende)
 		})
 	})
 
 	return [...grupper.entries()]
-		.map(([feilNokkel, rader]) => ({
-			feilNokkel,
-			label: fagsystemFeilLabel(feilNokkel),
-			rader: rader.sort((a, b) => {
-				const aIdent = a.ident ?? ''
-				const bIdent = b.ident ?? ''
-				return aIdent.localeCompare(bIdent)
-			}),
+		.map(([feilNoekkel, rader]) => ({
+			feilNoekkel,
+			label: fagsystemFeilLabel(feilNoekkel),
+			rader: rader.sort((a, b) => b.bestillingId - a.bestillingId),
 		}))
 		.sort((a, b) => {
 			const aLabel = a.label ?? ''

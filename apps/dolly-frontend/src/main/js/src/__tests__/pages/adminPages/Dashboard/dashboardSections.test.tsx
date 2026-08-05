@@ -158,6 +158,7 @@ describe('dashboard sections', () => {
 				selectedDayFeilGrupper={[]}
 				selectedDayFeilCount={0}
 				loadingSelectedDayFeil={false}
+				selectedDayDatesCount={3}
 			/>,
 		)
 
@@ -199,6 +200,7 @@ describe('dashboard sections', () => {
 				selectedDayFeilGrupper={[]}
 				selectedDayFeilCount={0}
 				loadingSelectedDayFeil={false}
+				selectedDayDatesCount={1}
 			/>,
 		)
 
@@ -235,7 +237,7 @@ describe('dashboard sections', () => {
 				previousDayChartOptions={{}}
 				selectedDayFeilGrupper={[
 					{
-						feilNokkel: 'pdlForvalterFeil',
+						feilNoekkel: 'pdlForvalterFeil',
 						label: 'PDL Forvalter',
 						rader: [
 							{
@@ -257,6 +259,7 @@ describe('dashboard sections', () => {
 				]}
 				selectedDayFeilCount={1}
 				loadingSelectedDayFeil={false}
+				selectedDayDatesCount={1}
 			/>,
 		)
 
@@ -267,5 +270,103 @@ describe('dashboard sections', () => {
 		expect(
 			screen.getByText('1 bestilling(er) med feil, fordelt over 1 fagsystem.'),
 		).toBeInTheDocument()
+	})
+
+	it('should hide persons donut but show section when dates exist and there are no bestillinger', () => {
+		render(
+			<PreviousDaySection
+				selectedDayDisplayLabel="05.06.2026–07.06.2026"
+				selectedDayPeriodTitle="Siste hverdag + helg"
+				selectedDayButtonLabel="Siste hverdag + helg"
+				selectedDayScope="YESTERDAY"
+				onSelectedDayScopeChange={vi.fn()}
+				previousDayPeriodData={[]}
+				previousDaySummary={{ nye: 0, gjenopprettede: 0, nyeInklGjenopprettede: 0 }}
+				previousDayChartOptions={{}}
+				selectedDayFeilGrupper={[]}
+				selectedDayFeilCount={0}
+				loadingSelectedDayFeil={false}
+				selectedDayDatesCount={3}
+			/>,
+		)
+
+		expect(screen.getByText('Personer nye/gjenopprettede')).toBeInTheDocument()
+		expect(screen.queryByText('Ingen data tilgjengelig for valgt dag.')).not.toBeInTheDocument()
+		expect(screen.queryByText('Opprettet og gjenopprettet for valgt dag')).not.toBeInTheDocument()
+	})
+
+	it('should aggregate KPIs and feil list across friday, saturday and sunday on monday', () => {
+		render(
+			<PreviousDaySection
+				selectedDayDisplayLabel="05.06.2026–07.06.2026"
+				selectedDayPeriodTitle="Siste hverdag + helg"
+				selectedDayButtonLabel="Siste hverdag + helg"
+				selectedDayScope="YESTERDAY"
+				onSelectedDayScopeChange={vi.fn()}
+				previousDayPeriodData={[
+					{
+						dato: '2026-06-05',
+						bestillinger: 5,
+						personerTotalt: 4,
+						nye: 3,
+						gjenopprettede: 1,
+						navIdenter: 3,
+						testnorgeIdenter: 1,
+					},
+				]}
+				previousDaySummary={{ nye: 3, gjenopprettede: 1, nyeInklGjenopprettede: 4 }}
+				previousDayChartOptions={{}}
+				selectedDayFeilGrupper={[
+					{
+						feilNoekkel: 'pdlForvalterFeil',
+						label: 'PDL Forvalter',
+						rader: [
+							{
+								ident: '10000000001',
+								bestillingId: 10,
+								sistOppdatert: '2026-06-05T09:00:00',
+								type: 'PDL',
+								verdi: 'Feil på fredag',
+							},
+						],
+					},
+					{
+						feilNoekkel: 'aaregFeil',
+						label: 'Aareg',
+						rader: [
+							{
+								ident: '10000000002',
+								bestillingId: 20,
+								sistOppdatert: '2026-06-07T11:00:00',
+								type: 'Aareg TESTNORGE-IDENT',
+								verdi: 'Feil på søndag',
+							},
+						],
+					},
+				]}
+				selectedDayFeilCount={2}
+				loadingSelectedDayFeil={false}
+				selectedDayDatesCount={3}
+			/>,
+		)
+
+		expect(
+			screen.getByRole('heading', { name: /Statistikk for siste hverdag \+ helg/ }),
+		).toBeInTheDocument()
+
+		expect(screen.getByText('Personer nye/gjenopprettede')).toBeInTheDocument()
+		expect(screen.getByText('4')).toBeInTheDocument()
+		expect(screen.getByText('Bestillinger med feil')).toBeInTheDocument()
+		expect(screen.getByText('2')).toBeInTheDocument()
+
+		expect(screen.queryByText('Ingen data tilgjengelig for valgt dag.')).not.toBeInTheDocument()
+		expect(screen.getByText('Opprettet og gjenopprettet for valgt dag')).toBeInTheDocument()
+
+		expect(
+			screen.getByRole('heading', { name: 'Feil registrert 05.06.2026–07.06.2026' }),
+		).toBeInTheDocument()
+		expect(screen.getByText('PDL Forvalter (1)')).toBeInTheDocument()
+		expect(screen.getByText('Aareg (1)')).toBeInTheDocument()
+		expect(screen.getByText('2 bestilling(er) med feil, fordelt over 2 fagsystem.')).toBeInTheDocument()
 	})
 })

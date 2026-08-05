@@ -3,11 +3,13 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { playwright } from '@vitest/browser-playwright';
 
+const rootDir = import.meta.dirname;
+
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '#': path.resolve(__dirname, './playwright'),
+      '@': path.resolve(rootDir, './src'),
+      '#': path.resolve(rootDir, './playwright'),
     },
   },
   plugins: [react()],

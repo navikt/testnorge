@@ -16,7 +16,7 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
+    implementation "org.opensearch.client:opensearch-java:3.9.0"
     implementation "org.apache.httpcomponents.client5:httpclient5"
     implementation "com.fasterxml.jackson.core:jackson-databind"
 
