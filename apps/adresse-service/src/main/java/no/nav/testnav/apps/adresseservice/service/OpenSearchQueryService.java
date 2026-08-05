@@ -14,7 +14,7 @@ import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.ErrorCause;
 import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -57,13 +57,13 @@ public class OpenSearchQueryService {
         return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO(), new MatrikkeladresseDTO(), antall);
     }
 
-    private <S, T> Mono<List<T>> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
+    private <S, T> Mono<List<T>> execQuery(FunctionScoreQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
         try {
             val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
                     .index(adresseIndex)
                     .query(new Query.Builder()
-                            .bool(queryBuilder.build())
+                            .functionScore(queryBuilder.build())
                             .build())
                     .size(antall.intValue())
                     .timeout("3s")
@@ -89,7 +89,7 @@ public class OpenSearchQueryService {
 
     private <T, S> List<T> formatResponse(SearchResponse<JsonNode> response, S kilde, T destinasjon) {
 
-        if (nonNull(response.hits()) && nonNull(response.hits().hits())) {
+        if (nonNull(response.hits())) {
 
             return response.hits().hits().stream()
                     .map(Hit::source)

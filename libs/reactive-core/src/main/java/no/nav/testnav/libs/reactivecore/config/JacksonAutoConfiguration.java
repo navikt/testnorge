@@ -25,7 +25,7 @@ public class JacksonAutoConfiguration {
     // Følgende er lagt til for å støtte OpenSearch som pt benytter Jackson 2
 
     @Bean
-    @ConditionalOnMissingBean(com.fasterxml.jackson.databind.ObjectMapper.class)
+    @ConditionalOnMissingBean(ObjectMapper.class)
     public ObjectMapper objectMapper() {
         var simpleModule = new com.fasterxml.jackson.databind.module.SimpleModule()
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer2())
