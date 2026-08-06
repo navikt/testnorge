@@ -2,6 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { BostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import { Adresse, BoadresseVisning } from '@/components/fagsystem/pdlf/visning/partials/Boadresse'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type PdlBoadresseProps = {
 	data: Array<BostedData>
@@ -65,8 +66,12 @@ export const PdlBoadresse = ({
 		return null
 	}
 
-	const gyldigeAdresser = data.filter((adresse: BostedData) => !adresse.metadata?.historisk)
-	const historiskeAdresser = data.filter((adresse: BostedData) => adresse.metadata?.historisk)
+	const gyldigeAdresser = sortPdlItems(
+		data.filter((adresse: BostedData) => !adresse.metadata?.historisk),
+	)
+	const historiskeAdresser = sortPdlItems(
+		data.filter((adresse: BostedData) => adresse.metadata?.historisk),
+	)
 
 	return (
 		<>

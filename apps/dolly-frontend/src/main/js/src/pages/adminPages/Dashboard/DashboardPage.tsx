@@ -88,6 +88,7 @@ export default () => {
 							selectedDayButtonLabel={coreData.selectedDayButtonLabel}
 							selectedDayScope={coreData.selectedDayScope}
 							onSelectedDayScopeChange={coreData.onSelectedDayScopeChange}
+							selectedDayDatesCount={coreData.selectedDayDatesCount}
 							previousDayPeriodData={coreData.previousDayPeriodData}
 							previousDaySummary={coreData.previousDaySummary}
 							previousDayChartOptions={coreData.previousDayChartOptions}

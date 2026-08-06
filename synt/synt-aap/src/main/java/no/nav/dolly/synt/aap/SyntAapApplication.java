@@ -13,7 +13,7 @@ import java.util.List;
 @SpringBootApplication
 public class SyntAapApplication {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         new SpringApplicationBuilder(SyntAapApplication.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);

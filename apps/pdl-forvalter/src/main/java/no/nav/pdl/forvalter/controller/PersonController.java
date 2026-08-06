@@ -40,7 +40,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.r2dbc.UncategorizedR2dbcException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +53,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
@@ -96,7 +98,6 @@ public class PersonController {
         return personService.updatePerson(ident, request, relaxed);
     }
 
-    @Transactional
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public Mono<OrdreResponseDTO> sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
@@ -105,7 +106,10 @@ public class PersonController {
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
         return metadataTidspunkterService.updateMetadata(ident)
-                .then(pdlOrdreService.send(ident, ekskluderEksternePersoner));
+                .then(pdlOrdreService.send(ident, ekskluderEksternePersoner))
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(50))
+                        .filter(e -> e instanceof UncategorizedR2dbcException ue
+                                     && ue.getMessage().contains("deadlock")));
     }
 
     @DeleteMapping(value = "/{ident}")

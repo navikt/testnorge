@@ -37,6 +37,7 @@ type ResultatProps = {
 	lukkBestilling: Function
 	erOrganisasjon: boolean
 	compact?: boolean
+	compactHeaderRight?: React.ReactNode
 	errorMetaFormatter?: Parameters<typeof BestillingStatus>[0]['errorMetaFormatter']
 }
 
@@ -58,6 +59,7 @@ export default function BestillingResultat({
 	lukkBestilling,
 	erOrganisasjon,
 	compact = false,
+	compactHeaderRight,
 	errorMetaFormatter,
 }: ResultatProps) {
 	const [showConfetti, setShowConfetti] = useState(false)
@@ -84,8 +86,11 @@ export default function BestillingResultat({
 		<div className="bestilling-status" key={`ferdig-bestilling-${bestilling.id}`}>
 			<div className="bestilling-resultat">
 				{compact ? (
-					<div className="status-header">
-						<h3>Bestilling #{bestilling.id}</h3>
+					<div className="status-header status-header_compact">
+						<p className="status-header_compact-left">Bestilling #{bestilling.id}</p>
+						{compactHeaderRight && (
+							<div className="status-header_compact-right">{compactHeaderRight}</div>
+						)}
 					</div>
 				) : (
 					<div className="status-header">

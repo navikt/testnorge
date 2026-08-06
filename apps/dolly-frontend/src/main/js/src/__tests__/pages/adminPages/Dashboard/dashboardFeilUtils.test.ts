@@ -4,7 +4,7 @@ import {
 	feilVerdiTilMelding,
 	feilVerdiTilTekst,
 	monthNumberToName,
-	statusFeltTilFeilNokkel,
+	statusFeltTilFeilNoekkel,
 	toFeilGrupper,
 	toFeilPeriodeOptions,
 	toFeilSummertView,
@@ -24,9 +24,9 @@ describe('dashboardFeilUtils', () => {
 	})
 
 	it('should translate status fields to feil keys', () => {
-		expect(statusFeltTilFeilNokkel('feil')).toBe('andreFeil')
-		expect(statusFeltTilFeilNokkel('pdlPersonStatus')).toBe('pdlPersonFeil')
-		expect(statusFeltTilFeilNokkel('aaregStatus')).toBe('aaregFeil')
+		expect(statusFeltTilFeilNoekkel('feil')).toBe('andreFeil')
+		expect(statusFeltTilFeilNoekkel('pdlPersonStatus')).toBe('pdlPersonFeil')
+		expect(statusFeltTilFeilNoekkel('aaregStatus')).toBe('aaregFeil')
 	})
 
 	it('should label known fagsystem keys and humanize unknown ones', () => {
@@ -95,9 +95,9 @@ describe('dashboardFeilUtils', () => {
 		expect(view.punkter[0].total).toBe(4)
 		expect(view.punkter[0].perFagsystem).toEqual({ pdlPersonFeil: 1, aaregFeil: 3 })
 		expect(view.punkter[1].perFagsystem).toEqual({ pdlPersonFeil: 2 })
-		expect(view.fagsystemNokler).toContain('pdlPersonFeil')
-		expect(view.fagsystemNokler).toContain('aaregFeil')
-		expect(view.fagsystemNokler).not.toContain('andreFeil')
+		expect(view.fagsystemNoekler).toContain('pdlPersonFeil')
+		expect(view.fagsystemNoekler).toContain('aaregFeil')
+		expect(view.fagsystemNoekler).not.toContain('andreFeil')
 	})
 
 	it('should group detaljert rows per fagsystem', () => {
@@ -121,14 +121,14 @@ describe('dashboardFeilUtils', () => {
 
 		const grupper = toFeilGrupper(detaljert)
 
-		const pdlGruppe = grupper.find((gruppe) => gruppe.feilNokkel === 'pdlPersonFeil')
-		const andreGruppe = grupper.find((gruppe) => gruppe.feilNokkel === 'andreFeil')
+		const pdlGruppe = grupper.find((gruppe) => gruppe.feilNoekkel === 'pdlPersonFeil')
+		const andreGruppe = grupper.find((gruppe) => gruppe.feilNoekkel === 'andreFeil')
 
 		expect(pdlGruppe?.rader).toHaveLength(2)
 		expect(pdlGruppe?.label).toBe('PDL Person')
 		expect(pdlGruppe?.rader.map((rad) => rad.ident)).toEqual(['01', '02'])
 		expect(andreGruppe?.rader).toHaveLength(1)
-		expect(grupper[0].feilNokkel).toBe('pdlPersonFeil')
+		expect(grupper[0].feilNoekkel).toBe('pdlPersonFeil')
 	})
 
 	it('should pretty-print structured feil values and detect them', () => {

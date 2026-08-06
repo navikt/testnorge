@@ -147,11 +147,22 @@ export type SivilstandData = {
 	nyRelatertPerson?: NyIdent
 	metadata: Metadata
 	master?: string
+	folkeregistermetadata?: { gyldighetstidspunkt?: string; opphoerstidspunkt?: string }
+}
+
+export type Endring = {
+	kilde: string
+	registrert: string
+	registrertAv: string
+	systemkilde: string
+	type: string
+	hendelseId: string
 }
 
 export type Metadata = {
 	historisk: boolean
 	master?: string
+	endringer?: Endring[]
 }
 
 export enum Rolle {

@@ -33,6 +33,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
             "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}," +
                     "\"number_of_shards\":4," +
                     "\"number_of_replicas\":1}}}";
+    private static final int EXISTS_CHECK_CONCURRENCY = 20;
 
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingRepository bestillingRepository;
@@ -84,8 +85,8 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .filter(bestilling -> isNotBlank(bestilling.getBestKriterier()) &&
                         !"{}".equals(bestilling.getBestKriterier()))
                 .flatMap(bestilling -> openSearchService.exists(bestilling.getId())
-                        .zipWith(Mono.just(bestilling)))
-                .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
+                        .zipWith(Mono.just(bestilling)), EXISTS_CHECK_CONCURRENCY)
+                .filter(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
                 .flatMap(tuple ->
                         bestillingProgressRepository.findAllByBestillingId(tuple.getT2().getId())
                                 .collectList()

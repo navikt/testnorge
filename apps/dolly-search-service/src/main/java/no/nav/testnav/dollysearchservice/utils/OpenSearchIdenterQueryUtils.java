@@ -3,7 +3,12 @@ package no.nav.testnav.dollysearchservice.utils;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.IdentSearch;
+import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionBoostMode;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScore;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch._types.query_dsl.RandomScoreFunction;
 
@@ -14,6 +19,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.FOLKEREGISTERIDENTIFIKATOR;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HENT_IDENTER;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
@@ -32,7 +38,7 @@ public class OpenSearchIdenterQueryUtils {
 
     private static final Random RANDOM = new SecureRandom();
 
-    public static BoolQuery.Builder buildTestnorgeIdentSearchQuery(IdentSearch search) {
+    public static FunctionScoreQuery.Builder buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
         var identer = new HashSet<>(search.getIdenter());
         if (isNotBlank(search.getIdent()) && search.getIdent().length() == 11) {
@@ -45,17 +51,23 @@ public class OpenSearchIdenterQueryUtils {
         addIdentQuery(queryBuilder, search);
         addNameQuery(queryBuilder, search);
         addIdenterQuery(queryBuilder, identer);
-        addRandomScoreQuery(queryBuilder);
 
-        return queryBuilder;
+        return new FunctionScoreQuery.Builder()
+                .functions(getRandomScoreQuery())
+                .boostMode(FunctionBoostMode.Replace)
+                .query(Query.builder()
+                        .bool(queryBuilder.build())
+                        .build());
     }
 
-    private static void addRandomScoreQuery(BoolQuery.Builder queryBuilder) {
+    private static FunctionScore getRandomScoreQuery() {
 
-        queryBuilder.must(q -> q.functionScore(QueryBuilders.functionScore()
-                .functions(q2 -> q2.randomScore(RandomScoreFunction.of(q3 -> q3
-                        .seed(Long.toString(RANDOM.nextLong())))))
-                .build()));
+        return new FunctionScore.Builder()
+                .randomScore(new RandomScoreFunction.Builder()
+                        .seed(JsonData.of(RANDOM.nextLong()))  // Keeps the random order consistent for a single user/session
+                        .field("_seq_no")     // Recommended unique field to avoid document duplicates within shards
+                        .build())
+                .build();
     }
 
     private static void addTagsQueries(BoolQuery.Builder queryBuilder, List<String> tags) {
@@ -99,8 +111,10 @@ public class OpenSearchIdenterQueryUtils {
 
     public static void addIdenterQuery(BoolQuery.Builder queryBuilder, Set<String> identer) {
 
-        queryBuilder
-                .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, "ident", identer)));
+        if (nonNull(identer) && !identer.isEmpty()) {
+            queryBuilder
+                    .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, "ident", identer)));
+        }
     }
 
     private static void addIdentQuery(BoolQuery.Builder queryBuilder, IdentSearch search) {
