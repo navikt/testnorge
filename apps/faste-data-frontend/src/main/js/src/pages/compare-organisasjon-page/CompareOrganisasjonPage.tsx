@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
 import { CompareCodeView } from '@/components/compare-code-view';
 import { OrganisasjonComperator } from '@/comperator';
