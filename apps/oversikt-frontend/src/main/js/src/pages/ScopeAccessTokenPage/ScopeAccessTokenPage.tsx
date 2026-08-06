@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import FetchAccessToken from '@/components/FetchAccessToken'
 import styled from 'styled-components'
 import { Page } from '@/pages/Page'

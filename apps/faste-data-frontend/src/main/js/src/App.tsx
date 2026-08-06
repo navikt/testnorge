@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter';
-import { BrowserRouter as Router, Route, Routes } from 'react-router';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CompareOrganisasjonPage } from '@/pages/compare-organisasjon-page';
 import ProfilService from './service/ProfilService';
 import { FastePersonDataPage } from '@/pages/FastePersonDataPage';

@@ -2,7 +2,7 @@ import React from 'react'
 // @ts-ignore
 import ApplicationService from '@/services/ApplicationService'
 
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import MagicTokenPage from '@/pages/MagicTokenPage'
 import AccessTokenPage from '@/pages/AccessTokenPage'
 import { LoadableComponent } from '@navikt/dolly-komponenter'

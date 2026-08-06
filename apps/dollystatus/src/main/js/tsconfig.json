@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "noEmit": true,
+    "outDir": "./dist",
+    "target": "es5",
+    "module": "es6",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "jsx": "react",
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     }
-  },
-  "include": ["src"]
+  }
 }

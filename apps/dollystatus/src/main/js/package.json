@@ -10,7 +10,7 @@
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
 		"react-inlinesvg": "^4.5.0",
-		"react-router": "^8.3.0",
+		"react-router-dom": "^7.18.2",
 		"react-use": "^17.6.1"
 	},
 	"devDependencies": {
@@ -20,7 +20,6 @@
 		"@navikt/ds-react": "^7.40.0",
 		"@rolldown/plugin-babel": "^0.2.3",
 		"@types/react": "^19.2.18",
-		"@types/react-dom": "^19.2.4",
 		"@vitejs/plugin-react": "^6.0.5",
 		"babel-plugin-react-compiler": "^1.0.0",
 		"less": "^4.8.1",

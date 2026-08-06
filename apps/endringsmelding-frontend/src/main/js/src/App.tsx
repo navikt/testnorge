@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Header, ProfilLoader } from '@navikt/dolly-komponenter';
-import { BrowserRouter as Router, Route, Routes } from 'react-router';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProfilService from './service/ProfilService';
 import '@navikt/ds-css';
 import { EndringsmeldingPage } from '@/pages/endringsmelding-page/EndringsmeldingPage';
