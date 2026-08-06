@@ -72,7 +72,7 @@ public class PdlTestdataConsumer {
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create(
                                         ConnectionProvider.builder("pdl-ordre")
-                                                .maxConnections(50)
+                                                .maxConnections(500)
                                                 .maxIdleTime(Duration.ofSeconds(20))      // < PDL sin idle timeout
                                                 .maxLifeTime(Duration.ofSeconds(60))
                                                 .evictInBackground(Duration.ofSeconds(30))

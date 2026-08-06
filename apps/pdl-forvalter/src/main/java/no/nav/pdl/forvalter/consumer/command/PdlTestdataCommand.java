@@ -14,6 +14,7 @@ public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseD
     static final String TEMA = "Tema";
     static final Duration TIMEOUT = Duration.ofSeconds(15);
     static final Duration DELETE_TIMEOUT = Duration.ofSeconds(30);
+    static final Duration ADRESSE_TIMEOUT = Duration.ofSeconds(3);
 
     OrdreResponseDTO.HendelseDTO errorHandling(Throwable error, Integer id) {
         return OrdreResponseDTO.HendelseDTO
