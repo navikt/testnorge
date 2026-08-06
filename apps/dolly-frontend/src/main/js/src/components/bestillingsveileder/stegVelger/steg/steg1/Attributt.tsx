@@ -1,12 +1,7 @@
 import { CheckboxGroup } from '@navikt/ds-react'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import React, { useContext } from 'react'
-import {
-	countMatchingAttributter,
-	matchesFilter,
-	PanelFilterContext,
-} from '@/components/ui/panel/PanelFilterContext'
+import React from 'react'
 
 interface AttrItem {
 	label: string
@@ -14,7 +9,6 @@ interface AttrItem {
 	add: () => void
 	remove: () => void
 }
-
 interface AttributtProps {
 	attr: AttrItem
 	vis?: boolean
@@ -25,7 +19,6 @@ interface AttributtProps {
 	infoTekst?: string
 	[key: string]: any
 }
-
 export const Attributt: React.FC<AttributtProps> = ({
 	attr,
 	vis = true,
@@ -36,8 +29,7 @@ export const Attributt: React.FC<AttributtProps> = ({
 	infoTekst = '',
 	...props
 }) => {
-	const { filterText } = useContext(PanelFilterContext)
-	return vis && matchesFilter(attr?.label, filterText) ? (
+	return vis ? (
 		<div title={title} style={{ display: 'flex', alignItems: 'center' }}>
 			<DollyCheckbox
 				wrapperSize={wrapperSize as any}
@@ -60,17 +52,18 @@ interface AttributtKategoriProps {
 	children: React.ReactNode
 	attr: Record<string, AttrItem>
 }
-
 export const AttributtKategori: React.FC<AttributtKategoriProps> = ({
 	title = undefined,
 	children,
 	attr,
 }) => {
-	const { filterText } = useContext(PanelFilterContext)
 	const values = attr && Object.values(attr)
 	const checkedValues = values?.filter((a) => a.checked)?.map((a) => a.label) || []
 
-	const showAny = countMatchingAttributter(children, filterText) > 0
+	const attributter = Array.isArray(children) ? children : [children]
+	const showAny = attributter.some(
+		(child: any) => child?.props?.vis || !child?.props?.hasOwnProperty('vis'),
+	)
 
 	return showAny ? (
 		<CheckboxGroup name={title} legend={title} value={checkedValues}>
