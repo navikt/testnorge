@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: ^5.7.1
-        version: 5.7.1(@standard-schema/spec@1.1.0)(react-hook-form@7.84.0(react@19.2.8))(yup@1.7.1)(zod@3.25.76)
+        version: 5.7.1(@standard-schema/spec@1.1.0)(react-hook-form@8.0.0-beta.3(react@19.2.8))(yup@1.7.1)(zod@3.25.76)
       '@navikt/aksel-icons':
         specifier: ^8.16.1
         version: 8.16.1
@@ -63,8 +63,8 @@ importers:
         specifier: ^0.21.0
         version: 0.21.0(react@19.2.8)
       react-hook-form:
-        specifier: 7.84.0
-        version: 7.84.0(react@19.2.8)
+        specifier: 8.0.0-beta.3
+        version: 8.0.0-beta.3(react@19.2.8)
       react-inlinesvg:
         specifier: ^4.5.0
         version: 4.5.0(react@19.2.8)
@@ -119,7 +119,7 @@ importers:
         version: 10.0.1(eslint@10.8.0(supports-color@7.2.0))
       '@hookform/error-message':
         specifier: ^2.0.1
-        version: 2.0.1(react-dom@19.2.8(react@19.2.8))(react-hook-form@7.84.0(react@19.2.8))(react@19.2.8)
+        version: 2.0.1(react-dom@19.2.8(react@19.2.8))(react-hook-form@8.0.0-beta.3(react@19.2.8))(react@19.2.8)
       '@navikt/aksel':
         specifier: ^8.16.1
         version: 8.16.1(supports-color@7.2.0)
@@ -3021,8 +3021,8 @@ packages:
     peerDependencies:
       react: ^0.14.0 || ^15.0.0 || ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0 || ^19.0.0-0
 
-  react-hook-form@7.84.0:
-    resolution: {integrity: sha512-+hWvQP6GLco56mDwrbU4XnHix8t1z90ltZsDIrREl+jnQFQxYLX8oAzqe/Xn8nHpmoXTY5M6oEXrAhbP1qevNQ==}
+  react-hook-form@8.0.0-beta.3:
+    resolution: {integrity: sha512-VyAKK5sXyAK1bkcExoa7ab6nZOd04T+gwv8F4y5xM9vXWw3GVFCJNJgTGt+FYW4jrZkglO12+yhDcQtVLEzZRg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -4361,16 +4361,16 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hookform/error-message@2.0.1(react-dom@19.2.8(react@19.2.8))(react-hook-form@7.84.0(react@19.2.8))(react@19.2.8)':
+  '@hookform/error-message@2.0.1(react-dom@19.2.8(react@19.2.8))(react-hook-form@8.0.0-beta.3(react@19.2.8))(react@19.2.8)':
     dependencies:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
-      react-hook-form: 7.84.0(react@19.2.8)
+      react-hook-form: 8.0.0-beta.3(react@19.2.8)
 
-  '@hookform/resolvers@5.7.1(@standard-schema/spec@1.1.0)(react-hook-form@7.84.0(react@19.2.8))(yup@1.7.1)(zod@3.25.76)':
+  '@hookform/resolvers@5.7.1(@standard-schema/spec@1.1.0)(react-hook-form@8.0.0-beta.3(react@19.2.8))(yup@1.7.1)(zod@3.25.76)':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.84.0(react@19.2.8)
+      react-hook-form: 8.0.0-beta.3(react@19.2.8)
     optionalDependencies:
       '@standard-schema/spec': 1.1.0
       yup: 1.7.1
@@ -6555,7 +6555,7 @@ snapshots:
       memoize-one: 4.0.3
       react: 19.2.8
 
-  react-hook-form@7.84.0(react@19.2.8):
+  react-hook-form@8.0.0-beta.3(react@19.2.8):
     dependencies:
       react: 19.2.8
 
