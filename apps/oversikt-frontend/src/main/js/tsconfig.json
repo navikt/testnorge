@@ -6,9 +6,7 @@
     ],
     "types": [
       "vite/client",
-      "vite-plugin-svgr/client",
-      "cypress",
-      "cypress-react-selector"
+      "vite-plugin-svgr/client"
     ],
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -16,12 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "removeComments": true,
-    "esModuleInterop": false,
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",

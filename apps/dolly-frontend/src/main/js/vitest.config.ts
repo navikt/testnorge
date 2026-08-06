@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
 import { playwright } from '@vitest/browser-playwright'
 import * as path from 'path'
 
@@ -19,7 +20,12 @@ export default defineConfig({
 			},
 		},
 	},
-	plugins: [react()],
+	plugins: [
+		react(),
+		babel({
+			presets: [reactCompilerPreset()],
+		}),
+	],
 	optimizeDeps: {
 		include: [
 			'react-dom/client',
