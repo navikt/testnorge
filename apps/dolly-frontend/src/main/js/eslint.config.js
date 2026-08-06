@@ -1,13 +1,27 @@
+import js from '@eslint/js'
+import eslintReact from '@eslint-react/eslint-plugin'
+import prettier from 'eslint-config-prettier'
 import reactCompiler from 'eslint-plugin-react-compiler'
-import reactPlugin from 'eslint-plugin-react'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 
 export default [
 	{
+		ignores: [
+			'.vitest*/**',
+			'build/**',
+			'coverage/**',
+			'node_modules/**',
+			'playwright/.cache/**',
+			'playwright-report/**',
+			'test-results/**',
+		],
+	},
+	js.configs.recommended,
+	...tsPlugin.configs['flat/recommended'],
+	eslintReact.configs['recommended-typescript'],
+	{
+		files: ['**/*.{js,jsx,ts,tsx}'],
 		settings: {
-			react: {
-				version: 'detect',
-			},
 			'import/resolver': {
 				node: {
 					paths: ['src'],
@@ -16,26 +30,12 @@ export default [
 			},
 		},
 		plugins: {
-			react: reactPlugin,
-			'@typescript-eslint': tsPlugin,
 			'react-compiler': reactCompiler,
 		},
-		extends: [
-			'eslint:recommended',
-			'plugin:react/recommended',
-			'plugin:react-hooks/recommended',
-			'plugin:react/jsx-runtime',
-			'plugin:@typescript-eslint/recommended',
-			'eslint-config-prettier',
-		],
 		rules: {
 			'prefer-const': 'off',
 			'prefer-rest-params': 'off',
-			'react/prop-types': 'off',
-			'react/display-name': 'off',
 			'no-shadow': 'off',
-			'react/no-unescaped-entities': 'off',
-			'react/jsx-no-target-blank': 'off',
 			'@typescript-eslint/camelcase': 'off',
 			'@typescript-eslint/ban-ts-comment': 'off',
 			'@typescript-eslint/no-namespace': 'off',
@@ -50,4 +50,5 @@ export default [
 			'react-compiler/react-compiler': 'warn',
 		},
 	},
+	prettier,
 ]
