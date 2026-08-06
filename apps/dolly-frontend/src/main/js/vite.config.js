@@ -24,6 +24,27 @@ const createProxyConfig = (routes) => {
 	)
 }
 
+const styledComponentsPreset = () => ({
+	preset: () => ({
+		plugins: [
+			[
+				'babel-plugin-styled-components',
+				{
+					displayName: true,
+					ssr: false,
+					fileName: true,
+					meaninglessFileNames: ['index', 'styles'],
+				},
+			],
+		],
+	}),
+	rolldown: {
+		filter: {
+			code: /styled/,
+		},
+	},
+})
+
 const versionJsonPlugin = () => ({
 	name: 'generate-version-json',
 	closeBundle() {
@@ -92,7 +113,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [
 		react(),
 		babel({
-			presets: [reactCompilerPreset()],
+			presets: [reactCompilerPreset(), styledComponentsPreset()],
 		}),
 		versionJsonPlugin(),
 	],

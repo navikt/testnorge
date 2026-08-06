@@ -1,7 +1,7 @@
 import React from 'react'
 import PageWithMenu from '@/components/PageWithMenu'
 import FetchAccessToken from '@/components/FetchAccessToken'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import { Application } from '@/services/ApplicationService'
 
 type Props = {

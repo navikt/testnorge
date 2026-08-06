@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SuccessAlert, WarningAlert, LoadableComponent } from '@navikt/dolly-komponenter';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 type Item = {
   id: string;
