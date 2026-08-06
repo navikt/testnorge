@@ -1,4 +1,4 @@
-package no.nav.dolly.config;
+package no.nav.testnav.pdllagreservice.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,9 @@ import tools.jackson.databind.module.SimpleModule;
 @Configuration
 @RequiredArgsConstructor
 public class JsonMapperConfig {
-
+    
     private final SimpleModule dollyDateTimeModule;
-
+    
     @Bean
     @Primary
     public JsonMapper jsonMapper() {

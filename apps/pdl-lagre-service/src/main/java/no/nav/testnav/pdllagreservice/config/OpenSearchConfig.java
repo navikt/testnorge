@@ -1,5 +1,6 @@
 package no.nav.testnav.pdllagreservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -24,6 +25,8 @@ import java.net.URISyntaxException;
 @RequiredArgsConstructor
 public class OpenSearchConfig {
 
+    private final ObjectMapper objectMapper;
+
     @Value("${OPEN_SEARCH_URI}")
     private String uri;
 
@@ -47,7 +50,7 @@ public class OpenSearchConfig {
 
         val transportBuilder = ApacheHttpClient5TransportBuilder
                 .builder(HttpHost.create(uri))
-                .setMapper(new JacksonJsonpMapper())
+                .setMapper(new JacksonJsonpMapper(objectMapper))
                 .setHttpClientConfigCallback(httpClientBuilder ->
                         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
                 ).build();

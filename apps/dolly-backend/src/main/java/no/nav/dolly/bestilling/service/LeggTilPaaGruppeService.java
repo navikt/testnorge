@@ -24,7 +24,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
@@ -63,7 +63,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 identService,
                 clientRegisters,
                 mapperFacade,
-                objectMapper,
+                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -79,11 +79,11 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
         Mono.just(bestKriterier)
                 .filter(request -> isBlank(request.getFeil()))
-                .flatMapMany(request ->
+                .flatMapMany(_ ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
-                        error -> doFerdig(bestilling).subscribe(),
+                        _ -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
@@ -97,7 +97,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
-                .map(ok -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
+                .map(_ -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                 .concatMap(originator -> opprettProgress(bestilling, originator.getMaster(), originator.getIdent())
                         .zipWith(Mono.just(originator)))
                 .concatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
@@ -107,7 +107,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                         .zipWith(Mono.just(progress)))
                 .concatMap(tuple -> (!tuple.getT1().getIdent().equals(testident.getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
-                        .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
+                        .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                         .then(gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)

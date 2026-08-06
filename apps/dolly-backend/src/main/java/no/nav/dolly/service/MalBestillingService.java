@@ -1,7 +1,5 @@
 package no.nav.dolly.service;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -25,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,7 +57,7 @@ public class MalBestillingService {
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final CacheManager cacheManager;
 
     public Mono<BestillingMal> saveBestillingMal(Bestilling bestilling, String malNavn, Long brukerId) {
@@ -80,7 +80,7 @@ public class MalBestillingService {
                     return bestillingMal;
                 })
                 .flatMap(bestillingMalRepository::save)
-                .doFinally(bestillingMal -> {
+                .doFinally(_ -> {
                     if (nonNull(cacheManager.getCache(CACHE_BESTILLING_MAL))) {
                         cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
                     }
@@ -118,7 +118,7 @@ public class MalBestillingService {
 
         return bestillingMalRepository.findById(id)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(id))))
-                .flatMap(bestillingMal -> bestillingMalRepository.deleteById(id));
+                .flatMap(_ -> bestillingMalRepository.deleteById(id));
     }
 
     public Mono<BestillingMal> updateMalNavnById(Long id, String nyttMalNavn) {
@@ -178,7 +178,7 @@ public class MalBestillingService {
     private String toJson(RsDollyUtvidetBestilling bestilling) {
 
         try {
-            return objectMapper.writeValueAsString(bestilling);
+            return jsonMapper.writeValueAsString(bestilling);
         } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
@@ -187,7 +187,7 @@ public class MalBestillingService {
     private RsDollyUtvidetBestilling fromJson(String json) {
 
         try {
-            return objectMapper.readValue(json, RsDollyUtvidetBestilling.class);
+            return jsonMapper.readValue(json, RsDollyUtvidetBestilling.class);
         } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }

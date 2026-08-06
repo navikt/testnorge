@@ -46,15 +46,13 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String mq = "4.0.5";
         public String okhttp = "4.12.0";
         public String onnxruntime = "1.22.0";
-        public String opensearch = "1.8.2";
-        public String opensearchClient = "2.26.0";
+        public String opensearchClient = "3.9.0";
         public String orika = "1.5.4";
         public String reactorTest = "3.8.4";
         public String springdoc = "3.0.3";
         public String swagger = "2.2.40";
         public String testcontainers = "1.21.4";
     }
-
 }
 
 

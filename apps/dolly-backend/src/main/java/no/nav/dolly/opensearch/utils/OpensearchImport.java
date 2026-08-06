@@ -16,7 +16,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,7 +39,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private final BestillingRepository bestillingRepository;
     private final MapperFacade mapperFacade;
     private final OpenSearchService openSearchService;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Value("${open.search.total-fields}")
     private String totalFields;
@@ -57,7 +57,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .flatMap(exists -> isFalse(exists) ? oppdaterIndexSetting() : Mono.empty())
                 .then(importAll(antallLest, antallSkrevet)
                         .collectList())
-                .subscribe(bestillinger ->
+                .subscribe(_ ->
                         log.info("OpenSearch database oppdatering ferdig; antall lest {}, antall skrevet {}, medgått tid {} ms",
                                 antallLest.get(),
                                 antallSkrevet.get(),
@@ -68,7 +68,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
 
         try {
             var indexSetting = String.format(INDEX_SETTING, totalFields);
-            var jsonNode = objectMapper.readTree(indexSetting);
+            var jsonNode = jsonMapper.readTree(indexSetting);
             return openSearchService.updateIndexParams(jsonNode)
                     .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
 
@@ -81,7 +81,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private Flux<BulkResponse> importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
         return bestillingRepository.findByOrderByIdDesc()
-                .doOnNext(bestilling -> antallLest.incrementAndGet())
+                .doOnNext(_ -> antallLest.incrementAndGet())
                 .filter(bestilling -> isNotBlank(bestilling.getBestKriterier()) &&
                         !"{}".equals(bestilling.getBestKriterier()))
                 .flatMap(bestilling -> openSearchService.exists(bestilling.getId())
@@ -101,7 +101,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .flatMap(openSearchService::saveAll)
                 .doOnNext(response -> antallSkrevet.getAndSet(antallSkrevet.get() +
                         response.items().size()))
-                .doOnNext(bestilling -> {
+                .doOnNext(_ -> {
                     if (antallSkrevet.get() % 1000 == 0) {
                         log.info("Skrevet {} bestillinger", antallSkrevet.get());
                     }

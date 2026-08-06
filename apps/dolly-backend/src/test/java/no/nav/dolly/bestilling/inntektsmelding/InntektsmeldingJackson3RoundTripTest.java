@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgi
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsKontaktinformasjon;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import no.nav.testnav.libs.dto.jackson.v1.CaseInsensitiveEnumModule;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.MapperFeature;
@@ -22,17 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class InntektsmeldingJackson3RoundTripTest {
 
-    private final JsonMapper objectMapper = JsonMapper.builder()
+    private final JsonMapper jsonMapper = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
             .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-            .build();
-
-    private final JsonMapper serviceObjectMapper = JsonMapper.builder()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
-            .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-            .addModule(new CaseInsensitiveEnumModule())
             .build();
 
     @Test
@@ -50,7 +42,7 @@ class InntektsmeldingJackson3RoundTripTest {
                 }
                 """;
 
-        var response = objectMapper.readValue(serviceResponseJson, InntektsmeldingResponse.class);
+        var response = jsonMapper.readValue(serviceResponseJson, InntektsmeldingResponse.class);
 
         assertThat(response.getFnr()).isEqualTo("12345678901");
         assertThat(response.getDokumenter()).hasSize(1);
@@ -85,14 +77,14 @@ class InntektsmeldingJackson3RoundTripTest {
                 ))
                 .build();
 
-        var json = objectMapper.writeValueAsString(request);
+        var json = jsonMapper.writeValueAsString(request);
 
         assertThat(json).contains("\"ytelse\":\"Foreldrepenger\"");
         assertThat(json).contains("\"aarsakTilInnsending\":\"Ny\"");
         assertThat(json).contains("\"arbeidstakerFnr\":\"12345678901\"");
         assertThat(json).contains("\"miljoe\":\"q1\"");
 
-        var deserialized = objectMapper.readValue(json, InntektsmeldingRequest.class);
+        var deserialized = jsonMapper.readValue(json, InntektsmeldingRequest.class);
         assertThat(deserialized.getInntekter()).hasSize(1);
         assertThat(deserialized.getInntekter().getFirst().getYtelse()).isEqualTo(YtelseKodeListe.FORELDREPENGER);
         assertThat(deserialized.getInntekter().getFirst().getAarsakTilInnsending()).isEqualTo(AarsakInnsendingKodeListe.NY);
@@ -117,13 +109,13 @@ class InntektsmeldingJackson3RoundTripTest {
                         .build())
                 .build();
 
-        var json = objectMapper.writeValueAsString(dto);
+        var json = jsonMapper.writeValueAsString(dto);
 
         assertThat(json).contains("\"ytelse\":\"PleiepengerBarn\"");
         assertThat(json).contains("\"journalpostId\":\"JP-789\"");
         assertThat(json).contains("\"dokumentInfoId\":\"DI-012\"");
 
-        var deserialized = objectMapper.readValue(json, TransaksjonMappingDTO.class);
+        var deserialized = jsonMapper.readValue(json, TransaksjonMappingDTO.class);
         assertThat(deserialized.getDokument().getJournalpostId()).isEqualTo("JP-789");
         assertThat(deserialized.getRequest().getInntekter().getFirst().getYtelse())
                 .isEqualTo(YtelseKodeListe.PLEIEPENGER_BARN);
@@ -138,7 +130,7 @@ class InntektsmeldingJackson3RoundTripTest {
                 }
                 """;
 
-        var response = objectMapper.readValue(json, InntektsmeldingResponse.class);
+        var response = jsonMapper.readValue(json, InntektsmeldingResponse.class);
 
         assertThat(response.getFnr()).isEqualTo("12345678901");
         assertThat(response.getDokumenter()).isEmpty();
@@ -147,10 +139,10 @@ class InntektsmeldingJackson3RoundTripTest {
     @Test
     void shouldDeserializeAllYtelseKodeListeValues() {
         for (YtelseKodeListe ytelse : YtelseKodeListe.values()) {
-            var json = objectMapper.writeValueAsString(ytelse);
+            var json = jsonMapper.writeValueAsString(ytelse);
             assertThat(json).isEqualTo("\"" + ytelse.getValue() + "\"");
 
-            var deserialized = objectMapper.readValue(json, YtelseKodeListe.class);
+            var deserialized = jsonMapper.readValue(json, YtelseKodeListe.class);
             assertThat(deserialized)
                     .as("Round-trip for %s (serialized as %s)", ytelse.name(), json)
                     .isEqualTo(ytelse);
@@ -160,9 +152,9 @@ class InntektsmeldingJackson3RoundTripTest {
     @Test
     void shouldDeserializeAllYtelseKodeListeValuesWithCaseInsensitiveModule() {
         for (YtelseKodeListe ytelse : YtelseKodeListe.values()) {
-            var json = objectMapper.writeValueAsString(ytelse);
+            var json = jsonMapper.writeValueAsString(ytelse);
 
-            var deserialized = serviceObjectMapper.readValue(json, YtelseKodeListe.class);
+            var deserialized = jsonMapper.readValue(json, YtelseKodeListe.class);
             assertThat(deserialized)
                     .as("CaseInsensitiveEnum round-trip for %s (serialized as %s)", ytelse.name(), json)
                     .isEqualTo(ytelse);
@@ -194,7 +186,7 @@ class InntektsmeldingJackson3RoundTripTest {
                 ))
                 .build();
 
-        var sentJson = objectMapper.writeValueAsString(request);
+        var sentJson = jsonMapper.writeValueAsString(request);
 
         assertThat(sentJson)
                 .as("WebClient serialized JSON should contain PleiepengerBarn (from @JsonValue)")
@@ -202,7 +194,7 @@ class InntektsmeldingJackson3RoundTripTest {
         assertThat(sentJson).contains("\"aarsakTilInnsending\":\"Ny\"");
         assertThat(sentJson).contains("\"inntekter\":[{");
 
-        var received = serviceObjectMapper.readValue(sentJson, InntektsmeldingRequest.class);
+        var received = jsonMapper.readValue(sentJson, InntektsmeldingRequest.class);
         assertThat(received.getInntekter())
                 .as("Service should receive non-empty inntekter list")
                 .hasSize(1);

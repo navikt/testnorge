@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ErrorStatusDecoder {
     private static final String DETAILS = "details";
     private static final String FEIL = "Feil= ";
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
@@ -84,7 +84,7 @@ public class ErrorStatusDecoder {
         var builder = new StringBuilder();
         if (json.contains("{")) {
             try {
-                Map<String, Object> status = objectMapper.readValue(json, Map.class);
+                Map<String, Object> status = jsonMapper.readValue(json, Map.class);
                 if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
                 } else if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {

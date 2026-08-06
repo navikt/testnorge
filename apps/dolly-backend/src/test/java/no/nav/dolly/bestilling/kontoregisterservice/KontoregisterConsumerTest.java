@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import reactor.test.StepVerifier;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
@@ -28,7 +27,7 @@ class KontoregisterConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
-    private final ObjectMapper objectMapper = JsonMapper.builder().build();
+    private final JsonMapper jsonMapper = JsonMapper.builder().build();
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
@@ -121,7 +120,7 @@ class KontoregisterConsumerTest extends AbstractConsumerTest {
         var hentBankkontoer = WireMock.getAllServeEvents()
                 .stream()
                 .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> objectMapper.readValue(s, HentKontoRequestDTO.class))
+                .map(s -> jsonMapper.readValue(s, HentKontoRequestDTO.class))
                 .toList();
 
         hentBankkontoer

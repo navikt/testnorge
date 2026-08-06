@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.pensjonforvalter.utils;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakDTO;
@@ -14,6 +12,8 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ import static org.apache.poi.util.StringUtil.isNotBlank;
 public class PensjonforvalterHelper {
 
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final TransaksjonMappingService transaksjonMappingService;
 
     @SuppressWarnings("java:S3740")
@@ -75,7 +75,7 @@ public class PensjonforvalterHelper {
     private String toJson(Object object) {
 
         try {
-            return objectMapper.writeValueAsString(object);
+            return jsonMapper.writeValueAsString(object);
         } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
         }
@@ -119,7 +119,7 @@ public class PensjonforvalterHelper {
                 .sort(Comparator.comparing(TransaksjonMapping::getDatoEndret))
                 .map(mapping -> {
                     try {
-                        var vedtak = objectMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakDTO.class);
+                        var vedtak = jsonMapper.readValue(mapping.getTransaksjonId(), AlderspensjonVedtakDTO.class);
                         vedtak.setFom(nonNull(vedtak.getFom()) ? vedtak.getFom() : vedtak.getIverksettelsesdato());
                         vedtak.setUttaksgrad(nonNull(vedtak.getUttaksgrad()) ? vedtak.getUttaksgrad() : vedtak.getNyUttaksgrad());
                         return vedtak;

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,13 +34,13 @@ public class DokumentService {
 
     private final DokumentRepository dokumentRepository;
     private final BestillingMalRepository bestillingMalRepository;
-    private final ObjectMapper objectMapper;
-    private final Cache<String, StringBuffer> dokumentUploadCache;
+    private final JsonMapper jsonMapper;
+    private final Cache<String, StringBuilder> dokumentUploadCache;
 
     public String initUpload() {
 
         var uploadId = UUID.randomUUID().toString();
-        dokumentUploadCache.put(uploadId, new StringBuffer());
+        dokumentUploadCache.put(uploadId, new StringBuilder());
         log.info("Dokument-opplasting initiert med uploadId {}", uploadId);
         return uploadId;
     }
@@ -102,7 +102,7 @@ public class DokumentService {
     private RsDollyUtvidetBestilling fromJson(String json) {
 
         try {
-            return objectMapper.readValue(json, RsDollyUtvidetBestilling.class);
+            return jsonMapper.readValue(json, RsDollyUtvidetBestilling.class);
         } catch (JacksonException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }

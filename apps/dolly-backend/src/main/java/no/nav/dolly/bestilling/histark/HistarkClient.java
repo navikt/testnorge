@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.histark;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -24,6 +22,8 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ public class HistarkClient implements ClientRegister {
     private final HistarkConsumer histarkConsumer;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final TransactionHelperService transactionHelperService;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final DokumentService dokumentService;
@@ -153,7 +153,7 @@ public class HistarkClient implements ClientRegister {
     private String toJson(Object object) {
 
         try {
-            return objectMapper.writeValueAsString(object);
+            return jsonMapper.writeValueAsString(object);
         } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for histark", e);
         }
