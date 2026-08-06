@@ -70,7 +70,7 @@ class DashboardServiceTest {
     private BrukerServiceConsumer brukerServiceConsumer;
 
     @Spy
-    private JsonMapper jsonMapper = JsonMapper.builder().build();
+    private JsonMapper jsonMapper = new JsonMapper();
 
     @Mock
     private R2dbcEntityTemplate entityTemplate;
@@ -87,7 +87,6 @@ class DashboardServiceTest {
     @Mock
     private DatabaseClient.GenericExecuteSpec executeSpec;
 
-    @SuppressWarnings("unchecked")
     @Mock
     private RowsFetchSpec<BestillingProgressDTO> fetchSpec;
 

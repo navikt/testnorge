@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.adresseservice.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO;
@@ -37,7 +37,7 @@ class OpenSearchQueryServiceTest {
     @Mock
     private OpenSearchClient openSearchClient;
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     @Mock
     private MapperFacade mapperFacade;
 
@@ -81,7 +81,7 @@ class OpenSearchQueryServiceTest {
         when(hit.source())
                 .thenReturn(Mockito.mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(VegadresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(VegadresseDTO.class)))
                 .thenReturn(new VegadresseDTO());
         when(mapperFacade.map(any(VegadresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.class)))
                 .thenReturn(no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
@@ -121,7 +121,7 @@ class OpenSearchQueryServiceTest {
         when(hit.source())
                 .thenReturn(Mockito.mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenThrow(new IllegalArgumentException("Feil ved mapping av matrikkeladresse"));
 
         StepVerifier.create(openSearchQueryService.execQuery(matrikkadresseRequest, 1L))
@@ -144,7 +144,7 @@ class OpenSearchQueryServiceTest {
         when(hit.source())
                 .thenReturn(Mockito.mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenReturn(new MatrikkeladresseDTO());
 
         when(mapperFacade.map(any(MatrikkeladresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.class)))
@@ -170,7 +170,7 @@ class OpenSearchQueryServiceTest {
         when(hit.source())
                 .thenReturn(Mockito.mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenReturn(new MatrikkeladresseDTO());
 
         when(mapperFacade.map(any(MatrikkeladresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.class)))

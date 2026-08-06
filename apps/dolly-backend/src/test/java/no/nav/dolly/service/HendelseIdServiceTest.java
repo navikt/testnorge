@@ -31,7 +31,7 @@ class HendelseIdServiceTest {
     private BestillingProgressRepository bestillingProgressRepository;
 
     @Spy
-    private JsonMapper jsonMapper = JsonMapper.builder().build();
+    private JsonMapper jsonMapper = new JsonMapper();
 
     @InjectMocks
     private HendelseIdService hendelseIdService;

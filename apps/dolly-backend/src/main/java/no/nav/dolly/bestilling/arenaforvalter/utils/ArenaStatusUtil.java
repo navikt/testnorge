@@ -36,7 +36,7 @@ public class ArenaStatusUtil {
 
         return Flux.concat(Flux.just(response.getStatus())
                                 .filter(status -> !status.is2xxSuccessful())
-                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
+                                .map(_ -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                         Flux.fromIterable(response.getNyeDagp())
                                 .filter(nyDagP -> nonNull(nyDagP.getNyeDagpResponse()))
                                 .map(nyDagP -> "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
@@ -65,7 +65,7 @@ public class ArenaStatusUtil {
 
             return Flux.concat(Flux.just(response.getStatus())
                                     .filter(status -> !status.is2xxSuccessful())
-                                    .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
+                                    .map(_ -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                             Flux.fromIterable(response.getNyeAap())
                                     .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
                                             "OK" :
@@ -99,10 +99,10 @@ public class ArenaStatusUtil {
         }
 
         try {
-            var status = JsonMapper.builder().build().readValue(jsonFeilmelding, Map.class);
+            var status = new JsonMapper().readValue(jsonFeilmelding, Map.class);
             return status.containsKey("message") ? (String) status.get("message") : jsonFeilmelding;
 
-        } catch (JacksonException e) {
+        } catch (JacksonException _) {
             log.warn("Feilet å dekode json status fra Arena: {}", jsonFeilmelding);
             return jsonFeilmelding;
         }

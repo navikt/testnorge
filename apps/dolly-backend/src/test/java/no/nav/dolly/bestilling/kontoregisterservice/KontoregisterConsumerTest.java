@@ -27,7 +27,7 @@ class KontoregisterConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
-    private final JsonMapper jsonMapper = JsonMapper.builder().build();
+    private final JsonMapper jsonMapper = new JsonMapper();
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
