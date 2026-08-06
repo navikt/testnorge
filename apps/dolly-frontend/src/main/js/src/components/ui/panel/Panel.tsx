@@ -10,8 +10,14 @@ import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import { useContext } from 'react'
+import { useEffect, useContext, useRef } from 'react'
 import { InlineMessage } from '@navikt/ds-react'
+import {
+	containsCheckedAttributt,
+	countMatchingAttributter,
+	matchesFilter,
+	PanelFilterContext,
+} from '@/components/ui/panel/PanelFilterContext'
 
 export default function Panel({
 	startOpen = false,
@@ -28,10 +34,25 @@ export default function Panel({
 	...rest
 }) {
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const { filterText } = useContext(PanelFilterContext)
 	const [isOpen, toggleOpen] = useToggle(startOpen)
-	const shouldOpen = isOpen || forceOpen
 
 	const renderContent = children ? children : content
+
+	const hasCheckedAttributt = containsCheckedAttributt(renderContent)
+	const hadCheckedAttributt = useRef(hasCheckedAttributt)
+	useEffect(() => {
+		if (!hadCheckedAttributt.current && hasCheckedAttributt) {
+			toggleOpen(true)
+		}
+		hadCheckedAttributt.current = hasCheckedAttributt
+	}, [hasCheckedAttributt, toggleOpen])
+
+	const filtering = !!filterText
+	const headingMatch = filtering && matchesFilter(heading, filterText)
+	const matchCount = filtering ? countMatchingAttributter(renderContent, filterText) : 0
+	const filterHit = headingMatch || matchCount > 0
+	const shouldOpen = isOpen || forceOpen || (filtering && filterHit)
 
 	const check = (e) => {
 		e.stopPropagation()
@@ -41,6 +62,10 @@ export default function Panel({
 	const uncheck = (e) => {
 		e.stopPropagation()
 		uncheckAttributeArray()
+	}
+
+	if (filtering && !filterHit) {
+		return null
 	}
 
 	const erAvhengigAvQ1EllerQ2 = (heading: string) => {
@@ -81,6 +106,7 @@ export default function Panel({
 							}
 							text="Velg alle"
 							onClick={check}
+							disabled={!!filterText}
 						/>
 					)}
 					{uncheckAttributeArray && (
@@ -92,12 +118,23 @@ export default function Panel({
 							}
 							text="Fjern alle"
 							onClick={uncheck}
+							disabled={!!filterText}
 						/>
 					)}
 					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />
 				</span>
 			</div>
-			{shouldOpen && <div className="dolly-panel-content">{renderContent}</div>}
+			{shouldOpen && (
+				<div className="dolly-panel-content">
+					{headingMatch ? (
+						<PanelFilterContext.Provider value={{ filterText: '' }}>
+							{renderContent}
+						</PanelFilterContext.Provider>
+					) : (
+						renderContent
+					)}
+				</div>
+			)}
 		</div>
 	)
 }
