@@ -103,6 +103,7 @@ export default function Panel({
 							}
 							text="Velg alle"
 							onClick={check}
+							disabled={!!filterText}
 						/>
 					)}
 					{uncheckAttributeArray && (
@@ -114,6 +115,7 @@ export default function Panel({
 							}
 							text="Fjern alle"
 							onClick={uncheck}
+							disabled={!!filterText}
 						/>
 					)}
 					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />
