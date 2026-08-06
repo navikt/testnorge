@@ -75,14 +75,14 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	return (
 		<PanelFilterContext.Provider value={{ filterText }}>
-			<search style={{ marginBottom: '20px' }}>
+			<div role="search" style={{ marginBottom: '20px' }}>
 				<Search
 					label="Filtrer egenskaper ..."
 					placeholder="Filtrer egenskaper ..."
 					variant="simple"
 					onChange={(e) => setFilterText(e)}
 				/>
-			</search>
+			</div>
 			<AttributtVelger checked={checked}>
 				<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
 				<AdressePanel stateModifier={stateModifier} formValues={formValues} />

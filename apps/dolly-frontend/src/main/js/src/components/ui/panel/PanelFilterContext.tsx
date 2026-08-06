@@ -18,7 +18,7 @@ export const countMatchingAttributter = (nodes: ReactNode, filterText: string): 
 		const childProps: any = child.props
 		const label = childProps?.attr?.label
 		if (typeof label === 'string') {
-			const visible = Object.hasOwn(childProps, 'vis') ? childProps.vis : true
+			const visible = childProps?.hasOwnProperty?.('vis') ? childProps.vis : true
 			if (visible && matchesFilter(label, filterText)) {
 				count++
 			}
