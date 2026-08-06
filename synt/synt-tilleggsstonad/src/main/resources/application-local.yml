@@ -1,0 +1,36 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+
+app:
+  config:
+    bucket: synthdata-tilleggsstonad-model-bucket
+    models:
+      - boutgifter
+      - boutgifter_arbeidssokere
+      - daglig_reise
+      - daglig_reise_arbeidssoker
+      - flytting
+      - flytting_arbeidssokere
+      - laeremidler
+      - laeremidler_arbeidssokere
+      - reise_aktivitet_og_hjemreiser
+      - reise_aktivitet_og_hjemreiser_arbeidssokere
+      - reisestonad_til_arbeidssokere
+      - reise_til_obligatorisk_samling
+      - reise_til_obligatorisk_samling_arbeidssokere
+      - tilsyn_barn
+      - tilsyn_barn_arbeidssoker
+      - tilsyn_familiemedlemmer
+      - tilsyn_familiemedlemmer_arbeidssokere
+
+
+
+
+
+
+
