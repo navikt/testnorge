@@ -86,13 +86,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					attr={sm.attrs.alder}
 					vis={!testnorgeIdent && !opprettFraEksisterende && !leggTil}
 				/>
-				<Attributt attr={sm.attrs.foedested} vis={true} />
-				<Attributt attr={sm.attrs.foedselsdato} vis={true} />
-				<Attributt attr={sm.attrs.doedsdato} vis={true} />
+				<Attributt attr={sm.attrs.foedested} />
+				<Attributt attr={sm.attrs.foedselsdato} />
+				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.statsborgerskap} vis={true} />
+				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
 					vis={!testnorgeIdent}
@@ -118,8 +118,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.navn} vis={true} />
-				<Attributt attr={sm.attrs.telefonnummer} vis={true} />
+				<Attributt attr={sm.attrs.navn} />
+				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
 					vis={!testnorgeIdent}
@@ -132,12 +132,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				/>
 				<Attributt
 					attr={sm.attrs.fullmakt}
-					vis={true}
 					disabled={testnorgeIdent && ukjentGruppe}
 					title={(testnorgeIdent && ukjentGruppe && tekstUkjentGruppe) || ''}
 				/>
-				<Attributt attr={sm.attrs.sikkerhetstiltak} vis={true} />
-				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} vis={true} />
+				<Attributt attr={sm.attrs.sikkerhetstiltak} />
+				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
 		</Panel>
 	)
