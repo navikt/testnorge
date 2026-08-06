@@ -179,6 +179,7 @@ export const useDashboard = () => {
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
 		dashboardOversiktError,
+		mutateDashboardBestillinger,
 		reloadDashboard: () =>
 			Promise.all([
 				mutateDashboardBestillinger(),
@@ -272,6 +273,7 @@ export const useDashboardFeilForDager = (dager: { year: number; month: string; d
 		data,
 		isLoading: loadingFeilForDager,
 		error: feilForDagerError,
+		mutate: mutateFeilForDager,
 	} = useSWR<DashboardFeilDetaljertRad[], Error>(
 		shouldFetch ? ['feil-for-dager', ...urls] : null,
 		() =>
@@ -285,5 +287,5 @@ export const useDashboardFeilForDager = (dager: { year: number; month: string; d
 		},
 	)
 
-	return { feilForDager: data ?? [], loadingFeilForDager, feilForDagerError }
+	return { feilForDager: data ?? [], loadingFeilForDager, feilForDagerError, mutateFeilForDager }
 }

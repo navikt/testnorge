@@ -1,31 +1,10 @@
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
-import proxyRoutes from './proxy-routes.json'
+import proxyRoutes from './proxy-routes.json' with { type: 'json' }
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 
 /** @type {import('vite').UserConfig} */
-
-const styledComponentsPreset = () => ({
-	preset: () => ({
-		plugins: [
-			[
-				'babel-plugin-styled-components',
-				{
-					displayName: true,
-					ssr: false,
-					fileName: true,
-					meaninglessFileNames: ['index', 'styles'],
-				},
-			],
-		],
-	}),
-	rolldown: {
-		filter: {
-			code: /styled/,
-		},
-	},
-})
 
 export default defineConfig(({ mode }) => ({
 	base: '/',
@@ -44,7 +23,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [
 		react(),
 		babel({
-			presets: [reactCompilerPreset(), styledComponentsPreset()],
+			presets: [reactCompilerPreset()],
 		}),
 		svgr(),
 	],

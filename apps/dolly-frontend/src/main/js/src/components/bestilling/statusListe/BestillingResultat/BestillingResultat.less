@@ -20,6 +20,28 @@
       margin: 0;
     }
 
+    &_compact-left {
+      margin: 0;
+      font-weight: 600;
+      flex: none;
+      text-align: center;
+      grid-column: 2;
+    }
+
+    &_compact {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    &_compact-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      grid-column: 3;
+      justify-self: end;
+    }
+
     // Må wrappe button for å unngå at den tar opp hele bredden
     &_button-wrap {
       flex: 1 1 0px;

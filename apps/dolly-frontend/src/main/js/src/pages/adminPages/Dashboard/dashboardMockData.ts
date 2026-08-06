@@ -27,32 +27,32 @@ const ENGLISH_MONTHS = [
 
 const FEIL_FAGSYSTEMER: {
 	statusFelt: string
-	feilNokkel: string
+	feilNoekkel: string
 	verdi: () => string | Record<string, unknown>
 }[] = [
 	{
 		statusFelt: 'pdlPersonStatus',
-		feilNokkel: 'pdlPersonFeil',
+		feilNoekkel: 'pdlPersonFeil',
 		verdi: () => 'Feilet mot PDL person: tidsavbrudd mot baktjeneste',
 	},
 	{
 		statusFelt: 'pdlOrdreStatus',
-		feilNokkel: 'pdlOrdreFeil',
+		feilNoekkel: 'pdlOrdreFeil',
 		verdi: () => ({ status: 'ERROR', melding: 'Ordre avvist av PDL', kilde: 'pdl-forvalter' }),
 	},
 	{
 		statusFelt: 'aaregStatus',
-		feilNokkel: 'aaregFeil',
+		feilNoekkel: 'aaregFeil',
 		verdi: () => 'Arbeidsforhold kunne ikke opprettes',
 	},
 	{
 		statusFelt: 'dokarkivStatus',
-		feilNokkel: 'dokarkivFeil',
+		feilNoekkel: 'dokarkivFeil',
 		verdi: () => 'Dokument ble ikke journalført',
 	},
 	{
 		statusFelt: 'feil',
-		feilNokkel: 'andreFeil',
+		feilNoekkel: 'andreFeil',
 		verdi: () => 'Ukjent feil ved gjennomføring av bestilling',
 	},
 ]
@@ -121,7 +121,7 @@ const buildFeilMockData = (): {
 				}
 				valgteFagsystemer.forEach((fagsystem) => {
 					rad[fagsystem.statusFelt] = fagsystem.verdi()
-					summert[fagsystem.feilNokkel] = (Number(summert[fagsystem.feilNokkel]) || 0) + 1
+					summert[fagsystem.feilNoekkel] = (Number(summert[fagsystem.feilNoekkel]) || 0) + 1
 				})
 				detaljertRader.push(rad)
 			}

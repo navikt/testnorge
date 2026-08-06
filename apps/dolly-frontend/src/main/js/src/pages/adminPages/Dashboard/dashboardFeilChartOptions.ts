@@ -18,13 +18,13 @@ const FEIL_CHART_COLORS = [
 
 export const createFeilSummertChartOptions = (
 	punkter: FeilDagPunkt[],
-	fagsystemNokler: string[],
+	fagsystemNoekler: string[],
 	onDayClick?: (dag: number) => void,
 ): Options => {
-	const series: SeriesColumnOptions[] = fagsystemNokler.map((nokkel) => ({
+	const series: SeriesColumnOptions[] = fagsystemNoekler.map((noekkkel) => ({
 		type: 'column',
-		name: fagsystemFeilLabel(nokkel),
-		data: punkter.map((punkt) => punkt.perFagsystem[nokkel] ?? 0),
+		name: fagsystemFeilLabel(noekkkel),
+		data: punkter.map((punkt) => punkt.perFagsystem[noekkkel] ?? 0),
 	}))
 
 	return {

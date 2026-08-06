@@ -123,10 +123,10 @@ export const DashboardFeilProvider: React.FC<DashboardFeilProviderProps> = ({
 		() =>
 			createFeilSummertChartOptions(
 				feilSummertView.punkter,
-				feilSummertView.fagsystemNokler,
+				feilSummertView.fagsystemNoekler,
 				setSelectedFeilDay,
 			),
-		[feilSummertView.punkter, feilSummertView.fagsystemNokler],
+		[feilSummertView.punkter, feilSummertView.fagsystemNoekler],
 	)
 
 	const feilGrupper = useMemo(() => toFeilGrupper(activeFeilDetaljert), [activeFeilDetaljert])

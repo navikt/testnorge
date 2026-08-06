@@ -1,7 +1,7 @@
 import React from 'react'
 
 import './Navigation.less'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 type Props<T> = {
 	navigation: Navigation<T>
