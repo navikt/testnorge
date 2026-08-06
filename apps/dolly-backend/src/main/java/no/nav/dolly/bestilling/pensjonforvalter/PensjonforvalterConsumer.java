@@ -49,7 +49,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -68,7 +68,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
     public PensjonforvalterConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient) {
 
         this.tokenService = tokenService;
@@ -86,7 +86,7 @@ public class PensjonforvalterConsumer extends ConsumerStatus {
                                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                                 .responseTimeout(Duration.ofSeconds(30))))
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 

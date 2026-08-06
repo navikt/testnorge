@@ -1,7 +1,5 @@
 package no.nav.dolly.mapper;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.UtilityClass;
@@ -11,6 +9,8 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,7 @@ public final class BestillingPdlOrdreStatusMapper {
     private static final String JSON_PARSE_ERROR = "Teknisk feil, se logg! Parsing av response fra PDL-forvalter feilet";
     private static final String ELEMENT_ERROR_FMT = "FEIL: Element: %s, Id: %d, Beskrivelse: %s";
 
-    public static List<RsStatusRapport> buildPdlOrdreStatusMap(List<BestillingProgress> bestProgress, ObjectMapper objectMapper) {
+    public static List<RsStatusRapport> buildPdlOrdreStatusMap(List<BestillingProgress> bestProgress, JsonMapper jsonMapper) {
 
         //  melding      ident
         Map<String, List<String>> meldingIdents = new HashMap<>();
@@ -41,7 +41,7 @@ public final class BestillingPdlOrdreStatusMapper {
             if (isNotBlank(progress.getPdlOrdreStatus()) && isNotBlank(progress.getIdent())) {
 
                 if (progress.getPdlOrdreStatus().contains("PDL_") || progress.getPdlOrdreStatus().contains("\"ordrer\":[]")) {
-                    extractStatus(meldingIdents, progress, objectMapper);
+                    extractStatus(meldingIdents, progress, jsonMapper);
 
                 } else {
                     addElement(meldingIdents, progress.getPdlOrdreStatus(), progress.getIdent());
@@ -52,10 +52,10 @@ public final class BestillingPdlOrdreStatusMapper {
         return meldingIdents.isEmpty() ? emptyList() : formatStatus(meldingIdents);
     }
 
-    private static void extractStatus(Map<String, List<String>> meldingIdents, BestillingProgress progress, ObjectMapper objectMapper) {
+    private static void extractStatus(Map<String, List<String>> meldingIdents, BestillingProgress progress, JsonMapper jsonMapper) {
 
         try {
-            var response = objectMapper.readValue(progress.getPdlOrdreStatus(), OrdreResponseDTO.class);
+            var response = jsonMapper.readValue(progress.getPdlOrdreStatus(), OrdreResponseDTO.class);
             var errors = collectErrors(response);
 
             if (errors.isEmpty() || response.getHovedperson().getOrdrer().stream()

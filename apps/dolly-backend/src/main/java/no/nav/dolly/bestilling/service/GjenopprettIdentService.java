@@ -21,7 +21,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,7 +46,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
@@ -63,7 +63,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 identService,
                 clientRegisters,
                 mapperFacade,
-                objectMapper,
+                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -83,18 +83,18 @@ public class GjenopprettIdentService extends DollyBestillingService {
 
         Mono.just(bestKriterier)
                 .filter(request -> isBlank(request.getFeil()))
-                .flatMap(request -> identService.getTestIdent(bestilling.getIdent()))
+                .flatMap(_ -> identService.getTestIdent(bestilling.getIdent()))
                 .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
                 .flatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
-                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
-                                        .flatMapMany(pdlSync ->
+                                        .flatMapMany(_ ->
                                                 identRepository.getBestillingerByIdent(bestilling.getIdent())
                                                         .filter(coBestilling -> !"{}".equals(coBestilling.getBestkriterier()) ||
                                                                 countBestillinger.getAndIncrement() == 0))
@@ -106,8 +106,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                 gjenopprettKlienterFerdigstill(tuple.getT1(), bestillingRequest,
                                                         tuple.getT2(), false))
                                         .collectList()))
-                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
-                        error -> doFerdig(bestilling).subscribe(),
+                .subscribe(_ -> log.info("Fullført oppretting av ident: {}", bestilling.getIdent()),
+                        _ -> doFerdig(bestilling).subscribe(),
                         () -> doFerdig(bestilling)
                                 .subscribe());
     }

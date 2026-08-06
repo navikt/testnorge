@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -69,7 +69,7 @@ public class DollyBestillingService {
     protected final IdentService identService;
     protected final List<ClientRegister> clientRegisters;
     protected final MapperFacade mapperFacade;
-    protected final ObjectMapper objectMapper;
+    protected final JsonMapper jsonMapper;
     protected final OpenSearchService openSearchService;
     protected final PdlDataConsumer pdlDataConsumer;
     protected final TestgruppeRepository testgruppeRepository;
@@ -181,7 +181,7 @@ public class DollyBestillingService {
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
 
         try {
-            var bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+            var bestKriterier = jsonMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
 
             bestKriterier.setId(bestilling.getId());
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());

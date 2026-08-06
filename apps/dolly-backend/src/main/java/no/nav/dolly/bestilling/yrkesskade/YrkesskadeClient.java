@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.yrkesskade;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -16,12 +14,15 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.service.TransactionHelperService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,7 +40,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class YrkesskadeClient implements ClientRegister {
 
     private final MapperFacade mapper;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final YrkesskadeConsumer yrkesskadeConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -51,12 +53,12 @@ public class YrkesskadeClient implements ClientRegister {
 
             var index = new AtomicInteger(0);
             return oppdaterStatus(progress, "Yrkesskade#1:%s".formatted(ErrorStatusDecoder.getInfoVenter(YRKESSKADE.getBeskrivelse())))
-                    .flatMap(progres1 -> yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
+                    .flatMap(_ -> yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
                             .map(resultat -> !resultat.getSaker().isEmpty())
                             .map(eksisterendeSak -> !eksisterendeSak || isOpprettEndre)
-                            .flatMap(nysak -> TRUE.equals(nysak) ?
+                            .flatMap(nysak -> isTrue(nysak) ?
                                     personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
-                                            .doOnNext(personBolk -> log.info("Hentet pdlPersonBolk"))
+                                            .doOnNext(_ -> log.info("Hentet pdlPersonBolk"))
                                             .flatMap(personbolk -> Flux.fromIterable(bestilling.getYrkesskader())
                                                     .map(yrkesskade -> {
                                                         var context = MappingContextUtils.getMappingContext();
@@ -137,7 +139,7 @@ public class YrkesskadeClient implements ClientRegister {
     private String toJson(Object object) {
 
         try {
-            return objectMapper.writeValueAsString(object);
+            return jsonMapper.writeValueAsString(object);
         } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
         }

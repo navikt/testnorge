@@ -1,5 +1,7 @@
 package no.nav.dolly.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.hc.client5.http.auth.AuthScope;
@@ -20,7 +22,10 @@ import java.net.URISyntaxException;
 @Slf4j
 @Configuration
 @Profile({"prod", "dev"})
+@RequiredArgsConstructor
 public class OpenSearchConfig {
+
+    private final ObjectMapper objectMapper;
 
     @Value("${open.search.username}")
     private String username;
@@ -43,13 +48,9 @@ public class OpenSearchConfig {
     @Bean
     public OpenSearchClient opensearchClient(CredentialsProvider credentialsProvider) throws URISyntaxException {
 
-        var jackson2ObjectMapper = com.fasterxml.jackson.databind.json.JsonMapper.builder()
-                .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .build();
-
         val transportBuilder = ApacheHttpClient5TransportBuilder
                 .builder(HttpHost.create(uri))
-                .setMapper(new JacksonJsonpMapper(jackson2ObjectMapper))
+                .setMapper(new JacksonJsonpMapper(objectMapper))
                 .setHttpClientConfigCallback(httpClientBuilder ->
                         httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
                 ).build();

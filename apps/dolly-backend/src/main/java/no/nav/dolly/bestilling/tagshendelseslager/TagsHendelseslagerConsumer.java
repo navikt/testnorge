@@ -19,7 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class TagsHendelseslagerConsumer {
     public TagsHendelseslagerConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient
     ) {
         this.tokenService = tokenService;
@@ -44,7 +44,7 @@ public class TagsHendelseslagerConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(jsonMapper))
                 .build();
     }
 

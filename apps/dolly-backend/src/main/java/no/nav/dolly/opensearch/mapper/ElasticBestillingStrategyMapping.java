@@ -1,7 +1,5 @@
 package no.nav.dolly.opensearch.mapper;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -11,9 +9,11 @@ import ma.glasnost.orika.MappingException;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.opensearch.BestillingDokument;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -44,7 +44,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
                                        if (!bestillingDokument.isIgnore()) {
 
-                                           var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
+                                           var dollyBestilling = jsonMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
                                            mapperFacade.map(dollyBestilling, bestillingDokument);
 
                                            bestillingDokument.setMiljoer(isNotBlank(bestilling.getMiljoer()) ?
@@ -58,7 +58,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
                                    } catch (JacksonException |
                                             IllegalArgumentException |
-                                            MappingException e) {
+                                            MappingException _) {
 
                                        bestillingDokument.setIgnore(true);
                                        log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());

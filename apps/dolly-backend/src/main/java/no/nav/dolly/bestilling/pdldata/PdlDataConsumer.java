@@ -25,7 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -43,7 +43,7 @@ public class PdlDataConsumer extends ConsumerStatus {
     public PdlDataConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient) {
 
         this.tokenService = tokenService;
@@ -53,7 +53,7 @@ public class PdlDataConsumer extends ConsumerStatus {
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
                         .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(jsonMapper))
                 .build();
     }
 
@@ -115,7 +115,7 @@ public class PdlDataConsumer extends ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new PdlDataStanaloneCommand(webClient, ident, standalone, token.getTokenValue())
                         .call())
-                .doOnNext(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
+                .doOnNext(_ -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 
     @Override

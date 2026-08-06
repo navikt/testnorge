@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
@@ -63,7 +63,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 identService,
                 clientRegisters,
                 mapperFacade,
-                objectMapper,
+                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -81,11 +81,11 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
         Mono.just(bestKriterier)
                 .filter(request -> isBlank(request.getFeil()))
-                .flatMapMany(request ->
+                .flatMapMany(_ ->
                         Flux.fromArray(bestilling.getPdlImport().split(","))
                                 .flatMap(testnorgeIdent -> opprettPerson(bestilling, bestKriterier, testnorgeIdent), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
-                        error -> doFerdig(bestilling).subscribe(),
+                        _ -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
@@ -104,7 +104,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
-                .concatMap(ok -> Mono.just(ident))
+                .concatMap(_ -> Mono.just(ident))
                 .concatMap(testnorgeIdent -> Mono.just(OriginatorUtility.prepOriginator(bestKriterier, testnorgeIdent, mapperFacade)))
                 .concatMap(originator -> opprettProgress(bestilling, PDL, originator.getIdent())
                         .zipWith(Mono.just(originator)))
@@ -115,7 +115,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                         .zipWith(Mono.just(progress)))
                 .concatMap(tuple -> leggIdentTilGruppe(tuple.getT2(), bestKriterier.getBeskrivelse())
                         .thenReturn(tuple))
-                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())

@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KEY;
 @RequiredArgsConstructor
 public class PdlAdresseListener {
 
-    private final ObjectMapper mapper;
+    private final JsonMapper jsonMapper;
     private final OpensearchDocumentService service;
 
     @Value("${opensearch.index.adresser}")
@@ -73,7 +73,7 @@ public class PdlAdresseListener {
     @SneakyThrows
     private Map<String, Object> convert(String json) {
 
-        val data = mapper.readValue(json, new TypeReference<HashMap<String, Object>>() {
+        val data = jsonMapper.readValue(json, new TypeReference<HashMap<String, Object>>() {
         });
         replaceNumberWithString(data);
         createCompletionContexts(data);

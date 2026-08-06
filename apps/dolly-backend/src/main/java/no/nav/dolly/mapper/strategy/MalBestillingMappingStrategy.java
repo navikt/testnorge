@@ -11,13 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 @RequiredArgsConstructor
 public class MalBestillingMappingStrategy implements MappingStrategy {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -31,7 +31,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                         destinasjon.setMiljoer(kilde.getMiljoer());
                         destinasjon.setSistOppdatert(kilde.getSistoppdatert());
                         try {
-                            destinasjon.setMalBestilling(objectMapper.readTree(kilde.getMalbestilling()));
+                            destinasjon.setMalBestilling(jsonMapper.readTree(kilde.getMalbestilling()));
 
                         } catch (JacksonException e) {
                             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getOriginalMessage());
