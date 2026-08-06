@@ -15,6 +15,7 @@ import { InlineMessage } from '@navikt/ds-react'
 import {
 	containsCheckedAttributt,
 	countMatchingAttributter,
+	matchesFilter,
 	PanelFilterContext,
 } from '@/components/ui/panel/PanelFilterContext'
 
@@ -48,8 +49,10 @@ export default function Panel({
 	}, [hasCheckedAttributt, toggleOpen])
 
 	const filtering = !!filterText
+	const headingMatch = filtering && matchesFilter(heading, filterText)
 	const matchCount = filtering ? countMatchingAttributter(renderContent, filterText) : 0
-	const shouldOpen = isOpen || forceOpen || (filtering && matchCount > 0)
+	const filterHit = headingMatch || matchCount > 0
+	const shouldOpen = isOpen || forceOpen || (filtering && filterHit)
 
 	const check = (e) => {
 		e.stopPropagation()
@@ -61,7 +64,7 @@ export default function Panel({
 		uncheckAttributeArray()
 	}
 
-	if (filtering && matchCount === 0) {
+	if (filtering && !filterHit) {
 		return null
 	}
 
@@ -121,7 +124,17 @@ export default function Panel({
 					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />
 				</span>
 			</div>
-			{shouldOpen && <div className="dolly-panel-content">{renderContent}</div>}
+			{shouldOpen && (
+				<div className="dolly-panel-content">
+					{headingMatch ? (
+						<PanelFilterContext.Provider value={{ filterText: '' }}>
+							{renderContent}
+						</PanelFilterContext.Provider>
+					) : (
+						renderContent
+					)}
+				</div>
+			)}
 		</div>
 	)
 }
