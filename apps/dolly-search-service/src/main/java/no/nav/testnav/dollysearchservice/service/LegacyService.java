@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.termsQuery;
-
 @Service
 @RequiredArgsConstructor
 public class LegacyService {
@@ -30,11 +27,11 @@ public class LegacyService {
                 .side(personSearch.getPage())
                 .antall(personSearch.getPageSize())
                 .personRequest(mapperFacade.map(personSearch, PersonRequest.class))
+                .mustHaveTags(Set.of("TESTNORGE"))
+                .mustNotHaveTags(Set.of("DOLLY", "ARENASYNT"))
                 .build();
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(personRequest);
-        query.mustNot(q -> q.terms(termsQuery("tags", Set.of("DOLLY", "ARENASYNT"))));
-        query.must(q -> q.match(matchQuery("tags", "TESTNORGE")));
 
         var response = openSearchQueryService.execQuery(personRequest, query);
         return formatResponse(response);

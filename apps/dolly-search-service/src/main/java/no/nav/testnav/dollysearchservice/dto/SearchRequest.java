@@ -30,6 +30,9 @@ public class SearchRequest {
     private SearchRequest request;
     private String index;
 
+    private Set<String> mustHaveTags;
+    private Set<String> mustNotHaveTags;
+
     private List<ElasticTyper> registreRequest;
 
     private List<String> miljoer;
@@ -58,5 +61,21 @@ public class SearchRequest {
             registreRequest = new ArrayList<>();
         }
         return registreRequest;
+    }
+
+    public Set<String> getMustHaveTags() {
+
+        if (isNull(mustHaveTags)) {
+            mustHaveTags = new HashSet<>();
+        }
+        return mustHaveTags;
+    }
+
+    public Set<String> getMustNotHaveTags() {
+
+        if (isNull(mustNotHaveTags)) {
+            mustNotHaveTags = new HashSet<>();
+        }
+        return mustNotHaveTags;
     }
 }

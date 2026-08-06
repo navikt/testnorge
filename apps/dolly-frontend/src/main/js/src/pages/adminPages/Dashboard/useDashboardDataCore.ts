@@ -8,6 +8,7 @@ import {
 	type DashboardOversiktDTO,
 	type DashboardTeamsDTO,
 	useDashboard,
+	useDashboardBestillingerForMonths,
 	useDashboardFeilForDager,
 } from '@/utils/hooks/useDashboard'
 import {
@@ -101,6 +102,7 @@ export const useDashboardDataCore = () => {
 		dashboardOrganisasjonerError,
 		dashboardDollyTeamsError,
 		dashboardOversiktError,
+		mutateDashboardBestillinger,
 		reloadDashboard,
 	} = useDashboard()
 
@@ -148,7 +150,45 @@ export const useDashboardDataCore = () => {
 	const previousBusinessPeriod = getPreviousBusinessPeriod(new Date())
 	const selectedDayDates =
 		selectedDayScope === DAY_SCOPE_TODAY ? [todayDate] : previousBusinessPeriod.dates
-	const previousDayPeriodData = activeDashboardBestillinger
+
+	const currentMonthPrefix = todayDate.slice(0, 7)
+	const extraMonthsForPeriod = useMemo(() => {
+		if (mockModeEnabled || selectedDayScope === DAY_SCOPE_TODAY) {
+			return []
+		}
+		const seen = new Set<string>()
+		return previousBusinessPeriod.dates
+			.map((dato) => {
+				const monthPrefix = dato.slice(0, 7)
+				if (monthPrefix === currentMonthPrefix || seen.has(monthPrefix)) {
+					return null
+				}
+				seen.add(monthPrefix)
+				const parsed = parseISO(dato)
+				const month = monthNumberToName(parsed.getMonth() + 1)
+				return month ? { year: parsed.getFullYear(), month } : null
+			})
+			.filter((entry): entry is { year: number; month: string } => entry !== null)
+	}, [mockModeEnabled, selectedDayScope, previousBusinessPeriod.dates, currentMonthPrefix])
+
+	const { bestillingerForMonths: bestillingerForExtraMonths } =
+		useDashboardBestillingerForMonths(extraMonthsForPeriod)
+
+	const bestillingerForDaySection = useMemo(() => {
+		if (bestillingerForExtraMonths.length === 0) {
+			return activeDashboardBestillinger
+		}
+		const byDato = new Map<string, DashboardBestillingerDTO>()
+		for (const row of bestillingerForExtraMonths) {
+			byDato.set(row.dato, row)
+		}
+		for (const row of activeDashboardBestillinger) {
+			byDato.set(row.dato, row)
+		}
+		return Array.from(byDato.values())
+	}, [activeDashboardBestillinger, bestillingerForExtraMonths])
+
+	const previousDayPeriodData = bestillingerForDaySection
 		.filter((personData) => selectedDayDates.includes(personData.dato))
 		.sort((a, b) => a.dato.localeCompare(b.dato))
 	const selectedDayDisplayLabel =
@@ -185,9 +225,8 @@ export const useDashboardDataCore = () => {
 		return month ? [{ year: parsed.getFullYear(), month, day: parsed.getDate() }] : []
 	})
 
-	const { feilForDager, loadingFeilForDager, feilForDagerError } = useDashboardFeilForDager(
-		mockModeEnabled ? [] : selectedDayFeilDager,
-	)
+	const { feilForDager, loadingFeilForDager, feilForDagerError } =
+		useDashboardFeilForDager(mockModeEnabled ? [] : selectedDayFeilDager)
 	const activeSelectedDayFeil = mockModeEnabled
 		? selectedDayDates.flatMap((dato) =>
 				tilListe<DashboardFeilDetaljertRad>(mockData.feilDetaljertByDate[dato]),
@@ -340,7 +379,13 @@ export const useDashboardDataCore = () => {
 		selectedDayPeriodTitle,
 		selectedDayButtonLabel,
 		selectedDayScope,
-		onSelectedDayScopeChange: setSelectedDayScope,
+		onSelectedDayScopeChange: (scope: typeof DAY_SCOPE_YESTERDAY | typeof DAY_SCOPE_TODAY) => {
+			setSelectedDayScope(scope)
+			if (scope === DAY_SCOPE_TODAY && !mockModeEnabled) {
+				mutateDashboardBestillinger()
+			}
+		},
+		selectedDayDatesCount: selectedDayDates.length,
 		previousDayPeriodData,
 		previousDaySummary: previousDaySummaryWithTotals,
 		previousDayChartOptions,

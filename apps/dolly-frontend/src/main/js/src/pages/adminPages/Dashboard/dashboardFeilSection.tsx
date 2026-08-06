@@ -9,6 +9,7 @@ import {
 	HGrid,
 	HStack,
 	Skeleton,
+	Tag,
 	VStack,
 } from '@navikt/ds-react'
 import BestillingResultat from '@/components/bestilling/statusListe/BestillingResultat/BestillingResultat'
@@ -22,6 +23,15 @@ import {
 import { type FeilDetaljRad, type FeilGruppe, feilVerdiTilMelding } from './dashboardFeilUtils'
 import { useDashboardFeil } from './DashboardFeilContext'
 import type { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
+import { format } from 'date-fns'
+
+const toTimeOnly = (value: string) => {
+	const parsedDate = new Date(value)
+	if (Number.isNaN(parsedDate.getTime())) {
+		return ''
+	}
+	return format(parsedDate, 'HH:mm')
+}
 
 const FeilDetaljRadVisning = ({
 	rad,
@@ -57,7 +67,7 @@ const FeilDetaljRadVisning = ({
 		opprettetFraId: 0,
 		status: [
 			{
-				id: rad.feilNokkel ?? `feil-${rad.bestillingId}`,
+				id: rad.feilNoekkel ?? `feil-${rad.bestillingId}`,
 				navn: fagsystemNavn,
 				statuser: [
 					{
@@ -78,12 +88,20 @@ const FeilDetaljRadVisning = ({
 		systeminfo: '',
 		stoppet: false,
 	} as Bestillingsstatus
+	const timeOnly = toTimeOnly(rad.sistOppdatert)
 	return (
 		<BestillingResultat
 			bestilling={bestilling}
 			lukkBestilling={() => undefined}
 			erOrganisasjon={false}
 			compact
+			compactHeaderRight={
+				timeOnly ? (
+					<Tag variant="neutral" size="xsmall">
+						{timeOnly}
+					</Tag>
+				) : undefined
+			}
 			errorMetaFormatter={errorMetaFormatter}
 		/>
 	)
@@ -102,14 +120,14 @@ export const FeilGrupperVisning = ({
 		</Detail>
 		<Accordion size="small">
 			{feilGrupper.map((gruppe) => (
-				<Accordion.Item key={gruppe.feilNokkel}>
+				<Accordion.Item key={gruppe.feilNoekkel}>
 					<Accordion.Header>
 						{gruppe.label} ({gruppe.rader.length})
 					</Accordion.Header>
 					<Accordion.Content>
 						{gruppe.rader.map((rad) => (
 							<FeilDetaljRadVisning
-								key={`${gruppe.feilNokkel}-${rad.bestillingId}-${rad.ident}`}
+								key={`${gruppe.feilNoekkel}-${rad.bestillingId}-${rad.ident}`}
 								rad={rad}
 								fagsystemNavn={gruppe.label}
 							/>

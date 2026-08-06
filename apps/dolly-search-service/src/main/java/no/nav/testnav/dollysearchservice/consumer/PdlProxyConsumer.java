@@ -10,7 +10,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -28,14 +28,14 @@ public class PdlProxyConsumer {
     public PdlProxyConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper,
-            WebClient webClient
-    ) {
+            JsonMapper jsonMapper,
+            WebClient webClient) {
+
         serverProperties = consumers.getTestnavPdlProxy();
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
         this.tokenExchange = tokenExchange;
     }
