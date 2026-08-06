@@ -33,8 +33,16 @@ export const BankinformasjonPanel = ({ stateModifier, formValues }) => {
 			])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
-				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
+				<Attributt
+					attr={sm.attrs.norskBankkonto}
+					vis={true}
+					disabled={sm.attrs.utenlandskBankkonto.checked}
+				/>
+				<Attributt
+					attr={sm.attrs.utenlandskBankkonto}
+					vis={true}
+					disabled={sm.attrs.norskBankkonto.checked}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)
