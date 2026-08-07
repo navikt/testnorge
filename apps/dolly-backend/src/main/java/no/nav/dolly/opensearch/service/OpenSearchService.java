@@ -118,7 +118,7 @@ public class OpenSearchService {
                         .index(idx -> idx
                                 .index(index)
                                 .id(String.valueOf(dokument.getId()))
-                                .document(buildDokumentJson(dokument))));
+                                .document(jsonMapper.valueToTree(dokument))));
             }
 
             val response = openSearchClient.bulk(builder.build());
@@ -131,14 +131,13 @@ public class OpenSearchService {
             }
             return Mono.just(response);
 
-        } catch (IOException | OpenSearchException e) {
+        } catch (IOException | JacksonException e) {
             log.warn("Feilet å lagre bestilling id {}, {}",
                     (!bestillingDokument.isEmpty() ?
                     bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
             return Mono.empty();
         }
     }
-
 
     public Mono<IndexResponse> save(BestillingDokument bestillingDokument) {
 
@@ -186,18 +185,6 @@ public class OpenSearchService {
 
             log.warn("Feilet å slette bestilling id {}, {}", id, e.getLocalizedMessage());
             return Mono.just("Feilet å slette bestilling id: " + id);
-        }
-    }
-
-    private JsonNode buildDokumentJson(BestillingDokument dokument) {
-
-        try {
-            val jsonString = jsonMapper.writeValueAsString(dokument);
-            return jsonMapper.readTree(jsonString);
-
-        } catch (JacksonException e) {
-            log.warn("Feilet å serialisere bestillingDokument id {}, {}", dokument.getId(), e.getLocalizedMessage());
-            return null;
         }
     }
 }
