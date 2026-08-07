@@ -1,0 +1,15 @@
+dolly:
+  nais:
+    name: testnav-trygdeetaten-nav-proxy
+    variables:
+      - AZURE_NAV_APP_CLIENT_ID
+      - AZURE_NAV_APP_CLIENT_SECRET
+
+spring:
+  config:
+    import: "sm://"
+
+consumers:
+  #TODO: Legge til her også for lokal kjøring
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.intern.dev.nav.no
