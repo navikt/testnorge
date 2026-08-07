@@ -17,7 +17,9 @@ import org.opensearch.client.opensearch.core.IndexResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,6 +37,7 @@ public class OpenSearchService {
     
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
+    private final JsonMapper jsonMapper;
 
     @Value("${open.search.index}")
     private String index;
@@ -115,14 +118,16 @@ public class OpenSearchService {
                         .index(idx -> idx
                                 .index(index)
                                 .id(String.valueOf(dokument.getId()))
-                                .document(dokument)));
+                                .document(buildDokumentJson(dokument))));
             }
 
             val response = openSearchClient.bulk(builder.build());
             if (response.errors()) {
-                var error = response.items().getFirst().error();
-                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
-                        nonNull(error) && nonNull(error.causedBy()) ? error.causedBy().reason() : "Ukjent feil");
+                response.items().stream()
+                        .filter(item -> nonNull(item.error()))
+                        .forEach(item ->
+                            log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
+                                    nonNull(item.error().causedBy()) ? item.error().causedBy().reason() : "Ukjent feil"));
             }
             return Mono.just(response);
 
@@ -181,6 +186,18 @@ public class OpenSearchService {
 
             log.warn("Feilet å slette bestilling id {}, {}", id, e.getLocalizedMessage());
             return Mono.just("Feilet å slette bestilling id: " + id);
+        }
+    }
+
+    private JsonNode buildDokumentJson(BestillingDokument dokument) {
+
+        try {
+            val jsonString = jsonMapper.writeValueAsString(dokument);
+            return jsonMapper.readTree(jsonString);
+
+        } catch (JacksonException e) {
+            log.warn("Feilet å serialisere bestillingDokument id {}, {}", dokument.getId(), e.getLocalizedMessage());
+            return null;
         }
     }
 }
