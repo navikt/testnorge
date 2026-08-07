@@ -14,14 +14,15 @@ import org.opensearch.client.opensearch.core.DeleteRequest;
 import org.opensearch.client.opensearch.core.ExistsRequest;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.IndexResponse;
-import tools.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -119,7 +120,9 @@ public class OpenSearchService {
 
             val response = openSearchClient.bulk(builder.build());
             if (response.errors()) {
-                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}", response.items().getFirst().error());
+                var error = response.items().getFirst().error();
+                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
+                        nonNull(error) && nonNull(error.causedBy()) ? error.causedBy().reason() : "Ukjent feil");
             }
             return Mono.just(response);
 
