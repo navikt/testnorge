@@ -1,20 +1,15 @@
-import useBoolean from '@/utils/hooks/useBoolean'
-import Button from '@/components/ui/button/Button'
 import { BestillingSammendrag } from '@/components/bestilling/sammendrag/BestillingSammendrag'
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
-import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
+import { malTyper } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
-import { TestComponentSelectors } from '#/mocks/Selectors'
+import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
-	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
-	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
-
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0 || bestilling.antallLevert > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
@@ -47,76 +42,44 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			{harIdenterOpprettet && !erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
-						<Button
-							data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
-							onClick={openGjenopprettModal}
-							kind="synchronize"
+						<GjenopprettConnector
+							bestilling={bestilling}
+							brukerId={brukerId}
+							brukertype={brukertype}
 							disabled={!harLevertPersoner || gjenopprettingsId}
 							title={gjenopprettTitle}
-						>
-							GJENOPPRETT
-						</Button>
+						/>
 					)}
 					{!alleredeMal &&
 						!harRelatertPersonVedSivilstand &&
 						!harEksisterendeNyIdent &&
 						!harRelatertPersonBarn &&
-						!gjenopprettingsId && (
-							<Button
-								data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
-								onClick={openMalModal}
-								kind={'maler'}
-								className="svg-icon-blue"
-							>
-								OPPRETT MAL
-							</Button>
-						)}
-					<SlettButton
-						bestillingId={bestilling.id}
+						!gjenopprettingsId && <OpprettMal id={bestilling.id} malType={malTyper.BESTILLING} />}
+					<SlettModal
 						action={DollyApi.slettBestilling}
+						bestillingId={bestilling.id}
 						loading={false}
 						navigateHome={false}
-					>
-						Er du sikker på at du vil slette denne bestillingen?
-					</SlettButton>
+						slettType={'bestilling'}
+					/>
 				</div>
 			)}
 
 			{erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
-					<Button
-						onClick={openGjenopprettModal}
-						kind="synchronize"
+					<GjenopprettConnector
+						bestilling={bestilling}
+						brukerId={brukerId}
+						brukertype={brukertype}
 						disabled={!bestilling.ferdig}
 						title={
 							!bestilling.ferdig
 								? 'Bestillingen kan ikke gjenopprettes før den er ferdig'
 								: undefined
 						}
-					>
-						GJENOPPRETT
-					</Button>
-					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-						OPPRETT MAL
-					</Button>
+					/>
+					<OpprettMal id={bestilling.id} malType={malTyper.ORGANISASJON} />
 				</div>
-			)}
-
-			{isGjenopprettModalOpen && (
-				<GjenopprettConnector
-					bestilling={bestilling}
-					brukerId={brukerId}
-					closeModal={closeGjenoprettModal}
-					brukertype={brukertype}
-				/>
-			)}
-
-			{isMalModalOpen && (
-				<MalModal
-					id={bestilling.id}
-					malType={erOrganisasjon ? malTyper.ORGANISASJON : malTyper.BESTILLING}
-					closeModal={closeMalModal}
-				/>
 			)}
 		</div>
 	)

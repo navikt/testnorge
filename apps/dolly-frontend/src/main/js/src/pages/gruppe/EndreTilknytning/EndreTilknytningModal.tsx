@@ -1,22 +1,14 @@
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useAlleBrukere } from '@/utils/hooks/useBruker'
 import { DollyApi } from '@/service/Api'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
-import styled from 'styled-components'
+import { Button, Dialog, InlineMessage, UNSAFE_Combobox, VStack } from '@navikt/ds-react'
 
-const Knappegruppe = styled.div`
-	margin-top: 20px;
-	display: flex;
-	gap: 15px;
-`
-
-export const EndreTilknytningModal = ({ gruppe, modalIsOpen, closeModal }) => {
+export const EndreTilknytningModal = ({ gruppe, open, setOpen }) => {
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
 	const [valgtBruker, setValgtBruker] = useState(gruppe.opprettetAv?.brukerId)
 	const [feilmelding, setFeilmelding] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
 
 	const brukerOptions = brukere?.map((bruker) => {
 		const erTeam = bruker?.brukertype === 'TEAM'
@@ -26,58 +18,66 @@ export const EndreTilknytningModal = ({ gruppe, modalIsOpen, closeModal }) => {
 		}
 	})
 
+	const inputRef = useRef<HTMLInputElement>(null)
+
 	const matchMutate = useMatchMutate()
 
-	const handleSubmit = () => {
+	const handleSubmit = (event: any) => {
+		event.preventDefault()
 		setFeilmelding('')
-		DollyApi.endreTilknytningGruppe(gruppe.id, valgtBruker).then(() => {
-			matchMutate(REGEX_BACKEND_GRUPPER)
-				.then(() => closeModal())
-				.catch((error) => {
-					setFeilmelding('Feil ved endring av eier: ' + error.message)
-				})
-		})
+		setIsLoading(true)
+		DollyApi.endreTilknytningGruppe(gruppe.id, valgtBruker)
+			.then(() => matchMutate(REGEX_BACKEND_GRUPPER))
+			.then(() => setOpen(false))
+			.catch((error: any) => {
+				setFeilmelding('Feil ved endring av eier: ' + error.message)
+			})
+			.finally(() => setIsLoading(false))
+	}
+
+	const handleOpenChange = (isOpen: boolean) => {
+		if (!isLoading) {
+			setOpen(isOpen)
+			setFeilmelding('')
+		}
 	}
 
 	return (
-		<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
-			<>
-				<h1>
-					Bytt eier for gruppe #{gruppe.id} - {gruppe.navn}
-				</h1>
-				<div style={{ marginTop: '15px' }}>
-					<DollySelect
-						name="bruker"
-						label="Ny eier"
-						options={brukerOptions ?? []}
-						value={valgtBruker}
-						size="grow"
-						onChange={(value) => setValgtBruker(value?.value)}
-						isLoading={loadingBrukere}
-						placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
-						isClearable={false}
-					/>
-				</div>
-				{feilmelding && (
-					<div role="alert" aria-live="assertive">
-						<div className="skjemaelement__feilmelding">{feilmelding}</div>
-					</div>
-				)}
-				<Knappegruppe>
-					<NavButton
-						variant="danger"
-						onClick={() => {
-							setFeilmelding('')
-							closeModal()
-						}}
-					>
-						Avbryt
-					</NavButton>
-					<NavButton onClick={handleSubmit} variant="primary">
+		<Dialog open={open} onOpenChange={handleOpenChange}>
+			<Dialog.Popup initialFocusTo={inputRef}>
+				<Dialog.Header>
+					<Dialog.Title>
+						Bytt eier for gruppe #{gruppe.id} - {gruppe.navn}
+					</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<form id="bytt-eier-form" onSubmit={handleSubmit}>
+						<VStack gap="space-16">
+							<UNSAFE_Combobox
+								label="Ny eier"
+								options={brukerOptions ?? []}
+								isLoading={loadingBrukere}
+								onToggleSelected={(option, isSelected) => {
+									setValgtBruker(isSelected ? option : null)
+								}}
+								ref={inputRef}
+								placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
+							/>
+							{feilmelding && <InlineMessage status="error">{feilmelding}</InlineMessage>}
+						</VStack>
+					</form>
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<Button type="button" variant="secondary">
+							Avbryt
+						</Button>
+					</Dialog.CloseTrigger>
+					<Button form="bytt-eier-form" loading={isLoading}>
 						Bytt eier
-					</NavButton>
-				</Knappegruppe>
-			</>
-		</DollyModal>
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
 	)
 }
