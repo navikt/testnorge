@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
+import no.nav.dolly.bestilling.arbeidssoekerregisteret.ArbeidssoekerregisteretClient;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -44,6 +45,7 @@ public class TestpersonController {
     private final BestillingService bestillingService;
     private final GjenopprettIdentService gjenopprettIdentService;
     private final OppdaterPersonService oppdaterPersonService;
+    private final ArbeidssoekerregisteretClient arbeidssoekerregisteretClient;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
     private final NavigasjonService navigasjonService;
@@ -102,6 +104,15 @@ public class TestpersonController {
     public Mono<Void> deleteTestident(@PathVariable String ident) {
 
         return identService.slettTestident(ident);
+    }
+
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @DeleteMapping("/{ident}/arbeidssoekerregisteret")
+    @Operation(description = "Stopp arbeidssøkerregistrering for testperson")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<HttpStatus> stoppArbeidssoekerregisteret(@PathVariable String ident) {
+
+        return arbeidssoekerregisteretClient.stoppArbeidssoekerregisteret(ident);
     }
 
     @Operation(description = "Naviger til ønsket testperson")
