@@ -14,14 +14,17 @@ import org.opensearch.client.opensearch.core.DeleteRequest;
 import org.opensearch.client.opensearch.core.ExistsRequest;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.IndexResponse;
-import tools.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -34,6 +37,7 @@ public class OpenSearchService {
     
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
+    private final JsonMapper jsonMapper;
 
     @Value("${open.search.index}")
     private String index;
@@ -114,23 +118,26 @@ public class OpenSearchService {
                         .index(idx -> idx
                                 .index(index)
                                 .id(String.valueOf(dokument.getId()))
-                                .document(dokument)));
+                                .document(jsonMapper.valueToTree(dokument))));
             }
 
             val response = openSearchClient.bulk(builder.build());
             if (response.errors()) {
-                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}", response.items().getFirst().error());
+                response.items().stream()
+                        .filter(item -> nonNull(item.error()))
+                        .forEach(item ->
+                            log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
+                                    nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
             }
             return Mono.just(response);
 
-        } catch (IOException | OpenSearchException e) {
+        } catch (IOException | JacksonException e) {
             log.warn("Feilet å lagre bestilling id {}, {}",
                     (!bestillingDokument.isEmpty() ?
                     bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
             return Mono.empty();
         }
     }
-
 
     public Mono<IndexResponse> save(BestillingDokument bestillingDokument) {
 
