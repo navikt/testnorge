@@ -1,17 +1,37 @@
+import { useState } from 'react'
+import styled from 'styled-components'
 import Loading from '@/components/ui/loading/Loading'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { Logger } from '@/logger/Logger'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, formatDateTime, oversettBoolean } from '@/utils/DataFormatter'
 import { useArbeidssoekerTyper } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { ArbeidssoekerregisteretTypes } from '@/components/fagsystem/arbeidssoekerregisteret/arbeidssoekerregisteretTypes'
+import type { ArbeidssoekerregisteretTypes } from '@/components/fagsystem/arbeidssoekerregisteret/arbeidssoekerregisteretTypes'
+import { ArbeidssoekerregisteretStopp } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretStopp'
 
 type ArbeidssoekerregisteretVisning = {
 	data?: ArbeidssoekerregisteretTypes
 	loading?: boolean
+	ident: string
+	onRefresh: () => Promise<unknown>
 }
 
-export const TyperLabel = ({ type, value, label }) => {
+type TyperLabelProps = {
+	type: string
+	value?: string
+	label: string
+}
+
+const StoppHandling = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	margin-top: -0.5rem;
+	margin-bottom: 0.5rem;
+`
+
+export const TyperLabel = ({ type, value, label }: TyperLabelProps) => {
 	const { data: options, loading, error } = useArbeidssoekerTyper(type)
 	if (loading || error || !options) {
 		return <TitleValue title={label} value={value} />
@@ -23,7 +43,34 @@ export const TyperLabel = ({ type, value, label }) => {
 export const ArbeidssoekerregisteretVisning = ({
 	data,
 	loading,
+	ident,
+	onRefresh,
 }: ArbeidssoekerregisteretVisning) => {
+	const [stoppetIdent, setStoppetIdent] = useState<string | null>(null)
+	const visStoppetAlert = stoppetIdent === ident
+
+	const onStopped = () => {
+		setStoppetIdent(ident)
+		void onRefresh().catch((error) => {
+			Logger.error({
+				event: 'Oppfriskning av arbeidssøkerregisteret etter stopp feilet',
+				message: error instanceof Error ? error.message : 'Ukjent feil ved oppfriskning',
+				uuid: window.uuid,
+			})
+		})
+	}
+
+	if (visStoppetAlert) {
+		return (
+			<div>
+				<SubOverskrift label="Arbeidssøkerregisteret" iconKind="cv" />
+				<StyledAlert variant={'info'} size={'small'}>
+					Registrering som arbeidssøker er stoppet.
+				</StyledAlert>
+			</div>
+		)
+	}
+
 	if (loading) {
 		return <Loading label="Laster arbeidssøkerregisteret-data" />
 	}
@@ -37,6 +84,9 @@ export const ArbeidssoekerregisteretVisning = ({
 	return (
 		<div>
 			<SubOverskrift label="Arbeidssøkerregisteret" iconKind="cv" />
+			<StoppHandling>
+				<ArbeidssoekerregisteretStopp ident={ident} onStopped={onStopped} />
+			</StoppHandling>
 			<div className="person-visning_content">
 				<TyperLabel type={'BRUKERTYPE'} value={data.utfoertAv} label={'Utført av'} />
 				<TitleValue title="Kilde" value={data.kilde} />

@@ -21,7 +21,7 @@ export const useArbeidssoekerTyper = (type: string) => {
 }
 
 export const useArbeidssoekerregistrering = (ident: string, harBestilling: boolean) => {
-	const { data, isLoading, error } = useSWR<any, Error>(
+	const { data, isLoading, error, mutate } = useSWR<any, Error>(
 		harBestilling ? getRegistreringUrl(ident) : null,
 		fetcher,
 	)
@@ -30,5 +30,6 @@ export const useArbeidssoekerregistrering = (ident: string, harBestilling: boole
 		data: data,
 		loading: isLoading,
 		error: error,
+		mutate,
 	}
 }

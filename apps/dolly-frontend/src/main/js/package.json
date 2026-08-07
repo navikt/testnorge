@@ -52,13 +52,13 @@
 		"redux-first-history": "^5.2.0",
 		"redux-promise-middleware": "^6.2.0",
 		"redux-thunk": "^3.1.0",
-		"styled-components": "^6.4.4",
+		"styled-components": "^6.5.0",
 		"uuid": "^14.0.1",
 		"yup": "^1.7.1"
 	},
 	"devDependencies": {
 		"@babel/core": "^8.0.1",
-		"@eslint-react/eslint-plugin": "5.18.1",
+		"@eslint-react/eslint-plugin": "5.18.2",
 		"@eslint/js": "^10.0.1",
 		"@hookform/error-message": "^2.0.1",
 		"@navikt/aksel": "^8.16.1",

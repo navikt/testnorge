@@ -261,11 +261,14 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harKdiBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingArbeidssoekerregisteret, data: arbeidssoekerregisteretData } =
-		useArbeidssoekerregistrering(
-			ident.ident,
-			harArbeidssoekerregisteretBestilling(bestillingerFagsystemer),
-		)
+	const {
+		loading: loadingArbeidssoekerregisteret,
+		data: arbeidssoekerregisteretData,
+		mutate: mutateArbeidssoekerregisteret,
+	} = useArbeidssoekerregistrering(
+		ident.ident,
+		harArbeidssoekerregisteretBestilling(bestillingerFagsystemer),
+	)
 
 	const {
 		loading: loadingArbeidsplassencvData,
@@ -648,8 +651,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 				/>
 				<SkattekortVisning liste={skattekortData} loading={loadingSkattekort} />
 				<ArbeidssoekerregisteretVisning
+					key={ident.ident}
 					data={arbeidssoekerregisteretData}
 					loading={loadingArbeidssoekerregisteret}
+					ident={ident.ident}
+					onRefresh={mutateArbeidssoekerregisteret}
 				/>
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
