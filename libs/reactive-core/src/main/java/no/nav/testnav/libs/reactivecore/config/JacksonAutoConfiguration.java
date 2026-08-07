@@ -31,7 +31,6 @@ public class JacksonAutoConfiguration {
     private static final String YEAR_MONTH = "yyyy-MM";
 
     @Bean
-    @ConditionalOnMissingBean
     public SimpleModule dollyDateTimeModule() {
         return new SimpleModule()
                 .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
