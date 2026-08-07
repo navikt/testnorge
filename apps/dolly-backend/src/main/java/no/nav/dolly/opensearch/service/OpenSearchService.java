@@ -127,7 +127,7 @@ public class OpenSearchService {
                         .filter(item -> nonNull(item.error()))
                         .forEach(item ->
                             log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
-                                    nonNull(item.error().causedBy()) ? item.error().causedBy().reason() : "Ukjent feil"));
+                                    nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
             }
             return Mono.just(response);
 
