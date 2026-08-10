@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
-import no.nav.dolly.bestilling.arbeidssoekerregisteret.ArbeidssoekerregisteretClient;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -19,7 +18,6 @@ import no.nav.dolly.service.OrdreService;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +44,6 @@ public class TestpersonController {
     private final BestillingService bestillingService;
     private final GjenopprettIdentService gjenopprettIdentService;
     private final OppdaterPersonService oppdaterPersonService;
-    private final ArbeidssoekerregisteretClient arbeidssoekerregisteretClient;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
     private final NavigasjonService navigasjonService;
@@ -105,15 +102,6 @@ public class TestpersonController {
     public Mono<Void> deleteTestident(@PathVariable String ident) {
 
         return identService.slettTestident(ident);
-    }
-
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
-    @DeleteMapping("/{ident}/arbeidssoekerregisteret")
-    @Operation(description = "Stopp arbeidssøkerregistrering for testperson")
-    public Mono<ResponseEntity<Void>> stoppArbeidssoekerregisteret(@PathVariable String ident) {
-
-        return arbeidssoekerregisteretClient.stoppArbeidssoekerregisteret(ident)
-                .map(status -> ResponseEntity.status(status).<Void>build());
     }
 
     @Operation(description = "Naviger til ønsket testperson")
