@@ -84,7 +84,6 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
-import useBoolean from '@/utils/hooks/useBoolean'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
@@ -159,7 +158,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 		iLaastGruppe,
 	} = props
 	const { gruppeId } = ident
-	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 	const { pdlforvalterPerson } = usePdlForvalterPerson(ident?.ident)
