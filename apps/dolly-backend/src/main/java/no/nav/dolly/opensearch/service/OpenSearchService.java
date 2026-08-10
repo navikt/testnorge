@@ -48,6 +48,11 @@ public class OpenSearchService {
         return openSearchConsumer.updateIndexParams(parametere);
     }
 
+    public Mono<String> updateIndexSettings(JsonNode parametere) {
+
+        return openSearchConsumer.updateIndexSettings(parametere);
+    }
+
     public Mono<String> deleteIndex() {
 
         return indexExists()

@@ -35,7 +35,13 @@ public class OpenSearchConsumer {
 
     public Mono<String> updateIndexParams(JsonNode parametere) {
 
-        log.info("OpenSearch oppdaterer indeks \"{}\" ...", index);
-        return new ElasticPutCommand(webClient, username, password, index, parametere).call();
+        log.info("OpenSearch oppretter indeks \"{}\" med settings ...", index);
+        return new ElasticPutCommand(webClient, username, password, "/{index}", index, parametere).call();
+    }
+
+    public Mono<String> updateIndexSettings(JsonNode parametere) {
+
+        log.info("OpenSearch oppdaterer settings for eksisterende indeks \"{}\" ...", index);
+        return new ElasticPutCommand(webClient, username, password, "/{index}/_settings", index, parametere).call();
     }
 }
