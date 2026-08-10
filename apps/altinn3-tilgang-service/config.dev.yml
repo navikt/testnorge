@@ -32,7 +32,6 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-texas-proxy
         - application: dolly-auth-local
-        - application: testnav-bruker-service-dev
         - application: testnav-dolly-proxy
           cluster: dev-fss
         - application: testnav-oversikt-frontend
