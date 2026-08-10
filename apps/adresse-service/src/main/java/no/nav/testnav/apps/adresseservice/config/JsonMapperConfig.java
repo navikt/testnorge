@@ -1,4 +1,4 @@
-package no.nav.testnav.dollysearchservice.config;
+package no.nav.testnav.apps.adresseservice.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.RequiredArgsConstructor;
