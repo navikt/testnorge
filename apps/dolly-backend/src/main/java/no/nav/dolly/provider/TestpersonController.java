@@ -19,6 +19,7 @@ import no.nav.dolly.service.OrdreService;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -109,10 +110,10 @@ public class TestpersonController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/{ident}/arbeidssoekerregisteret")
     @Operation(description = "Stopp arbeidssøkerregistrering for testperson")
-    @ResponseStatus(HttpStatus.OK)
-    public Mono<HttpStatus> stoppArbeidssoekerregisteret(@PathVariable String ident) {
+    public Mono<ResponseEntity<Void>> stoppArbeidssoekerregisteret(@PathVariable String ident) {
 
-        return arbeidssoekerregisteretClient.stoppArbeidssoekerregisteret(ident);
+        return arbeidssoekerregisteretClient.stoppArbeidssoekerregisteret(ident)
+                .map(status -> ResponseEntity.status(status).<Void>build());
     }
 
     @Operation(description = "Naviger til ønsket testperson")

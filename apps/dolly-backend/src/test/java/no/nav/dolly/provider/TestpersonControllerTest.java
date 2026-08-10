@@ -80,9 +80,8 @@ class TestpersonControllerTest extends AbstractControllerTest {
                 .uri("/api/v1/ident/{ident}/arbeidssoekerregisteret", ident)
                 .exchange()
                 .expectStatus()
-                .isOk()
+                .isNoContent()
                 .expectBody()
-                .jsonPath("$")
-                .value(value -> assertThat(value.toString()).contains("NO_CONTENT"));
+                .isEmpty();
     }
 }
