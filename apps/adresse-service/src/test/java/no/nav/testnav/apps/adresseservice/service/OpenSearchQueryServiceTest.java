@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.adresseservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO;
@@ -20,6 +18,8 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.opensearch.client.opensearch.core.search.HitsMetadata;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
