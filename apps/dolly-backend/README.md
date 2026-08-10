@@ -22,6 +22,4 @@ av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 
 Evt midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
 
->nais aiven create opensearch ignored dolly -i bestillinger -a admin -s \<ownsecretname\> -e 10
-
->nais aiven get opensearch \<ownsecretname\> dolly
+>nais opensearch credentials bestillinger --team dolly --environment dev --permission ADMIN --ttl 14d 
