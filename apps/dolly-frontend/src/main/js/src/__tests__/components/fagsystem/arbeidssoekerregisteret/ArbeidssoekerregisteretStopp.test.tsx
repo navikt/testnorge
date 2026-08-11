@@ -36,6 +36,16 @@ describe('ArbeidssoekerregisteretStopp', () => {
 		expect(
 			screen.getByRole('alertdialog', { name: 'Stopp arbeidssøkerregistrering' }),
 		).toHaveAttribute('data-size', 'medium')
+		const dialogTitle = screen.getByRole('heading', {
+			name: 'Stopp arbeidssøkerregistrering',
+		})
+		expect(getComputedStyle(dialogTitle).fontSize).not.toBe('40px')
+		expect(getComputedStyle(dialogTitle).marginTop).toBe('0px')
+		expect(
+			screen
+				.getByText('Er du sikker på at du vil stoppe arbeidssøkerregistreringen?')
+				.closest('.aksel-dialog__body'),
+		).not.toBeNull()
 
 		fireEvent.click(screen.getByRole('button', { name: 'Ja, stopp registreringen' }))
 

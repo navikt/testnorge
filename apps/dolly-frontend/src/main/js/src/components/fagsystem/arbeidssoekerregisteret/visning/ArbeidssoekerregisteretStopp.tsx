@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ArbeidssoekerregisteretApi } from '@/service/Api'
-import { Alert, Button, Dialog } from '@navikt/ds-react'
+import { Alert, BodyLong, Button, Dialog, VStack } from '@navikt/ds-react'
 import { CircleSlashIcon } from '@navikt/aksel-icons'
 
 type Props = {
@@ -50,15 +50,13 @@ export const ArbeidssoekerregisteretStopp = ({ ident, onStopped }: Props) => {
 			<Dialog.Popup role="alertdialog">
 				<Dialog.Header>
 					<Dialog.Title>Stopp arbeidssøkerregistrering</Dialog.Title>
-					<Dialog.Description>
-						Er du sikker på at du vil stoppe arbeidssøkerregistreringen?
-					</Dialog.Description>
 				</Dialog.Header>
-				{errorMessage && (
-					<Dialog.Body>
-						<Alert variant="error">{errorMessage}</Alert>
-					</Dialog.Body>
-				)}
+				<Dialog.Body>
+					<VStack gap="space-16">
+						<BodyLong>Er du sikker på at du vil stoppe arbeidssøkerregistreringen?</BodyLong>
+						{errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+					</VStack>
+				</Dialog.Body>
 				<Dialog.Footer>
 					<Dialog.CloseTrigger disabled={loading}>
 						<Button variant="secondary" disabled={loading}>
