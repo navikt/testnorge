@@ -1,6 +1,5 @@
 package no.nav.testnav.dollysearchservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
@@ -12,6 +11,7 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
@@ -88,7 +88,6 @@ public class OpenSearchQueryService {
                 .seed(request.getSeed())
                 .personer(hitsList.stream()
                         .map(Hit::source)
-                        .map(node -> nonNull(node) ? jsonMapper.readTree(node.toString()) : null)
                         .toList())
                 .build();
     }

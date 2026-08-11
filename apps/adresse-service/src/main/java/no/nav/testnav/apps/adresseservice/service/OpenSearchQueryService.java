@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.adresseservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -22,6 +20,8 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -37,7 +37,7 @@ import static java.util.Objects.nonNull;
 public class OpenSearchQueryService {
 
     private final OpenSearchClient openSearchClient;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final MapperFacade mapperFacade;
 
     @Value("${opensearch.index.adresser}")
@@ -96,7 +96,7 @@ public class OpenSearchQueryService {
                     .filter(Objects::nonNull)
                     .map(source -> {
                         try {
-                            val data = objectMapper.treeToValue(source, kilde.getClass());
+                            val data = jsonMapper.treeToValue(source, kilde.getClass());
                             return mapperFacade.map(data, destinasjon.getClass());
                         } catch (Exception e) {
                             log.error("Feil ved mapping av {} fra OpenSearch", destinasjon.getClass().getSimpleName(), e);
