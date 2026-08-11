@@ -39,11 +39,13 @@ spec:
           cluster: dev-gcp
         - application: dolly-auth-local
           cluster: dev-gcp
-        - application: testnav-altinn3-tilgang-proxy
-          cluster: dev-gcp
         - application: testnav-dolly-proxy
           cluster: dev-fss
         - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-bruker-service
+          cluster: dev-gcp
+        - application: testnorge-profil-api
           cluster: dev-gcp
     outbound:
       external:
