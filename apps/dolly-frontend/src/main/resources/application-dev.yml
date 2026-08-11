@@ -26,9 +26,6 @@ consumers:
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
     url: http://testnav-varslinger-service-dev.dolly.svc.cluster.local
-  testnav-bruker-service:
-    name: testnav-bruker-service-dev
-    url: http://testnav-bruker-service-dev.dolly.svc.cluster.local
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: http://testnav-pdl-forvalter-dev.dolly.svc.cluster.local

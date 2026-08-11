@@ -26,7 +26,6 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnav-bruker-service-dev
         - application: testnav-app-tilgang-analyse-service
         - application: testnorge-profil-api-dev
         - application: testnav-altinn3-tilgang-service
