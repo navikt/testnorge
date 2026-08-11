@@ -25,10 +25,14 @@ type TyperLabelProps = {
 }
 
 const StoppHandling = styled.div`
-	display: flex;
-	justify-content: flex-end;
-	margin-top: -0.5rem;
-	margin-bottom: 0.5rem;
+	position: absolute;
+	top: 0;
+	right: var(--ax-space-8);
+	z-index: 1;
+`
+
+const VisningInnhold = styled.div`
+	position: relative;
 `
 
 export const TyperLabel = ({ type, value, label }: TyperLabelProps) => {
@@ -84,62 +88,64 @@ export const ArbeidssoekerregisteretVisning = ({
 	return (
 		<div>
 			<SubOverskrift label="Arbeidssøkerregisteret" iconKind="cv" />
-			<StoppHandling>
-				<ArbeidssoekerregisteretStopp ident={ident} onStopped={onStopped} />
-			</StoppHandling>
-			<div className="person-visning_content">
-				<TyperLabel type={'BRUKERTYPE'} value={data.utfoertAv} label={'Utført av'} />
-				<TitleValue title="Kilde" value={data.kilde} />
-				<TitleValue title="Årsak" value={data.aarsak} />
-				<TyperLabel type={'NUSKODE'} value={data.nuskode} label={'Utdanningsnivå'} />
-				<TyperLabel
-					type={'JOBBSITUASJONSBESKRIVELSE'}
-					value={data.jobbsituasjonsbeskrivelse}
-					label={'Beskrivelse av jobbsituasjonen'}
-				/>
-				<TitleValue title="Utdanning bestått" value={oversettBoolean(data.utdanningBestaatt)} />
-				<TitleValue title="Utdanning godkjent" value={oversettBoolean(data.utdanningGodkjent)} />
-				<TitleValue
-					title="Helse hindrer arbeid"
-					value={oversettBoolean(data.helsetilstandHindrerArbeid)}
-				/>
-				<TitleValue
-					title="Andre forhold hindrer arbeid"
-					value={oversettBoolean(data.andreForholdHindrerArbeid)}
-				/>
-				<TitleValue
-					title="Registreringstidspunkt"
-					value={formatDateTime(data.registreringstidspunkt)}
-				/>
-				{jobbsituasjonsdetaljer && !isEmpty(jobbsituasjonsdetaljer) && (
-					<div className="flexbox--full-width">
-						<h3>Detaljer om jobbsituasjonen</h3>
-						<div className="flexbox--flex-wrap">
-							<TitleValue
-								title="Gjelder fra dato"
-								value={formatDate(jobbsituasjonsdetaljer?.gjelderFraDato)}
-							/>
-							<TitleValue
-								title="Gjelder til dato"
-								value={formatDate(jobbsituasjonsdetaljer?.gjelderTilDato)}
-							/>
-							<TitleValue title="Stilling" value={jobbsituasjonsdetaljer?.stillingstittel} />
-							<TitleValue
-								title="Stillingsprosent"
-								value={jobbsituasjonsdetaljer?.stillingsprosent}
-							/>
-							<TitleValue
-								title="Siste dag med lønn"
-								value={formatDate(jobbsituasjonsdetaljer?.sisteDagMedLoenn)}
-							/>
-							<TitleValue
-								title="Siste arbeidsdag"
-								value={formatDate(jobbsituasjonsdetaljer?.sisteArbeidsdag)}
-							/>
+			<VisningInnhold>
+				<StoppHandling>
+					<ArbeidssoekerregisteretStopp ident={ident} onStopped={onStopped} />
+				</StoppHandling>
+				<div className="person-visning_content">
+					<TyperLabel type={'BRUKERTYPE'} value={data.utfoertAv} label={'Utført av'} />
+					<TitleValue title="Kilde" value={data.kilde} />
+					<TitleValue title="Årsak" value={data.aarsak} />
+					<TyperLabel type={'NUSKODE'} value={data.nuskode} label={'Utdanningsnivå'} />
+					<TyperLabel
+						type={'JOBBSITUASJONSBESKRIVELSE'}
+						value={data.jobbsituasjonsbeskrivelse}
+						label={'Beskrivelse av jobbsituasjonen'}
+					/>
+					<TitleValue title="Utdanning bestått" value={oversettBoolean(data.utdanningBestaatt)} />
+					<TitleValue title="Utdanning godkjent" value={oversettBoolean(data.utdanningGodkjent)} />
+					<TitleValue
+						title="Helse hindrer arbeid"
+						value={oversettBoolean(data.helsetilstandHindrerArbeid)}
+					/>
+					<TitleValue
+						title="Andre forhold hindrer arbeid"
+						value={oversettBoolean(data.andreForholdHindrerArbeid)}
+					/>
+					<TitleValue
+						title="Registreringstidspunkt"
+						value={formatDateTime(data.registreringstidspunkt)}
+					/>
+					{jobbsituasjonsdetaljer && !isEmpty(jobbsituasjonsdetaljer) && (
+						<div className="flexbox--full-width">
+							<h3>Detaljer om jobbsituasjonen</h3>
+							<div className="flexbox--flex-wrap">
+								<TitleValue
+									title="Gjelder fra dato"
+									value={formatDate(jobbsituasjonsdetaljer?.gjelderFraDato)}
+								/>
+								<TitleValue
+									title="Gjelder til dato"
+									value={formatDate(jobbsituasjonsdetaljer?.gjelderTilDato)}
+								/>
+								<TitleValue title="Stilling" value={jobbsituasjonsdetaljer?.stillingstittel} />
+								<TitleValue
+									title="Stillingsprosent"
+									value={jobbsituasjonsdetaljer?.stillingsprosent}
+								/>
+								<TitleValue
+									title="Siste dag med lønn"
+									value={formatDate(jobbsituasjonsdetaljer?.sisteDagMedLoenn)}
+								/>
+								<TitleValue
+									title="Siste arbeidsdag"
+									value={formatDate(jobbsituasjonsdetaljer?.sisteArbeidsdag)}
+								/>
+							</div>
 						</div>
-					</div>
-				)}
-			</div>
+					)}
+				</div>
+			</VisningInnhold>
 		</div>
 	)
 }

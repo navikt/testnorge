@@ -124,10 +124,6 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}`
 	}
 
-	static stoppArbeidssoekerregisteret(ident: string) {
-		return `${identBase}/${ident}/arbeidssoekerregisteret`
-	}
-
 	static slettBestilling(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}

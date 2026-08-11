@@ -118,10 +118,6 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
-	stoppArbeidssoekerregisteret(ident: string) {
-		return Request.delete(Endpoints.stoppArbeidssoekerregisteret(ident))
-	},
-
 	gjenopprettPerson(ident, miljoer) {
 		return Request.post(Endpoints.gjenopprettPerson(ident, miljoer))
 	},

@@ -2,32 +2,15 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ArbeidssoekerregisteretStopp } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretStopp'
-import { DollyApi } from '@/service/Api'
+import { ArbeidssoekerregisteretApi } from '@/service/Api'
 
 vi.mock('@/service/Api', () => ({
-	DollyApi: {
-		stoppArbeidssoekerregisteret: vi.fn(),
+	ArbeidssoekerregisteretApi: {
+		stoppRegistrering: vi.fn(),
 	},
 }))
 
-vi.mock('@navikt/ds-react', async () => {
-	const actual = await vi.importActual<typeof import('@navikt/ds-react')>('@navikt/ds-react')
-	const MockModal = ({ open, header, children }: any) =>
-		open ? (
-			<div role="dialog" aria-label={header?.heading}>
-				<h2>{header?.heading}</h2>
-				{children}
-			</div>
-		) : null
-	MockModal.Body = ({ children }: any) => <div>{children}</div>
-	MockModal.Footer = ({ children }: any) => <div>{children}</div>
-	return {
-		...actual,
-		Modal: MockModal,
-	}
-})
-
-const mockStoppArbeidssoekerregisteret = vi.mocked(DollyApi.stoppArbeidssoekerregisteret)
+const mockStoppArbeidssoekerregisteret = vi.mocked(ArbeidssoekerregisteretApi.stoppRegistrering)
 
 describe('ArbeidssoekerregisteretStopp', () => {
 	beforeEach(() => {
@@ -45,8 +28,14 @@ describe('ArbeidssoekerregisteretStopp', () => {
 
 		fireEvent.click(stoppButton)
 		expect(
-			screen.getByRole('dialog', { name: 'Stopp arbeidssøkerregistrering' }),
+			screen.getByRole('alertdialog', { name: 'Stopp arbeidssøkerregistrering' }),
 		).toBeInTheDocument()
+		expect(
+			screen.getByRole('alertdialog', { name: 'Stopp arbeidssøkerregistrering' }),
+		).toHaveAttribute('data-position', 'center')
+		expect(
+			screen.getByRole('alertdialog', { name: 'Stopp arbeidssøkerregistrering' }),
+		).toHaveAttribute('data-size', 'medium')
 
 		fireEvent.click(screen.getByRole('button', { name: 'Ja, stopp registreringen' }))
 
@@ -54,7 +43,7 @@ describe('ArbeidssoekerregisteretStopp', () => {
 			expect(mockStoppArbeidssoekerregisteret).toHaveBeenCalledWith('12345678901'),
 		)
 		await waitFor(() => expect(onStopped).toHaveBeenCalledTimes(1))
-		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+		await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
 	})
 
 	it('keeps the modal open when stopping fails', async () => {
@@ -68,7 +57,7 @@ describe('ArbeidssoekerregisteretStopp', () => {
 
 		expect(await screen.findByText('Stopp feilet')).toBeInTheDocument()
 		expect(
-			screen.getByRole('dialog', { name: 'Stopp arbeidssøkerregistrering' }),
+			screen.getByRole('alertdialog', { name: 'Stopp arbeidssøkerregistrering' }),
 		).toBeInTheDocument()
 		expect(onStopped).not.toHaveBeenCalled()
 	})

@@ -14,6 +14,7 @@ import SessionService from '@/service/services/session/SessionService'
 import KontoregisterService from '@/service/services/kontoregister/KontoregisterService'
 import KodeverkService from '@/service/services/kodeverk/KodeverkService'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
+import ArbeidssoekerregisteretService from '@/service/services/arbeidssoekerregisteret/ArbeidssoekerregisteretService'
 
 export const DollyApi = DollyService
 export const TpsMessagingApi = TpsMessagingService
@@ -29,6 +30,7 @@ export const PdlforvalterApi = PdlForvalterService
 export const SessionApi = SessionService
 export const BankkontoApi = KontoregisterService
 export const KodeverkApi = KodeverkService
+export const ArbeidssoekerregisteretApi = ArbeidssoekerregisteretService
 
 export default {
 	DollyApi: DollyService,
@@ -45,4 +47,5 @@ export default {
 	PdlforvalterApi: PdlForvalterService,
 	SessionApi: SessionService,
 	BankkontoApi: KontoregisterService,
+	ArbeidssoekerregisteretApi: ArbeidssoekerregisteretService,
 }
