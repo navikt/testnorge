@@ -57,6 +57,7 @@ spec:
         - application: logging
           namespace: nais-system
       external:
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
         - host: testnav-altinn3-tilgang-service.nav.no
         - host: idporten.no
   liveness:
