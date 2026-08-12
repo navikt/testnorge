@@ -201,7 +201,7 @@ export const BestillingStatus = ({
 										isGjenopprett,
 									}) ??
 									(errIdents.length > 0
-										? `${errEnv && `${errEnv} \u00B7 `}${errIdents.length} ${
+										? `${errEnv ? `${errEnv} \u00B7 ` : ''}${errIdents.length} ${
 												errIdents.length === 1 ? 'ident' : 'identer'
 											} feilet`
 										: !errIdents.length && errEnv
