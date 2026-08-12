@@ -19,9 +19,3 @@ spring:
         provider:
           idporten:
             issuer-uri: ${IDPORTEN_ISSUER_PROD}
-
-consumers:
-  testnav-altinn3-tilgang-service:
-    cluster: prod-gcp
-    name: testnav-altinn3-tilgang-service-prod
-    url: https://testnav-altinn3-tilgang-service.nav.no
