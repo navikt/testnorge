@@ -7,6 +7,10 @@ metadata:
     team: dolly
 spec:
   env:
+    - name: ALTINN3_TILGANG_NAME
+      value: testnav-altinn3-tilgang-proxy
+    - name: ALTINN3_TILGANG_URL
+      value: https://testnav-altinn3-tilgang-proxy.intern.dev.nav.no
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   image: "{{image}}"
@@ -34,14 +38,9 @@ spec:
         - application: testnav-tps-messaging-frontend
     outbound:
       rules:
-        - application: testnav-altinn3-tilgang-service-prod
-          namespace: dolly
-          cluster: prod-gcp
+        - application: testnav-altinn3-tilgang-proxy
         - application: logging
           namespace: nais-system
-      external:
-        - host: testnav-altinn3-tilgang-service.nav.no
-
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
