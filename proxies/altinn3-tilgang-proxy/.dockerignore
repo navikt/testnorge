@@ -1,0 +1,3 @@
+*
+!build/libs/app.jar
+!Dockerfile

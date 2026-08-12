@@ -21,7 +21,7 @@ api.azuread.url: https://graph.microsoft.com
 
 consumers:
   testnav-altinn3-tilgang-service:
-    name: testnav-altinn3-tilgang-service-prod
+    cluster: dev-gcp
     namespace: dolly
-    url: https://testnav-altinn3-tilgang-service.nav.no
-    cluster: prod-gcp
+    name: ${ALTINN3_TILGANG_NAME}
+    url: ${ALTINN3_TILGANG_URL}
