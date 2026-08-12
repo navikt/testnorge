@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { ArbeidssoekerregisteretApi } from '@/service/Api'
-import { Alert, BodyLong, Button, Dialog, VStack } from '@navikt/ds-react'
+import { Alert, BodyLong, Button, Dialog, Heading, VStack } from '@navikt/ds-react'
 import { CircleSlashIcon } from '@navikt/aksel-icons'
 
 type Props = {
@@ -9,6 +9,7 @@ type Props = {
 }
 
 export const ArbeidssoekerregisteretStopp = ({ ident, onStopped }: Props) => {
+	const titleId = useId()
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -47,9 +48,11 @@ export const ArbeidssoekerregisteretStopp = ({ ident, onStopped }: Props) => {
 					Stopp
 				</Button>
 			</Dialog.Trigger>
-			<Dialog.Popup role="alertdialog">
+			<Dialog.Popup role="alertdialog" aria-labelledby={titleId}>
 				<Dialog.Header>
-					<Dialog.Title>Stopp arbeidssøkerregistrering</Dialog.Title>
+					<Heading id={titleId} className="aksel-dialog__title" level="2" size="medium">
+						Stopp arbeidssøkerregistrering
+					</Heading>
 				</Dialog.Header>
 				<Dialog.Body>
 					<VStack gap="space-16">
