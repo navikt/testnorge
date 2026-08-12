@@ -12,11 +12,9 @@ import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch._types.query_dsl.RandomScoreFunction;
 
-import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
@@ -36,8 +34,6 @@ public class OpenSearchIdenterQueryUtils {
     private static final String PERSON_ETTERNAVN = "hentPerson.navn.etternavn";
     private static final String IDENTIFIKASJONSNUMMER = "identifikasjonsnummer";
 
-    private static final Random RANDOM = new SecureRandom();
-
     public static FunctionScoreQuery.Builder buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
         var identer = new HashSet<>(search.getIdenter());
@@ -53,18 +49,18 @@ public class OpenSearchIdenterQueryUtils {
         addIdenterQuery(queryBuilder, identer);
 
         return new FunctionScoreQuery.Builder()
-                .functions(getRandomScoreQuery())
+                .functions(getRandomScoreQuery(search.getSeed()))
                 .boostMode(FunctionBoostMode.Replace)
                 .query(Query.builder()
                         .bool(queryBuilder.build())
                         .build());
     }
 
-    private static FunctionScore getRandomScoreQuery() {
+    private static FunctionScore getRandomScoreQuery(Integer seed) {
 
         return new FunctionScore.Builder()
                 .randomScore(new RandomScoreFunction.Builder()
-                        .seed(JsonData.of(RANDOM.nextLong()))  // Keeps the random order consistent for a single user/session
+                        .seed(JsonData.of(seed))  // Keeps the randomized order stable across paginated requests.
                         .field("_seq_no")     // Recommended unique field to avoid document duplicates within shards
                         .build())
                 .build();
