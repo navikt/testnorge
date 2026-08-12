@@ -1,22 +1,13 @@
 import { Form, FormProvider } from 'react-hook-form'
 import styled from 'styled-components'
-import { Table } from '@navikt/ds-react'
+import { Tabs } from '@navikt/ds-react'
 import React, { lazy, Suspense } from 'react'
-import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
-import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
-import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
-import { FolkeregisteretStatsborgerskap } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretStatsborgerskap'
-import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretNavn'
-import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
-import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
-import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
-import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
-import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
-import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
-import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
-import { BeregnetSkatt } from '@/pages/tenorSoek/soekFormPartials/BeregnetSkatt'
-import { SummertSkattegrunnlag } from '@/pages/tenorSoek/soekFormPartials/SummertSkattegrunnlag'
+import { FolkeregisteretTab } from '@/pages/tenorSoek/soekFormTabs/FolkeregisteretTab'
+import { PensjonTab } from '@/pages/tenorSoek/soekFormTabs/PensjonTab'
+import { VirksomhetTab } from '@/pages/tenorSoek/soekFormTabs/VirksomhetTab'
+import { SkattTab } from '@/pages/tenorSoek/soekFormTabs/SkattTab'
+import { ArbeidInntektTab } from '@/pages/tenorSoek/soekFormTabs/ArbeidInntektTab'
 
 const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 
@@ -27,12 +18,8 @@ const SoekefeltWrapper = styled.div`
 	background-color: white;
 	border: 1px solid @color-bg-grey-border;
 	border-radius: 4px;
-	margin-top: -70px;
 	width: 100%;
-`
-
-const Soekefelt = styled.div`
-	padding: 15px;
+	padding: 15px 0 0 0;
 `
 
 export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
@@ -44,267 +31,46 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
-		<SoekefeltWrapper>
-			<Soekefelt>
+		<Tabs defaultValue="folkeregisteret" style={{ width: '100%' }}>
+			<Tabs.List>
+				<Tabs.Tab value="folkeregisteret" label="Folkeregisteret" />
+				<Tabs.Tab value="skatt" label="Skatt" />
+				<Tabs.Tab value="arbeidinntekt" label="Arbeid og inntekt" />
+				<Tabs.Tab value="pensjon" label="Pensjon" />
+				<Tabs.Tab value="virksomhet" label="Virksomhet" />
+			</Tabs.List>
+			<SoekefeltWrapper>
 				<FormProvider {...formMethods}>
 					<>
 						<Form control={control} className="flexbox--flex-wrap">
-							<Table size="small">
-								<Table.Body>
-									<Table.ExpandableRow
-										content={
-											<FolkeregisteretIdentifikasjonStatus
-												handleChange={handleChange}
-												handleChangeList={handleChangeList}
-											/>
-										}
-										defaultOpen={true}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Folkeregisteret - identifikasjon og status"
-												paths={[
-													'identifikator',
-													'identifikatorType',
-													'foedselsdato.fraOgMed',
-													'foedselsdato.tilOgMed',
-													'doedsdato.fraOgMed',
-													'doedsdato.tilOgMed',
-													'kjoenn',
-													'personstatus',
-													'sivilstand',
-													'identitetsgrunnlagStatus',
-													'adressebeskyttelse',
-													'harFalskIdentitet',
-													'utenlandskPersonIdentifikasjon',
-													'harLegitimasjonsdokument',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<FolkeregisteretStatsborgerskap handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Folkeregisteret - statsborgerskap"
-												paths={[
-													'harNorskStatsborgerskap',
-													'harFlereStatsborgerskap',
-													'harNordenStatsborgerskap',
-													'harEuEoesStatsborgerskap',
-													'harTredjelandStatsborgerskap',
-													'harUtgaattStatsborgerskap',
-													'harStatsborgerskapHistorikk',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<FolkeregisteretNavn handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Folkeregisteret - navn"
-												paths={[
-													'navn.navnLengde.fraOgMed',
-													'navn.navnLengde.tilOgMed',
-													'navn.harFlereFornavn',
-													'navn.harNavnSpesialtegn',
-													'navn.harMellomnavn',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<FolkeregisteretAdresse handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Folkeregisteret - adresser"
-												paths={[
-													'adresser.adresseGradering',
-													'adresser.kommunenummer',
-													'adresser.harAdresseSpesialtegn',
-													'adresser.harBostedsadresse',
-													'avansert.harBostedsadresseHistorikk',
-													'adresser.harOppholdAnnetSted',
-													'adresser.harPostadresseNorge',
-													'adresser.harPostadresseUtland',
-													'adresser.harKontaktadresseDoedsbo',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<FolkeregisteretRelasjoner handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Folkeregisteret - relasjoner"
-												paths={[
-													'relasjoner.relasjon',
-													'relasjoner.antallBarn.fraOgMed',
-													'relasjoner.antallBarn.tilOgMed',
-													'relasjoner.relasjonMedFoedselsaar.fraOgMed',
-													'relasjoner.relasjonMedFoedselsaar.tilOgMed',
-													'relasjoner.harForeldreAnsvar',
-													'relasjoner.harDeltBosted',
-													'relasjoner.harVergemaalEllerFremtidsfullmakt',
-													'relasjoner.borMedMor',
-													'relasjoner.borMedFar',
-													'relasjoner.borMedMedmor',
-													'relasjoner.foreldreHarSammeAdresse',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<FolkeregisteretHendelser handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Folkeregisteret - hendelser"
-												paths={['hendelser.hendelse', 'hendelser.sisteHendelse']}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={
-											<Tjenestepensjonsavtale handleChange={handleChange} getValue={getValues} />
-										}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Tjenestepensjonsavtale"
-												paths={[
-													'tjenestepensjonsavtale.pensjonsinnretningOrgnr',
-													'tjenestepensjonsavtale.periode',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={
-											<EnhetsregisteretForetaksregisteret handleChangeList={handleChangeList} />
-										}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Enhetsregisteret og Foretaksregisteret"
-												paths={['roller']}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow content={<Skattemelding handleChange={handleChange} />}>
-										<Table.HeaderCell>
-											<Header
-												title="Skattemelding"
-												paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow content={<BeregnetSkatt handleChange={handleChange} />}>
-										<Table.HeaderCell>
-											<Header
-												title="Beregnet skatt"
-												paths={[
-													'beregnetSkatt.inntektsaar',
-													'beregnetSkatt.oppgjoerstype',
-													'beregnetSkatt.pensjonsgivendeInntekt',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<SummertSkattegrunnlag handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Summert skattegrunnlag"
-												paths={[
-													'summertSkattegrunnlag.inntektsaar',
-													'summertSkattegrunnlag.stadietype',
-													'summertSkattegrunnlag.oppgjoerstype',
-													'summertSkattegrunnlag.tekniskNavn',
-													'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.fraOgMed',
-													'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.tilOgMed',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={
-											<InntektAordningen
-												handleChange={handleChange}
-												handleChangeList={handleChangeList}
-												getValue={watch}
-											/>
-										}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Inntekt A-ordningen"
-												paths={[
-													'inntekt.periode.fraOgMed',
-													'inntekt.periode.tilOgMed',
-													'inntekt.opplysningspliktig',
-													'inntekt.inntektstyper',
-													'inntekt.forskuddstrekk',
-													'inntekt.beskrivelse',
-													'inntekt.harHistorikk',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow content={<Arbeidsforhold handleChange={handleChange} />}>
-										<Table.HeaderCell>
-											<Header
-												title="Arbeidsforhold"
-												paths={[
-													'arbeidsforhold.startDatoPeriode.fraOgMed',
-													'arbeidsforhold.startDatoPeriode.tilOgMed',
-													'arbeidsforhold.sluttDatoPeriode.fraOgMed',
-													'arbeidsforhold.sluttDatoPeriode.tilOgMed',
-													'arbeidsforhold.harPermisjoner',
-													'arbeidsforhold.harPermitteringer',
-													'arbeidsforhold.harArbeidsgiver',
-													'arbeidsforhold.harTimerMedTimeloenn',
-													'arbeidsforhold.harUtenlandsopphold',
-													'arbeidsforhold.harHistorikk',
-													'arbeidsforhold.arbeidsforholdstype',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-								</Table.Body>
-							</Table>
+							<FolkeregisteretTab
+								handleChange={handleChange}
+								handleChangeList={handleChangeList}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+							/>
+							<SkattTab
+								handleChange={handleChange}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+							/>
+							<ArbeidInntektTab
+								handleChange={handleChange}
+								handleChangeList={handleChangeList}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+								watch={watch}
+							/>
+							<PensjonTab
+								handleChange={handleChange}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+							/>
+							<VirksomhetTab
+								handleChangeList={handleChangeList}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+							/>
 						</Form>
 						{(devEnabled || isAdmin) && (
 							<Suspense fallback={null}>
@@ -313,7 +79,7 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 						)}
 					</>
 				</FormProvider>
-			</Soekefelt>
-		</SoekefeltWrapper>
+			</SoekefeltWrapper>
+		</Tabs>
 	)
 }
