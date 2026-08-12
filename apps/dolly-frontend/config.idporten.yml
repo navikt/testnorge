@@ -49,7 +49,6 @@ spec:
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
         - application: testnav-altinn3-tilgang-service-prod
-          namespace: dolly
           cluster: prod-gcp
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-api-oversikt-service

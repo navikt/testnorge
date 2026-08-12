@@ -68,13 +68,15 @@ spec:
         - application: testnav-levende-arbeidsforhold-scheduler
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
-        - application: testnav-altinn3-tilgang-service
+        - application: testnav-altinn3-tilgang-service-prod
+          cluster: prod-gcp
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-api-oversikt-service
         - application: testnav-ident-pool
         - application: logging
           namespace: nais-system
       external:
+        - host: testnav-altinn3-tilgang-service.nav.no
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
   startup:
     path: /
