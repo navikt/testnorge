@@ -33,8 +33,8 @@ consumers:
   testnav-altinn3-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-altinn3-tilgang-proxy
-    url: http://testnav-altinn3-tilgang-proxy.dolly.svc.cluster.local
+    name: testnav-altinn3-tilgang-service
+    url: http://testnav-altinn3-tilgang-service.dolly.svc.cluster.local
   testnav-tps-messaging-service:
     cluster: dev-gcp
     namespace: dolly

@@ -48,13 +48,16 @@ spec:
         - application: testnorge-tilbakemelding-api
         - application: testnav-yrkesskade-proxy
         - application: testnav-nom-proxy
-        - application: testnav-altinn3-tilgang-proxy
+        - application: testnav-altinn3-tilgang-service-prod
+          namespace: dolly
+          cluster: prod-gcp
         - application: testnav-arbeidssoekerregisteret-proxy
         - application: testnav-api-oversikt-service
         - application: logging
           namespace: nais-system
       external:
         - host: testnav-dolly-proxy.dev-fss-pub.nais.io
+        - host: testnav-altinn3-tilgang-service.nav.no
         - host: idporten.no
   liveness:
     path: /internal/health/liveness
