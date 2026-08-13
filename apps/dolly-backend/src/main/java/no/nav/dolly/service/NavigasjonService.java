@@ -61,7 +61,8 @@ public class NavigasjonService {
                                 getPdlPersonIdenter(ident))
                         .filter(_ -> filterOnBrukertype(ident, bruker.getBrukertype()))
                         .distinct()
-                        .flatMap(ident1 -> identRepository.findByIdent(ident1)
+                        .flatMap(ident1 ->
+                                identRepository.findByIdent(ident1)
                                 .flatMap(testident -> Mono.zip(testgruppeRepository.findById(testident.getGruppeId()),
                                                 identService.getPaginertIdentIndex(testident.getIdent(), testident.getGruppeId()),
                                                 identRepository.countByGruppeId(testident.getGruppeId()),
@@ -167,7 +168,7 @@ public class NavigasjonService {
     private Flux<String> getPdlForvalterIdenter(String ident) {
 
         return pdlDataConsumer.getPersoner(List.of(ident))
-                .flatMap(person -> Flux.fromStream(Stream.of(Stream.of(ident),
+                .flatMap(person -> Flux.fromStream(Stream.of(Stream.of(person.getPerson().getIdent()),
                                 person.getRelasjoner().stream()
                                         .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
                                         .map(PersonDTO::getIdent))
