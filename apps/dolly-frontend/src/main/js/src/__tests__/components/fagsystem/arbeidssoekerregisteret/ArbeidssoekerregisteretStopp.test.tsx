@@ -39,6 +39,10 @@ describe('ArbeidssoekerregisteretStopp', () => {
 		const dialogTitle = screen.getByRole('heading', {
 			name: 'Stopp arbeidssøkerregistrering',
 		})
+		expect(dialogTitle.tagName).toBe('H2')
+		expect(
+			screen.getByRole('alertdialog', { name: 'Stopp arbeidssøkerregistrering' }),
+		).toHaveAttribute('aria-labelledby', dialogTitle.id)
 		expect(getComputedStyle(dialogTitle).fontSize).not.toBe('40px')
 		expect(getComputedStyle(dialogTitle).marginTop).toBe('0px')
 		expect(
