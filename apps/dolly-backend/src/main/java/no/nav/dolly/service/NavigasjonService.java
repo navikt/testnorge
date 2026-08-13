@@ -181,9 +181,6 @@ public class NavigasjonService {
                                 person.getPerson().getForeldreansvar().stream()
                                         .map(ForeldreansvarDTO::getAnsvarlig)
                                         .filter(Objects::nonNull),
-                                person.getPerson().getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident)
-                                        .filter(Objects::nonNull),
                                 person.getRelasjoner().stream()
                                         .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.FULLMEKTIG ||
                                                 relasjon.getRelasjonType() == RelasjonType.FULLMAKTSGIVER)
@@ -196,7 +193,12 @@ public class NavigasjonService {
                                         .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
                                         .filter(Objects::nonNull)
                                         .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                        .filter(Objects::nonNull))
+                                        .filter(Objects::nonNull),
+                                person.getRelasjoner().stream()
+                                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.GAMMEL_IDENTITET ||
+                                                relasjon.getRelasjonType() == RelasjonType.NY_IDENTITET)
+                                        .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                        .map(PersonDTO::getIdent))
                         .flatMap(Function.identity())));
     }
 }
