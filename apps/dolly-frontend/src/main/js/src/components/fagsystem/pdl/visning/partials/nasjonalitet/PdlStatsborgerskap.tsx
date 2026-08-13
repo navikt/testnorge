@@ -3,6 +3,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { formatDate } from '@/utils/DataFormatter'
 import { Statsborgerskap } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type StatsborgerskapProps = {
 	data: Statsborgerskap
@@ -36,11 +37,11 @@ export const PdlStatsborgerskap = ({ statsborgerskapListe }: VisningProps) => {
 		return null
 	}
 
-	const gyldigeStatsborgerskap = statsborgerskapListe.filter(
-		(borgerskap: Statsborgerskap) => !borgerskap.metadata?.historisk,
+	const gyldigeStatsborgerskap = sortPdlItems(
+		statsborgerskapListe.filter((borgerskap: Statsborgerskap) => !borgerskap.metadata?.historisk),
 	)
-	const historiskeStatsborgerskap = statsborgerskapListe.filter(
-		(borgerskap: Statsborgerskap) => borgerskap.metadata?.historisk,
+	const historiskeStatsborgerskap = sortPdlItems(
+		statsborgerskapListe.filter((borgerskap: Statsborgerskap) => borgerskap.metadata?.historisk),
 	)
 
 	return (

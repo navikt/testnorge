@@ -16,7 +16,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,12 +33,16 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
             "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}," +
                     "\"number_of_shards\":4," +
                     "\"number_of_replicas\":1}}}";
+    private static final String TOTAL_FIELDS_SETTING =
+            "{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}}}";
+    private static final int EXISTS_CHECK_CONCURRENCY = 20;
+    private static final String FEILET = "Feilet";
 
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingRepository bestillingRepository;
     private final MapperFacade mapperFacade;
     private final OpenSearchService openSearchService;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Value("${open.search.total-fields}")
     private String totalFields;
@@ -53,39 +57,61 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
         var antallSkrevet = new AtomicInteger(0);
 
         openSearchService.indexExists()
-                .flatMap(exists -> isFalse(exists) ? oppdaterIndexSetting() : Mono.empty())
+                .flatMap(exists -> isFalse(exists) ? opprettIndexMedSetting() : oppdaterTotalFieldsSetting())
                 .then(importAll(antallLest, antallSkrevet)
                         .collectList())
-                .subscribe(bestillinger ->
+                .subscribe(_ ->
                         log.info("OpenSearch database oppdatering ferdig; antall lest {}, antall skrevet {}, medgått tid {} ms",
                                 antallLest.get(),
                                 antallSkrevet.get(),
                                 System.currentTimeMillis() - start));
     }
 
-    private Mono<String> oppdaterIndexSetting() {
+    private Mono<String> opprettIndexMedSetting() {
 
         try {
-            var indexSetting = String.format(INDEX_SETTING, totalFields);
-            var jsonNode = objectMapper.readTree(indexSetting);
+            var indexSetting = INDEX_SETTING.formatted(totalFields);
+            var jsonNode = jsonMapper.readTree(indexSetting);
             return openSearchService.updateIndexParams(jsonNode)
-                    .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
+                    .doOnNext(status -> log.info("OpenSearch oppretting av indeks, status: {}", status))
+                    .onErrorResume(e -> {
+                        log.error("Feilet å opprette indeks med setting {}", INDEX_SETTING, e);
+                        return Mono.just(FEILET);
+                    });
 
         } catch (RuntimeException e) {
             log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);
-            return Mono.just("Feilet");
+            return Mono.just(FEILET);
+        }
+    }
+
+    private Mono<String> oppdaterTotalFieldsSetting() {
+
+        try {
+            var totalFieldsSetting = TOTAL_FIELDS_SETTING.formatted(totalFields);
+            var jsonNode = jsonMapper.readTree(totalFieldsSetting);
+            return openSearchService.updateIndexSettings(jsonNode)
+                    .doOnNext(status -> log.info("OpenSearch oppdatering av total-fields for eksisterende indeks, status: {}", status))
+                    .onErrorResume(e -> {
+                        log.error("Feilet å oppdatere total-fields setting {} for eksisterende indeks", TOTAL_FIELDS_SETTING, e);
+                        return Mono.just(FEILET);
+                    });
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å gjøre setting for indekser {}", TOTAL_FIELDS_SETTING, e);
+            return Mono.just(FEILET);
         }
     }
 
     private Flux<BulkResponse> importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
         return bestillingRepository.findByOrderByIdDesc()
-                .doOnNext(bestilling -> antallLest.incrementAndGet())
+                .doOnNext(_ -> antallLest.incrementAndGet())
                 .filter(bestilling -> isNotBlank(bestilling.getBestKriterier()) &&
                         !"{}".equals(bestilling.getBestKriterier()))
                 .flatMap(bestilling -> openSearchService.exists(bestilling.getId())
-                        .zipWith(Mono.just(bestilling)))
-                .takeWhile(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
+                        .zipWith(Mono.just(bestilling)), EXISTS_CHECK_CONCURRENCY)
+                .filter(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
                 .flatMap(tuple ->
                         bestillingProgressRepository.findAllByBestillingId(tuple.getT2().getId())
                                 .collectList()
@@ -100,7 +126,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .flatMap(openSearchService::saveAll)
                 .doOnNext(response -> antallSkrevet.getAndSet(antallSkrevet.get() +
                         response.items().size()))
-                .doOnNext(bestilling -> {
+                .doOnNext(_ -> {
                     if (antallSkrevet.get() % 1000 == 0) {
                         log.info("Skrevet {} bestillinger", antallSkrevet.get());
                     }

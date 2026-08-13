@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,7 +65,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class BestillingStatusMappingStrategy implements MappingStrategy {
 
     private static final String EMPTY_JSON = "{}";
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -78,7 +78,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         var bestKriterierJson = getBestKriterierJson(bestilling);
 
                         try {
-                            bestillingStatus.setBestilling(objectMapper.readTree(bestKriterierJson));
+                            bestillingStatus.setBestilling(jsonMapper.readTree(bestKriterierJson));
                         } catch (JacksonException e) {
                             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getOriginalMessage());
                         }
@@ -97,7 +97,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.setGruppeId(bestilling.getGruppeId());
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));
+                        bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, jsonMapper));
                         bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildNomStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
@@ -163,7 +163,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
         try {
             var utledteFagsystemer = isNotBlank(bestilling.getUtlededeFagsystemer())
                     ? UtledFagsystemUtil.deserialize(bestilling.getUtlededeFagsystemer())
-                    : UtledFagsystemUtil.resolve(objectMapper.readValue(bestKriterierJson, BestilteKriterier.class), bestilling);
+                    : UtledFagsystemUtil.resolve(jsonMapper.readValue(bestKriterierJson, BestilteKriterier.class), bestilling);
 
             var eksisterendeIds = bestillingStatus.getStatus().stream()
                     .map(RsStatusRapport::getId)

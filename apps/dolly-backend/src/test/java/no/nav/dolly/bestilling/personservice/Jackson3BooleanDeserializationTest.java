@@ -42,7 +42,7 @@ class Jackson3BooleanDeserializationTest {
                         .withBody("true")
                         .withHeader("Content-Type", "application/json")));
 
-        var jsonMapper = JsonMapper.builder().build();
+        var jsonMapper = new JsonMapper();
 
         var exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(config -> {
@@ -77,7 +77,7 @@ class Jackson3BooleanDeserializationTest {
                         .withBody("false")
                         .withHeader("Content-Type", "application/json")));
 
-        var jsonMapper = JsonMapper.builder().build();
+        var jsonMapper = new JsonMapper();
 
         var exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(config -> {
@@ -106,8 +106,8 @@ class Jackson3BooleanDeserializationTest {
     }
 
     @Test
-    void shouldDeserializeDirectlyWithJsonMapper() throws Exception {
-        var jsonMapper = JsonMapper.builder().build();
+    void shouldDeserializeDirectlyWithJsonMapper() {
+        var jsonMapper = new JsonMapper();
         
         Boolean result = jsonMapper.readValue("true", Boolean.class);
         System.out.println("Direct deserialization result: " + result);

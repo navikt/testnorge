@@ -13,14 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MalBestillingUtenFavoritterMappingStrategy implements MappingStrategy {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -33,7 +33,7 @@ public class MalBestillingUtenFavoritterMappingStrategy implements MappingStrate
                             destinasjon.setId(kilde.getId());
                             destinasjon.setMiljoer(kilde.getMiljoer());
                             destinasjon.setMalNavn(kilde.getMalNavn());
-                            destinasjon.setBestilling(objectMapper.readTree(kilde.getBestKriterier()));
+                            destinasjon.setBestilling(jsonMapper.readTree(kilde.getBestKriterier()));
                             destinasjon.setBruker(mapperFacade.map(kilde.getBruker(), RsBrukerUtenFavoritter.class));
                             destinasjon.setSistOppdatert(kilde.getSistOppdatert());
 

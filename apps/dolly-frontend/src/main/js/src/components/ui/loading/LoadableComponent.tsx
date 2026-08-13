@@ -34,7 +34,7 @@ const LoadableComponent = ({ onFetch, render, label }: LoadableComponentProps) =
 		? {
 				feilmelding:
 					'Noe gikk galt ved henting av valg. Ta kontakt med Team Dolly hvis ikke en refresh av siden hjelper.',
-		  }
+			}
 		: null
 	return render(data, feilmelding)
 }

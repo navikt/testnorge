@@ -25,7 +25,7 @@ export const actions = createActions(
 	},
 	{
 		prefix: 'gruppe', // String used to prefix each type
-	}
+	},
 )
 
 const initialState = {
@@ -56,5 +56,5 @@ export default handleActions(
 			state.importerteZIdenter = action.payload.data
 		},
 	},
-	initialState
+	initialState,
 )

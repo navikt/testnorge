@@ -7,7 +7,7 @@ import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/Ukjen
 import { DeltBostedValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
-import { VisningRedigerbar } from "@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar"
+import { VisningRedigerbar } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbar'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type Data = {

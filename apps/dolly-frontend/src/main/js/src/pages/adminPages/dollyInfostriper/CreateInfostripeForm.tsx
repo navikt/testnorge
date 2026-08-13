@@ -113,12 +113,22 @@ export const CreateInfostripeForm: React.FC = () => {
 					</Button>
 				</div>
 				{serverError && (
-					<Alert variant="error" closeButton onClose={() => setServerError(null)} style={{ marginTop: '1rem' }}>
+					<Alert
+						variant="error"
+						closeButton
+						onClose={() => setServerError(null)}
+						style={{ marginTop: '1rem' }}
+					>
 						{serverError.replace(/\?\S*/, '')}
 					</Alert>
 				)}
 				{success && (
-					<Alert variant="success" closeButton onClose={() => setSuccess(false)} style={{ marginTop: '1rem' }}>
+					<Alert
+						variant="success"
+						closeButton
+						onClose={() => setSuccess(false)}
+						style={{ marginTop: '1rem' }}
+					>
 						Infostripe opprettet
 					</Alert>
 				)}

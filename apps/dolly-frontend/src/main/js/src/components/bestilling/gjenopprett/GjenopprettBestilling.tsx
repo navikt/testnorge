@@ -23,18 +23,14 @@ export default function GjenopprettBestilling(props) {
 
 		if (erOrganisasjon) {
 			const newBestilling = _.get(response, 'action.payload.data', null)
-			const brukerId =
-				currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId
+			const brukerId = currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId
 			if (newBestilling && brukerId) {
 				const key = `/dolly-backend/api/v1/organisasjon/bestilling/bestillingsstatus?brukerId=${brukerId}`
-				void globalMutate(
-					key,
-					(current: any[]) => {
-						if (!current) return [newBestilling]
-						if (current.some((b) => b.id === newBestilling.id)) return current
-						return [...current, newBestilling]
-					},
-				)
+				void globalMutate(key, (current: any[]) => {
+					if (!current) return [newBestilling]
+					if (current.some((b) => b.id === newBestilling.id)) return current
+					return [...current, newBestilling]
+				})
 			}
 		}
 

@@ -63,7 +63,7 @@ export const DateInput = ({
 	...props
 }: DateInputProps) => {
 	'use no memo'
-	const { register, formState, watch, setValue } = useFormContext() || {}
+	const { register, formState, watch } = useFormContext() || {}
 	const { showError } = React.useContext(ShowErrorContext) || {}
 
 	const fieldValue = name ? watch(name) : ''
@@ -100,7 +100,6 @@ export const DateInput = ({
 	const shouldShowError = (error && (showError || isTouched)) || !!props.manualError
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setValue(name, e.target.value, { shouldTouch: true })
 		props.onChange?.(e)
 		setFormattedValue(e.target.value)
 	}

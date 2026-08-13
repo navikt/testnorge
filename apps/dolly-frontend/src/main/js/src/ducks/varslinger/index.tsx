@@ -9,7 +9,7 @@ export const { getVarslinger, getVarslingerBruker, updateVarslingerBruker } = cr
 		getVarslingerBruker: VarslingerApi.getVarslingerBruker,
 		updateVarslingerBruker: VarslingerApi.updateVarslingerBruker,
 	},
-	{ prefix: 'varslinger' }
+	{ prefix: 'varslinger' },
 )
 
 const initialState = {
@@ -26,5 +26,5 @@ export default handleActions(
 			state.varslingerBrukerData = action.payload ? action.payload.data : null
 		},
 	},
-	initialState
+	initialState,
 )

@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class BestillingService {
     private final IdentRepository identRepository;
     private final MalBestillingService malBestillingService;
     private final MiljoerConsumer miljoerConsumer;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final OpenSearchService openSearchService;
     private final TestgruppeRepository testgruppeRepository;
 
@@ -706,7 +706,7 @@ public class BestillingService {
     private String toJson(Object object) {
         try {
             if (nonNull(object)) {
-                return objectMapper.writeValueAsString(object);
+                return jsonMapper.writeValueAsString(object);
             }
         } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);
@@ -726,7 +726,7 @@ public class BestillingService {
             return null;
         }
         try {
-            var kriterier = objectMapper.readValue(bestKriterierJson, BestilteKriterier.class);
+            var kriterier = jsonMapper.readValue(bestKriterierJson, BestilteKriterier.class);
             if (isNull(kriterier)) {
                 return null;
             }
@@ -745,7 +745,7 @@ public class BestillingService {
                 continue;
             }
             try {
-                var kriterier = objectMapper.readValue(json, BestilteKriterier.class);
+                var kriterier = jsonMapper.readValue(json, BestilteKriterier.class);
                 if (nonNull(kriterier)) {
                     union.addAll(UtledFagsystemUtil.resolve(kriterier, gjenopprettContext));
                 }

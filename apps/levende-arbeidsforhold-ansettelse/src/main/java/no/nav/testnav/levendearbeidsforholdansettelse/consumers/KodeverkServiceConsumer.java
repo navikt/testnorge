@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
@@ -23,12 +22,13 @@ public class KodeverkServiceConsumer {
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public KodeverkServiceConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
-            WebClient webClient
+            WebClient webClient,
+            JsonMapper jsonMapper
     ) {
         serverProperties = consumers.getTestnavKodeverkService();
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
@@ -40,13 +40,13 @@ public class KodeverkServiceConsumer {
                 .exchangeStrategies(exchangeStrategies)
                 .build();
         this.tokenExchange = tokenExchange;
-        objectMapper = JsonMapper.builder().build();
+        this.jsonMapper = jsonMapper;
     }
 
     public Mono<List<String>> hentKodeverk(String kodeverk) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new KodeverkServiceCommand(webClient, token.getTokenValue(), kodeverk, objectMapper).call())
+                .flatMap(token -> new KodeverkServiceCommand(webClient, token.getTokenValue(), kodeverk, jsonMapper).call())
                 .map(Map::keySet)
                 .map(ArrayList::new);
     }

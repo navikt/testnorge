@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -30,13 +30,13 @@ public class AaregConsumer extends ConsumerStatus {
     public AaregConsumer(
             Consumers consumers,
             TokenExchange tokenService,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient.Builder webClientBuilder) {
 
         serverProperties = consumers.getTestnavDollyProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

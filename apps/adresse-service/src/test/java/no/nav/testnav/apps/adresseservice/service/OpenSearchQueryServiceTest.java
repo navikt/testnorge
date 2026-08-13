@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.adresseservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch.core.SearchRequest;
@@ -20,6 +17,10 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.opensearch.client.opensearch.core.search.HitsMetadata;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.util.Collections;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,18 +39,11 @@ class OpenSearchQueryServiceTest {
     @Mock
     private OpenSearchClient openSearchClient;
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
     @Mock
     private MapperFacade mapperFacade;
-
     @Mock
     private SearchResponse<JsonNode> sokeresultat;
-
-    @Mock
-    private HitsMetadata<JsonNode> hitsMetadata;
-
-    @Mock
-    private Hit<JsonNode> hit;
 
     @InjectMocks
     private OpenSearchQueryService openSearchQueryService;
@@ -70,6 +65,8 @@ class OpenSearchQueryServiceTest {
     void vegadresseQuery_OK() throws Exception {
 
         val vegadresseRequest = VegadresseRequest.builder().build();
+        val hitsMetadata = mock(HitsMetadata.class);
+        val hit = mock(Hit.class);
 
         when(openSearchClient.search(any(SearchRequest.class), eq(JsonNode.class)))
                 .thenReturn(sokeresultat);
@@ -77,11 +74,11 @@ class OpenSearchQueryServiceTest {
         when(sokeresultat.hits())
                 .thenReturn(hitsMetadata);
         when(hitsMetadata.hits())
-                .thenReturn(java.util.Collections.singletonList(hit));
+                .thenReturn(Collections.singletonList(hit));
         when(hit.source())
-                .thenReturn(Mockito.mock(JsonNode.class));
+                .thenReturn(mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(VegadresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(VegadresseDTO.class)))
                 .thenReturn(new VegadresseDTO());
         when(mapperFacade.map(any(VegadresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.class)))
                 .thenReturn(no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
@@ -110,6 +107,8 @@ class OpenSearchQueryServiceTest {
     void matrikkeladresseQuery_objectMappingFeilet() throws Exception {
 
         val matrikkadresseRequest = MatrikkeladresseRequest.builder().build();
+        val hitsMetadata = mock(HitsMetadata.class);
+        val hit = mock(Hit.class);
 
         when(openSearchClient.search(any(SearchRequest.class), eq(JsonNode.class)))
                 .thenReturn(sokeresultat);
@@ -117,11 +116,11 @@ class OpenSearchQueryServiceTest {
         when(sokeresultat.hits())
                 .thenReturn(hitsMetadata);
         when(hitsMetadata.hits())
-                .thenReturn(java.util.Collections.singletonList(hit));
+                .thenReturn(Collections.singletonList(hit));
         when(hit.source())
-                .thenReturn(Mockito.mock(JsonNode.class));
+                .thenReturn(mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenThrow(new IllegalArgumentException("Feil ved mapping av matrikkeladresse"));
 
         StepVerifier.create(openSearchQueryService.execQuery(matrikkadresseRequest, 1L))
@@ -133,6 +132,8 @@ class OpenSearchQueryServiceTest {
     void matrikkeladresseQuery_orikaMappingFeilet() throws Exception {
 
         val matrikkadresseRequest = MatrikkeladresseRequest.builder().build();
+        val hitsMetadata = mock(HitsMetadata.class);
+        val hit = mock(Hit.class);
 
         when(openSearchClient.search(any(SearchRequest.class), eq(JsonNode.class)))
                 .thenReturn(sokeresultat);
@@ -140,11 +141,11 @@ class OpenSearchQueryServiceTest {
         when(sokeresultat.hits())
                 .thenReturn(hitsMetadata);
         when(hitsMetadata.hits())
-                .thenReturn(java.util.Collections.singletonList(hit));
+                .thenReturn(Collections.singletonList(hit));
         when(hit.source())
-                .thenReturn(Mockito.mock(JsonNode.class));
+                .thenReturn(mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenReturn(new MatrikkeladresseDTO());
 
         when(mapperFacade.map(any(MatrikkeladresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.class)))
@@ -159,6 +160,8 @@ class OpenSearchQueryServiceTest {
     void matrikkeladresseQuery_OK() throws Exception {
 
         val matrikkadresseRequest = MatrikkeladresseRequest.builder().build();
+        val hitsMetadata = mock(HitsMetadata.class);
+        val hit = mock(Hit.class);
 
         when(openSearchClient.search(any(SearchRequest.class), eq(JsonNode.class)))
                 .thenReturn(sokeresultat);
@@ -166,11 +169,11 @@ class OpenSearchQueryServiceTest {
         when(sokeresultat.hits())
                 .thenReturn(hitsMetadata);
         when(hitsMetadata.hits())
-                .thenReturn(java.util.Collections.singletonList(hit));
+                .thenReturn(Collections.singletonList(hit));
         when(hit.source())
-                .thenReturn(Mockito.mock(JsonNode.class));
+                .thenReturn(mock(JsonNode.class));
 
-        when(objectMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
+        when(jsonMapper.treeToValue(any(JsonNode.class), eq(MatrikkeladresseDTO.class)))
                 .thenReturn(new MatrikkeladresseDTO());
 
         when(mapperFacade.map(any(MatrikkeladresseDTO.class), eq(no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO.class)))

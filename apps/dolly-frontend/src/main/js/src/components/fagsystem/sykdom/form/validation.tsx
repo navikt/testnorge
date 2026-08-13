@@ -12,15 +12,11 @@ const vanligAktivitetSchema = Yup.object({
 		.max(99, 'Grad må være mellom 1 og 99, tøm feltet for full sykemelding'),
 	reisetilskudd: Yup.boolean()
 		.nullable()
-		.test(
-			'reisetilskudd-requires-grad',
-			'Reisetilskudd krever at grad er satt',
-			function (value) {
-				if (!value) return true
-				const grad = this.parent?.grad
-				return grad !== null && grad !== undefined && grad !== ''
-			},
-		),
+		.test('reisetilskudd-requires-grad', 'Reisetilskudd krever at grad er satt', function (value) {
+			if (!value) return true
+			const grad = this.parent?.grad
+			return grad !== null && grad !== undefined && grad !== ''
+		}),
 	fom: testDatoFom(requiredDate, 'tom'),
 	tom: testDatoTom(requiredDate, 'fom'),
 })

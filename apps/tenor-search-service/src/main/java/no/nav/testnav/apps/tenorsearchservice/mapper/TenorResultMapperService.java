@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class TenorResultMapperService {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public TenorOversiktResponse map(TenorResponse resultat, String query) {
 
@@ -48,7 +48,7 @@ public class TenorResultMapperService {
                     preamble.append(StringUtils.capitalize(noHyphenCharsInValues.nextToken()));
                 }
 
-                var response = objectMapper.readValue(preamble.toString(), TenorRawResponse.class);
+                var response = jsonMapper.readValue(preamble.toString(), TenorRawResponse.class);
                 return TenorOversiktResponse.Data.builder()
                         .rader(response.getRader())
                         .treff(response.getTreff())

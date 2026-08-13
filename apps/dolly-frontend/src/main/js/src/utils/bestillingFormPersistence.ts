@@ -9,10 +9,7 @@ interface SavedFormState {
 	savedAt: number
 }
 
-export function saveBestillingFormState(
-	formValues: Record<string, any>,
-	step: number,
-): void {
+export function saveBestillingFormState(formValues: Record<string, any>, step: number): void {
 	const stripped = { ...formValues }
 	for (const key of EXCLUDED_KEYS) {
 		delete stripped[key]

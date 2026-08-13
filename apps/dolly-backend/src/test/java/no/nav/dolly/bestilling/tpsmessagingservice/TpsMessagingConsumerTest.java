@@ -7,7 +7,6 @@ import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.security.SecureRandom;
@@ -24,7 +23,7 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
-    private final ObjectMapper objectMapper = JsonMapper.builder().build();
+    private final JsonMapper jsonMapper = new JsonMapper();
     private final Random randomKontonummer = new SecureRandom();
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -84,7 +83,7 @@ class TpsMessagingConsumerTest extends AbstractConsumerTest {
         var sendtBankkontoer = WireMock.getAllServeEvents()
                 .stream()
                 .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> objectMapper.readValue(s, BankkontonrUtlandDTO.class))
+                .map(s -> jsonMapper.readValue(s, BankkontonrUtlandDTO.class))
                 .toList();
 
         var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().toList();

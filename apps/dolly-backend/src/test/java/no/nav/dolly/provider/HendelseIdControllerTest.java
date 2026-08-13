@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 class HendelseIdControllerTest {
 
     private static final String IDENT = "12345678901";
-    private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
+    private static final JsonMapper JSON_MAPPER = new JsonMapper();
 
     @Mock
     private HendelseIdService hendelseIdService;

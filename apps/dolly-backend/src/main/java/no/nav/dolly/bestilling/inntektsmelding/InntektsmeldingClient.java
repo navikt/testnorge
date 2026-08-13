@@ -28,7 +28,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -57,7 +57,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final InntektsmeldingConsumer inntektsmeldingConsumer;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final SafConsumer safConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -72,7 +72,7 @@ public class InntektsmeldingClient implements ClientRegister {
                         .collect(Collectors.joining(",")))
                         .thenReturn(bestilling1))
                 .map(RsDollyBestilling::getInntektsmelding)
-                .flatMap(inntektsmelding -> Flux.fromIterable(bestilling.getEnvironments())
+                .flatMap(_ -> Flux.fromIterable(bestilling.getEnvironments())
                         .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
                                 .flatMapMany(isOpprett -> isTrue(isOpprett) ?
                                         postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
@@ -205,7 +205,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private String toJson(Object object) {
 
         try {
-            return objectMapper.writeValueAsString(object);
+            return jsonMapper.writeValueAsString(object);
         } catch (JacksonException e) {
             log.error("Feilet å konvertere dokument fra inntektsmelding", e);
         }
@@ -216,7 +216,7 @@ public class InntektsmeldingClient implements ClientRegister {
 
         try {
             if (nonNull(transaksjon)) {
-                var transaksjonMapping = objectMapper.treeToValue(transaksjon, TransaksjonmappingIdDTO.class);
+                var transaksjonMapping = jsonMapper.treeToValue(transaksjon, TransaksjonmappingIdDTO.class);
                 if (isNotBlank(transaksjonMapping.getDokumentInfoId())) {
                     transaksjonMapping.setDokument(TransaksjonmappingIdDTO.Dokument.builder()
                             .dokumentInfoId(transaksjonMapping.getDokumentInfoId())

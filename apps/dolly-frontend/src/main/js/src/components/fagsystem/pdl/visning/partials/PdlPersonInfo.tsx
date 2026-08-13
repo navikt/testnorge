@@ -4,6 +4,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import React from 'react'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 const PdlPersonstatus = ({ data }) => {
 	return (
@@ -46,11 +47,11 @@ export const PdlPersonInfo = ({ data, tpsMessagingData, tpsMessagingLoading = fa
 	const personKjoenn = data?.kjoenn?.[0]
 
 	const personstatus = data?.folkeregisterpersonstatus
-	const gyldigPersonstatus = personstatus?.filter((status) => !status.metadata?.historisk)
-	const historiskPersonstatus = personstatus?.filter((status) => status.metadata?.historisk)
+	const gyldigPersonstatus = sortPdlItems(personstatus?.filter((status) => !status.metadata?.historisk) ?? [])
+	const historiskPersonstatus = sortPdlItems(personstatus?.filter((status) => status.metadata?.historisk) ?? [])
 
-	const gyldigeNavn = data?.navn?.filter((navn) => !navn.metadata?.historisk)
-	const historiskeNavn = data?.navn?.filter((navn) => navn.metadata?.historisk)
+	const gyldigeNavn = sortPdlItems(data?.navn?.filter((navn) => !navn.metadata?.historisk) ?? [])
+	const historiskeNavn = sortPdlItems(data?.navn?.filter((navn) => navn.metadata?.historisk) ?? [])
 
 	if (
 		!data?.ident &&

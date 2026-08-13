@@ -3,8 +3,12 @@ package no.nav.testnav.apps.adresseservice.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseRequest;
 import no.nav.testnav.apps.adresseservice.dto.VegadresseRequest;
+import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionBoostMode;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScore;
 import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
+import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch._types.query_dsl.RandomScoreFunction;
 
@@ -13,7 +17,12 @@ import java.util.Random;
 
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addBruksnummerQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addGaardsnummerQuery;
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addKommunenummerQuery;
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addMatrikkelIdQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addMatrikkelQuery;
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addPostnummerQuery;
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addPoststedQuery;
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchMatrikkeladresseQueryUtils.addTilleggsnavnQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchVegadresseQueryUtils.addAdressenavnQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchVegadresseQueryUtils.addBydelsnavnQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchVegadresseQueryUtils.addBydelsnummerQuery;
@@ -32,27 +41,29 @@ public class OpenSearchQueryBuilder {
 
     private static final Random SEED = new SecureRandom();
 
-    public static BoolQuery.Builder buildSearchQuery(VegadresseRequest request) {
+    public static FunctionScoreQuery.Builder buildSearchQuery(VegadresseRequest request) {
 
-        var queryBuilder = QueryBuilders.bool()
-                .must(q -> q.functionScore(getRandomScoreQueryBuilder()));
-
-        setVegadresseQuery(queryBuilder, request);
-
-        return queryBuilder;
+        return new FunctionScoreQuery.Builder()
+                .functions(getRandomScoreQuery())
+                .boostMode(FunctionBoostMode.Replace)
+                .query(Query.builder()
+                        .bool(getVegadresseQuery(request))
+                        .build());
     }
 
-    public static BoolQuery.Builder buildSearchQuery(MatrikkeladresseRequest request) {
+    public static FunctionScoreQuery.Builder buildSearchQuery(MatrikkeladresseRequest request) {
 
-        var queryBuilder = QueryBuilders.bool()
-                .must(q -> q.functionScore(getRandomScoreQueryBuilder()));
-
-        setMatrikkeladresseQuery(queryBuilder, request);
-
-        return queryBuilder;
+        return new FunctionScoreQuery.Builder()
+                .functions(getRandomScoreQuery())
+                .boostMode(FunctionBoostMode.Replace)
+                .query(Query.builder()
+                        .bool(getMatrikkeladresseQuery(request))
+                        .build());
     }
 
-    private static void setVegadresseQuery(BoolQuery.Builder queryBuilder, VegadresseRequest request) {
+    private static BoolQuery getVegadresseQuery(VegadresseRequest request) {
+
+        var queryBuilder = QueryBuilders.bool();
 
         addMatrikkelIdQuery(queryBuilder, request);
         addAdressenavnQuery(queryBuilder, request);
@@ -66,25 +77,33 @@ public class OpenSearchQueryBuilder {
         addBydelsnavnQuery(queryBuilder, request);
         addTilleggsnavnQuery(queryBuilder, request);
         addFritekstQuery(queryBuilder, request);
+
+        return queryBuilder.build();
     }
 
-    private static void setMatrikkeladresseQuery(BoolQuery.Builder queryBuilder, MatrikkeladresseRequest request) {
+    private static BoolQuery getMatrikkeladresseQuery(MatrikkeladresseRequest request) {
+
+        var queryBuilder = QueryBuilders.bool();
 
         addMatrikkelQuery(queryBuilder);
-        OpenSearchMatrikkeladresseQueryUtils.addMatrikkelIdQuery(queryBuilder, request);
-        OpenSearchMatrikkeladresseQueryUtils.addTilleggsnavnQuery(queryBuilder, request);
-        OpenSearchMatrikkeladresseQueryUtils.addKommunenummerQuery(queryBuilder, request);
+        addMatrikkelIdQuery(queryBuilder, request);
+        addTilleggsnavnQuery(queryBuilder, request);
+        addKommunenummerQuery(queryBuilder, request);
         addGaardsnummerQuery(queryBuilder, request);
         addBruksnummerQuery(queryBuilder, request);
-        OpenSearchMatrikkeladresseQueryUtils.addPostnummerQuery(queryBuilder, request);
-        OpenSearchMatrikkeladresseQueryUtils.addPoststedQuery(queryBuilder, request);
+        addPostnummerQuery(queryBuilder, request);
+        addPoststedQuery(queryBuilder, request);
+
+        return queryBuilder.build();
     }
 
-    private static FunctionScoreQuery getRandomScoreQueryBuilder() {
+    private static FunctionScore getRandomScoreQuery() {
 
-        return QueryBuilders.functionScore()
-                .functions(q1 -> q1.randomScore(
-                        RandomScoreFunction.of(q2 -> q2.seed(Integer.toString(SEED.nextInt())))))
+        return new FunctionScore.Builder()
+                .randomScore(new RandomScoreFunction.Builder()
+                        .seed(JsonData.of(SEED.nextInt()))
+                        .field("_seq_no")
+                        .build())
                 .build();
     }
 }

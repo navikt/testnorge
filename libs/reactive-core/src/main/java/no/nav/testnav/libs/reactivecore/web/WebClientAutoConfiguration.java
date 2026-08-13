@@ -80,16 +80,16 @@ class WebClientAutoConfiguration {
                         HttpClient
                                 .create(ConnectionProvider
                                         .builder("Dolly Connection Pool")
-                                        .maxConnections(5)
-                                        .pendingAcquireMaxCount(10000)
-                                        .pendingAcquireTimeout(Duration.ofSeconds(300))
+                                        .maxConnections(10)
+                                        .pendingAcquireMaxCount(100)
+                                        .pendingAcquireTimeout(Duration.ofSeconds(45))
                                         .build())
-                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                                 .option(ChannelOption.SO_KEEPALIVE, true)
                                 .option(EpollChannelOption.TCP_KEEPIDLE, 300)
-                                .option(EpollChannelOption.TCP_KEEPINTVL, 60)
-                                .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                .responseTimeout(Duration.ofSeconds(15))
+                                .option(EpollChannelOption.TCP_KEEPINTVL, 10)
+                                .option(EpollChannelOption.TCP_KEEPCNT, 5)
+                                .responseTimeout(Duration.ofSeconds(10))
                 ))
                 .build();
 

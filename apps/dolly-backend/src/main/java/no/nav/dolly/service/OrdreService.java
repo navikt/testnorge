@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class OrdreService {
     private final PersonServiceClient personServiceClient;
     private final TpsMessagingClient tpsMessagingClient;
     private final PensjonforvalterClient pensjonforvalterClient;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Transactional
     public Mono<RsOrdreStatus> sendOrdre(String ident) {
@@ -52,16 +52,16 @@ public class OrdreService {
                                 .isOrdre(true)
                                 .build())
                         .map(dollyperson -> sendOrdre(dollyperson, progress)
-                                .flatMap(pdlOrdreResponse ->
+                                .flatMap(_ ->
                                         personServiceClient.syncPerson(dollyperson, progress)
                                                 .map(BestillingProgress::isPdlSync)
                                                 .filter(BooleanUtils::isTrue)
-                                                .flatMapMany(opprettet -> Flux.merge(
+                                                .flatMapMany(_ -> Flux.merge(
                                                         pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false),
                                                         tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false)))
                                                 .collectList()
-                                                .map(status -> RsOrdreStatus.builder()
-                                                        .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper))
+                                                .map(_ -> RsOrdreStatus.builder()
+                                                        .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), jsonMapper))
                                                         .build())))
                         .flatMap(Mono::from));
     }

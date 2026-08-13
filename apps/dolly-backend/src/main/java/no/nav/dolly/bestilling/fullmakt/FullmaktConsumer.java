@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.List;
@@ -34,7 +34,7 @@ public class FullmaktConsumer extends ConsumerStatus {
     public FullmaktConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient){
 
         this.tokenService = tokenService;
@@ -42,7 +42,7 @@ public class FullmaktConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 

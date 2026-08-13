@@ -6,5 +6,5 @@ export const { addFavorite, removeFavorite } = createActions(
 		addFavorite: DollyApi.addFavorite,
 		removeFavorite: DollyApi.removeFavorite,
 	},
-	{ prefix: 'bruker' }
+	{ prefix: 'bruker' },
 )

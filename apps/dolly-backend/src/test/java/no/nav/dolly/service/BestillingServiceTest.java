@@ -1,5 +1,6 @@
 package no.nav.dolly.service;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
@@ -27,7 +28,6 @@ import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ class BestillingServiceTest {
     private MiljoerConsumer miljoerConsumer;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private OpenSearchService openSearchService;

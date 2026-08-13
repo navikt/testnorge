@@ -9,13 +9,13 @@ import no.nav.dolly.domain.resultset.RsSoek;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 @RequiredArgsConstructor
 public class SoekMappingStrategy implements MappingStrategy {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -26,7 +26,7 @@ public class SoekMappingStrategy implements MappingStrategy {
 
                         rsSoek.setOpprettet(soek.getOpprettetTidspunkt());
                         try {
-                            rsSoek.setSoekVerdi(objectMapper.readTree(soek.getSoekVerdi()));
+                            rsSoek.setSoekVerdi(jsonMapper.readTree(soek.getSoekVerdi()));
                         } catch (JacksonException e) {
                             rsSoek.setFeilmelding(e.getOriginalMessage());
                         }
