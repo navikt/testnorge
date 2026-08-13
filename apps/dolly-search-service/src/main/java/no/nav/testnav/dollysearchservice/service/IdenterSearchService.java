@@ -26,9 +26,10 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class IdenterSearchService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
+    private static final int TESTNORGE_IDENTER_CACHE_KEY = 0;
 
     private final Cache<Integer, Set<String>> testnorgeIdenterCache = Caffeine.newBuilder()
-            .maximumSize(1000)
+            .maximumSize(1)
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
 
@@ -39,7 +40,7 @@ public class IdenterSearchService {
     public List<IdentdataDTO> getIdenter(String fragment, int side, int antall, Integer seed) {
 
         var resolvedSeed = isNull(seed) ? RANDOM.nextInt() : seed;
-        var identer = testnorgeIdenterCache.get(resolvedSeed,
+        var identer = testnorgeIdenterCache.get(TESTNORGE_IDENTER_CACHE_KEY,
                 ignored -> bestillingQueryService.execTestnorgeIdenterQuery());
         var query = buildTestnorgeIdentSearchQuery(getSearchCriteria(fragment, identer, resolvedSeed));
         var request = SearchRequest.builder()

@@ -44,7 +44,7 @@ class IdenterSearchServiceTest {
                         .build());
 
         identerSearchService.getIdenter("ola", 2, 20, 123);
-        identerSearchService.getIdenter("ola", 3, 20, 123);
+        identerSearchService.getIdenter("ola", 3, 20, 456);
 
         var requestCaptor = ArgumentCaptor.forClass(SearchRequest.class);
         var queryCaptor = ArgumentCaptor.forClass(FunctionScoreQuery.Builder.class);
@@ -58,15 +58,15 @@ class IdenterSearchServiceTest {
                 .containsOnly(20);
         assertThat(requestCaptor.getAllValues())
                 .extracting(SearchRequest::getSeed)
-                .containsOnly(123);
+                .containsExactly(123, 456);
         assertThat(queryCaptor.getAllValues())
-                .allSatisfy(query -> assertThat(query.build()
+                .extracting(query -> query.build()
                         .functions()
                         .getFirst()
                         .randomScore()
                         .seed()
                         .to(Integer.class))
-                        .isEqualTo(123));
+                .containsExactly(123, 456);
         verify(bestillingQueryService).execTestnorgeIdenterQuery();
     }
 }

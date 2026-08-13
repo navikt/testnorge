@@ -22,7 +22,7 @@ public class IdenterSearchController {
     @GetMapping
     @Operation(description = "Henter testnorge-identer som matcher søk i request")
     public Flux<IdentdataDTO> getIdenter(
-            String fragment,
+            @RequestParam(name = "fragment", required = false) String fragment,
             @RequestParam(defaultValue = "0") int side,
             @RequestParam(defaultValue = "10") int antall,
             @RequestParam(required = false) Integer seed) {
