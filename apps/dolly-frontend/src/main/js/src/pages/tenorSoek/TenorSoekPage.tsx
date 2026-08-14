@@ -13,7 +13,11 @@ import { DollyApi } from '@/service/Api'
 import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from './constants'
 import { getLabel } from '@/components/ui/soekForm/utils'
 import { Button } from '@navikt/ds-react'
-import { ChevronDownDoubleCircleIcon, ChevronUpDoubleCircleIcon } from '@navikt/aksel-icons'
+import {
+	ChevronDownDoubleIcon,
+	ChevronUpDoubleIcon,
+	ExclamationmarkTriangleIcon,
+} from '@navikt/aksel-icons'
 
 export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
@@ -158,9 +162,11 @@ export default () => {
 
 	const updateButtonPosition = () => {
 		const treffElement = document.getElementById('treff')
-		if (treffElement) {
+		const soekElement = document.getElementById('soek')
+		if (treffElement && soekElement) {
 			const buttonPosition = window.scrollY + window.innerHeight - 30
-			setOverTreff(buttonPosition >= treffElement.offsetTop)
+			const soekTopVisible = soekElement.getBoundingClientRect().top >= 0
+			setOverTreff(!soekTopVisible && buttonPosition >= treffElement.offsetTop)
 		}
 	}
 
@@ -265,6 +271,18 @@ export default () => {
 		mutate()
 	}
 
+	const ingenTreff = response?.data?.data?.treff < 1
+
+	const getIcon = () => {
+		if (ingenTreff) {
+			return <ExclamationmarkTriangleIcon aria-hidden />
+		} else if (overTreff) {
+			return <ChevronUpDoubleIcon aria-hidden />
+		} else {
+			return <ChevronDownDoubleIcon aria-hidden />
+		}
+	}
+
 	return (
 		<Suspense fallback={<Loading label="Laster søkeside ..." panel />}>
 			<div id="soek">
@@ -279,19 +297,19 @@ export default () => {
 				/>
 				<div className="flexbox--flex-wrap">
 					<NavigateButton
-						variant={loading ? 'primary-neutral' : 'primary'}
+						variant={loading || ingenTreff ? 'primary-neutral' : 'primary'}
 						onClick={() => navigateTo(overTreff ? 'soek' : 'treff')}
-						icon={
-							loading ? null : overTreff ? (
-								<ChevronUpDoubleCircleIcon aria-hidden />
-							) : (
-								<ChevronDownDoubleCircleIcon aria-hidden />
-							)
-						}
+						icon={loading ? null : getIcon()}
 						loading={loading}
-						disabled={loading}
+						disabled={loading || ingenTreff}
 					>
-						{loading ? 'Henter treff ...' : overTreff ? 'Gå til søk' : 'Gå til treff'}
+						{loading
+							? 'Henter treff ...'
+							: ingenTreff
+								? 'Ingen treff'
+								: overTreff
+									? 'Gå til søk'
+									: 'Gå til treff'}
 					</NavigateButton>
 					<SoekForm
 						formMethods={formMethods}
