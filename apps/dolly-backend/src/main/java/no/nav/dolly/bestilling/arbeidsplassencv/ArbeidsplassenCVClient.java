@@ -68,11 +68,11 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                     var oppdatertOrdre = mapperFacade.map(arbeidsplassenCV, ArbeidsplassenCVDTO.class);
                                     bestilling.setArbeidsplassenCV(oppdatertOrdre);
                                     return transactionHelperService.persister(progress.getBestillingId(), bestilling)
-                                            .then(Mono.just(arbeidsplassenCV));
+                                            .thenReturn(arbeidsplassenCV);
                                 })
                                 .flatMap(oppdatertOrdre -> Mono.just(CallIdUtil.generateCallId())
                                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                                .flatMap(response ->
+                                                .flatMap(_ ->
                                                         arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid)
                                                                 .then(Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                                                         .flatMap(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(),
@@ -123,6 +123,6 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         arbeidsplassenCVConsumer.deleteCVer(identer)
                 .collectList()
-                .subscribe(response -> log.info("Sletting utført mot ArbeidsplassenCV"));
+                .subscribe(_ -> log.info("Sletting utført mot ArbeidsplassenCV"));
     }
 }

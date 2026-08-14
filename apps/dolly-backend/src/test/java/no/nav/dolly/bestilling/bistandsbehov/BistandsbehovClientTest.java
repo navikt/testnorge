@@ -8,7 +8,9 @@ import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -33,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -85,6 +88,8 @@ class BistandsbehovClientTest {
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
         when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
                 .thenReturn(new BistandVedtakRequestDTO());
+        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
+                .thenReturn(new RsBistandsbehovDTO());
         when(bistandsbehovConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
@@ -117,6 +122,8 @@ class BistandsbehovClientTest {
                 .thenReturn(Mono.just(Norg2EnhetResponse.builder().enhetNr(NORG_ENHET).build()));
         when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
                 .thenReturn(new BistandVedtakRequestDTO());
+        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
+                .thenReturn(new RsBistandsbehovDTO());
         when(bistandsbehovConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
@@ -146,6 +153,8 @@ class BistandsbehovClientTest {
                 .thenReturn(Mono.just(Norg2EnhetResponse.builder().httpStatus(HttpStatus.BAD_GATEWAY).build()));
         when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
                 .thenReturn(new BistandVedtakRequestDTO());
+        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
+                .thenReturn(new RsBistandsbehovDTO());
         when(bistandsbehovConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
@@ -194,6 +203,8 @@ class BistandsbehovClientTest {
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
         when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
                 .thenReturn(new BistandVedtakRequestDTO());
+        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
+                .thenReturn(new RsBistandsbehovDTO());
         when(bistandsbehovConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder()
                         .status(HttpStatus.BAD_REQUEST)
@@ -216,6 +227,8 @@ class BistandsbehovClientTest {
     private void stubPersister(BestillingProgress progress) {
         when(transactionHelperService.persister(any(), any(), any(), anyString()))
                 .thenReturn(Mono.just(progress));
+        lenient().when(transactionHelperService.persister(any(), any(RsDollyBestilling.class)))
+                .thenReturn(Mono.just(new Bestilling()));
     }
 
     private static RsDollyUtvidetBestilling bestillingMed(String oppfolgingsEnhet) {

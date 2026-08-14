@@ -10,6 +10,7 @@ import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingContextUtils;
@@ -58,6 +59,12 @@ public class BistandsbehovClient implements ClientRegister {
                     context.setProperty("ident", dollyPerson.getIdent());
                     context.setProperty("norgEnhet", norgEnhet);
                     return mapperFacade.map(bestilling.getBistandsbehov(), BistandVedtakRequestDTO.class, context);
+                })
+                .flatMap(bistandsVedtak -> {
+                    var oppdatertVedtak = mapperFacade.map(bistandsVedtak, RsBistandsbehovDTO.class);
+                    bestilling.setBistandsbehov(oppdatertVedtak);
+                    return transactionHelperService.persister(progress.getBestillingId(), bestilling)
+                            .thenReturn(bistandsVedtak);
                 })
                 .flatMap(bistandsbehovConsumer::opprettBistandVedtak)
                 .flatMap(response -> oppdaterStatus(progress, response.getStatus().is2xxSuccessful() ?
