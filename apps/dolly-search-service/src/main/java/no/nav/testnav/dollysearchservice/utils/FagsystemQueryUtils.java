@@ -38,6 +38,7 @@ public class FagsystemQueryUtils {
             case BANKKONTO_NORGE -> mustExistQuery(queryBuilder, "bankkonto.norskBankkonto");
             case BANKKONTO_UTLAND -> mustExistQuery(queryBuilder, "bankkonto.utenlandskBankkonto");
             case BRREGSTUB -> mustExistQuery(queryBuilder, "brregstub");
+            case BISTANDSBEHOV -> mustExistQuery(queryBuilder, "bistandsbehov");
             case DOKARKIV -> mustExistQuery(queryBuilder, "dokarkiv");
             case ETTERLATTE -> mustExistQuery(queryBuilder, "etterlatteYtelser");
             case FULLMAKT -> mustExistQuery(queryBuilder, "fullmakt");
