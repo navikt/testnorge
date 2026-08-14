@@ -8,6 +8,8 @@ import { PensjonTab } from '@/pages/tenorSoek/soekFormTabs/PensjonTab'
 import { VirksomhetTab } from '@/pages/tenorSoek/soekFormTabs/VirksomhetTab'
 import { SkattTab } from '@/pages/tenorSoek/soekFormTabs/SkattTab'
 import { ArbeidInntektTab } from '@/pages/tenorSoek/soekFormTabs/ArbeidInntektTab'
+import { AntallCircle, getAntallRequest } from '@/components/ui/soekForm/SoekFormWrapper'
+import { tabPaths } from '@/pages/tenorSoek/soekFormTabs/soekFormPaths'
 
 const DisplayFormState = lazy(() => import('@/utils/DisplayFormState'))
 
@@ -22,6 +24,11 @@ const SoekefeltWrapper = styled.div`
 	padding: 15px 0 0 0;
 `
 
+const TabLabel = styled.span`
+	display: flex;
+	align-items: center;
+`
+
 export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCategory }: any) => {
 	const { getValues, control, watch }: any = formMethods
 	const isAdmin = useErDollyAdmin()
@@ -30,14 +37,29 @@ export const SoekForm = ({ formMethods, handleChange, handleChangeList, emptyCat
 		window.location.hostname.includes('localhost') ||
 		window.location.hostname.includes('dolly-frontend-dev')
 
+	watch()
+
+	const tabLabel = (label: string, paths: string[]) => (
+		<TabLabel>
+			{label}
+			<AntallCircle antall={getAntallRequest(paths, getValues)} />
+		</TabLabel>
+	)
+
 	return (
 		<Tabs defaultValue="folkeregisteret" style={{ width: '100%' }}>
 			<Tabs.List>
-				<Tabs.Tab value="folkeregisteret" label="Folkeregisteret" />
-				<Tabs.Tab value="skatt" label="Skatt" />
-				<Tabs.Tab value="arbeidinntekt" label="Arbeid og inntekt" />
-				<Tabs.Tab value="pensjon" label="Pensjon" />
-				<Tabs.Tab value="virksomhet" label="Virksomhet" />
+				<Tabs.Tab
+					value="folkeregisteret"
+					label={tabLabel('Folkeregisteret', tabPaths.folkeregisteret)}
+				/>
+				<Tabs.Tab value="skatt" label={tabLabel('Skatt', tabPaths.skatt)} />
+				<Tabs.Tab
+					value="arbeidinntekt"
+					label={tabLabel('Arbeid og inntekt', tabPaths.arbeidinntekt)}
+				/>
+				<Tabs.Tab value="pensjon" label={tabLabel('Pensjon', tabPaths.pensjon)} />
+				<Tabs.Tab value="virksomhet" label={tabLabel('Virksomhet', tabPaths.virksomhet)} />
 			</Tabs.List>
 			<SoekefeltWrapper>
 				<FormProvider {...formMethods}>

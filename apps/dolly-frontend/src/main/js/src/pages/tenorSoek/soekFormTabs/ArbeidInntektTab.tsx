@@ -2,6 +2,7 @@ import { Table, Tabs } from '@navikt/ds-react'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
 import { Arbeidsforhold } from '@/pages/tenorSoek/soekFormPartials/Arbeidsforhold'
+import { arbeidInntektPaths } from '@/pages/tenorSoek/soekFormTabs/soekFormPaths'
 
 export const ArbeidInntektTab = ({
 	handleChange,
@@ -21,19 +22,7 @@ export const ArbeidInntektTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Arbeidsforhold"
-								paths={[
-									'arbeidsforhold.startDatoPeriode.fraOgMed',
-									'arbeidsforhold.startDatoPeriode.tilOgMed',
-									'arbeidsforhold.sluttDatoPeriode.fraOgMed',
-									'arbeidsforhold.sluttDatoPeriode.tilOgMed',
-									'arbeidsforhold.harPermisjoner',
-									'arbeidsforhold.harPermitteringer',
-									'arbeidsforhold.harArbeidsgiver',
-									'arbeidsforhold.harTimerMedTimeloenn',
-									'arbeidsforhold.harUtenlandsopphold',
-									'arbeidsforhold.harHistorikk',
-									'arbeidsforhold.arbeidsforholdstype',
-								]}
+								paths={arbeidInntektPaths.arbeidsforhold}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -51,15 +40,7 @@ export const ArbeidInntektTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Inntekt A-ordningen"
-								paths={[
-									'inntekt.periode.fraOgMed',
-									'inntekt.periode.tilOgMed',
-									'inntekt.opplysningspliktig',
-									'inntekt.inntektstyper',
-									'inntekt.forskuddstrekk',
-									'inntekt.beskrivelse',
-									'inntekt.harHistorikk',
-								]}
+								paths={arbeidInntektPaths.inntektAordningen}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>

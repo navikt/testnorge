@@ -3,6 +3,7 @@ import { Skattemelding } from '../soekFormPartials/Skattemelding'
 import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
 import { BeregnetSkatt } from '@/pages/tenorSoek/soekFormPartials/BeregnetSkatt'
 import { SummertSkattegrunnlag } from '@/pages/tenorSoek/soekFormPartials/SummertSkattegrunnlag'
+import { skattPaths } from '@/pages/tenorSoek/soekFormTabs/soekFormPaths'
 
 export const SkattTab = ({ handleChange, getValues, emptyCategory }: any) => {
 	return (
@@ -16,11 +17,7 @@ export const SkattTab = ({ handleChange, getValues, emptyCategory }: any) => {
 						<Table.HeaderCell>
 							<Header
 								title="Beregnet skatt"
-								paths={[
-									'beregnetSkatt.inntektsaar',
-									'beregnetSkatt.oppgjoerstype',
-									'beregnetSkatt.pensjonsgivendeInntekt',
-								]}
+								paths={skattPaths.beregnetSkatt}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -30,14 +27,7 @@ export const SkattTab = ({ handleChange, getValues, emptyCategory }: any) => {
 						<Table.HeaderCell>
 							<Header
 								title="Summert skattegrunnlag"
-								paths={[
-									'summertSkattegrunnlag.inntektsaar',
-									'summertSkattegrunnlag.stadietype',
-									'summertSkattegrunnlag.oppgjoerstype',
-									'summertSkattegrunnlag.tekniskNavn',
-									'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.fraOgMed',
-									'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.tilOgMed',
-								]}
+								paths={skattPaths.summertSkattegrunnlag}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -47,7 +37,7 @@ export const SkattTab = ({ handleChange, getValues, emptyCategory }: any) => {
 						<Table.HeaderCell>
 							<Header
 								title="Skattemelding"
-								paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
+								paths={skattPaths.skattemelding}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>

@@ -6,6 +6,7 @@ import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/Folkereg
 import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
 import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
+import { folkeregisteretPaths } from '@/pages/tenorSoek/soekFormTabs/soekFormPaths'
 
 export const FolkeregisteretTab = ({
 	handleChange,
@@ -29,22 +30,7 @@ export const FolkeregisteretTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Identifikasjon og status"
-								paths={[
-									'identifikator',
-									'identifikatorType',
-									'foedselsdato.fraOgMed',
-									'foedselsdato.tilOgMed',
-									'doedsdato.fraOgMed',
-									'doedsdato.tilOgMed',
-									'kjoenn',
-									'personstatus',
-									'sivilstand',
-									'identitetsgrunnlagStatus',
-									'adressebeskyttelse',
-									'harFalskIdentitet',
-									'utenlandskPersonIdentifikasjon',
-									'harLegitimasjonsdokument',
-								]}
+								paths={folkeregisteretPaths.identifikasjonOgStatus}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -56,15 +42,7 @@ export const FolkeregisteretTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Statsborgerskap"
-								paths={[
-									'harNorskStatsborgerskap',
-									'harFlereStatsborgerskap',
-									'harNordenStatsborgerskap',
-									'harEuEoesStatsborgerskap',
-									'harTredjelandStatsborgerskap',
-									'harUtgaattStatsborgerskap',
-									'harStatsborgerskapHistorikk',
-								]}
+								paths={folkeregisteretPaths.statsborgerskap}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -74,13 +52,7 @@ export const FolkeregisteretTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Navn"
-								paths={[
-									'navn.navnLengde.fraOgMed',
-									'navn.navnLengde.tilOgMed',
-									'navn.harFlereFornavn',
-									'navn.harNavnSpesialtegn',
-									'navn.harMellomnavn',
-								]}
+								paths={folkeregisteretPaths.navn}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -90,17 +62,7 @@ export const FolkeregisteretTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Adresser"
-								paths={[
-									'adresser.adresseGradering',
-									'adresser.kommunenummer',
-									'adresser.harAdresseSpesialtegn',
-									'adresser.harBostedsadresse',
-									'avansert.harBostedsadresseHistorikk',
-									'adresser.harOppholdAnnetSted',
-									'adresser.harPostadresseNorge',
-									'adresser.harPostadresseUtland',
-									'adresser.harKontaktadresseDoedsbo',
-								]}
+								paths={folkeregisteretPaths.adresser}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -110,20 +72,7 @@ export const FolkeregisteretTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Relasjoner"
-								paths={[
-									'relasjoner.relasjon',
-									'relasjoner.antallBarn.fraOgMed',
-									'relasjoner.antallBarn.tilOgMed',
-									'relasjoner.relasjonMedFoedselsaar.fraOgMed',
-									'relasjoner.relasjonMedFoedselsaar.tilOgMed',
-									'relasjoner.harForeldreAnsvar',
-									'relasjoner.harDeltBosted',
-									'relasjoner.harVergemaalEllerFremtidsfullmakt',
-									'relasjoner.borMedMor',
-									'relasjoner.borMedFar',
-									'relasjoner.borMedMedmor',
-									'relasjoner.foreldreHarSammeAdresse',
-								]}
+								paths={folkeregisteretPaths.relasjoner}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
@@ -133,7 +82,7 @@ export const FolkeregisteretTab = ({
 						<Table.HeaderCell>
 							<Header
 								title="Hendelser"
-								paths={['hendelser.hendelse', 'hendelser.sisteHendelse']}
+								paths={folkeregisteretPaths.hendelser}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>

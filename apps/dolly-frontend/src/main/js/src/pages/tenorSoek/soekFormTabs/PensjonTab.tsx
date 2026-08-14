@@ -1,6 +1,7 @@
 import { Table, Tabs } from '@navikt/ds-react'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
+import { pensjonPaths } from '@/pages/tenorSoek/soekFormTabs/soekFormPaths'
 
 export const PensjonTab = ({ handleChange, getValues, emptyCategory }: any) => {
 	return (
@@ -14,10 +15,7 @@ export const PensjonTab = ({ handleChange, getValues, emptyCategory }: any) => {
 						<Table.HeaderCell>
 							<Header
 								title="Tjenestepensjonsavtale"
-								paths={[
-									'tjenestepensjonsavtale.pensjonsinnretningOrgnr',
-									'tjenestepensjonsavtale.periode',
-								]}
+								paths={pensjonPaths.tjenestepensjonsavtale}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>

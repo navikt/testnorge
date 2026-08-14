@@ -1,6 +1,7 @@
 import { Table, Tabs } from '@navikt/ds-react'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
+import { virksomhetPaths } from '@/pages/tenorSoek/soekFormTabs/soekFormPaths'
 
 export const VirksomhetTab = ({ handleChangeList, getValues, emptyCategory }: any) => {
 	return (
@@ -14,7 +15,7 @@ export const VirksomhetTab = ({ handleChangeList, getValues, emptyCategory }: an
 						<Table.HeaderCell>
 							<Header
 								title="Enhetsregisteret og Foretaksregisteret"
-								paths={['roller']}
+								paths={virksomhetPaths.enhetsregisteretForetaksregisteret}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>
