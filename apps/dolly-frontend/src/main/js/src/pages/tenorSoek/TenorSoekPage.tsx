@@ -4,7 +4,6 @@ import { SoekForm } from '@/pages/tenorSoek/SoekForm'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import Button from '@/components/ui/button/Button'
 import Loading from '@/components/ui/loading/Loading'
 import { SisteSoek, soekType } from '@/components/ui/soekForm/SisteSoek'
 import { useForm } from 'react-hook-form'
@@ -13,6 +12,8 @@ import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
 import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from './constants'
 import { getLabel } from '@/components/ui/soekForm/utils'
+import { Button } from '@navikt/ds-react'
+import { ChevronDownDoubleCircleIcon, ChevronUpDoubleCircleIcon } from '@navikt/aksel-icons'
 
 export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
@@ -24,18 +25,21 @@ const initialState = {
 }
 
 const NavigateButton = styled(Button)`
-	position: sticky;
-	top: ${(props) => (props.className === 'gaa-til-soek' ? '75px' : '10px')};
-	width: 80px;
-	transform: translateX(-120%);
-	display: grid;
+	position: fixed;
+	bottom: 30px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1000;
+	box-shadow: var(--ax-shadow-dialog);
+	border-radius: var(--ax-radius-full);
+	width: 12rem;
 
-	&& {
-		svg {
-			width: 45px;
-			height: 45px;
-			margin: 0 auto 5px auto;
-		}
+	.aksel-label {
+		visibility: visible;
+	}
+
+	.aksel-loader {
+		position: relative;
 	}
 `
 
@@ -75,6 +79,8 @@ export default () => {
 	)
 	const [markertePersoner, setMarkertePersoner] = useState([])
 	const [inkluderPartnere, setInkluderPartnere] = useState(false)
+
+	const [overTreff, setOverTreff] = useState(false)
 
 	const formMethods = useForm({
 		mode: 'onChange',
@@ -140,7 +146,26 @@ export default () => {
 		return () => window.removeEventListener('scroll', handleScroll)
 	}, [])
 
+	useEffect(() => {
+		const soekElement = document.getElementById('soek')
+		if (!soekElement) {
+			return
+		}
+		const resizeObserver = new ResizeObserver(() => updateButtonPosition())
+		resizeObserver.observe(soekElement)
+		return () => resizeObserver.disconnect()
+	}, [])
+
+	const updateButtonPosition = () => {
+		const treffElement = document.getElementById('treff')
+		if (treffElement) {
+			const buttonPosition = window.scrollY + window.innerHeight - 30
+			setOverTreff(buttonPosition >= treffElement.offsetTop)
+		}
+	}
+
 	const handleScroll = () => {
+		updateButtonPosition()
 		if (
 			document.documentElement.scrollHeight - document.documentElement.scrollTop >
 			document.documentElement.clientHeight
@@ -241,24 +266,32 @@ export default () => {
 	}
 
 	return (
-		<div>
-			<div className="flexbox--align-center--justify-start">
-				<Title title="Søk etter personer i Tenor (Test-Norge)" />
-			</div>
-			<Suspense fallback={<Loading label="Laster søkeside" panel />}>
+		<Suspense fallback={<Loading label="Laster søkeside ..." panel />}>
+			<div id="soek">
+				<div className="flexbox--align-center--justify-start">
+					<Title title="Søk etter personer i Tenor (Test-Norge)" />
+				</div>
 				<SisteSoek
 					type={soekType.tenor}
 					formValues={formMethods.watch()}
 					handleChange={handleChange}
 					handleChangeList={handleChangeList}
 				/>
-				<div className="flexbox--flex-wrap" id="soek">
+				<div className="flexbox--flex-wrap">
 					<NavigateButton
-						className="gaa-til-treff"
-						onClick={() => navigateTo('treff')}
-						kind="chevron-down-double-circle"
+						variant={loading ? 'primary-neutral' : 'primary'}
+						onClick={() => navigateTo(overTreff ? 'soek' : 'treff')}
+						icon={
+							loading ? null : overTreff ? (
+								<ChevronUpDoubleCircleIcon aria-hidden />
+							) : (
+								<ChevronDownDoubleCircleIcon aria-hidden />
+							)
+						}
+						loading={loading}
+						disabled={loading}
 					>
-						GÅ TIL TREFF
+						{loading ? 'Henter treff ...' : overTreff ? 'Gå til søk' : 'Gå til treff'}
 					</NavigateButton>
 					<SoekForm
 						formMethods={formMethods}
@@ -267,27 +300,20 @@ export default () => {
 						emptyCategory={emptyCategory}
 					/>
 				</div>
-				<div id="treff">
-					<NavigateButton
-						className="gaa-til-soek"
-						onClick={() => navigateTo('soek')}
-						kind="chevron-up-double-circle"
-					>
-						GÅ TIL SØK
-					</NavigateButton>
-					<TreffListe
-						response={response?.data}
-						personListe={state.personListe}
-						markertePersoner={markertePersoner}
-						setMarkertePersoner={setMarkertePersoner}
-						inkluderPartnere={inkluderPartnere}
-						setInkluderPartnere={setInkluderPartnere}
-						nesteSide={state.nesteSide}
-						loading={loading}
-						error={error}
-					/>
-				</div>
-			</Suspense>
-		</div>
+			</div>
+			<div id="treff">
+				<TreffListe
+					response={response?.data}
+					personListe={state.personListe}
+					markertePersoner={markertePersoner}
+					setMarkertePersoner={setMarkertePersoner}
+					inkluderPartnere={inkluderPartnere}
+					setInkluderPartnere={setInkluderPartnere}
+					nesteSide={state.nesteSide}
+					loading={loading}
+					error={error}
+				/>
+			</div>
+		</Suspense>
 	)
 }
