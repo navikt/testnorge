@@ -120,7 +120,7 @@ system:
   - register: oppfølging
     namespace: poao
     kubernetes-name: veilarboppfolging
-    url: https://veilarbvedtaksstotte.intern.dev.nav.no/veilarbvedtaksstotte/internal/swagger-ui/index.html?urls.primaryName=Interne+endepunkter
+    url: https://veilarboppfolging.intern.dev.nav.no/veilarboppfolging/internal/swagger-ui/index.html#/oppfolging-v-3-controller/aktiverBruker
     cluster: dev-gcp
   - register: pensjon-testdata
     write:
