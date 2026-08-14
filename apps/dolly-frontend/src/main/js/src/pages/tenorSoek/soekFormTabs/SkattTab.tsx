@@ -10,19 +10,9 @@ export const SkattTab = ({ handleChange, getValues, emptyCategory }: any) => {
 			<Table size="small">
 				<Table.Body>
 					<Table.ExpandableRow
-						content={<Skattemelding handleChange={handleChange} />}
+						content={<BeregnetSkatt handleChange={handleChange} />}
 						defaultOpen={true}
 					>
-						<Table.HeaderCell>
-							<Header
-								title="Skattemelding"
-								paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
-								getValues={getValues}
-								emptyCategory={emptyCategory}
-							/>
-						</Table.HeaderCell>
-					</Table.ExpandableRow>
-					<Table.ExpandableRow content={<BeregnetSkatt handleChange={handleChange} />}>
 						<Table.HeaderCell>
 							<Header
 								title="Beregnet skatt"
@@ -48,6 +38,16 @@ export const SkattTab = ({ handleChange, getValues, emptyCategory }: any) => {
 									'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.fraOgMed',
 									'summertSkattegrunnlag.alminneligInntektFoerSaerfradragBeloep.tilOgMed',
 								]}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+							/>
+						</Table.HeaderCell>
+					</Table.ExpandableRow>
+					<Table.ExpandableRow content={<Skattemelding handleChange={handleChange} />}>
+						<Table.HeaderCell>
+							<Header
+								title="Skattemelding"
+								paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
 							/>

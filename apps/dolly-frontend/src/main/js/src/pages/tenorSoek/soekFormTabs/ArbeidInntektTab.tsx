@@ -15,33 +15,9 @@ export const ArbeidInntektTab = ({
 			<Table size="small">
 				<Table.Body>
 					<Table.ExpandableRow
-						content={
-							<InntektAordningen
-								handleChange={handleChange}
-								handleChangeList={handleChangeList}
-								getValue={watch}
-							/>
-						}
+						content={<Arbeidsforhold handleChange={handleChange} />}
 						defaultOpen={true}
 					>
-						<Table.HeaderCell>
-							<Header
-								title="Inntekt A-ordningen"
-								paths={[
-									'inntekt.periode.fraOgMed',
-									'inntekt.periode.tilOgMed',
-									'inntekt.opplysningspliktig',
-									'inntekt.inntektstyper',
-									'inntekt.forskuddstrekk',
-									'inntekt.beskrivelse',
-									'inntekt.harHistorikk',
-								]}
-								getValues={getValues}
-								emptyCategory={emptyCategory}
-							/>
-						</Table.HeaderCell>
-					</Table.ExpandableRow>
-					<Table.ExpandableRow content={<Arbeidsforhold handleChange={handleChange} />}>
 						<Table.HeaderCell>
 							<Header
 								title="Arbeidsforhold"
@@ -57,6 +33,32 @@ export const ArbeidInntektTab = ({
 									'arbeidsforhold.harUtenlandsopphold',
 									'arbeidsforhold.harHistorikk',
 									'arbeidsforhold.arbeidsforholdstype',
+								]}
+								getValues={getValues}
+								emptyCategory={emptyCategory}
+							/>
+						</Table.HeaderCell>
+					</Table.ExpandableRow>
+					<Table.ExpandableRow
+						content={
+							<InntektAordningen
+								handleChange={handleChange}
+								handleChangeList={handleChangeList}
+								getValue={watch}
+							/>
+						}
+					>
+						<Table.HeaderCell>
+							<Header
+								title="Inntekt A-ordningen"
+								paths={[
+									'inntekt.periode.fraOgMed',
+									'inntekt.periode.tilOgMed',
+									'inntekt.opplysningspliktig',
+									'inntekt.inntektstyper',
+									'inntekt.forskuddstrekk',
+									'inntekt.beskrivelse',
+									'inntekt.harHistorikk',
 								]}
 								getValues={getValues}
 								emptyCategory={emptyCategory}
