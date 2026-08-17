@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@navikt/aksel-icons": "^8.16.1",
-    "@navikt/dolly-assets": "^1.4.12",
-    "@navikt/dolly-lib": "^1.4.12",
+    "@navikt/dolly-assets": "^1.4.13",
+    "@navikt/dolly-lib": "^1.4.13",
     "@navikt/ds-css": "^8.16.1",
     "@navikt/ds-react": "^8.16.1",
     "classnames": "^2.5.1",
@@ -52,7 +52,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
-    "less": "^4.8.1",
+    "less": "^4.9.0",
     "postcss": "^8.5.26",
     "rollup": "^4.62.4",
     "rollup-plugin-dts": "^6.5.1",
@@ -60,7 +60,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-svg": "^2.0.0",
-    "storybook": "^10.5.7",
+    "storybook": "^10.5.8",
     "typescript": "^6.0.3",
     "vite": "^8.2.1"
   },
