@@ -48,7 +48,7 @@ public class BistandsbehovConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new OpprettBistandsvedtakCommand(webClient, request, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Status fra OBO opprett bistandsvedtak for ident {} {}", request, response));
+                .doOnNext(response -> log.info("Status fra OBO opprett bistandsvedtak {} er {}", request, response));
     }
 
     public Flux<ResponseStatusDTO> slettBistandsvedtak(List<String> identer) {

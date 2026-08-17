@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.BISTANDSBEHOV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -76,14 +77,18 @@ public class BistandsbehovClient implements ClientRegister {
     private Mono<String> getNorgEnhet(String ident) {
 
         return personServiceConsumer.getPdlPersoner(List.of(ident))
+                .filter(personBolk -> nonNull(personBolk.getData()) &&
+                                      !personBolk.getData().getHentGeografiskTilknytningBolk().isEmpty())
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentGeografiskTilknytningBolk)
                 .next()
                 .map(List::getFirst)
+                .filter(geografiskTilknytningBolk -> nonNull(geografiskTilknytningBolk.getGeografiskTilknytning()))
                 .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
                 .map(BistandsbehovClient::getEnhet)
                 .flatMap(norg2Consumer::getNorgEnhet)
-                .map(response -> isNull(response.getHttpStatus()) ? response.getEnhetNr() : "0315");
+                .map(response -> isNull(response.getHttpStatus()) ? response.getEnhetNr() : "0315")
+                .switchIfEmpty(Mono.just("0315"));
     }
 
     private static String getEnhet(PdlPersonBolk.GeografiskTilknytning tilknytning) {
