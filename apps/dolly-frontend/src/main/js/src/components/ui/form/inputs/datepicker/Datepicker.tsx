@@ -55,6 +55,13 @@ export const DollyDatepicker = ({
 		validateDate(date)
 	}, [])
 
+	useEffect(() => {
+		if (!existingValue) {
+			setInput('')
+			setSelected(undefined)
+		}
+	}, [existingValue])
+
 	const validateDate = (date: any) => {
 		formMethods.clearErrors(`manual.${name}`)
 		formMethods.clearErrors(name)
