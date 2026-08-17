@@ -39,10 +39,10 @@ import reactor.core.publisher.Mono;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -112,9 +112,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Mono<Void> deletePerson(String ident) {
-
-        var startTime = currentTimeMillis();
+    public Mono<Set<String>> findIdenterForSletting(String ident) {
 
         return checkAlias(ident)
                 .then(personRepository.findByIdent(ident))
@@ -127,20 +125,25 @@ public class PersonService {
                                         .map(DbRelasjon::getRelatertPersonId))
                         .flatMap(personRepository::findById)
                         .map(DbPerson::getIdent))
-                .collect(Collectors.toCollection(HashSet::new))
-                .flatMap(identerSomSkalSlettesHosPdl -> pdlTestdataConsumer.delete(identerSomSkalSlettesHosPdl)
-                        .thenReturn(identerSomSkalSlettesHosPdl))
-                .flatMap(identerSomSkalFriMarkeresIIdentpool ->
-                        identPoolConsumer.releaseIdents(identerSomSkalFriMarkeresIIdentpool, Bruker.PDLF)
-                                .thenReturn(identerSomSkalFriMarkeresIIdentpool))
-                .flatMap(identerSomSkalSlettesIAliaser -> aliasRepository.deleteByIdentIn(identerSomSkalSlettesIAliaser)
-                        .then(Mono.just(identerSomSkalSlettesIAliaser)))
+                .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public Mono<Set<String>> executeEksternSletting(Set<String> identer) {
+
+        return pdlTestdataConsumer.delete(identer)
+                .then(identPoolConsumer.releaseIdents(identer, Bruker.PDLF))
+                .thenReturn(identer);
+    }
+
+    @Transactional
+    public Mono<Set<String>> deleteInDatabase(Set<String> identerSomSkalSlettesIAliaser) {
+
+        return aliasRepository.deleteByIdentIn(identerSomSkalSlettesIAliaser)
+                .then(Mono.just(identerSomSkalSlettesIAliaser))
                 .flatMap(identerSomSkalSlettesIRelasjoner -> relasjonRepository.deleteByPersonIdentIn(identerSomSkalSlettesIRelasjoner)
                         .then(Mono.just(identerSomSkalSlettesIRelasjoner)))
                 .flatMap(identerSomSkalSlettesIPdlForvalter -> personRepository.deleteByIdentIn(identerSomSkalSlettesIPdlForvalter)
-                        .then(Mono.just(identerSomSkalSlettesIPdlForvalter)))
-                .doOnNext(identer -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
-                .then();
+                        .then(Mono.just(identerSomSkalSlettesIPdlForvalter)));
     }
 
     @Transactional(readOnly = true)
@@ -184,7 +187,7 @@ public class PersonService {
                                                 context.setProperty("relatertePersoner", relatertePersoner);
                                                 return context;
                                             }))
-                            .doOnNext(person -> log.info("Henting av personer tok {} ms", System.currentTimeMillis() - now))
+                            .doOnNext(_ -> log.info("Henting av personer tok {} ms", System.currentTimeMillis() - now))
                             .flatMap(context -> Flux.fromIterable(personer)
                                     .map(person -> mapperFacade.map(person, FullPersonDTO.class, context))));
         } else {
@@ -211,7 +214,7 @@ public class PersonService {
                     }
                     if (request.getPerson().getFoedselsdato().isEmpty()) {
                         request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
-                                .foedselsdato(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
+                                .foedselsdato(nonNull(identifier.getFoedselsdato()) ?
                                         identifier.getFoedselsdato().atStartOfDay() : null)
                                 .build());
                     }
@@ -234,7 +237,7 @@ public class PersonService {
                         request.getPerson().getNavPersonIdentifikator().add(new NavPersonIdentifikatorDTO());
                     }
                 })
-                .flatMap(identifier -> updatePersonInternal(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
+                .flatMap(_ -> updatePersonInternal(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
                         .person(request.getPerson())
                         .build(), null))
                 .doOnNext(ident -> log.info("Oppretting av person {} tok {} ms", ident, System.currentTimeMillis() - now));

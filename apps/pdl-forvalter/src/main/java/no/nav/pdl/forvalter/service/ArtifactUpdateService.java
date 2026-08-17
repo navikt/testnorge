@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
@@ -274,7 +275,7 @@ public class ArtifactUpdateService {
 
                         })
                         .then(foreldreansvarService.handle(oppdatertAnsvar, person.getPerson()))
-                        .doOnNext(foreldreansvar -> ArtifactUtils.renumberId(person.getPerson().getForeldreansvar()))
+                        .doOnNext(_ -> ArtifactUtils.renumberId(person.getPerson().getForeldreansvar()))
                         .then(savePerson(person)));
     }
 
@@ -299,7 +300,7 @@ public class ArtifactUpdateService {
                                     person.getPerson().setKontaktinformasjonForDoedsbo(kontaktinfo);
                                 }))
                         .switchIfEmpty(updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo")
-                                .doOnNext(type ->
+                                .doOnNext(_ ->
                                         person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed())))
                         .then(kontaktinformasjonForDoedsboService.convert(person)))
                 .flatMap(this::savePerson)
@@ -434,7 +435,7 @@ public class ArtifactUpdateService {
                                 })
                                 .doOnNext(type ->
                                         dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed()))
-                                .flatMap(tuple -> sivilstandService.convert(dbPerson)))
+                                .flatMap(_ -> sivilstandService.convert(dbPerson)))
                         .flatMap(this::savePerson))
                 .then();
     }
@@ -471,14 +472,14 @@ public class ArtifactUpdateService {
                                 .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
                                         .then(Mono.just(vergemaal)))
                                 .flatMapMany(type -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
-                                .doOnNext(type -> {
+                                .doOnNext(_ -> {
                                     person.getPerson().getVergemaal().add(oppdatertVergemaal);
                                     person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
                                 }))
                         .switchIfEmpty(updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal")
-                                .doOnNext(type ->
+                                .doOnNext(_ ->
                                         person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed())))
-                        .flatMap(vergemaal -> vergemaalService.convert(person)))
+                        .flatMap(_ -> vergemaalService.convert(person)))
                 .flatMap(this::savePerson)
                 .then();
     }
@@ -545,7 +546,9 @@ public class ArtifactUpdateService {
         return relasjonRepository.existsByPersonIdOrRelatertPersonId(person.getId())
                 .flatMap(exists -> {
                     if (isFalse(exists) && !isStandalonePerson) {
-                        return personService.deletePerson(person.getIdent());
+                        return personService.executeEksternSletting(Set.of(person.getIdent()))
+                                .flatMap(personService::deleteInDatabase)
+                                .then();
                     }
                     return Mono.empty();
                 });
