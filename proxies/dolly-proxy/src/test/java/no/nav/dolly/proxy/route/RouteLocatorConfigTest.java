@@ -88,7 +88,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.arena-forvalteren", () -> wireMockServer.baseUrl());
         registry.add("app.targets.arena-ords", () -> wireMockServer.baseUrl());
         registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.bistandsbehov", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.oppfoelgingsvedtak14a", () -> wireMockServer.baseUrl());
         registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.dokarkiv", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
@@ -276,10 +276,10 @@ class RouteLocatorConfigTest {
     }
 
     @Test
-    void testBistandsbehov() {
+    void testOppfoelgingsvedtak14a() {
 
         var downstreamPath = "/api/v1/vedtak";
-        var responseBody = "Success from mocked bistandsbehov";
+        var responseBody = "Success from mocked oppfoelgingsvedtak14a";
 
         wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
                 .willReturn(aResponse()
@@ -289,7 +289,7 @@ class RouteLocatorConfigTest {
 
         webClient
                 .get()
-                .uri("/bistandsbehov" + downstreamPath)
+                .uri("/oppfoelgingsvedtak14a" + downstreamPath)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType("text/plain")

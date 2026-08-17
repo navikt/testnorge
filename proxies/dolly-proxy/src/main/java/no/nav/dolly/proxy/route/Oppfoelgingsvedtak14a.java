@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
-class Bistandsbehov {
+class Oppfoelgingsvedtak14a {
 
     private static final String CLUSTER = "dev-gcp";
     private static final String NAMESPACE = "obo";
@@ -24,12 +24,12 @@ class Bistandsbehov {
 
         var bearerAuthenticationFilter = authenticationFilterService
                 .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE,
-                        NAME, targets.getBistandsbehov());
+                        NAME, targets.getOppfoelgingsvedtak14a());
 
         return spec -> spec
-                .path("/bistandsbehov/**")
+                .path("/oppfoelgingsvedtak14a/**")
                 .filters(f -> f.stripPrefix(1)
                         .filter(bearerAuthenticationFilter))
-                .uri(targets.getBistandsbehov());
+                .uri(targets.getOppfoelgingsvedtak14a());
     }
 }

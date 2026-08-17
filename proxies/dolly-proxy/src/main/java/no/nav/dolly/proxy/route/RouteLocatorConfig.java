@@ -14,7 +14,7 @@ class RouteLocatorConfig {
     private final Aareg aareg;
     private final Arena arena;
     private final Batch batch;
-    private final Bistandsbehov bistandsbehov;
+    private final Oppfoelgingsvedtak14a oppfoelgingsvedtak14a;
     private final Brregstub brregstub;
     private final Dokarkiv dokarkiv;
     private final Ereg ereg;
@@ -53,7 +53,6 @@ class RouteLocatorConfig {
                 .route("arena-q2", arena.build(Arena.SpecialCase.Q2))
                 .route("arena-q4", arena.build(Arena.SpecialCase.Q4))
                 .route("batch", batch.build())
-                .route("bistandsbehov", bistandsbehov.build())
                 .route("brregstub", brregstub.build())
                 .route("dokarkiv-q1", dokarkiv.build(Dokarkiv.SpecialCase.Q1))
                 .route("dokarkiv-q2", dokarkiv.build(Dokarkiv.SpecialCase.Q2))
@@ -82,6 +81,7 @@ class RouteLocatorConfig {
                 .route("pensjon-samboer-q1", pensjon.build(Pensjon.SpecialCase.SAMBOER_Q1))
                 .route("pensjon-samboer-q2", pensjon.build(Pensjon.SpecialCase.SAMBOER_Q2))
                 .route("oppfoelging", oppfoelging.build())
+                .route("oppfoelgingsvedtak14a", oppfoelgingsvedtak14a.build())
                 .route("saf-q1", saf.build(Saf.SpecialCase.Q1))
                 .route("saf-q2", saf.build(Saf.SpecialCase.Q2))
                 .route("saf-q4", saf.build(Saf.SpecialCase.Q4))

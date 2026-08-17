@@ -20,7 +20,6 @@ class Targets {
     String arenaForvalteren;
     String arenaOrds;
     String batch;
-    String bistandsbehov;
     String brregstub;
     String dokarkiv;
     String ereg;
@@ -44,10 +43,10 @@ class Targets {
     String pensjonAfp;
     String pensjonSamboer;
     String oppfoelging;
+    String oppfoelgingsvedtak14a;
     String saf;
     String sigrunstub;
     String skjermingsregister;
     String sykemelding;
     String udistub;
-
 }
