@@ -11,6 +11,7 @@ import {
 	kategoriKodeverk,
 	tekniskNavnKodeverk,
 } from '@/components/fagsystem/sigrunstubSummertSkattegrunnlag/form/GrunnlagArrayForm'
+import Panel from '@/components/ui/panel/Panel'
 
 export const kodeverkKeyToLabel = (key) => {
 	if (!key) {
@@ -32,6 +33,10 @@ export const kodeverkKeyToLabel = (key) => {
 		default:
 			return codeToNorskLabel(defaultLabel)
 	}
+}
+
+const getHeader = (data) => {
+	return `Skattegrunnlag (${data.inntektsaar})`
 }
 
 const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx, whiteBackground }) => {
@@ -93,7 +98,29 @@ const SummertSkattegrunnlagVisning = ({ summertSkattegrunnlag, idx, whiteBackgro
 		})
 }
 
-export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading, harBestilling = false }) => {
+const SummertSkattegrunnlagListe = ({ data, antall }) => {
+	return (
+		<div className="person-visning_content">
+			<DollyFieldArray data={data} getHeader={getHeader} expandable={antall > 1}>
+				{(skattegrunnlag, idx) => (
+					<React.Fragment key={idx}>
+						<SummertSkattegrunnlagVisning
+							summertSkattegrunnlag={skattegrunnlag}
+							idx={idx}
+							whiteBackground={false}
+						/>
+					</React.Fragment>
+				)}
+			</DollyFieldArray>
+		</div>
+	)
+}
+
+export const SigrunstubSummertSkattegrunnlagVisning = ({
+	data,
+	loading,
+	harBestilling = false,
+}) => {
 	if (loading) {
 		return <Loading label="Laster sigrunstub-data" />
 	}
@@ -108,6 +135,12 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading, harBesti
 		return null
 	}
 
+	const antallSkattegrunnlag = data.length
+
+	const foersteAar = data?.[0]?.inntektsaar
+	const sisteAar = data?.at(-1)?.inntektsaar
+	const skattegrunnlagPeriode = foersteAar === sisteAar ? foersteAar : `${foersteAar} - ${sisteAar}`
+
 	return (
 		<>
 			<SubOverskrift label="Summert skattegrunnlag (Sigrun)" iconKind="sigrun" />
@@ -117,19 +150,13 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({ data, loading, harBesti
 				</Alert>
 			) : (
 				<ErrorBoundary>
-					<div className="person-visning_content" style={{ marginTop: '-15px' }}>
-						<DollyFieldArray data={data} header={`Skattegrunnlag`}>
-							{(skattegrunnlag, idx) => (
-								<React.Fragment key={idx}>
-									<SummertSkattegrunnlagVisning
-										summertSkattegrunnlag={skattegrunnlag}
-										idx={idx}
-										whiteBackground={false}
-									/>
-								</React.Fragment>
-							)}
-						</DollyFieldArray>
-					</div>
+					{antallSkattegrunnlag > 5 ? (
+						<Panel heading={`Skattegrunnlag (${skattegrunnlagPeriode})`}>
+							<SummertSkattegrunnlagListe data={data} antall={antallSkattegrunnlag} />
+						</Panel>
+					) : (
+						<SummertSkattegrunnlagListe data={data} antall={antallSkattegrunnlag} />
+					)}
 				</ErrorBoundary>
 			)}
 		</>
