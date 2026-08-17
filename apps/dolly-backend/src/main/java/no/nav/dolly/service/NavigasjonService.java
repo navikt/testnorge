@@ -16,15 +16,11 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -63,9 +59,10 @@ public class NavigasjonService {
                 .flatMapMany(bruker -> Flux.merge(
                                 getPdlForvalterIdenter(ident),
                                 getPdlPersonIdenter(ident))
-                        .filter(ident1 -> filterOnBrukertype(ident, bruker.getBrukertype()))
+                        .filter(_ -> filterOnBrukertype(ident, bruker.getBrukertype()))
                         .distinct()
-                        .flatMap(ident1 -> identRepository.findByIdent(ident1)
+                        .flatMap(ident1 ->
+                                identRepository.findByIdent(ident1)
                                 .flatMap(testident -> Mono.zip(testgruppeRepository.findById(testident.getGruppeId()),
                                                 identService.getPaginertIdentIndex(testident.getIdent(), testident.getGruppeId()),
                                                 identRepository.countByGruppeId(testident.getGruppeId()),
@@ -171,32 +168,10 @@ public class NavigasjonService {
     private Flux<String> getPdlForvalterIdenter(String ident) {
 
         return pdlDataConsumer.getPersoner(List.of(ident))
-                .flatMap(person -> Flux.fromStream(Stream.of(Stream.of(ident),
-                                person.getPerson().getSivilstand().stream()
-                                        .map(SivilstandDTO::getRelatertVedSivilstand)
-                                        .filter(Objects::nonNull),
-                                person.getPerson().getForelderBarnRelasjon().stream()
-                                        .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                                        .filter(Objects::nonNull),
-                                person.getPerson().getForeldreansvar().stream()
-                                        .map(ForeldreansvarDTO::getAnsvarlig)
-                                        .filter(Objects::nonNull),
-                                person.getPerson().getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident)
-                                        .filter(Objects::nonNull),
+                .flatMap(person -> Flux.fromStream(Stream.of(Stream.of(person.getPerson().getIdent()),
                                 person.getRelasjoner().stream()
-                                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.FULLMEKTIG ||
-                                                relasjon.getRelasjonType() == RelasjonType.FULLMAKTSGIVER)
                                         .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
-                                        .map(PersonDTO::getIdent),
-                                person.getPerson().getVergemaal().stream()
-                                        .map(VergemaalDTO::getVergeIdent)
-                                        .filter(Objects::nonNull),
-                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                        .filter(Objects::nonNull)
-                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                        .filter(Objects::nonNull))
+                                        .map(PersonDTO::getIdent))
                         .flatMap(Function.identity())));
     }
 }

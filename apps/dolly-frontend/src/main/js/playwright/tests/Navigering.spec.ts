@@ -122,4 +122,29 @@ test.describe('Navigering', () => {
 
 		await expect(page).toHaveURL(/\/gruppe\/2/)
 	})
+
+	test('høyreklikk i søkefeltet treffer inputfeltet', async ({ page }) => {
+		await page.goto('/')
+
+		const input = searchInput(page)
+		const valueContainer = page.locator('.person-search__value-container')
+		const valueContainerBox = await valueContainer.boundingBox()
+
+		expect(valueContainerBox).not.toBeNull()
+		if (!valueContainerBox) return
+
+		const position = {
+			x: valueContainerBox.x + valueContainerBox.width / 2,
+			y: valueContainerBox.y + valueContainerBox.height / 2,
+		}
+		const targetTagName = await page.evaluate(
+			({ x, y }) => document.elementFromPoint(x, y)?.tagName,
+			position,
+		)
+
+		expect(targetTagName).toBe('INPUT')
+
+		await page.mouse.click(position.x, position.y, { button: 'right' })
+		await expect(input).toBeFocused()
+	})
 })

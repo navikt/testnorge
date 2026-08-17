@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>
     private final String token;
     private final String kodeverk;
     /// api/v1/kodeverk/Yrker/koder
-    private final ObjectMapper mapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public Mono<Map<String, String>> call() {
@@ -42,7 +42,7 @@ public class KodeverkServiceCommand implements Callable<Mono<Map<String, String>
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(node -> nonNull(node) ?
-                        mapper.convertValue(node.get("kodeverk"), KODEVERK_TYPE) :
+                        jsonMapper.convertValue(node.get("kodeverk"), KODEVERK_TYPE) :
                         HashMap.<String, String>newHashMap(0))
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(WebClientResponseException.NotFound.class, error -> Mono.just(Map.of()));

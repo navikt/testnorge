@@ -33,7 +33,10 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
             "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}," +
                     "\"number_of_shards\":4," +
                     "\"number_of_replicas\":1}}}";
+    private static final String TOTAL_FIELDS_SETTING =
+            "{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}}}";
     private static final int EXISTS_CHECK_CONCURRENCY = 20;
+    private static final String FEILET = "Feilet";
 
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingRepository bestillingRepository;
@@ -54,7 +57,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
         var antallSkrevet = new AtomicInteger(0);
 
         openSearchService.indexExists()
-                .flatMap(exists -> isFalse(exists) ? oppdaterIndexSetting() : Mono.empty())
+                .flatMap(exists -> isFalse(exists) ? opprettIndexMedSetting() : oppdaterTotalFieldsSetting())
                 .then(importAll(antallLest, antallSkrevet)
                         .collectList())
                 .subscribe(_ ->
@@ -64,17 +67,39 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                                 System.currentTimeMillis() - start));
     }
 
-    private Mono<String> oppdaterIndexSetting() {
+    private Mono<String> opprettIndexMedSetting() {
 
         try {
-            var indexSetting = String.format(INDEX_SETTING, totalFields);
+            var indexSetting = INDEX_SETTING.formatted(totalFields);
             var jsonNode = jsonMapper.readTree(indexSetting);
             return openSearchService.updateIndexParams(jsonNode)
-                    .doOnNext(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
+                    .doOnNext(status -> log.info("OpenSearch oppretting av indeks, status: {}", status))
+                    .onErrorResume(e -> {
+                        log.error("Feilet å opprette indeks med setting {}", INDEX_SETTING, e);
+                        return Mono.just(FEILET);
+                    });
 
         } catch (RuntimeException e) {
             log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);
-            return Mono.just("Feilet");
+            return Mono.just(FEILET);
+        }
+    }
+
+    private Mono<String> oppdaterTotalFieldsSetting() {
+
+        try {
+            var totalFieldsSetting = TOTAL_FIELDS_SETTING.formatted(totalFields);
+            var jsonNode = jsonMapper.readTree(totalFieldsSetting);
+            return openSearchService.updateIndexSettings(jsonNode)
+                    .doOnNext(status -> log.info("OpenSearch oppdatering av total-fields for eksisterende indeks, status: {}", status))
+                    .onErrorResume(e -> {
+                        log.error("Feilet å oppdatere total-fields setting {} for eksisterende indeks", TOTAL_FIELDS_SETTING, e);
+                        return Mono.just(FEILET);
+                    });
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å gjøre setting for indekser {}", TOTAL_FIELDS_SETTING, e);
+            return Mono.just(FEILET);
         }
     }
 

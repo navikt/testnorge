@@ -13,6 +13,8 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.opensearch.BestillingDokument;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.exc.InvalidFormatException;
+import tools.jackson.databind.exc.MismatchedInputException;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
@@ -24,7 +26,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ElasticBestillingStrategyMapping implements MappingStrategy {
+public class OpenSearchBestillingStrategyMapping implements MappingStrategy {
 
     private final JsonMapper jsonMapper;
 
@@ -39,8 +41,8 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
                                    try {
                                        bestillingDokument.setIgnore(isBlank(bestilling.getBestKriterier()) ||
-                                               "{}".equals(bestilling.getBestKriterier()) ||
-                                               bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
+                                                                    "{}".equals(bestilling.getBestKriterier()) ||
+                                                                    bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
 
                                        if (!bestillingDokument.isIgnore()) {
 
@@ -58,11 +60,10 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
                                    } catch (JacksonException |
                                             IllegalArgumentException |
-                                            MappingException _) {
+                                            MappingException e) {
 
                                        bestillingDokument.setIgnore(true);
-                                       log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());
-
+                                       log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={} {}", bestilling.getId(), getErrorString(e));
                                    } finally {
 
                                        bestillingDokument.setId(bestilling.getId());
@@ -92,5 +93,18 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                 )
                 .byDefault()
                 .register();
+    }
+
+    private static String getErrorString(Exception error) {
+
+        if (error instanceof InvalidFormatException ife) {
+            return " - ugyldig format i JSON: " + ife.getLocalizedMessage();
+        }
+
+        if (error instanceof MismatchedInputException mie) {
+            return " - feil i JSON: " + mie.getLocalizedMessage();
+        }
+
+        return "";
     }
 }

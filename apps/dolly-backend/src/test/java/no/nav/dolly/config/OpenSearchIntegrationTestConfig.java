@@ -7,14 +7,17 @@ import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
 import org.apache.hc.core5.http.HttpHost;
+import org.opensearch.client.json.jackson3.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.OpenSearchTransport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
 import org.opensearch.testcontainers.OpenSearchContainer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.testcontainers.utility.DockerImageName;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -37,7 +40,7 @@ public class OpenSearchIntegrationTestConfig {
 
     @Bean
     @Primary
-    public OpenSearchClient opensearchClient() {
+    public OpenSearchClient opensearchClient(@Qualifier("jsonMapper") JsonMapper jsonMapper) {
         HttpHost host;
         try {
             host = HttpHost.create("http://" + OPENSEARCH_CONTAINER.getHost() + ":" + OPENSEARCH_CONTAINER.getFirstMappedPort());
@@ -49,6 +52,7 @@ public class OpenSearchIntegrationTestConfig {
                 new UsernamePasswordCredentials("admin", "admin".toCharArray()));
 
         val builder = ApacheHttpClient5TransportBuilder.builder(host);
+        builder.setMapper(new JacksonJsonpMapper(jsonMapper));
         builder.setHttpClientConfigCallback(httpClientBuilder -> {
             val tlsStrategy = ClientTlsStrategyBuilder.create()
                     .buildAsync();

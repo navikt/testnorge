@@ -1,5 +1,11 @@
 import './FinnPersonBestilling.less'
-import { components, DropdownIndicatorProps, GroupBase, OptionProps } from 'react-select'
+import Select, {
+	components,
+	DropdownIndicatorProps,
+	GroupBase,
+	InputActionMeta,
+	OptionProps,
+} from 'react-select'
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -7,10 +13,9 @@ import Highlighter from 'react-highlight-words'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { resetFeilmelding } from '@/ducks/finnPerson'
 import { useReduxDispatch } from '@/utils/hooks/useRedux'
-import AsyncSelect from 'react-select/async'
 import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 import { GroupedOption, NavigeringOption, SoekTypeValg } from './NavigeringTypes'
-import { usePersonSearch } from './FinnPerson'
+import { PersonSearchResult, PersonSearchSources, usePersonSearch } from './FinnPerson'
 import { useBestillingSearch } from './FinnBestilling'
 import { useGruppeSearch } from './FinnGruppe'
 
@@ -40,6 +45,14 @@ const customAsyncSelectStyles = {
 	container: (provided: any) => ({
 		...provided,
 		width: '480px',
+	}),
+	input: (provided: any) => ({
+		...provided,
+		gridTemplateColumns: '0 1fr',
+	}),
+	placeholder: (provided: any) => ({
+		...provided,
+		pointerEvents: 'none',
 	}),
 }
 
@@ -104,13 +117,44 @@ const selectComponents = {
 	DropdownIndicator,
 }
 
+export const MIN_SEARCH_LENGTH = 3
+
+const emptyPersonResult: PersonSearchResult = {
+	group: { label: 'Personer', options: [] },
+	hasMorePdlf: false,
+	hasMorePdl: false,
+}
+
+export const mergePersonOptions = (
+	existing: NavigeringOption[],
+	incoming: NavigeringOption[],
+): NavigeringOption[] => {
+	const options = new Map(existing.map((option) => [option.value, option]))
+	incoming.forEach((option) => {
+		const current = options.get(option.value)
+		if (!current || (current.label.includes('UKJENT') && !option.label.includes('UKJENT'))) {
+			options.set(option.value, option)
+		}
+	})
+	return Array.from(options.values())
+}
+
 const Navigering = () => {
 	const dispatch = useReduxDispatch()
 	const searchInputRef = useRef(null)
 	const shortcutKey = useSearchHotkey(searchInputRef)
 
 	const [fragment, setFragment] = useState('')
+	const [options, setOptions] = useState<GroupedOption[]>([])
+	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingMore, setIsLoadingMore] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+	const requestIdRef = useRef(0)
+	const nextPageRef = useRef(1)
+	const seedRef = useRef(0)
+	const hasMorePdlfRef = useRef(false)
+	const hasMorePdlRef = useRef(false)
+	const isLoadingMoreRef = useRef(false)
 
 	const {
 		search: searchPerson,
@@ -122,37 +166,139 @@ const Navigering = () => {
 	const { search: searchGruppe, handleSelect: selectGruppe } = useGruppeSearch()
 
 	const contextValue = useMemo(() => ({ fragment, shortcutKey }), [fragment, shortcutKey])
+	const normalizedFragment = fragment.trim()
 
-	const fetchOptions = useCallback(
-		async (tekst: string): Promise<GroupedOption[]> => {
-			const [personResult, bestillingResult, gruppeResult] = await Promise.allSettled([
-				searchPerson(tekst),
-				searchBestilling(tekst),
-				searchGruppe(tekst),
-			])
+	const startSearch = useCallback(
+		(tekst: string) => {
+			const requestId = ++requestIdRef.current
+			nextPageRef.current = 1
+			hasMorePdlfRef.current = false
+			hasMorePdlRef.current = false
+			isLoadingMoreRef.current = false
+			setIsLoadingMore(false)
 
-			const getResult = (
-				result: PromiseSettledResult<GroupedOption>,
-				fallback: GroupedOption,
-			): GroupedOption => {
-				if (result.status === 'fulfilled') return result.value
-				setError(result.reason?.message)
-				return fallback
+			if (tekst.length < MIN_SEARCH_LENGTH) {
+				setOptions([])
+				setIsLoading(false)
+				return
 			}
 
-			return [
-				getResult(personResult, { label: 'Personer', options: [] }),
-				getResult(bestillingResult, { label: 'Bestillinger', options: [] }),
-				getResult(gruppeResult, { label: 'Grupper', options: [] }),
-			]
+			const seed = Math.floor(Math.random() * 2_147_483_647)
+			seedRef.current = seed
+			setIsLoading(true)
+
+			const fetchOptions = async () => {
+				const [personResult, bestillingResult, gruppeResult] = await Promise.allSettled([
+					searchPerson(tekst, 0, seed),
+					searchBestilling(tekst),
+					searchGruppe(tekst),
+				])
+
+				if (requestId !== requestIdRef.current) {
+					return
+				}
+
+				const getGroupResult = (
+					result: PromiseSettledResult<GroupedOption>,
+					fallback: GroupedOption,
+				): GroupedOption => {
+					if (result.status === 'fulfilled') return result.value
+					setError(result.reason?.message)
+					return fallback
+				}
+
+				const personer =
+					personResult.status === 'fulfilled' ? personResult.value : emptyPersonResult
+				if (personResult.status === 'rejected') {
+					setError(personResult.reason?.message)
+				}
+
+				hasMorePdlfRef.current = personer.hasMorePdlf
+				hasMorePdlRef.current = personer.hasMorePdl
+				setOptions([
+					getGroupResult(bestillingResult, { label: 'Bestillinger', options: [] }),
+					getGroupResult(gruppeResult, { label: 'Grupper', options: [] }),
+					personer.group,
+				])
+				setIsLoading(false)
+			}
+
+			void fetchOptions()
 		},
 		[searchPerson, searchBestilling, searchGruppe],
 	)
+
+	const handleLoadMore = useCallback(async () => {
+		if (
+			normalizedFragment.length < MIN_SEARCH_LENGTH ||
+			isLoadingMoreRef.current ||
+			(!hasMorePdlfRef.current && !hasMorePdlRef.current)
+		) {
+			return
+		}
+
+		const requestId = requestIdRef.current
+		const sources: PersonSearchSources = {
+			pdlf: hasMorePdlfRef.current,
+			pdl: hasMorePdlRef.current,
+			pdlAktoer: false,
+		}
+		isLoadingMoreRef.current = true
+		setIsLoadingMore(true)
+
+		try {
+			const personer = await searchPerson(
+				normalizedFragment,
+				nextPageRef.current,
+				seedRef.current,
+				sources,
+			)
+
+			if (requestId !== requestIdRef.current) {
+				return
+			}
+
+			nextPageRef.current += 1
+			hasMorePdlfRef.current = personer.hasMorePdlf
+			hasMorePdlRef.current = personer.hasMorePdl
+			setOptions((current) =>
+				current.map((group) =>
+					group.label === 'Personer'
+						? {
+								...group,
+								options: mergePersonOptions(group.options, personer.group.options),
+							}
+						: group,
+				),
+			)
+		} catch (searchError: unknown) {
+			if (requestId === requestIdRef.current) {
+				setError(searchError instanceof Error ? searchError.message : 'Personsøk feilet')
+			}
+		} finally {
+			if (requestId === requestIdRef.current) {
+				isLoadingMoreRef.current = false
+				setIsLoadingMore(false)
+			}
+		}
+	}, [normalizedFragment, searchPerson])
 
 	const handleSearchSelect = useCallback(
 		(option: NavigeringOption | null) => {
 			dispatch(resetFeilmelding())
 			if (!option?.value) return
+
+			requestIdRef.current += 1
+			nextPageRef.current = 1
+			hasMorePdlfRef.current = false
+			hasMorePdlRef.current = false
+			isLoadingMoreRef.current = false
+			setFragment('')
+			setOptions([])
+			setIsLoading(false)
+			setIsLoadingMore(false)
+			setError(null)
+			resetPersonError()
 
 			switch (option.type) {
 				case SoekTypeValg.PERSON:
@@ -166,17 +312,21 @@ const Navigering = () => {
 					break
 			}
 		},
-		[dispatch, selectPerson, selectBestilling, selectGruppe],
+		[dispatch, resetPersonError, selectPerson, selectBestilling, selectGruppe],
 	)
 
 	const handleInputChange = useCallback(
-		(tekst: string) => {
+		(tekst: string, actionMeta: InputActionMeta) => {
+			if (actionMeta.action !== 'input-change') {
+				return
+			}
 			dispatch(resetFeilmelding())
 			resetPersonError()
 			setError(null)
 			setFragment(tekst)
+			startSearch(tekst.trim())
 		},
-		[dispatch, resetPersonError],
+		[dispatch, resetPersonError, startSearch],
 	)
 
 	const displayError = error || personFeilmelding
@@ -190,13 +340,16 @@ const Navigering = () => {
 						data-testid={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
 						className="finnperson-container skjemaelement"
 					>
-						<AsyncSelect
+						<Select<NavigeringOption, false, GroupedOption>
 							ref={searchInputRef}
 							data-testid={TestComponentSelectors.SELECT_PERSON_SEARCH}
 							classNamePrefix={'person-search'}
 							styles={customAsyncSelectStyles}
-							loadOptions={fetchOptions}
+							inputValue={fragment}
+							options={options}
+							isLoading={isLoading || isLoadingMore}
 							onInputChange={handleInputChange}
+							onMenuScrollToBottom={handleLoadMore}
 							components={selectComponents}
 							isClearable={true}
 							value={null}
@@ -206,9 +359,11 @@ const Navigering = () => {
 							}
 							onChange={handleSearchSelect}
 							backspaceRemovesValue={true}
-							label="Person"
+							aria-label="Person"
 							placeholder={'Søk etter navn, ident, aktør-ID, bestilling eller gruppe'}
-							noOptionsMessage={() => 'Ingen treff'}
+							noOptionsMessage={() =>
+								normalizedFragment.length < MIN_SEARCH_LENGTH ? 'Skriv minst 3 tegn' : 'Ingen treff'
+							}
 						/>
 					</div>
 					{displayError && (

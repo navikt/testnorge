@@ -1,5 +1,5 @@
 CRYPTOGRAPHY_SECRET: dummy
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service
 
 spring:
   config:

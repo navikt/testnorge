@@ -15,11 +15,10 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class ElasticPutCommand implements Callable<Mono<String>> {
 
-    private static final String ELASTIC_SETTINGS_URL = "/{index}";
-
     private final WebClient webClient;
     private final String username;
     private final String password;
+    private final String path;
     private final String index;
     private final JsonNode params;
 
@@ -27,7 +26,7 @@ public class ElasticPutCommand implements Callable<Mono<String>> {
     public Mono<String> call() {
         return webClient
                 .put()
-                .uri(builder -> builder.path(ELASTIC_SETTINGS_URL).build(index))
+                .uri(builder -> builder.path(path).build(index))
                 .body(BodyInserters.fromValue(params))
                 .headers(WebClientHeader.basic(username, password))
                 .retrieve()
