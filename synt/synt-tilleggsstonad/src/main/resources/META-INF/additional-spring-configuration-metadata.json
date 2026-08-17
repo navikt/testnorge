@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "spring.security.oauth2.resourceserver.aad.issuer-uri",
+      "type": "java.lang.String",
+      "description": "URL for the OpenID Connect metadata document, which contains the public keys used to verify the JWT tokens. This is typically the URL of the Azure AD tenant."
+    },
+    {
+      "name": "spring.security.oauth2.resourceserver.aad.accepted-audience",
+      "type": "java.lang.String",
+      "description": "The expected audience (aud claim) in the JWT tokens. This should match the Application ID URI of the Azure AD application that issues the tokens."
+    }
+  ] }
