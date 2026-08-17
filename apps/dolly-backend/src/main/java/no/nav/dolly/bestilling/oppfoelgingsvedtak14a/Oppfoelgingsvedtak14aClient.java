@@ -61,15 +61,15 @@ public class Oppfoelgingsvedtak14aClient implements ClientRegister {
                     context.setProperty("norgEnhet", norgEnhet);
                     return mapperFacade.map(bestilling.getOppfoelgingsvedtak14a(), Oppfoelgingsvedtak14aRequestDTO.class, context);
                 })
-                .flatMap(bistandsVedtak -> {
-                    var oppdatertVedtak = mapperFacade.map(bistandsVedtak, RsOppfoelgingsvedtak14aDTO.class);
+                .flatMap(oppfoelgingsvedtak14a -> {
+                    var oppdatertVedtak = mapperFacade.map(oppfoelgingsvedtak14a, RsOppfoelgingsvedtak14aDTO.class);
                     bestilling.setOppfoelgingsvedtak14a(oppdatertVedtak);
                     return transactionHelperService.persister(progress.getBestillingId(), bestilling)
-                            .thenReturn(bistandsVedtak);
+                            .thenReturn(oppfoelgingsvedtak14a);
                 })
-                .flatMap(oppfoelgingsvedtak14aConsumer::opprettBistandVedtak)
+                .flatMap(oppfoelgingsvedtak14aConsumer::opprettOppfoelgingsvedtak14a)
                 .flatMap(response -> oppdaterStatus(progress, response.getStatus().is2xxSuccessful() ?
-                        "OK" : "Feil= Opprett bistandsvedtak feilet, %s %s"
+                        "OK" : "Feil= Opprett oppfølgingsvedtak 14a feilet, %s %s"
                         .formatted(response.getStatus(), response.getReason())))
                 .onErrorResume(throwable -> oppdaterStatus(progress, throwable.getMessage()));
     }
@@ -107,16 +107,16 @@ public class Oppfoelgingsvedtak14aClient implements ClientRegister {
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
         return
-                transactionHelperService.persister(progress, BestillingProgress::getBistandsbehovStatus,
-                        BestillingProgress::setBistandsbehovStatus, StringUtils.left(status, 100));
+                transactionHelperService.persister(progress, BestillingProgress::getOppfoelgingsvedtak14aStatus,
+                        BestillingProgress::setOppfoelgingsvedtak14aStatus, StringUtils.left(status, 100));
     }
 
     @Override
     public void release(List<String> identer) {
 
-        oppfoelgingsvedtak14aConsumer.slettBistandsvedtak(identer)
+        oppfoelgingsvedtak14aConsumer.slettOppfoelgingsvedtak14a(identer)
                 .collectList()
-                .subscribe(_ -> log.info("Slettet bistandbehov for {} identer", identer.size()),
-                        error -> log.error("Feil ved sletting av bistandbehov for {} identer {}", identer.size(), error.getMessage()));
+                .subscribe(_ -> log.info("Slettet oppfølgingsvedtak §14a for {} identer", identer.size()),
+                        error -> log.error("Feil ved sletting av oppfølgingsvedtak §14a for {} identer {}", identer.size(), error.getMessage()));
     }
 }

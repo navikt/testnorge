@@ -67,7 +67,7 @@ class Oppfoelgingsvedtak14aClientTest {
     private Oppfoelgingsvedtak14aClient oppfoelgingsvedtak14aClient;
 
     @Test
-    void shouldReturnEmpty_whenBistandsbehovIsNull() {
+    void shouldReturnEmpty_whenOppfoelgingsvedtak14aIsNull() {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         new RsDollyUtvidetBestilling(),
                         DollyPerson.builder().ident(IDENT).build(),
@@ -90,7 +90,7 @@ class Oppfoelgingsvedtak14aClientTest {
                 .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
         when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
                 .thenReturn(new RsOppfoelgingsvedtak14aDTO());
-        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
+        when(oppfoelgingsvedtak14aConsumer.opprettOppfoelgingsvedtak14a(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
@@ -124,7 +124,7 @@ class Oppfoelgingsvedtak14aClientTest {
                 .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
         when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
                 .thenReturn(new RsOppfoelgingsvedtak14aDTO());
-        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
+        when(oppfoelgingsvedtak14aConsumer.opprettOppfoelgingsvedtak14a(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
@@ -155,7 +155,7 @@ class Oppfoelgingsvedtak14aClientTest {
                 .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
         when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
                 .thenReturn(new RsOppfoelgingsvedtak14aDTO());
-        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
+        when(oppfoelgingsvedtak14aConsumer.opprettOppfoelgingsvedtak14a(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
@@ -163,7 +163,7 @@ class Oppfoelgingsvedtak14aClientTest {
                         DollyPerson.builder().ident(IDENT).build(),
                         progress,
                         false))
-                .assertNext(_ -> verify(oppfoelgingsvedtak14aConsumer).opprettBistandVedtak(any()))
+                .assertNext(_ -> verify(oppfoelgingsvedtak14aConsumer).opprettOppfoelgingsvedtak14a(any()))
                 .verifyComplete();
     }
 
@@ -186,7 +186,7 @@ class Oppfoelgingsvedtak14aClientTest {
                         false))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
-                    verify(oppfoelgingsvedtak14aConsumer, never()).opprettBistandVedtak(any());
+                    verify(oppfoelgingsvedtak14aConsumer, never()).opprettOppfoelgingsvedtak14a(any());
                     assertThat(statusCaptor.getAllValues().getLast())
                             .startsWith("Feil= Start oppfølgingsperiode feilet");
                 })
@@ -194,7 +194,7 @@ class Oppfoelgingsvedtak14aClientTest {
     }
 
     @Test
-    void shouldGjenopprett_Feil_whenOpprettBistandVedtakFails() {
+    void shouldGjenopprett_Feil_whenOpprettOppfoelgingsvedtakFails() {
         val progress = new BestillingProgress();
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -205,7 +205,7 @@ class Oppfoelgingsvedtak14aClientTest {
                 .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
         when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
                 .thenReturn(new RsOppfoelgingsvedtak14aDTO());
-        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
+        when(oppfoelgingsvedtak14aConsumer.opprettOppfoelgingsvedtak14a(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .reason("Vedtak finnes allerede")
@@ -219,7 +219,7 @@ class Oppfoelgingsvedtak14aClientTest {
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().getLast())
-                            .startsWith("Feil= Opprett bistandsvedtak feilet");
+                            .startsWith("Feil= Opprett oppfølgingsvedtak 14a feilet");
                 })
                 .verifyComplete();
     }

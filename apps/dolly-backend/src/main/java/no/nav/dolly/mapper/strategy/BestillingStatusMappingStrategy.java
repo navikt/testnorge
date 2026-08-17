@@ -30,7 +30,6 @@ import static no.nav.dolly.mapper.ArbeidsplassenCVStatusMapper.buildArbeidsplass
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArbeidssoekerregisteretStatusMapper.buildArbeidssoekerregisteretStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
-import static no.nav.dolly.mapper.BestillingBistandsbehovStatusMapper.buildBistandsbehovStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
 import static no.nav.dolly.mapper.BestillingEtterlatteStatusMapper.buildEtterlatteStatusMap;
@@ -45,6 +44,7 @@ import static no.nav.dolly.mapper.BestillingKontoregisterStatusMapper.buildKonto
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingMedlStatusMapper.buildMedlStatusMap;
 import static no.nav.dolly.mapper.BestillingNomStatusMapper.buildNomStatusMap;
+import static no.nav.dolly.mapper.BestillingOppfoelgingsvedtak14aStatusMapper.buildOppfoelgingsvedtak14aStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlPersonStatusMapper.buildPdlPersonStatusMap;
@@ -124,7 +124,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildBistandsbehovStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildOppfoelgingsvedtak14aStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKelvinAapStatusMap(progresser));
 
                         if (!bestilling.isFerdig()) {

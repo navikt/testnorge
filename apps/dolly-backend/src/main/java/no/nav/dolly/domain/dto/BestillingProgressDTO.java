@@ -30,7 +30,6 @@ public class BestillingProgressDTO implements Serializable {
     private String arbeidsplassencvStatus;
     private String arbeidssoekerregisteretStatus;
     private String arenaforvalterStatus;
-    private String bistandsbehovStatus;
     private String brregstubStatus;
     private String dokarkivStatus;
     private String etterlatteStatus;
@@ -45,6 +44,7 @@ public class BestillingProgressDTO implements Serializable {
     private String krrstubStatus;
     private String medlStatus;
     private String nomStatus;
+    private String oppfoelgingsvedtak14aStatus;
     private String pdlForvalterStatus;
     private String pdlImportStatus;
     private String pdlOrdreStatus;

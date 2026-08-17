@@ -17,18 +17,18 @@ import static no.nav.dolly.util.ListUtil.listOf;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BestillingBistandsbehovStatusMapper {
+public final class BestillingOppfoelgingsvedtak14aStatusMapper {
 
-    public static List<RsStatusRapport> buildBistandsbehovStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildOppfoelgingsvedtak14aStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (isNotBlank(progress.getBistandsbehovStatus())) {
-                if (statusMap.containsKey(progress.getBistandsbehovStatus())) {
-                    statusMap.get(progress.getBistandsbehovStatus()).add(progress.getIdent());
+            if (isNotBlank(progress.getOppfoelgingsvedtak14aStatus())) {
+                if (statusMap.containsKey(progress.getOppfoelgingsvedtak14aStatus())) {
+                    statusMap.get(progress.getOppfoelgingsvedtak14aStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getBistandsbehovStatus(), listOf(progress.getIdent()));
+                    statusMap.put(progress.getOppfoelgingsvedtak14aStatus(), listOf(progress.getIdent()));
                 }
             }
         });

@@ -3,4 +3,4 @@
 -------------------------------
 
 ALTER TABLE bestilling_progress
-ADD COLUMN bistandsbehov_status VARCHAR(100);
+ADD COLUMN oppfoelgingsvedtak14a_status VARCHAR(100);

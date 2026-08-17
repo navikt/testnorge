@@ -30,11 +30,6 @@ system:
       kubernetes-name: arena-services-MILJOE
       url: https://https://arena-ords-q2.dev.intern.nav.no
       documentation: https://confluence.adeo.no/display/TEAMARENA/Syntetisering+-+Tjenester+som+tilbys
-  - register: bistandsbehov/oppfølgingsvedtak
-    namespace: obo
-    kubernetes-name: veilarbvedtaksstotte
-    url: https://veilarbvedtaksstotte.intern.dev.nav.no/veilarbvedtaksstotte/internal/swagger-ui/index.html?urls.primaryName=Interne+endepunkter
-    cluster: dev-gcp
   - register: brregstub
     namespace: dolly
     kubernetes-name: brreg-stub
@@ -121,6 +116,11 @@ system:
     namespace: poao
     kubernetes-name: veilarboppfolging
     url: https://veilarboppfolging.intern.dev.nav.no/veilarboppfolging/internal/swagger-ui/index.html#/oppfolging-v-3-controller/aktiverBruker
+    cluster: dev-gcp
+  - register: oppfølgingsvedtak14a
+    namespace: obo
+    kubernetes-name: veilarbvedtaksstotte
+    url: https://veilarbvedtaksstotte.intern.dev.nav.no/veilarbvedtaksstotte/internal/swagger-ui/index.html?urls.primaryName=Interne+endepunkter
     cluster: dev-gcp
   - register: pensjon-testdata
     write:

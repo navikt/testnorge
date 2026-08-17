@@ -44,14 +44,14 @@ public class Oppfoelgingsvedtak14aConsumer {
                 .doOnNext(response -> log.info("Status fra DAB start oppfølgingsperiode for ident {} {}", ident, response));
     }
 
-    public Mono<ResponseStatusDTO> opprettBistandVedtak(Oppfoelgingsvedtak14aRequestDTO request) {
+    public Mono<ResponseStatusDTO> opprettOppfoelgingsvedtak14a(Oppfoelgingsvedtak14aRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new CreateOppfoelgingsvedtak14aCommand(webClient, request, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Status fra OBO opprett bistandsvedtak {} er {}", request, response));
+                .doOnNext(response -> log.info("Status fra OBO opprett oppfølgingsvedtak §14a {} er {}", request, response));
     }
 
-    public Flux<ResponseStatusDTO> slettBistandsvedtak(List<String> identer) {
+    public Flux<ResponseStatusDTO> slettOppfoelgingsvedtak14a(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
