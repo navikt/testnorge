@@ -9,6 +9,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.time.ZoneId;
 import java.util.Random;
 
 import static java.time.LocalDateTime.now;
@@ -35,7 +36,7 @@ public class Oppfoelgingsvedtak14aMappingStrategy implements MappingStrategy {
                         }
 
                         if (isNull(destinasjon.getVedtakFattet())) {
-                            destinasjon.setVedtakFattet(now());
+                            destinasjon.setVedtakFattet(now(ZoneId.of("Europe/Oslo")));
                         }
 
                         if (isBlank(destinasjon.getBegrunnelse())) {
