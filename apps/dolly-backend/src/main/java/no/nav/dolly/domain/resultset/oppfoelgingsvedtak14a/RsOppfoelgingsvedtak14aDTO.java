@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.bistandsbehov;
+package no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsBistandsbehovDTO {
+public class RsOppfoelgingsvedtak14aDTO {
 
     private Innsatsgruppe innsatsgruppe;
     private Hovedmal hovedmal;

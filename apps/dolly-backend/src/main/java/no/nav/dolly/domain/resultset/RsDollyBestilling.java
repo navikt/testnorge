@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
@@ -92,7 +92,7 @@ public class RsDollyBestilling {
     private RsArbeidssoekerregisteret arbeidssoekerregisteret;
     private List<EtterlatteYtelse> etterlatteYtelser;
     private RsKelvinAapRequestDTO kelvinAap;
-    private RsBistandsbehovDTO bistandsbehov;
+    private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

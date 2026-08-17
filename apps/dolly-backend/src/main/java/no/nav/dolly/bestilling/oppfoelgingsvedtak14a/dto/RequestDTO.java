@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.bistandsbehov.dto;
+package no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

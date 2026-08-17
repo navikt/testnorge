@@ -11,7 +11,7 @@ import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
@@ -116,7 +116,7 @@ public class BestillingDokument implements Persistable<Long> {
 
     private RsKelvinAapRequestDTO kelvinAap;
 
-    private RsBistandsbehovDTO bistandsbehov;
+    private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
 
     @Transient
     @JsonIgnore

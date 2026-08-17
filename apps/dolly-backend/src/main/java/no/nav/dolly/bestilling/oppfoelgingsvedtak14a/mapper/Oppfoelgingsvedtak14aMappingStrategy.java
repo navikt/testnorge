@@ -1,10 +1,10 @@
-package no.nav.dolly.bestilling.bistandsbehov.mapper;
+package no.nav.dolly.bestilling.oppfoelgingsvedtak14a.mapper;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.bistandsbehov.dto.BistandVedtakRequestDTO;
-import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.Oppfoelgingsvedtak14aRequestDTO;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +16,16 @@ import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
-public class BistandsbehovMappingStrategy implements MappingStrategy {
+public class Oppfoelgingsvedtak14aMappingStrategy implements MappingStrategy {
 
     private static final Random ansatt = new SecureRandom();
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RsBistandsbehovDTO.class, BistandVedtakRequestDTO.class)
+        factory.classMap(RsOppfoelgingsvedtak14aDTO.class, Oppfoelgingsvedtak14aRequestDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsBistandsbehovDTO kilde, BistandVedtakRequestDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(RsOppfoelgingsvedtak14aDTO kilde, Oppfoelgingsvedtak14aRequestDTO destinasjon, MappingContext context) {
 
                         destinasjon.setFnr((String) context.getProperty("ident"));
                         destinasjon.setOppfolgingsEnhet((String) context.getProperty("norgEnhet"));

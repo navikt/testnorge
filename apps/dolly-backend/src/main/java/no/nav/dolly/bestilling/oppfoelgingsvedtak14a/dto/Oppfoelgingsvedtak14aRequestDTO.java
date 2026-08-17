@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.bistandsbehov.dto;
+package no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BistandVedtakRequestDTO {
+public class Oppfoelgingsvedtak14aRequestDTO {
 
     private String fnr;
     private String innsatsgruppe;

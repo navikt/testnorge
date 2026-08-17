@@ -1,9 +1,9 @@
-package no.nav.dolly.bestilling.bistandsbehov;
+package no.nav.dolly.bestilling.oppfoelgingsvedtak14a;
 
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.bistandsbehov.dto.BistandVedtakRequestDTO;
-import no.nav.dolly.bestilling.bistandsbehov.dto.ResponseStatusDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.Oppfoelgingsvedtak14aRequestDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.ResponseStatusDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
@@ -12,7 +12,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.service.TransactionHelperService;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-import static no.nav.dolly.domain.resultset.SystemTyper.BISTANDSBEHOV;
+import static no.nav.dolly.domain.resultset.SystemTyper.OPPFOELGINGSVEDTAK14A;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,14 +42,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BistandsbehovClientTest {
+class Oppfoelgingsvedtak14aClientTest {
 
     private static final String IDENT = "12345678901";
     private static final String NORG_ENHET = "0315";
     private static final String KOMMUNE_ENHET = "1554";
 
     @Mock
-    private BistandsbehovConsumer bistandsbehovConsumer;
+    private Oppfoelgingsvedtak14aConsumer oppfoelgingsvedtak14aConsumer;
 
     @Mock
     private TransactionHelperService transactionHelperService;
@@ -64,18 +64,18 @@ class BistandsbehovClientTest {
     private PersonServiceConsumer personServiceConsumer;
 
     @InjectMocks
-    private BistandsbehovClient bistandsbehovClient;
+    private Oppfoelgingsvedtak14aClient oppfoelgingsvedtak14aClient;
 
     @Test
     void shouldReturnEmpty_whenBistandsbehovIsNull() {
-        StepVerifier.create(bistandsbehovClient.gjenopprett(
+        StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         new RsDollyUtvidetBestilling(),
                         DollyPerson.builder().ident(IDENT).build(),
                         new BestillingProgress(),
                         false))
                 .verifyComplete();
 
-        verify(bistandsbehovConsumer, never()).startOppfoelgingsperiode(anyString());
+        verify(oppfoelgingsvedtak14aConsumer, never()).startOppfoelgingsperiode(anyString());
     }
 
     @Test
@@ -84,16 +84,16 @@ class BistandsbehovClientTest {
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
         stubPersister(progress);
-        when(bistandsbehovConsumer.startOppfoelgingsperiode(IDENT))
+        when(oppfoelgingsvedtak14aConsumer.startOppfoelgingsperiode(IDENT))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
-        when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
-                .thenReturn(new BistandVedtakRequestDTO());
-        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
-                .thenReturn(new RsBistandsbehovDTO());
-        when(bistandsbehovConsumer.opprettBistandVedtak(any()))
+        when(mapperFacade.map(any(), eq(Oppfoelgingsvedtak14aRequestDTO.class), any()))
+                .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
+        when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
+                .thenReturn(new RsOppfoelgingsvedtak14aDTO());
+        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
-        StepVerifier.create(bistandsbehovClient.gjenopprett(
+        StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(NORG_ENHET),
                         DollyPerson.builder().ident(IDENT).build(),
                         progress,
@@ -102,7 +102,7 @@ class BistandsbehovClientTest {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
                     verify(norg2Consumer, never()).getNorgEnhet(anyString());
                     assertThat(statusCaptor.getAllValues().getFirst())
-                            .isEqualTo(getInfoVenter(BISTANDSBEHOV.getBeskrivelse()));
+                            .isEqualTo(getInfoVenter(OPPFOELGINGSVEDTAK14A.getBeskrivelse()));
                     assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK");
                 })
                 .verifyComplete();
@@ -114,20 +114,20 @@ class BistandsbehovClientTest {
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
         stubPersister(progress);
-        when(bistandsbehovConsumer.startOppfoelgingsperiode(IDENT))
+        when(oppfoelgingsvedtak14aConsumer.startOppfoelgingsperiode(IDENT))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
         when(personServiceConsumer.getPdlPersoner(anyList()))
-                .thenReturn(Flux.just(pdlPersonBolkMedKommune(KOMMUNE_ENHET)));
+                .thenReturn(Flux.just(pdlPersonBolkMedKommune()));
         when(norg2Consumer.getNorgEnhet(KOMMUNE_ENHET))
                 .thenReturn(Mono.just(Norg2EnhetResponse.builder().enhetNr(NORG_ENHET).build()));
-        when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
-                .thenReturn(new BistandVedtakRequestDTO());
-        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
-                .thenReturn(new RsBistandsbehovDTO());
-        when(bistandsbehovConsumer.opprettBistandVedtak(any()))
+        when(mapperFacade.map(any(), eq(Oppfoelgingsvedtak14aRequestDTO.class), any()))
+                .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
+        when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
+                .thenReturn(new RsOppfoelgingsvedtak14aDTO());
+        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
-        StepVerifier.create(bistandsbehovClient.gjenopprett(
+        StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(null),
                         DollyPerson.builder().ident(IDENT).build(),
                         progress,
@@ -145,25 +145,25 @@ class BistandsbehovClientTest {
         val progress = new BestillingProgress();
 
         stubPersister(progress);
-        when(bistandsbehovConsumer.startOppfoelgingsperiode(IDENT))
+        when(oppfoelgingsvedtak14aConsumer.startOppfoelgingsperiode(IDENT))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
         when(personServiceConsumer.getPdlPersoner(anyList()))
-                .thenReturn(Flux.just(pdlPersonBolkMedKommune(KOMMUNE_ENHET)));
+                .thenReturn(Flux.just(pdlPersonBolkMedKommune()));
         when(norg2Consumer.getNorgEnhet(KOMMUNE_ENHET))
                 .thenReturn(Mono.just(Norg2EnhetResponse.builder().httpStatus(HttpStatus.BAD_GATEWAY).build()));
-        when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
-                .thenReturn(new BistandVedtakRequestDTO());
-        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
-                .thenReturn(new RsBistandsbehovDTO());
-        when(bistandsbehovConsumer.opprettBistandVedtak(any()))
+        when(mapperFacade.map(any(), eq(Oppfoelgingsvedtak14aRequestDTO.class), any()))
+                .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
+        when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
+                .thenReturn(new RsOppfoelgingsvedtak14aDTO());
+        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
 
-        StepVerifier.create(bistandsbehovClient.gjenopprett(
+        StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(null),
                         DollyPerson.builder().ident(IDENT).build(),
                         progress,
                         false))
-                .assertNext(_ -> verify(bistandsbehovConsumer).opprettBistandVedtak(any()))
+                .assertNext(_ -> verify(oppfoelgingsvedtak14aConsumer).opprettBistandVedtak(any()))
                 .verifyComplete();
     }
 
@@ -173,20 +173,20 @@ class BistandsbehovClientTest {
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
         stubPersister(progress);
-        when(bistandsbehovConsumer.startOppfoelgingsperiode(IDENT))
+        when(oppfoelgingsvedtak14aConsumer.startOppfoelgingsperiode(IDENT))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder()
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .reason("Service unavailable")
                         .build()));
 
-        StepVerifier.create(bistandsbehovClient.gjenopprett(
+        StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(NORG_ENHET),
                         DollyPerson.builder().ident(IDENT).build(),
                         progress,
                         false))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
-                    verify(bistandsbehovConsumer, never()).opprettBistandVedtak(any());
+                    verify(oppfoelgingsvedtak14aConsumer, never()).opprettBistandVedtak(any());
                     assertThat(statusCaptor.getAllValues().getLast())
                             .startsWith("Feil= Start oppfølgingsperiode feilet");
                 })
@@ -199,19 +199,19 @@ class BistandsbehovClientTest {
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
         stubPersister(progress);
-        when(bistandsbehovConsumer.startOppfoelgingsperiode(IDENT))
+        when(oppfoelgingsvedtak14aConsumer.startOppfoelgingsperiode(IDENT))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder().status(HttpStatus.OK).build()));
-        when(mapperFacade.map(any(), eq(BistandVedtakRequestDTO.class), any()))
-                .thenReturn(new BistandVedtakRequestDTO());
-        when(mapperFacade.map(any(BistandVedtakRequestDTO.class), eq(RsBistandsbehovDTO.class)))
-                .thenReturn(new RsBistandsbehovDTO());
-        when(bistandsbehovConsumer.opprettBistandVedtak(any()))
+        when(mapperFacade.map(any(), eq(Oppfoelgingsvedtak14aRequestDTO.class), any()))
+                .thenReturn(new Oppfoelgingsvedtak14aRequestDTO());
+        when(mapperFacade.map(any(Oppfoelgingsvedtak14aRequestDTO.class), eq(RsOppfoelgingsvedtak14aDTO.class)))
+                .thenReturn(new RsOppfoelgingsvedtak14aDTO());
+        when(oppfoelgingsvedtak14aConsumer.opprettBistandVedtak(any()))
                 .thenReturn(Mono.just(ResponseStatusDTO.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .reason("Vedtak finnes allerede")
                         .build()));
 
-        StepVerifier.create(bistandsbehovClient.gjenopprett(
+        StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(NORG_ENHET),
                         DollyPerson.builder().ident(IDENT).build(),
                         progress,
@@ -233,19 +233,19 @@ class BistandsbehovClientTest {
 
     private static RsDollyUtvidetBestilling bestillingMed(String oppfolgingsEnhet) {
         val bestilling = new RsDollyUtvidetBestilling();
-        bestilling.setBistandsbehov(RsBistandsbehovDTO.builder()
+        bestilling.setOppfoelgingsvedtak14a(RsOppfoelgingsvedtak14aDTO.builder()
                 .oppfolgingsEnhet(oppfolgingsEnhet)
                 .build());
         return bestilling;
     }
 
-    private static PdlPersonBolk pdlPersonBolkMedKommune(String gtKommune) {
+    private static PdlPersonBolk pdlPersonBolkMedKommune() {
         return PdlPersonBolk.builder()
                 .data(PdlPersonBolk.Data.builder()
                         .hentGeografiskTilknytningBolk(List.of(
                                 PdlPersonBolk.GeografiskTilknytningBolk.builder()
                                         .geografiskTilknytning(PdlPersonBolk.GeografiskTilknytning.builder()
-                                                .gtKommune(gtKommune)
+                                                .gtKommune(KOMMUNE_ENHET)
                                                 .build())
                                         .build()))
                         .build())

@@ -1,11 +1,12 @@
-package no.nav.dolly.bestilling.bistandsbehov.command;
+package no.nav.dolly.bestilling.oppfoelgingsvedtak14a.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import no.nav.dolly.bestilling.bistandsbehov.dto.BistandVedtakRequestDTO;
-import no.nav.dolly.bestilling.bistandsbehov.dto.ResponseStatusDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.RequestDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.ResponseStatusDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -17,22 +18,25 @@ import java.util.concurrent.Callable;
 import static java.time.Duration.ofSeconds;
 
 @RequiredArgsConstructor
-public class OpprettBistandsvedtakCommand implements Callable<Mono<ResponseStatusDTO>> {
+public class DeleteOppfoelgingsvedtak14aCommand implements Callable<Mono<ResponseStatusDTO>> {
 
     private static final String BISTANDSVEDTAK_URL = "/bistandsbehov/veilarbvedtaksstotte/api/v1/test/vedtak";
 
     private final WebClient webClient;
-    private final BistandVedtakRequestDTO request;
+    private final String ident;
     private final String token;
 
     @Override
     public Mono<ResponseStatusDTO> call() {
 
-        return webClient.post()
+        return webClient
+                .method(HttpMethod.DELETE)
                 .uri(uriBuilder -> uriBuilder.path(BISTANDSVEDTAK_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
-                .bodyValue(request)
+                .bodyValue(RequestDTO.builder()
+                        .fnr(ident)
+                        .build())
                 .retrieve()
                 .toBodilessEntity()
                 .map(status -> ResponseStatusDTO.builder()

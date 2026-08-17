@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static no.nav.dolly.domain.resultset.SystemTyper.BISTANDSBEHOV;
+import static no.nav.dolly.domain.resultset.SystemTyper.OPPFOELGINGSVEDTAK14A;
 import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static no.nav.dolly.util.ListUtil.listOf;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -34,7 +34,7 @@ public final class BestillingBistandsbehovStatusMapper {
         });
 
         return statusMap.isEmpty() ? emptyList() :
-                singletonList(RsStatusRapport.builder().id(BISTANDSBEHOV).navn(BISTANDSBEHOV.getBeskrivelse())
+                singletonList(RsStatusRapport.builder().id(OPPFOELGINGSVEDTAK14A).navn(OPPFOELGINGSVEDTAK14A.getBeskrivelse())
                         .statuser(statusMap.entrySet().stream().map(entry -> RsStatusRapport.Status.builder()
                                         .melding(decodeMsg(entry.getKey()))
                                         .identer(entry.getValue())

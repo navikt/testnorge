@@ -1,9 +1,9 @@
-package no.nav.dolly.bestilling.bistandsbehov.command;
+package no.nav.dolly.bestilling.oppfoelgingsvedtak14a.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import no.nav.dolly.bestilling.bistandsbehov.dto.RequestDTO;
-import no.nav.dolly.bestilling.bistandsbehov.dto.ResponseStatusDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.RequestDTO;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.ResponseStatusDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;

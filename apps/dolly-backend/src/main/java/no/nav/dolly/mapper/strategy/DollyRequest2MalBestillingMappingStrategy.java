@@ -10,7 +10,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
-import no.nav.dolly.domain.resultset.bistandsbehov.RsBistandsbehovDTO;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
@@ -19,7 +18,6 @@ import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
-import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
@@ -85,14 +83,13 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("medl", "medl")
                 .field("navSyntetiskIdent", "navSyntetiskIdent")
                 .field("nomdata", "nomdata")
+                .field("oppfoelgingsvedtak14a", "oppfoelgingsvedtak14a")
                 .field("pdldata", "pdldata")
                 .field("pensjonforvalter", "pensjonforvalter")
                 .field("skattekort", "skattekort")
                 .field("skjerming", "skjerming")
                 .field("sykemelding", "sykemelding")
                 .field("udistub", "udistub")
-                .field("kelvinAap", "kelvinAap")
-                .field("bistandsbehov", "bistandsbehov")
 
                 .customize(new CustomMapper<>() {
                     @Override
