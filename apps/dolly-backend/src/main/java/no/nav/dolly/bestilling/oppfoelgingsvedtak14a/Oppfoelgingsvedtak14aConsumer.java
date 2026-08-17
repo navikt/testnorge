@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.oppfoelgingsvedtak14a;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.command.CreateOppfoelgingsvedak14aCommand;
+import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.command.CreateOppfoelgingsvedtak14aCommand;
 import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.command.DeleteOppfoelgingsvedtak14aCommand;
 import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.command.StartOppfoelgingsperiodeCommand;
 import no.nav.dolly.bestilling.oppfoelgingsvedtak14a.dto.Oppfoelgingsvedtak14aRequestDTO;
@@ -47,7 +47,7 @@ public class Oppfoelgingsvedtak14aConsumer {
     public Mono<ResponseStatusDTO> opprettBistandVedtak(Oppfoelgingsvedtak14aRequestDTO request) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new CreateOppfoelgingsvedak14aCommand(webClient, request, token.getTokenValue()).call())
+                .flatMap(token -> new CreateOppfoelgingsvedtak14aCommand(webClient, request, token.getTokenValue()).call())
                 .doOnNext(response -> log.info("Status fra OBO opprett bistandsvedtak {} er {}", request, response));
     }
 

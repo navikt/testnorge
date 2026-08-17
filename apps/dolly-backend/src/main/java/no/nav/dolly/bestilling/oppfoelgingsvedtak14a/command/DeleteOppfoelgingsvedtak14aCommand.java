@@ -20,7 +20,7 @@ import static java.time.Duration.ofSeconds;
 @RequiredArgsConstructor
 public class DeleteOppfoelgingsvedtak14aCommand implements Callable<Mono<ResponseStatusDTO>> {
 
-    private static final String BISTANDSVEDTAK_URL = "/bistandsbehov/veilarbvedtaksstotte/api/v1/test/vedtak";
+    private static final String OPPFOELGINGSVEDTAK14A_URL = "/oppfoelgingsvedtak14a/veilarbvedtaksstotte/api/v1/test/vedtak";
 
     private final WebClient webClient;
     private final String ident;
@@ -31,7 +31,7 @@ public class DeleteOppfoelgingsvedtak14aCommand implements Callable<Mono<Respons
 
         return webClient
                 .method(HttpMethod.DELETE)
-                .uri(uriBuilder -> uriBuilder.path(BISTANDSVEDTAK_URL)
+                .uri(uriBuilder -> uriBuilder.path(OPPFOELGINGSVEDTAK14A_URL)
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(RequestDTO.builder()
