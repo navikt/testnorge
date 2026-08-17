@@ -46,6 +46,14 @@ const customAsyncSelectStyles = {
 		...provided,
 		width: '480px',
 	}),
+	input: (provided: any) => ({
+		...provided,
+		gridTemplateColumns: '0 1fr',
+	}),
+	placeholder: (provided: any) => ({
+		...provided,
+		pointerEvents: 'none',
+	}),
 }
 
 const formatGroupLabel = (data: GroupedOption) => {
