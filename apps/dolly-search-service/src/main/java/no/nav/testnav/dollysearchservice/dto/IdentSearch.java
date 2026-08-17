@@ -20,6 +20,7 @@ public class IdentSearch {
 
     Integer page;
     Integer pageSize;
+    Integer seed;
     Integer terminateAfter;
     List<String> tags;
     String ident;

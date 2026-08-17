@@ -243,10 +243,13 @@ public class PdlOrdreService {
                                 .filter(OpprettRequest::isNpidIdent)
                                 .flatMap(this::npidSplit)
                                 .collectList(),
-                        Flux.fromIterable(sorterteOpprettinger)
-                                .filter(OpprettRequest::isNotTestnorgeIdent)
-                                .flatMap(this::personOpprett)
-                                .collectList(),
+                        getHistoriskePersoner(sorterteOpprettinger)
+                                .flatMap(historiske -> Flux.fromIterable(sorterteOpprettinger)
+                                        .filter(OpprettRequest::isNotTestnorgeIdent)
+                                        .filter(oppretting -> historiske.stream()
+                                                .noneMatch(historisk -> historisk.equals(oppretting.getPerson())))
+                                        .flatMap(this::personOpprett)
+                                        .collectList()),
                         Flux.fromIterable(sorterteOpprettinger)
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
                                 .filter(OpprettRequest::isNpidIdent)
@@ -270,7 +273,7 @@ public class PdlOrdreService {
 
     private Flux<Ordre> personOpprett(OpprettRequest oppretting) {
 
-        return getHistoriskePersoner(oppretting.getPerson())
+        return getHistorikkForPerson(oppretting.getPerson())
                 .map(historiske -> OpprettIdent.builder()
                         .historiskeIdenter(historiske.stream()
                                 .map(DbPerson::getIdent)
@@ -288,7 +291,18 @@ public class PdlOrdreService {
                 .doOnNext(ordre -> log.info("Ordre for oppretting: {}", ordre));
     }
 
-    private Mono<List<DbPerson>> getHistoriskePersoner(DbPerson hovedperson) {
+    private Mono<List<DbPerson>> getHistoriskePersoner(List<OpprettRequest> opprettinger) {
+
+        return Flux.fromIterable(opprettinger)
+                .map(OpprettRequest::getPerson)
+                .map(DbPerson::getIdent)
+                .flatMap(aliasRepository::findByTidligereIdent)
+                .map(DbAlias::getTidligereIdent)
+                .flatMap(personRepository::findByIdent)
+                .collectList();
+    }
+
+    private Mono<List<DbPerson>> getHistorikkForPerson(DbPerson hovedperson) {
 
         return aliasRepository.findByPersonId(hovedperson.getId())
                 .map(DbAlias::getTidligereIdent)
