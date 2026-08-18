@@ -593,6 +593,7 @@ public class BestillingService {
                                     .krrstub(request2.getKrrstub())
                                     .medl(request2.getMedl())
                                     .nomdata(request2.getNomdata())
+                                    .oppfoelgingsvedtak14a(request2.getOppfoelgingsvedtak14a())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
                                     .sigrunstub(request2.getSigrunstub())

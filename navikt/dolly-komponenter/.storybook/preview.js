@@ -1,7 +1,9 @@
+import '@navikt/ds-css';
+
 /** @type { import('@storybook/react-vite').Preview } */
 const preview = {
+  tags: ['autodocs'],
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
         color: /(background|color)$/i,

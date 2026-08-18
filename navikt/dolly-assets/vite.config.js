@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
   base: '/',
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.js'),
+      entry: path.resolve(import.meta.dirname, 'src/index.js'),
       name: 'dolly-assets',
       formats: ['umd'],
       fileName: () => `dolly-assets.js`,
