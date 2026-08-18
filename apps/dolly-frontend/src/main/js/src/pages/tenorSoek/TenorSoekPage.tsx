@@ -216,6 +216,7 @@ export default () => {
 		setRequest({ ...request })
 		setMarkertePersoner([])
 		mutate()
+
 		if (value || typeof value === 'boolean') {
 			setLagreSoekRequest({
 				...lagreSoekRequest,
