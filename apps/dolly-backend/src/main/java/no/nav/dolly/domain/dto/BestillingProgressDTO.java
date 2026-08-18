@@ -44,6 +44,7 @@ public class BestillingProgressDTO implements Serializable {
     private String krrstubStatus;
     private String medlStatus;
     private String nomStatus;
+    private String oppfoelgingsvedtak14aStatus;
     private String pdlForvalterStatus;
     private String pdlImportStatus;
     private String pdlOrdreStatus;

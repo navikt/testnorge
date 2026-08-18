@@ -112,6 +112,16 @@ system:
       url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/opprettRessurs
     delete:
       url: https://nom-api.intern.dev.nav.no/swagger-ui/index.html#/Dolly/avsluttRessurs
+  - register: oppfølging
+    namespace: poao
+    kubernetes-name: veilarboppfolging
+    url: https://veilarboppfolging.intern.dev.nav.no/veilarboppfolging/internal/swagger-ui/index.html#/oppfolging-v-3-controller/aktiverBruker
+    cluster: dev-gcp
+  - register: oppfølgingsvedtak14a
+    namespace: obo
+    kubernetes-name: veilarbvedtaksstotte
+    url: https://veilarbvedtaksstotte.intern.dev.nav.no/veilarbvedtaksstotte/internal/swagger-ui/index.html?urls.primaryName=Interne+endepunkter
+    cluster: dev-gcp
   - register: pensjon-testdata
     write:
       kubernetes-name: pensjon-testdata-facade

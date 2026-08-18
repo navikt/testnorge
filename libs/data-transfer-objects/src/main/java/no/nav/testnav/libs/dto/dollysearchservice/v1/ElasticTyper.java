@@ -19,6 +19,7 @@ public enum ElasticTyper {
     BANKKONTO_NORGE("Bankkonto i Norge", false),
     BANKKONTO_UTLAND("Bankkonto i utlandet", false),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)", false),
+    OPPFOELGINGSVEDTAK14A("Oppfølgingsvedtak §14a (OBO) ",false),
     DOKARKIV("Dokumentarkiv (JOARK)", true),
     ETTERLATTE("Etterlatte ytelse", false),
     FULLMAKT("Fullmakt (Representasjon)", false),
