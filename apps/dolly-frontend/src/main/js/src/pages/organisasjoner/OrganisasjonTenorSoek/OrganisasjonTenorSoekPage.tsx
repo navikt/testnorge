@@ -70,7 +70,7 @@ export default () => {
 
 	useEffect(() => {
 		const soekElement = document.getElementById('soek')
-		if (!soekElement) {
+		if (!soekElement || typeof ResizeObserver === 'undefined') {
 			return
 		}
 		const resizeObserver = new ResizeObserver(() => updateButtonPosition())

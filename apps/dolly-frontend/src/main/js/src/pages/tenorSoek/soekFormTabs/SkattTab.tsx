@@ -1,5 +1,5 @@
 import { Table, Tabs } from '@navikt/ds-react'
-import { Skattemelding } from '../soekFormPartials/Skattemelding'
+import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 import { Header } from '@/components/ui/soekForm/SoekFormWrapper'
 import { BeregnetSkatt } from '@/pages/tenorSoek/soekFormPartials/BeregnetSkatt'
 import { SummertSkattegrunnlag } from '@/pages/tenorSoek/soekFormPartials/SummertSkattegrunnlag'
