@@ -7,7 +7,6 @@ import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetat
 import { SkattemeldingVisning } from '@/components/fagsystem/skatteetaten/visning/SkattemeldingVisning'
 import { Alert, Link } from '@navikt/ds-react'
 import { BeregnetSkattVisning } from '@/components/fagsystem/skatteetaten/visning/BeregnetSkattVisning'
-import { SummertSkattegrunnlagVisning } from '@/components/fagsystem/skatteetaten/visning/SummertSkattegrunnlagVisning'
 
 type SkatteetatenVisningProps = {
 	data: {
@@ -71,7 +70,6 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
 			<SkattemeldingVisning skattemeldingListe={skattemeldingListe} />
 			<BeregnetSkattVisning beregnetSkattListe={beregnetSkattListe} />
-			<SummertSkattegrunnlagVisning summertSkattegrunnlagListe={summertSkattegrunnlagListe} />
 		</div>
 	)
 }
