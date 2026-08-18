@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react-vite';
-import ErrorAlert, { ErrorAlertProps } from './ErrorAlert';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import ErrorAlert from './ErrorAlert';
 
-export default {
+const meta = {
   title: 'Alert/ErrorAlert',
   component: ErrorAlert,
-} as Meta;
+  parameters: {
+    docs: {
+      description: {
+        component: 'Viser en kompakt feilmelding med feilindikator.',
+      },
+    },
+  },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Feilmeldingen som vises til brukeren.',
+    },
+  },
+} satisfies Meta<typeof ErrorAlert>;
 
-const Template: Story<ErrorAlertProps> = (args) => <ErrorAlert {...args} />;
-export const MiniErrorAlert = Template.bind({});
-MiniErrorAlert.args = {
-  label: 'Error text',
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    label: 'En feil har oppstått',
+  },
 };
