@@ -44,6 +44,7 @@ import static no.nav.dolly.mapper.BestillingKontoregisterStatusMapper.buildKonto
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingMedlStatusMapper.buildMedlStatusMap;
 import static no.nav.dolly.mapper.BestillingNomStatusMapper.buildNomStatusMap;
+import static no.nav.dolly.mapper.BestillingOppfoelgingsvedtak14aStatusMapper.buildOppfoelgingsvedtak14aStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlPersonStatusMapper.buildPdlPersonStatusMap;
@@ -123,6 +124,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkattekortStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildOppfoelgingsvedtak14aStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKelvinAapStatusMap(progresser));
 
                         if (!bestilling.isFerdig()) {

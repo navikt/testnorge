@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react-vite';
-import Comp, { SuccessAlertstripeProps } from './SuccessAlertstripe';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import SuccessAlertstripe from './SuccessAlertstripe';
 
-export default {
+const meta = {
   title: 'Alertstripe/SuccessAlertstripe',
-  component: Comp,
-} as Meta;
+  component: SuccessAlertstripe,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Viser en tydelig Aksel-bekreftelse i full bredde.',
+      },
+    },
+  },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Bekreftelsen som vises til brukeren.',
+    },
+  },
+} satisfies Meta<typeof SuccessAlertstripe>;
 
-const Template: Story<SuccessAlertstripeProps> = (args) => <Comp {...args} />;
-export const SuccessAlertstripe = Template.bind({});
-SuccessAlertstripe.args = {
-  label: 'Success text',
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    label: 'Opplysningene er lagret',
+  },
 };

@@ -21,7 +21,7 @@ function Pageable<T>({ items, render, itemsPerPage = ITEMS_PER_PAGE }: Paginatio
         position
       )}
       <Pagination
-        count={items.length}
+        count={Math.ceil(items.length / itemsPerPage)}
         page={position + 1}
         onPageChange={(value) => setPosition(value - 1)}
       />

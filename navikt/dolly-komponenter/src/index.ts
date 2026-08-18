@@ -2,7 +2,6 @@ import '@navikt/ds-css';
 
 export * from './alert';
 export * from './alertstripe';
-export * from './date-picker';
 export * from './header';
 export * from './header-link';
 export * from './header-link-group';

@@ -1,50 +1,60 @@
-import * as React from 'react';
-import { Meta, Story } from '@storybook/react-vite';
-import Comp, { HeaderProps } from './Header';
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import Header from './Header';
 import Profil from '../profil/Profil';
 import { HeaderLinkGroup } from '../header-link-group';
 import { HeaderLink } from '../header-link';
 
-export default {
+const meta = {
   title: 'Header/Header',
-  component: Comp,
-} as Meta;
+  component: Header,
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component: 'Applikasjonshode med Nav-logo, tittel, navigasjon og valgfri profil.',
+      },
+    },
+  },
+  argTypes: {
+    title: {
+      control: 'text',
+      description: 'Applikasjonsnavnet som vises i headeren.',
+    },
+    children: {
+      control: false,
+      description: 'Valgfri navigasjon som vises etter tittelen.',
+    },
+    profile: {
+      control: false,
+      description: 'Valgfri profilkomponent som vises til høyre.',
+    },
+  },
+} satisfies Meta<typeof Header>;
 
-const Template: Story<HeaderProps> = (args) => <Comp {...args} />;
-export const Header = Template.bind({});
-Header.args = {
-  title: 'Header text',
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    title: 'Test-Norge',
+  },
 };
 
-export const ProfileHeader = Template.bind({});
-ProfileHeader.args = {
-  title: 'Header with profile',
-  profile: <Profil visningsnavn="Jon Smith" />,
-};
-
-const TemplateLinkGroup: Story<HeaderProps> = (args) => (
-  <Comp {...args}>
-    <HeaderLinkGroup>
-      <HeaderLink href="#/link1" isActive={() => true}>
-        Link 1
-      </HeaderLink>
-      <HeaderLink href="#/link2" isActive={() => false}>
-        Link 2
-      </HeaderLink>
-      <HeaderLink href="#/link3" isActive={() => false}>
-        Link 3
-      </HeaderLink>
-    </HeaderLinkGroup>
-  </Comp>
-);
-
-export const LinksHeader = TemplateLinkGroup.bind({});
-LinksHeader.args = {
-  title: 'Header with links',
-};
-
-export const LinksWithProfileHeader = TemplateLinkGroup.bind({});
-LinksWithProfileHeader.args = {
-  title: 'Header with links and profile',
-  profile: <Profil visningsnavn="Jon Smith" />,
+export const WithNavigationAndProfile: Story = {
+  args: {
+    title: 'Test-Norge',
+    profile: <Profil visningsnavn="Ola Nordmann" />,
+    children: (
+      <HeaderLinkGroup>
+        <HeaderLink href="#oversikt" isActive={() => true}>
+          Oversikt
+        </HeaderLink>
+        <HeaderLink href="#bestillinger" isActive={() => false}>
+          Bestillinger
+        </HeaderLink>
+      </HeaderLinkGroup>
+    ),
+  },
 };

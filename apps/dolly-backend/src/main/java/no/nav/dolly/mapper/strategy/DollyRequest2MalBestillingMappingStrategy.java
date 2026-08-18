@@ -83,6 +83,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("medl", "medl")
                 .field("navSyntetiskIdent", "navSyntetiskIdent")
                 .field("nomdata", "nomdata")
+                .field("oppfoelgingsvedtak14a", "oppfoelgingsvedtak14a")
                 .field("pdldata", "pdldata")
                 .field("pensjonforvalter", "pensjonforvalter")
                 .field("skattekort", "skattekort")
