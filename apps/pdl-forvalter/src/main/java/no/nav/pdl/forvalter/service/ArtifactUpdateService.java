@@ -433,7 +433,7 @@ public class ArtifactUpdateService {
                                     dbPerson.getPerson().setSivilstand(type);
                                     dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
                                 })
-                                .doOnNext(type ->
+                                .doOnNext(_ ->
                                         dbPerson.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed()))
                                 .flatMap(_ -> sivilstandService.convert(dbPerson)))
                         .flatMap(this::savePerson))
@@ -453,7 +453,7 @@ public class ArtifactUpdateService {
                         .collectList()
                         .doOnNext(telefonnumre ->
                                 person.getPerson().setTelefonnummer(telefonnumre))
-                        .flatMap(type -> telefonnummerService.convert(person)))
+                        .then(telefonnummerService.convert(person)))
                 .flatMap(this::savePerson);
     }
 
@@ -471,7 +471,7 @@ public class ArtifactUpdateService {
                                         .then(Mono.just((slettePerson))))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
                                         .then(Mono.just(vergemaal)))
-                                .flatMapMany(type -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
+                                .flatMapMany(_ -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
                                 .doOnNext(_ -> {
                                     person.getPerson().getVergemaal().add(oppdatertVergemaal);
                                     person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
@@ -546,8 +546,8 @@ public class ArtifactUpdateService {
         return relasjonRepository.existsByPersonIdOrRelatertPersonId(person.getId())
                 .flatMap(exists -> {
                     if (isFalse(exists) && !isStandalonePerson) {
-                        return personService.executeEksternSletting(Set.of(person.getIdent()))
-                                .flatMap(personService::deleteInDatabase)
+                        return personService.utfoerEksternSletting(Set.of(person.getIdent()))
+                                .flatMap(personService::slettMotDatabase)
                                 .then();
                     }
                     return Mono.empty();

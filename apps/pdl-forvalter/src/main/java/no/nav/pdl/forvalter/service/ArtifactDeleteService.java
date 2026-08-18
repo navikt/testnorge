@@ -606,8 +606,8 @@ public class ArtifactDeleteService {
         return relasjonRepository.existsByPersonIdOrRelatertPersonId(person.getId())
                 .flatMap(exists -> {
                     if (isFalse(exists) && !isStandalonePerson) {
-                        return personService.executeEksternSletting(Set.of(person.getIdent()))
-                                .flatMap(personService::deleteInDatabase)
+                        return personService.utfoerEksternSletting(Set.of(person.getIdent()))
+                                .flatMap(personService::slettMotDatabase)
                                 .then();
                     }
                     return Mono.empty();

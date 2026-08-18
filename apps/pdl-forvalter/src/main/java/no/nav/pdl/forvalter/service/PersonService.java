@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -104,7 +105,7 @@ public class PersonService {
                             mergedPerson.setFornavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
                             mergedPerson.setMellomnavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
                             mergedPerson.setEtternavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
-                            mergedPerson.setSistOppdatert(now());
+                            mergedPerson.setSistOppdatert(now(ZoneId.of("Europe/Oslo")));
                             return mergedPerson;
                         }))
                 .flatMap(personRepository::save)
@@ -112,7 +113,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Mono<Set<String>> findIdenterForSletting(String ident) {
+    public Mono<Set<String>> finnOgOppdaterIdenterForSletting(String ident) {
 
         return checkAlias(ident)
                 .then(personRepository.findByIdent(ident))
@@ -128,7 +129,7 @@ public class PersonService {
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
-    public Mono<Set<String>> executeEksternSletting(Set<String> identer) {
+    public Mono<Set<String>> utfoerEksternSletting(Set<String> identer) {
 
         return pdlTestdataConsumer.delete(identer)
                 .then(identPoolConsumer.releaseIdents(identer, Bruker.PDLF))
@@ -136,7 +137,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Mono<Set<String>> deleteInDatabase(Set<String> identerSomSkalSlettesIAliaser) {
+    public Mono<Set<String>> slettMotDatabase(Set<String> identerSomSkalSlettesIAliaser) {
 
         return aliasRepository.deleteByIdentIn(identerSomSkalSlettesIAliaser)
                 .then(Mono.just(identerSomSkalSlettesIAliaser))
@@ -195,7 +196,6 @@ public class PersonService {
         }
     }
 
-    @Transactional
     public Mono<String> createPerson(BestillingRequestDTO request) {
 
         val now = System.currentTimeMillis();
@@ -278,7 +278,7 @@ public class PersonService {
                         .person(PersonDTO.builder()
                                 .ident(ident)
                                 .build())
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(ZoneId.of("Europe/Oslo")))
                         .build()));
     }
 
@@ -288,9 +288,8 @@ public class PersonService {
         return personRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .flatMap(person -> hendelseIdService.deletePdlHendelser(person)
-                        .then(unhookEksternePersonerService.unhook(person)
-                                .then(relasjonRepository.deleteByPersonIdOrRelatertPersonId(person.getId())
-                                        .thenReturn(person))))
+                        .then(unhookEksternePersonerService.unhook(person))
+                        .then(relasjonRepository.deleteByPersonIdOrRelatertPersonId(person.getId())))
                 .then(personRepository.deleteByIdent(ident));
     }
 }

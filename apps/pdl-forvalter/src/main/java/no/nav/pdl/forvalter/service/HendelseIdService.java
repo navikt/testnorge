@@ -56,8 +56,7 @@ public class HendelseIdService {
                                         return Mono.empty();
                                     }
                                 })
-                                .collectList()
-                                .flatMap(_ -> personRepository.save(dbPerson))))
+                                .then(personRepository.save(dbPerson))))
                 .then();
     }
 
@@ -118,6 +117,7 @@ public class HendelseIdService {
                         .build());
     }
 
+    @Transactional
     public Mono<Void> deletePdlHendelse(String ident, String artifact, Integer id) {
 
         if (isTestnorgeIdent(ident)) {

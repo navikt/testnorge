@@ -121,9 +121,9 @@ public class PersonController {
         if (!isTestnorgeIdent(ident)) {
 
             var startTime = currentTimeMillis();
-            return personService.findIdenterForSletting(ident)
-                    .flatMap(personService::executeEksternSletting)
-                    .flatMap(personService::deleteInDatabase)
+            return personService.finnOgOppdaterIdenterForSletting(ident)
+                    .flatMap(personService::utfoerEksternSletting)
+                    .flatMap(personService::slettMotDatabase)
                     .doOnNext(_ -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
                     .then();
         } else {
