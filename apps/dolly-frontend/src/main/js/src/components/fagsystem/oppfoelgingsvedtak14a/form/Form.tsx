@@ -9,6 +9,8 @@ import * as React from 'react'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useAlleNavEnheter } from '@/utils/hooks/useNorg2'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { ifPresent, requiredString } from '@/utils/YupValidations'
+import * as Yup from 'yup'
 
 export const Oppfoelgingsvedtak14aForm = () => {
 	const formMethods = useFormContext()
@@ -39,7 +41,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 					<FormDatepicker
 						name={`${oppfoelgingsvedtak14aPath}.vedtakFattet`}
 						label="Vedtak fattet"
-						minDate={new Date()}
+						minDate={new Date().setHours(0, 0, 0, 0)}
 					/>
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.oppfolgingsEnhet`}
@@ -61,4 +63,22 @@ export const Oppfoelgingsvedtak14aForm = () => {
 			</Panel>
 		</Vis>
 	)
+}
+
+Oppfoelgingsvedtak14aForm.validation = {
+	oppfoelgingsvedtak14a: ifPresent(
+		'$oppfoelgingsvedtak14a',
+		Yup.object({
+			innsatsgruppe: requiredString,
+			hovedmal: requiredString,
+			vedtakFattet: Yup.date().nullable(),
+			oppfolgingsEnhet: Yup.string().nullable(),
+			begrunnelse: Yup.string().nullable(),
+			veilederIdent: Yup.string()
+				.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
+				.test('len', 'Ident må være et tall med 11 sifre', (val) => !val || val.length === 11)
+				.optional()
+				.nullable(),
+		}),
+	),
 }
