@@ -8,3 +8,12 @@ export const initialOppfoelgingsvedtak14a = {
 	begrunnelse: null,
 	veilederIdent: null,
 }
+
+export type Oppfoelgingsvedtak14aTypes = {
+	innsatsgruppe: string
+	hovedmal: string
+	vedtakFattet?: Date
+	oppfolgingsEnhet?: string
+	begrunnelse?: string
+	veilederIdent?: string
+}
