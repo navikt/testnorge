@@ -12,7 +12,7 @@ import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.projection.RsGruppeFragment;
+import no.nav.dolly.domain.projection.GruppeFragment;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -303,7 +303,7 @@ public class TestgruppeService {
 
         return fetchTestgruppeById(gruppeId)
                 .flatMap(testgruppe -> identService.saveIdentTilGruppe(ident, testgruppe.getId(), master, null))
-                .flatMap(testIdent -> pdlDataConsumer.putStandalone(ident, true));
+                .flatMap(_ -> pdlDataConsumer.putStandalone(ident, true));
     }
 
     public Mono<Page<Testident>> getIdenter(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
@@ -334,7 +334,7 @@ public class TestgruppeService {
                 .then();
     }
 
-    public Flux<RsGruppeFragment> fetchGruppeByFragment(String gruppeFragment) {
+    public Flux<GruppeFragment> fetchGruppeByFragment(String gruppeFragment) {
 
         var searchQueries = gruppeFragment.split(" ");
         var gruppeId = Arrays.stream(searchQueries)
@@ -349,11 +349,11 @@ public class TestgruppeService {
                 .collect(Collectors.joining(" "));
 
         return Mono.just(gruppeFragment)
-                .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(gruppeId) ?
+                .flatMapMany(_ -> isNotBlank(gruppeNavn) && isNotBlank(gruppeId) ?
                         testgruppeRepository.findByIdContainingAndNavnContaining(gruppeId, gruppeNavn) :
                         Flux.merge(
                                 testgruppeRepository.findByIdContaining(gruppeId),
                                 testgruppeRepository.findByNavnContaining(gruppeNavn)))
-                .sort(Comparator.comparing(RsGruppeFragment::getId));
+                .sort(Comparator.comparing(GruppeFragment::getId));
     }
 }

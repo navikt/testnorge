@@ -9,7 +9,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.projection.GruppeBestillingIdent;
-import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.BestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
@@ -101,7 +101,7 @@ public class BestillingService {
                 .flatMap(this::resolveUtlededeFagsystemerForBestilling);
     }
 
-    public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+    public Flux<BestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
 
         var searchQueries = bestillingFragment.split(" ");
         var bestillingID = Arrays.stream(searchQueries)
@@ -121,7 +121,7 @@ public class BestillingService {
                         Flux.merge(
                                 bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
                                 bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn))))
-                .sort(Comparator.comparing(RsBestillingFragment::getId));
+                .sort(Comparator.comparing(BestillingFragment::getId));
     }
 
     public Flux<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {

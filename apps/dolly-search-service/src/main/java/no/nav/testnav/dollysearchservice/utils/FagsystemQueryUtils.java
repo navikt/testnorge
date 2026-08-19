@@ -38,7 +38,6 @@ public class FagsystemQueryUtils {
             case BANKKONTO_NORGE -> mustExistQuery(queryBuilder, "bankkonto.norskBankkonto");
             case BANKKONTO_UTLAND -> mustExistQuery(queryBuilder, "bankkonto.utenlandskBankkonto");
             case BRREGSTUB -> mustExistQuery(queryBuilder, "brregstub");
-            case OPPFOELGINGSVEDTAK14A -> mustExistQuery(queryBuilder, "oppfoelgingsvedtak14a");
             case DOKARKIV -> mustExistQuery(queryBuilder, "dokarkiv");
             case ETTERLATTE -> mustExistQuery(queryBuilder, "etterlatteYtelser");
             case FULLMAKT -> mustExistQuery(queryBuilder, "fullmakt");
@@ -51,6 +50,7 @@ public class FagsystemQueryUtils {
             case KRRSTUB -> mustExistQuery(queryBuilder, "krrstub");
             case MEDL -> mustExistQuery(queryBuilder, "medl");
             case NOM -> mustExistQuery(queryBuilder, "nomdata");
+            case OPPFOELGINGSVEDTAK14A -> mustExistQuery(queryBuilder, "oppfoelgingsvedtak14a");
             case PEN_AFP_OFFENTLIG -> mustExistQuery(queryBuilder, "pensjonforvalter.afpOffentlig");
             case PEN_AP -> mustExistQuery(queryBuilder, "pensjonforvalter.alderspensjon");
             case PEN_AP_NY_UTTAKSGRAD -> mustExistQuery(queryBuilder, "pensjonforvalter.alderspensjonNyUtaksgrad");

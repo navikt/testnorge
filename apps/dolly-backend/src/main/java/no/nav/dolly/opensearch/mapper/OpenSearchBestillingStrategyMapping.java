@@ -6,8 +6,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.MappingException;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.projection.BestillingBrukerFragment;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.opensearch.BestillingDokument;
@@ -34,10 +34,10 @@ public class OpenSearchBestillingStrategyMapping implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         // Denne brukes ved initiell indexering av eksisterende bestillinger
-        factory.classMap(Bestilling.class, BestillingDokument.class)
+        factory.classMap(BestillingBrukerFragment.class, BestillingDokument.class)
                 .customize(new CustomMapper<>() {
                                @Override
-                               public void mapAtoB(Bestilling bestilling, BestillingDokument bestillingDokument, MappingContext context) {
+                               public void mapAtoB(BestillingBrukerFragment bestilling, BestillingDokument bestillingDokument, MappingContext context) {
 
                                    try {
                                        bestillingDokument.setIgnore(isBlank(bestilling.getBestKriterier()) ||
@@ -56,6 +56,9 @@ public class OpenSearchBestillingStrategyMapping implements MappingStrategy {
                                                    .filter(BestillingProgress::isIdentGyldig)
                                                    .map(BestillingProgress::getIdent)
                                                    .toList());
+
+                                           bestillingDokument.setBrukerType(bestilling.getBrukertype());
+                                           bestillingDokument.setOrgnr(bestilling.getOrganisasjoner().get(bestilling.getBrukerId()));
                                        }
 
                                    } catch (JacksonException |
