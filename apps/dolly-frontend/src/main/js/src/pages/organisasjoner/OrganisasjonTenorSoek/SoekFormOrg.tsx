@@ -22,12 +22,8 @@ const SoekefeltWrapper = styled.div`
 	background-color: white;
 	border: 1px solid @color-bg-grey-border;
 	border-radius: 4px;
-	margin-top: -70px;
 	width: 100%;
-`
-
-const Soekefelt = styled.div`
-	padding: 15px;
+	padding: 5px 0 0 0;
 `
 
 export const SoekFormOrg = ({ setRequest, mutate }: any) => {
@@ -88,137 +84,133 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 
 	return (
 		<SoekefeltWrapper>
-			<Soekefelt>
-				<FormProvider {...formMethods}>
-					<>
-						<Form control={control} className="flexbox--flex-wrap">
-							<Table size="small">
-								<Table.Body>
-									<Table.ExpandableRow
-										content={<EnhetsregisteretForetaksregisteret handleChange={handleChange} />}
-										defaultOpen={true}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Enhetsregisteret og Foretaksregisteret"
-												dataCy={
-													TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET
-												}
-												paths={[
-													'organisasjonsnummer',
-													'organisasjonsform.kode',
-													'forretningsadresse.kommunenummer',
-													'harUtenlandskForretningsadresse',
-													'harUtenlandskPostadresse',
-													'naeringBeskrivelse',
-													'naeringKode',
-													'registrertIMvaregisteret',
-													'registrertIForetaksregisteret',
-													'registrertIFrivillighetsregisteret',
-													'enhetStatuser.kode',
-													'slettetIEnhetsregisteret',
-													'revisorer',
-													'regnskapsfoerere',
-													'dagligLeder',
-													'styremedlemmer',
-													'forretningsfoerer',
-													'kontaktpersoner',
-													'norsk_representant',
-													'erUnderenhet.hovedenhet',
-													'harUnderenheter',
-													'antallUnderenheter',
-													'antallAnsatte.fraOgMed',
-													'antallAnsatte.tilOgMed',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<TestInnsendingSkattEnhet handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Opplysninger fra Skatteetatens innsendingsmiljø"
-												paths={[
-													'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar',
-													'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
-													'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
-													'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',
-													'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
-													'tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
-													'tenorRelasjoner.testinnsendingSkattEnhet.manntall',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<EnhetsregisteretArbeidsforhold handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Arbeidsforhold"
-												paths={[
-													'tenorRelasjoner.arbeidsforhold.startDato.fraOgMed',
-													'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed',
-													'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed',
-													'tenorRelasjoner.arbeidsforhold.sluttDato.tilOgMed',
-													'tenorRelasjoner.arbeidsforhold.harPermisjoner',
-													'tenorRelasjoner.arbeidsforhold.harPermitteringer',
-													'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
-													'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
-													'tenorRelasjoner.arbeidsforhold.harHistorikk',
-													'tenorRelasjoner.arbeidsforhold.arbeidsforholdtype',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<SamletReskontroinnsyn handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Samlet reskontroinnsyn"
-												paths={[
-													'tenorRelasjoner.samletReskontroinnsyn.harKrav',
-													'tenorRelasjoner.samletReskontroinnsyn.harInnbetaling',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-									<Table.ExpandableRow
-										content={<Tjenestepensjonsavtale handleChange={handleChange} />}
-									>
-										<Table.HeaderCell>
-											<Header
-												title="Tjenestepensjonsavtale"
-												paths={[
-													'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
-													'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
-												]}
-												getValues={getValues}
-												emptyCategory={emptyCategory}
-											/>
-										</Table.HeaderCell>
-									</Table.ExpandableRow>
-								</Table.Body>
-							</Table>
-						</Form>
-						{(devEnabled || isAdmin) && (
-							<Suspense fallback={null}>
-								<DisplayFormState />
-							</Suspense>
-						)}
-					</>
-				</FormProvider>
-			</Soekefelt>
+			<FormProvider {...formMethods}>
+				<>
+					<Form control={control} className="flexbox--flex-wrap">
+						<Table size="small">
+							<Table.Body>
+								<Table.ExpandableRow
+									content={<EnhetsregisteretForetaksregisteret handleChange={handleChange} />}
+									defaultOpen={true}
+								>
+									<Table.HeaderCell>
+										<Header
+											title="Enhetsregisteret og Foretaksregisteret"
+											dataCy={TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET}
+											paths={[
+												'organisasjonsnummer',
+												'organisasjonsform.kode',
+												'forretningsadresse.kommunenummer',
+												'harUtenlandskForretningsadresse',
+												'harUtenlandskPostadresse',
+												'naeringBeskrivelse',
+												'naeringKode',
+												'registrertIMvaregisteret',
+												'registrertIForetaksregisteret',
+												'registrertIFrivillighetsregisteret',
+												'enhetStatuser.kode',
+												'slettetIEnhetsregisteret',
+												'revisorer',
+												'regnskapsfoerere',
+												'dagligLeder',
+												'styremedlemmer',
+												'forretningsfoerer',
+												'kontaktpersoner',
+												'norsk_representant',
+												'erUnderenhet.hovedenhet',
+												'harUnderenheter',
+												'antallUnderenheter',
+												'antallAnsatte.fraOgMed',
+												'antallAnsatte.tilOgMed',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Table.HeaderCell>
+								</Table.ExpandableRow>
+								<Table.ExpandableRow
+									content={<TestInnsendingSkattEnhet handleChange={handleChange} />}
+								>
+									<Table.HeaderCell>
+										<Header
+											title="Opplysninger fra Skatteetatens innsendingsmiljø"
+											paths={[
+												'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
+												'tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
+												'tenorRelasjoner.testinnsendingSkattEnhet.manntall',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Table.HeaderCell>
+								</Table.ExpandableRow>
+								<Table.ExpandableRow
+									content={<EnhetsregisteretArbeidsforhold handleChange={handleChange} />}
+								>
+									<Table.HeaderCell>
+										<Header
+											title="Arbeidsforhold"
+											paths={[
+												'tenorRelasjoner.arbeidsforhold.startDato.fraOgMed',
+												'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed',
+												'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed',
+												'tenorRelasjoner.arbeidsforhold.sluttDato.tilOgMed',
+												'tenorRelasjoner.arbeidsforhold.harPermisjoner',
+												'tenorRelasjoner.arbeidsforhold.harPermitteringer',
+												'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
+												'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
+												'tenorRelasjoner.arbeidsforhold.harHistorikk',
+												'tenorRelasjoner.arbeidsforhold.arbeidsforholdtype',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Table.HeaderCell>
+								</Table.ExpandableRow>
+								<Table.ExpandableRow
+									content={<SamletReskontroinnsyn handleChange={handleChange} />}
+								>
+									<Table.HeaderCell>
+										<Header
+											title="Samlet reskontroinnsyn"
+											paths={[
+												'tenorRelasjoner.samletReskontroinnsyn.harKrav',
+												'tenorRelasjoner.samletReskontroinnsyn.harInnbetaling',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Table.HeaderCell>
+								</Table.ExpandableRow>
+								<Table.ExpandableRow
+									content={<Tjenestepensjonsavtale handleChange={handleChange} />}
+								>
+									<Table.HeaderCell>
+										<Header
+											title="Tjenestepensjonsavtale"
+											paths={[
+												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
+												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Table.HeaderCell>
+								</Table.ExpandableRow>
+							</Table.Body>
+						</Table>
+					</Form>
+					{(devEnabled || isAdmin) && (
+						<Suspense fallback={null}>
+							<DisplayFormState />
+						</Suspense>
+					)}
+				</>
+			</FormProvider>
 		</SoekefeltWrapper>
 	)
 }

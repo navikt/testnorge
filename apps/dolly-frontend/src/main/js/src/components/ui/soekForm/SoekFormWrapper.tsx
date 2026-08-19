@@ -94,11 +94,7 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 		<KategoriHeader data-testid={dataCy}>
 			<div className="flexbox--flex-wrap">
 				<span>{title}</span>
-				{antallValgt > 0 && (
-					<KategoriCircle data-testid={TestComponentSelectors.TITLE_TENOR_HEADER_COUNTER}>
-						<p>{antallValgt}</p>
-					</KategoriCircle>
-				)}
+				<AntallCircle antall={antallValgt} />
 			</div>
 			{paths && (
 				<Button
@@ -116,7 +112,18 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 	)
 }
 
-const getAntallRequest = (liste: string[], getValues: UseFormGetValues<any>) => {
+export const AntallCircle = ({ antall }: { antall: number }) => {
+	if (antall <= 0) {
+		return null
+	}
+	return (
+		<KategoriCircle data-testid={TestComponentSelectors.TITLE_TENOR_HEADER_COUNTER}>
+			<p>{antall}</p>
+		</KategoriCircle>
+	)
+}
+
+export const getAntallRequest = (liste: string[], getValues: UseFormGetValues<any>) => {
 	let antall = 0
 	liste?.forEach((item) => {
 		const attr = getValues?.(item)
