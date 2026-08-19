@@ -39,6 +39,8 @@ public class SearchRequest {
 
     private Set<String> identer;
 
+    private String orgnr;
+
     public Set<String> getIdenter() {
 
         if (isNull(identer)) {

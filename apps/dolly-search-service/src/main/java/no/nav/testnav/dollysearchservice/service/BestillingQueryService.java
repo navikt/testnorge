@@ -155,6 +155,7 @@ public class BestillingQueryService {
         }
 
         FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
+        FagsystemQueryUtils.addOrgnrQuery(queryBuilder, request.getOrgnr());
         return queryBuilder;
     }
 }

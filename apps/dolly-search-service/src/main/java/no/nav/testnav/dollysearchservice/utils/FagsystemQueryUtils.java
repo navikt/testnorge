@@ -76,6 +76,14 @@ public class FagsystemQueryUtils {
         }
     }
 
+    public static void addOrgnrQuery(BoolQuery.Builder queryBuilder, String orgnr) {
+
+        if (isNotBlank(orgnr)) {
+            queryBuilder.must(builder ->
+                    builder.match(matchQuery("orgnr", orgnr)));
+        }
+    }
+
     public static void addIdentQuery(BoolQuery.Builder queryBuilder, PersonRequest personRequest) {
 
         if (nonNull(personRequest) && isNotBlank(personRequest.getIdent())) {
