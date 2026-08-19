@@ -117,6 +117,7 @@ public class AaregClient implements ClientRegister {
         context.setProperty(IDENT, ident);
         var bestilteArbeidsforhold = request.stream()
                 .filter(aareg -> nonNull(aareg.getArbeidsgiver()))
+                .distinct()
                 .collect(Collectors.toMap(RsAareg::hashCode, aareg -> mapperFacade.map(aareg, Arbeidsforhold.class, context)));
 
         var antallArbeidsforhold = new AtomicInteger(getMaxArbeidsforholdId(eksisterende));
