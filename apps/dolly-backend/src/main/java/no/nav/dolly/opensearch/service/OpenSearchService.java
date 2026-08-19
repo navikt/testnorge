@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class OpenSearchService {
 
     private static final String INDEKS = "Indeks \"";
-    
+
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
     private final JsonMapper jsonMapper;
@@ -131,15 +131,15 @@ public class OpenSearchService {
                 response.items().stream()
                         .filter(item -> nonNull(item.error()))
                         .forEach(item ->
-                            log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
-                                    nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
+                                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
+                                        nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
             }
             return Mono.just(response);
 
         } catch (IOException | JacksonException e) {
             log.warn("Feilet å lagre bestilling id {}, {}",
                     (!bestillingDokument.isEmpty() ?
-                    bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
+                            bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
             return Mono.empty();
         }
     }
@@ -166,6 +166,7 @@ public class OpenSearchService {
             val exists = openSearchClient.exists(new ExistsRequest.Builder()
                     .index(index)
                     .id(String.valueOf(id))
+                    .source(s -> s.fetch(false))
                     .build());
 
             return Mono.just(exists.value());

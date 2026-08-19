@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsBestillingFragment {
+public class GruppeFragment {
 
     private Long id;
     private String navn;

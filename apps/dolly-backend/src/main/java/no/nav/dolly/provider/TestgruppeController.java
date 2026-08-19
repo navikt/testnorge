@@ -11,7 +11,7 @@ import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
 import no.nav.dolly.bestilling.service.OpprettPersonerFraIdenterMedKriterierService;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.projection.RsGruppeFragment;
+import no.nav.dolly.domain.projection.GruppeFragment;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -171,7 +171,7 @@ public class TestgruppeController {
 
     @GetMapping("/soekGruppe")
     @Operation(description = "Hent grupper basert på fragment")
-    public Flux<RsGruppeFragment> getGrupperByFragment(@RequestParam(value = "fragment") String fragment) {
+    public Flux<GruppeFragment> getGrupperByFragment(@RequestParam(value = "fragment") String fragment) {
 
         return testgruppeService.fetchGruppeByFragment(fragment);
     }

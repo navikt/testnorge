@@ -31,6 +31,7 @@ public class PersonerSearchController {
     public Mono<SearchResponse> getPersoner(@RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request) {
 
+
         return Mono.just(personerSearchService.search(request, registreRequest));
     }
 
