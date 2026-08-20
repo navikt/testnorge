@@ -58,6 +58,7 @@ import {
 	harKdiBestilling,
 	harKelvinAapBestilling,
 	harMedlBestilling,
+	harOppfoelgingsvedtak14aBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
 	harSigrunstubPensjonsgivendeInntekt,
@@ -119,6 +120,8 @@ import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
 import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
 import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
+import { useOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
+import { Oppfoelgingsvedtak14aVisning } from '@/components/fagsystem/oppfoelgingsvedtak14a/visning/Oppfoelgingsvedtak14aVisning'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -282,6 +285,16 @@ const PersonVisning = (props: PersonVisningProps) => {
 		error: kelvinAapBehandlingStatusError,
 	} = useKelvinAapBehandlingStatus(ident.ident, harKelvinAapBestilling(bestillingerFagsystemer))
 
+	const {
+		loading: loadingOppfoelgingsvedtak14aData,
+		oppfoelgingsvedtak14aData,
+		error: errorOppfoelgingsvedtak14aData,
+	} = useOppfoelgingsvedtak14a(
+		ident.ident,
+		harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer),
+	)
+	console.log('oppfoelgingsvedtak14aData: ', oppfoelgingsvedtak14aData) //TODO - SLETT MEG
+
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
 		harArenaBestilling(bestillingerFagsystemer) ||
@@ -425,6 +438,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 				harArbeidsplassenBestilling(bestillingerFagsystemer) &&
 				!arbeidsplassencvData &&
 				arbeidsplassencvError
+			),
+			!!(
+				harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer) &&
+				!oppfoelgingsvedtak14aData &&
+				errorOppfoelgingsvedtak14aData
 			),
 		]
 
@@ -704,6 +722,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					data={kelvinAapData}
 					loading={loadingKelvinAapBehandlingStatus}
 					harKelvinAapBestilling={harKelvinAapBestilling(bestillingerFagsystemer)}
+				/>
+				<Oppfoelgingsvedtak14aVisning
+					data={oppfoelgingsvedtak14aData}
+					loading={loadingOppfoelgingsvedtak14aData}
+					harBestilling={harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer)}
 				/>
 				<ArenaVisning
 					data={arenaData}

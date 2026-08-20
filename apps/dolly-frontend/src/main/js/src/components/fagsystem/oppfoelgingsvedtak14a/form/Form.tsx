@@ -25,6 +25,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [oppfoelgingsvedtak14aPath])}
 			>
 				<div className={'flexbox--flex-wrap'}>
+					{/*TODO: Bruk kodeverk?*/}
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.innsatsgruppe`}
 						label="Innsatsgruppe"
@@ -32,6 +33,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						size="xlarge"
 						isClearable={false}
 					/>
+					{/*TODO: Bruk kodeverk?*/}
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.hovedmal`}
 						label="Hovedmål"
@@ -55,6 +57,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						label="Begrunnelse"
 						size="xlarge"
 					/>
+					{/*TODO: Endre til z-ident*/}
 					<FormTextInput
 						name={`${oppfoelgingsvedtak14aPath}.veilederIdent`}
 						label="Veileder ident"
