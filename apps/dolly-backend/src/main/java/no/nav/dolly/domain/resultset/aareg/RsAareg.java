@@ -51,6 +51,9 @@ public class RsAareg {
     @Schema(description = "Angir om posten er oppdatering")
     private Boolean isOppdatering;
 
+    // Brukes for å skille identiske arbeidsforhold
+    private Integer tempId;
+
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {
             antallTimerForTimeloennet = new ArrayList<>();

@@ -16,8 +16,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.domain.resultset.aareg.RsAareg;
-import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -249,7 +247,6 @@ public class BestillingService {
 
         return identRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testident %s ble ikke funnet", ident))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -295,7 +292,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -462,7 +458,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
@@ -497,7 +492,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(gruppeId),
@@ -802,15 +796,5 @@ public class BestillingService {
         }
 
         return Mono.just(bestilling);
-    }
-
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
     }
 }
