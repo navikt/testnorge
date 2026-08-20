@@ -26,7 +26,7 @@ describe('TpsMeldingerPage', () => {
       queues: [
         { value: 'queue1', label: 'queue1' },
         { value: 'queue2', label: 'queue2' },
-        { value: 'queue2', label: 'queue2' },
+        { value: 'queue3', label: 'queue3' },
       ],
       loading: false,
       error: undefined,
@@ -113,14 +113,9 @@ describe('TpsMeldingerPage', () => {
 
     render(<TpsMeldingerPage />);
 
-    // Check for the error alert by class instead of role
-    const errorAlert = document.querySelector('.navds-alert--error');
-    expect(errorAlert).toBeInTheDocument();
-
     expect(screen.getByText(/Noe gikk galt/i)).toBeInTheDocument();
-
-    const errorIcon = document.querySelector('svg.navds-alert__icon[role="img"]');
-    expect(errorIcon).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '#dolly' })).toBeInTheDocument();
+    expect(screen.getByText(/dolly@nav.no/)).toBeInTheDocument();
   });
 
   dollyTest('should send form after valid input', async () => {
@@ -240,8 +235,7 @@ describe('TpsMeldingerPage', () => {
       expect(prettyCodeElement).toBeInTheDocument();
     });
 
-    const successIcon = document.querySelector('svg.navds-alert__icon[role="img"]');
-    expect(successIcon).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /kopier/i })).toBeInTheDocument();
   });
 
   dollyTest('should allow adding and submitting a custom queue value', async () => {

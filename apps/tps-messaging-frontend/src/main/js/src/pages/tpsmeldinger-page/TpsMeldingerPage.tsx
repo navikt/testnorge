@@ -1,9 +1,17 @@
 import React from 'react';
-import { Page } from '@navikt/dolly-komponenter';
 import { useTpsMessagingXml } from '../../hooks/useTpsMessaging';
 import { Controller, useForm } from 'react-hook-form';
 import { sendTpsMelding } from '../../service/SendTpsMeldingService';
-import { Alert, Button, CopyButton, Textarea, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import {
+  Alert,
+  Button,
+  CopyButton,
+  Link,
+  Page,
+  Textarea,
+  UNSAFE_Combobox,
+  VStack,
+} from '@navikt/ds-react';
 import { XMLValidator } from 'fast-xml-parser';
 import PrettyCode from '../../components/PrettyCode';
 import AlertWithCloseButton from '../../components/AlertWithCloseButton';
@@ -23,8 +31,23 @@ const xmlQueueDefaultValue =
 
 const infoQueueDefaultValue = 'FS03-FDNUMMER-PERSDATA-O;12345678901;;A;0';
 
+type FormValues = {
+  queue: string;
+  melding: string;
+};
+
+const renderPageContent = (children: React.ReactNode) => (
+  <Page contentBlockPadding="none">
+    <Page.Block as="main" gutters>
+      <div className="tps-meldinger-page">
+        <div className="tps-meldinger-page__content">{children}</div>
+      </div>
+    </Page.Block>
+  </Page>
+);
+
 export const TpsMeldingerPage = () => {
-  const onValidSubmit = (values: any) => {
+  const onValidSubmit = (values: FormValues) => {
     setIsSending(true);
     resetResponse();
     sendTpsMelding(values.queue, values.melding)
@@ -42,7 +65,7 @@ export const TpsMeldingerPage = () => {
     handleSubmit,
     control,
     formState: { errors: formErrors },
-  } = useForm({
+  } = useForm<FormValues>({
     shouldFocusError: true,
     defaultValues: {
       queue: '',
@@ -59,113 +82,129 @@ export const TpsMeldingerPage = () => {
     setErrorResponse('');
   };
 
-  if (formErrors) {
-    console.warn(formErrors);
+  if (loading) {
+    return renderPageContent(<p>Henter køer...</p>);
   }
 
-  if (loading) return <p>Henter køer...</p>;
-
-  if (error)
-    return (
-      <Alert variant={'error'}>
+  if (error) {
+    return renderPageContent(
+      <Alert contentMaxWidth={false} variant={'error'} role="alert">
         Noe gikk galt... Ta kontakt med team{' '}
-        <a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a> på Slack eller på epost
-        dolly@nav.no.
-      </Alert>
+        <Link href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</Link> på Slack eller på
+        epost dolly@nav.no.
+      </Alert>,
     );
+  }
 
-  return (
-    <Page>
-      <VStack as="form" gap="4" onSubmit={handleSubmit(onValidSubmit)}>
-        <Controller
-          control={control}
-          rules={{ required: 'Du må velge en kø.' }}
-          name="queue"
-          render={({ field }) => (
-            <UNSAFE_Combobox
-              id={'queue'}
-              label="Meldingskø"
-              name={field.name}
-              ref={field.ref}
-              onToggleSelected={(option, isSelected) => {
-                if (isSelected) {
-                  field.onChange(option);
-                  setValue(
-                    'melding',
-                    option?.toUpperCase()?.includes('XML')
-                      ? xmlQueueDefaultValue
-                      : infoQueueDefaultValue,
-                  );
-                  resetResponse();
-                }
-              }}
-              error={formErrors.queue?.message}
-              options={queues || []}
-              allowNewValues
-              shouldAutocomplete
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          rules={{
-            required: 'Melding kan ikke være tom',
-            validate: {
-              xmlFormat: (value, formValues) => {
-                if (
-                  !value ||
-                  (!formValues.queue?.includes('xml') && !formValues.queue?.includes('XML'))
-                ) {
-                  return true;
-                }
-                const result = XMLValidator.validate(value);
-                return (
-                  result === true ||
-                  'Ugyldig XML-format. Kontroller at XML-koden er korrekt formatert, eller velg en kø som ikke krever XML.'
+  return renderPageContent(
+    <VStack
+      className="tps-meldinger-page__form"
+      as="form"
+      gap="space-16"
+      onSubmit={handleSubmit(onValidSubmit)}
+    >
+      <Controller
+        control={control}
+        rules={{ required: 'Du må velge en kø.' }}
+        name="queue"
+        render={({ field }) => (
+          <UNSAFE_Combobox
+            id={'queue'}
+            label="Meldingskø"
+            name={field.name}
+            ref={field.ref}
+            onBlur={field.onBlur}
+            onToggleSelected={(option, isSelected) => {
+              if (isSelected) {
+                field.onChange(option);
+                setValue(
+                  'melding',
+                  option?.toUpperCase()?.includes('XML')
+                    ? xmlQueueDefaultValue
+                    : infoQueueDefaultValue,
                 );
-              },
-            },
-          }}
-          name="melding"
-          render={({ field }) => (
-            <Textarea
-              label={'TPS melding'}
-              id={'melding'}
-              {...field}
-              error={formErrors.melding?.message}
-            />
-          )}
-        />
-        <div>
-          <Button
-            onClick={() => {
-              resetResponse();
+                resetResponse();
+              }
             }}
-            type="submit"
-            loading={isSending}
-            disabled={isSending}
+            error={formErrors.queue?.message}
+            options={queues || []}
+            allowNewValues
+            shouldAutocomplete
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        rules={{
+          required: 'Melding kan ikke være tom',
+          validate: {
+            xmlFormat: (value, formValues) => {
+              if (
+                !value ||
+                (!formValues.queue?.includes('xml') && !formValues.queue?.includes('XML'))
+              ) {
+                return true;
+              }
+              const result = XMLValidator.validate(value);
+              return (
+                result === true ||
+                'Ugyldig XML-format. Kontroller at XML-koden er korrekt formatert, eller velg en kø som ikke krever XML.'
+              );
+            },
+          },
+        }}
+        name="melding"
+        render={({ field }) => (
+          <Textarea
+            label={'TPS melding'}
+            id={'melding'}
+            {...field}
+            error={formErrors.melding?.message}
+          />
+        )}
+      />
+      <div>
+        <Button
+          onClick={() => {
+            resetResponse();
+          }}
+          type="submit"
+          loading={isSending}
+          disabled={isSending}
+        >
+          Send inn
+        </Button>
+      </div>
+      {successMessage && (
+        <div className={'tps-meldinger-page__response-wrapper'}>
+          <CopyButton
+            className={'copy-button'}
+            copyText={successMessage}
+            data-color="accent"
+            size="small"
+          />
+          <AlertWithCloseButton
+            className="tps-meldinger-page__response-alert"
+            onClose={resetResponse}
+            variant={'success'}
           >
-            Send inn
-          </Button>
-        </div>
-        {successMessage && (
-          <div className={'navds-combobox__wrapper'} style={{ minWidth: '740px' }}>
-            <CopyButton className={'copy-button'} copyText={successMessage} variant={'action'} />
-            <AlertWithCloseButton onClose={resetResponse} variant={'success'}>
-              {XMLValidator.validate(successMessage) ? (
-                <PrettyCode codeString={successMessage} language="xml" />
-              ) : (
-                <p>{successMessage}</p>
-              )}
-            </AlertWithCloseButton>
-          </div>
-        )}
-        {errorResponse && (
-          <AlertWithCloseButton onClose={resetResponse} variant={'error'}>
-            {errorResponse}
+            {XMLValidator.validate(successMessage) ? (
+              <PrettyCode codeString={successMessage} language="xml" />
+            ) : (
+              <p>{successMessage}</p>
+            )}
           </AlertWithCloseButton>
-        )}
-      </VStack>
-    </Page>
+        </div>
+      )}
+      {errorResponse && (
+        <AlertWithCloseButton
+          className="tps-meldinger-page__response-alert"
+          onClose={resetResponse}
+          variant={'error'}
+        >
+          {errorResponse}
+        </AlertWithCloseButton>
+      )}
+    </VStack>,
   );
 };
