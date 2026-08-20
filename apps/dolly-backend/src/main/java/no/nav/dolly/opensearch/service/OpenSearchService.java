@@ -155,7 +155,10 @@ public class OpenSearchService {
 
         } catch (IOException | OpenSearchException e) {
 
-            log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(), e.getLocalizedMessage());
+            log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(),
+                    e instanceof OpenSearchException ose && nonNull(ose.response().error().causedBy()) ?
+                         ose.response().error().causedBy().reason() :
+                    e.getLocalizedMessage(), e);
             return Mono.empty();
         }
     }

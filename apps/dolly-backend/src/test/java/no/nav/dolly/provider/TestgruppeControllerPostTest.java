@@ -104,7 +104,6 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                                 .arbeidsgiver(
                                         RsOrganisasjon
                                                 .builder()
-                                                .aktoertype("ORG")
                                                 .orgnummer("896929119")
                                                 .build())
                                 .build()))

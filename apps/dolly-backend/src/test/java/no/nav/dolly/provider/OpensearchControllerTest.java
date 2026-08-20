@@ -77,7 +77,6 @@ class OpensearchControllerTest {
                                         .yrke("2521106")
                                         .build())
                                 .arbeidsgiver(RsOrganisasjon.builder()
-                                        .aktoertype("ORG")
                                         .orgnummer("896929119")
                                         .build())
                                 .build()))

@@ -328,7 +328,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         assertThat(target.getAareg(), hasItem(RsAareg.builder()
                 .arbeidsgiver(RsOrganisasjon.builder()
-                        .aktoertype("ORG")
                         .orgnummer("123456789")
                         .build())
                 .arbeidsavtale(RsArbeidsavtale.builder()
@@ -340,7 +339,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                 .build()));
         assertThat(target.getAareg(), hasItem(RsAareg.builder()
                 .arbeidsgiver(RsAktoerPerson.builder()
-                        .aktoertype("PERS")
                         .ident("12345678901")
                         .build())
                 .arbeidsavtale(RsArbeidsavtale.builder()
@@ -1311,7 +1309,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         return RsDollyUtvidetBestilling.builder()
                 .aareg(List.of(RsAareg.builder()
                         .arbeidsgiver(RsOrganisasjon.builder()
-                                .aktoertype("ORG")
                                 .orgnummer("123456789")
                                 .build())
                         .arbeidsavtale(RsArbeidsavtale.builder()
@@ -1329,7 +1326,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         return RsDollyUtvidetBestilling.builder()
                 .aareg(List.of(RsAareg.builder()
                         .arbeidsgiver(RsAktoerPerson.builder()
-                                .aktoertype("PERS")
                                 .ident("12345678901")
                                 .build())
                         .arbeidsavtale(RsArbeidsavtale.builder()
