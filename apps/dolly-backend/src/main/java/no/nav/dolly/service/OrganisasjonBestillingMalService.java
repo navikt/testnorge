@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper.RsOrganisasjonMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
@@ -31,6 +32,7 @@ import static java.util.Objects.nonNull;
 public class OrganisasjonBestillingMalService {
 
     private static final String FINNES_IKKE = "Mal med id %d finnes ikke";
+    private static final String LAGRING_FEILET = "Kunne ikke lagre organisasjonsmal '%s' fra bestilling med id %d";
     private static final String ANONYM = "FELLES";
     private static final String ALLE = "ALLE";
 
@@ -48,7 +50,7 @@ public class OrganisasjonBestillingMalService {
                         .malNavn(malNavn)
                         .miljoer(bestilling.getMiljoer())
                         .build()))
-                .flatMap(organisasjonBestillingMalRepository::save);
+                .flatMap(mal -> saveOrganisasjonBestillingMal(mal, bestilling.getId()));
     }
 
     public Mono<OrganisasjonBestillingMal> saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
@@ -60,11 +62,12 @@ public class OrganisasjonBestillingMalService {
                                 .then(Mono.just(OrganisasjonBestillingMal.builder()
                                         .bestKriterier(bestilling.getBestKriterier())
                                         .bruker(bruker)
+                                        .brukerId(bruker.getId())
                                         .malNavn(malNavn)
                                         .miljoer(bestilling.getMiljoer())
                                         .sistOppdatert(LocalDateTime.now())
                                         .build()))
-                                .flatMap(organisasjonBestillingMalRepository::save)));
+                                .flatMap(mal -> saveOrganisasjonBestillingMal(mal, bestillingId))));
     }
 
     public Mono<RsOrganisasjonMalBestillingWrapper> getOrganisasjonMalBestillinger() {
@@ -137,6 +140,13 @@ public class OrganisasjonBestillingMalService {
                 .flatMap(malBestilling -> organisasjonBestillingMalRepository.deleteById(malBestilling.getId()))
                 .collectList()
                 .then();
+    }
+
+    private Mono<OrganisasjonBestillingMal> saveOrganisasjonBestillingMal(OrganisasjonBestillingMal mal, Long bestillingId) {
+
+        return organisasjonBestillingMalRepository.save(mal)
+                .switchIfEmpty(Mono.error(new DollyFunctionalException(
+                        LAGRING_FEILET.formatted(mal.getMalNavn(), bestillingId))));
     }
 
     public static String getBruker(Map<Long, Bruker> brukere, Long brukerId) {
