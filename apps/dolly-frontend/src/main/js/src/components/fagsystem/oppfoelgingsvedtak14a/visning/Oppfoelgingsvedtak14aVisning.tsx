@@ -7,8 +7,23 @@ import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
+import { Oppfoelgingsvedtak14aTypes } from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
 
-export const Oppfoelgingsvedtak14aVisning = ({ data, loading, harBestilling }) => {
+export const getOppfoelgingsvedtak14aLabel = (options: any, value: string) => {
+	return (
+		options?.find((item: any) => item.value === value || item.gammelKode === value)?.label ?? value
+	)
+}
+
+export const Oppfoelgingsvedtak14aVisning = ({
+	data,
+	loading,
+	harBestilling,
+}: {
+	data: Oppfoelgingsvedtak14aTypes
+	loading: boolean
+	harBestilling: boolean
+}) => {
 	const { options: innsatsgruppeOptions } = useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
 	const { options: hovedmalOptions } = useKodeverkOppfoelgingsvedtak14a('hovedmal')
 	const { navEnheter } = useNavEnheter()
@@ -22,21 +37,6 @@ export const Oppfoelgingsvedtak14aVisning = ({ data, loading, harBestilling }) =
 	}
 
 	const manglerFagsystemdata = harBestilling && !data
-
-	const getInnsatsgruppeLabel = (innsatsgruppe?: string) => {
-		return (
-			innsatsgruppeOptions?.find(
-				(gruppe: any) => gruppe.value === innsatsgruppe || gruppe.gammelKode === innsatsgruppe,
-			)?.label ?? innsatsgruppe
-		)
-	}
-
-	const getHovedmalLabel = (hovedmal?: string) => {
-		return (
-			hovedmalOptions?.find((maal: any) => maal.value === hovedmal || maal.gammelKode === hovedmal)
-				?.label ?? hovedmal
-		)
-	}
 
 	const getNavEnhetLabel = (navEnhetId?: string) => {
 		return navEnheter?.find((enhet: any) => enhet.value === navEnhetId)?.label ?? navEnhetId
@@ -56,8 +56,14 @@ export const Oppfoelgingsvedtak14aVisning = ({ data, loading, harBestilling }) =
 			) : (
 				<ErrorBoundary>
 					<div className="person-visning_content">
-						<TitleValue title="Innsatsgruppe" value={getInnsatsgruppeLabel(data.innsatsgruppe)} />
-						<TitleValue title="Hovedmål" value={getHovedmalLabel(data.hovedmal)} />
+						<TitleValue
+							title="Innsatsgruppe"
+							value={getOppfoelgingsvedtak14aLabel(innsatsgruppeOptions, data.innsatsgruppe)}
+						/>
+						<TitleValue
+							title="Hovedmål"
+							value={getOppfoelgingsvedtak14aLabel(hovedmalOptions, data.hovedmal)}
+						/>
 						<TitleValue title="Vedtak fattet" value={formatDate(data.vedtakFattet)} />
 						<TitleValue
 							title="Oppfølgingsenhet"

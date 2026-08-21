@@ -9,6 +9,7 @@ import { Oppfoelgingsvedtak14aTypes } from '@/components/fagsystem/oppfoelgingsv
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
 import React from 'react'
+import { getOppfoelgingsvedtak14aLabel } from '@/components/fagsystem/oppfoelgingsvedtak14a/visning/Oppfoelgingsvedtak14aVisning'
 
 export const Oppfoelgingsvedtak14a = ({ vedtak }: { vedtak: Oppfoelgingsvedtak14aTypes }) => {
 	const { options: innsatsgruppeOptions } = useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
@@ -17,21 +18,6 @@ export const Oppfoelgingsvedtak14a = ({ vedtak }: { vedtak: Oppfoelgingsvedtak14
 
 	if (!vedtak) {
 		return null
-	}
-
-	const getInnsatsgruppeLabel = (innsatsgruppe?: string) => {
-		return (
-			innsatsgruppeOptions?.find(
-				(gruppe: any) => gruppe.value === innsatsgruppe || gruppe.gammelKode === innsatsgruppe,
-			)?.label ?? innsatsgruppe
-		)
-	}
-
-	const getHovedmalLabel = (hovedmal?: string) => {
-		return (
-			hovedmalOptions?.find((maal: any) => maal.value === hovedmal || maal.gammelKode === hovedmal)
-				?.label ?? hovedmal
-		)
 	}
 
 	const getNavEnhetLabel = (navEnhetId?: string) => {
@@ -44,8 +30,14 @@ export const Oppfoelgingsvedtak14a = ({ vedtak }: { vedtak: Oppfoelgingsvedtak14
 				<BestillingTitle>Oppfølgingsvedtak § 14 a</BestillingTitle>
 				<div className="bestilling-blokk">
 					<BestillingData>
-						<TitleValue title="Innsatsgruppe" value={getInnsatsgruppeLabel(vedtak.innsatsgruppe)} />
-						<TitleValue title="Hovedmål" value={getHovedmalLabel(vedtak.hovedmal)} />
+						<TitleValue
+							title="Innsatsgruppe"
+							value={getOppfoelgingsvedtak14aLabel(innsatsgruppeOptions, vedtak.innsatsgruppe)}
+						/>
+						<TitleValue
+							title="Hovedmål"
+							value={getOppfoelgingsvedtak14aLabel(hovedmalOptions, vedtak.hovedmal)}
+						/>
 						<TitleValue title="Vedtak fattet" value={formatDate(vedtak.vedtakFattet)} />
 						<TitleValue
 							title="Oppfølgingsenhet"

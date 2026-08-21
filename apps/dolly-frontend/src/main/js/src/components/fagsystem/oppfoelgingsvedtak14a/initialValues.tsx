@@ -14,6 +14,7 @@ export type Oppfoelgingsvedtak14aTypes = {
 	hovedmal: string
 	vedtakFattet?: Date
 	oppfolgingsEnhet?: string
+	oppfolgingsenhetId?: string
 	begrunnelse?: string
 	veilederIdent?: string
 }
