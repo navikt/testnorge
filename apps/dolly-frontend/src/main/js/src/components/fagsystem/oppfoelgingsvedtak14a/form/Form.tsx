@@ -11,10 +11,20 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
+import { useEffect, useState } from 'react'
+import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
+import * as _ from 'lodash-es'
 
 export const Oppfoelgingsvedtak14aForm = () => {
 	const formMethods = useFormContext()
 	const { alleNavEnheter, loading: loadingEnheter } = useAlleNavEnheter()
+
+	const [randomNavUsers, setRandomNavUsers] = useState<{ value: string; label: string }[]>([])
+	useEffect(() => {
+		setRandomNavUsers(genererTilfeldigeNavPersonidenter() as { value: string; label: string }[])
+	}, [])
+
+	const veileder = formMethods.watch(`${oppfoelgingsvedtak14aPath}.veilederIdent`)
 
 	const { options: innsatsgruppeOptions, loading: innsatsgruppeLoading } =
 		useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
@@ -63,10 +73,14 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						label="Begrunnelse"
 						size="xlarge"
 					/>
-					{/*TODO: Endre til z-ident*/}
-					<FormTextInput
+					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.veilederIdent`}
 						label="Veileder ident"
+						options={
+							_.isEmpty(veileder)
+								? randomNavUsers
+								: [...randomNavUsers, { value: veileder, label: veileder }]
+						}
 					/>
 				</div>
 			</Panel>
@@ -83,11 +97,7 @@ Oppfoelgingsvedtak14aForm.validation = {
 			vedtakFattet: Yup.date().nullable(),
 			oppfolgingsEnhet: Yup.string().nullable(),
 			begrunnelse: Yup.string().nullable(),
-			veilederIdent: Yup.string()
-				.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
-				.test('len', 'Ident må være et tall med 11 sifre', (val) => !val || val.length === 11)
-				.optional()
-				.nullable(),
+			veilederIdent: Yup.string().nullable(),
 		}),
 	),
 }
