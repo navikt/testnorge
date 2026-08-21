@@ -915,23 +915,6 @@ const selectOptions = {
 		{ value: 'q2', label: 'Q2' },
 		{ value: 'q4', label: 'Q4' },
 	],
-
-	// 	Oppfølgingsvedtak § 14 a
-	innsatsgruppe: [
-		{ value: 'GODE_MULIGHETER', label: 'Gode muligheter' },
-		{ value: 'TRENGER_VEILEDNING', label: 'Trenger veiledning' },
-		{
-			value: 'TRENGER_VEILEDNING_NEDSATT_ARBEIDSEVNE',
-			label: 'Trenger veiledning - nedsatt arbeidsevne',
-		},
-		{ value: 'JOBBE_DELVIS', label: 'Jobbe delvis' },
-		{ value: 'LITEN_MULIGHET_TIL_A_JOBBE', label: 'Liten mulighet til å jobbe' },
-	],
-
-	hovedmal: [
-		{ value: 'SKAFFE_ARBEID', label: 'Skaffe arbeid' },
-		{ value: 'BEHOLDE_ARBEID', label: 'Beholde arbeid' },
-	],
 }
 
 export const SelectOptionsManager = (attributeId: keyof typeof selectOptions) =>

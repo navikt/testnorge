@@ -3,11 +3,14 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Alert } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
 
 export const Oppfoelgingsvedtak14aVisning = ({ data, loading, harBestilling }) => {
+	const { options: innsatsgruppeOptions } = useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
+	const { options: hovedmalOptions } = useKodeverkOppfoelgingsvedtak14a('hovedmal')
 	const { navEnheter } = useNavEnheter()
 
 	if (loading) {
@@ -19,6 +22,21 @@ export const Oppfoelgingsvedtak14aVisning = ({ data, loading, harBestilling }) =
 	}
 
 	const manglerFagsystemdata = harBestilling && !data
+
+	const getInnsatsgruppeLabel = (innsatsgruppe?: string) => {
+		return (
+			innsatsgruppeOptions?.find(
+				(gruppe: any) => gruppe.value === innsatsgruppe || gruppe.gammelKode === innsatsgruppe,
+			)?.label ?? innsatsgruppe
+		)
+	}
+
+	const getHovedmalLabel = (hovedmal?: string) => {
+		return (
+			hovedmalOptions?.find((maal: any) => maal.value === hovedmal || maal.gammelKode === hovedmal)
+				?.label ?? hovedmal
+		)
+	}
 
 	const getNavEnhetLabel = (navEnhetId?: string) => {
 		return navEnheter?.find((enhet: any) => enhet.value === navEnhetId)?.label ?? navEnhetId
@@ -38,11 +56,8 @@ export const Oppfoelgingsvedtak14aVisning = ({ data, loading, harBestilling }) =
 			) : (
 				<ErrorBoundary>
 					<div className="person-visning_content">
-						<TitleValue
-							title="Innsatsgruppe"
-							value={showLabel('innsatsgruppe', data.innsatsgruppe)}
-						/>
-						<TitleValue title="Hovedmål" value={showLabel('hovedmal', data.hovedmal)} />
+						<TitleValue title="Innsatsgruppe" value={getInnsatsgruppeLabel(data.innsatsgruppe)} />
+						<TitleValue title="Hovedmål" value={getHovedmalLabel(data.hovedmal)} />
 						<TitleValue title="Vedtak fattet" value={formatDate(data.vedtakFattet)} />
 						<TitleValue
 							title="Oppfølgingsenhet"

@@ -1,16 +1,14 @@
 import useSWR from 'swr'
-import { postFetcher } from '@/api'
+import { fetcher, postFetcher } from '@/api'
+import useSWRImmutable from 'swr/immutable'
+
+const baseUrl = '/testnav-dolly-proxy/oppfoelgingsvedtak14a/veilarbvedtaksstotte'
 
 export const useOppfoelgingsvedtak14a = (fnr: string, harBestilling: boolean) => {
 	const shouldFetch = Boolean(fnr && harBestilling)
 
 	const { data, isLoading, error } = useSWR<any, Error>(
-		shouldFetch
-			? [
-					'/testnav-dolly-proxy/oppfoelgingsvedtak14a/veilarbvedtaksstotte/api/v1/test/vedtak/hent-vedtak',
-					fnr,
-				]
-			: null,
+		shouldFetch ? [`${baseUrl}/api/v1/test/vedtak/hent-vedtak`, fnr] : null,
 		([url, fnr]: [string, string]) => postFetcher(url, { fnr }),
 		{ errorRetryCount: 0, revalidateOnFocus: false },
 	)
@@ -20,4 +18,22 @@ export const useOppfoelgingsvedtak14a = (fnr: string, harBestilling: boolean) =>
 		loading: isLoading,
 		error: error,
 	}
+}
+
+export const useKodeverkOppfoelgingsvedtak14a = (kodeverk: string) => {
+	const { data, isLoading, error } = useSWRImmutable<Record<any, any>, Error>(
+		`${baseUrl}/open/api/v2/kodeverk/${kodeverk}`,
+		fetcher,
+	)
+
+	const options =
+		!data || isLoading
+			? []
+			: data.map((item: any) => ({
+					value: item.kode,
+					label: item.beskrivelse,
+					gammelKode: item.gammelKode,
+				}))
+
+	return { options, loading: isLoading, error }
 }

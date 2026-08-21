@@ -3,7 +3,6 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { oppfoelgingsvedtak14aPath } from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
-import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import * as React from 'react'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -11,10 +10,17 @@ import { useAlleNavEnheter } from '@/utils/hooks/useNorg2'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import * as Yup from 'yup'
+import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
 
 export const Oppfoelgingsvedtak14aForm = () => {
 	const formMethods = useFormContext()
 	const { alleNavEnheter, loading: loadingEnheter } = useAlleNavEnheter()
+
+	const { options: innsatsgruppeOptions, loading: innsatsgruppeLoading } =
+		useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
+
+	const { options: hovedmalOptions, loading: hovedmalLoading } =
+		useKodeverkOppfoelgingsvedtak14a('hovedmal')
 
 	return (
 		<Vis attributt={oppfoelgingsvedtak14aPath}>
@@ -25,19 +31,19 @@ export const Oppfoelgingsvedtak14aForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [oppfoelgingsvedtak14aPath])}
 			>
 				<div className={'flexbox--flex-wrap'}>
-					{/*TODO: Bruk kodeverk?*/}
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.innsatsgruppe`}
 						label="Innsatsgruppe"
-						options={Options('innsatsgruppe')}
+						options={innsatsgruppeOptions}
+						isLoading={innsatsgruppeLoading}
 						size="xlarge"
 						isClearable={false}
 					/>
-					{/*TODO: Bruk kodeverk?*/}
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.hovedmal`}
 						label="Hovedmål"
-						options={Options('hovedmal')}
+						options={hovedmalOptions}
+						isLoading={hovedmalLoading}
 						isClearable={false}
 					/>
 					<FormDatepicker
