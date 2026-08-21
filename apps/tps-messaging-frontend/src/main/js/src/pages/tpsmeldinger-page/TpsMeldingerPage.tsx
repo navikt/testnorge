@@ -37,7 +37,7 @@ type FormValues = {
 };
 
 const renderPageContent = (children: React.ReactNode) => (
-  <Page contentBlockPadding="none">
+  <Page className="tps-meldinger-page__layout" contentBlockPadding="none">
     <Page.Block as="main" gutters>
       <div className="tps-meldinger-page">
         <div className="tps-meldinger-page__content">{children}</div>

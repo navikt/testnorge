@@ -2,6 +2,11 @@ import type { ReactNode } from 'react';
 import { Page } from '@navikt/ds-react';
 import styled from 'styled-components';
 
+const PageLayout = styled(Page)`
+  min-height: calc(100vh - var(--ax-space-48));
+  min-height: calc(100lvh - var(--ax-space-48));
+`;
+
 const Content = styled.div`
   width: 100%;
   min-width: 0;
@@ -117,11 +122,11 @@ type Props = {
 };
 
 const AppPage = ({ children }: Props) => (
-  <Page contentBlockPadding="none">
+  <PageLayout contentBlockPadding="none">
     <Page.Block as="main" gutters>
       <Content>{children}</Content>
     </Page.Block>
-  </Page>
+  </PageLayout>
 );
 
 export default AppPage;

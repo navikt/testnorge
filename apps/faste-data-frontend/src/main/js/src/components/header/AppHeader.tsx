@@ -1,6 +1,7 @@
 import { MenuGridIcon } from '@navikt/aksel-icons';
-import { ActionMenu, InternalHeader, Spacer, Theme } from '@navikt/ds-react';
+import { ActionMenu, Hide, HStack, InternalHeader, Spacer, Theme } from '@navikt/ds-react';
 import { Link as RouterLink } from 'react-router';
+import navLogo from '@/assets/nav-logo.svg';
 import ProfilLoader from '@/components/profil/ProfilLoader';
 
 const links = [
@@ -21,8 +22,11 @@ const links = [
 const AppHeader = () => {
   return (
     <InternalHeader>
-      <InternalHeader.Title as={RouterLink} to="/">
-        Faste Data
+      <InternalHeader.Title as={RouterLink} aria-label="NAV – Faste Data" to="/">
+        <HStack align="center" gap="space-16">
+          <img alt="" height={20} src={navLogo} width={64} />
+          <Hide below="md">Faste Data</Hide>
+        </HStack>
       </InternalHeader.Title>
       <Spacer />
       <ActionMenu>

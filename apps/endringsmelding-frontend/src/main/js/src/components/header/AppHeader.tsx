@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { InternalHeader, Spacer } from '@navikt/ds-react';
+import { Hide, HStack, InternalHeader, Spacer } from '@navikt/ds-react';
 import { Link as RouterLink, useLocation } from 'react-router';
 import styled from 'styled-components';
+import navLogo from '@/assets/nav-logo.svg';
 import ProfilService from '@/service/ProfilService';
 
 const Header = styled(InternalHeader)`
@@ -59,10 +60,14 @@ export const AppHeader = () => {
     <Header>
       <InternalHeader.Title
         as={RouterLink}
+        aria-label="NAV – Endringsmeldinger"
         className="endringsmelding-header__title"
         to="/"
       >
-        Endringsmeldinger
+        <HStack align="center" gap="space-16">
+          <img alt="" height={20} src={navLogo} width={64} />
+          <Hide below="md">Endringsmeldinger</Hide>
+        </HStack>
       </InternalHeader.Title>
       <Spacer />
       {pathname !== '/login' && (
