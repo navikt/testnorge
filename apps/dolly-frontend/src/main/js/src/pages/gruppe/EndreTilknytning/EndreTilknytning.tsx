@@ -1,19 +1,22 @@
-import useBoolean from '@/utils/hooks/useBoolean'
-import Button from '@/components/ui/button/Button'
-import React from 'react'
+import React, { useState } from 'react'
 import { EndreTilknytningModal } from '@/pages/gruppe/EndreTilknytning/EndreTilknytningModal'
+import { Button } from '@navikt/ds-react'
+import { PersonPencilIcon } from '@navikt/aksel-icons'
 
 export const EndreTilknytning = ({ gruppe }) => {
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [open, setOpen] = useState(false)
 
 	return (
 		<>
-			<Button onClick={openModal} kind="rediger-person">
-				BYTT EIER
+			<Button
+				size="xsmall"
+				variant="tertiary"
+				icon={<PersonPencilIcon aria-hidden />}
+				onClick={() => setOpen(true)}
+			>
+				Bytt eier
 			</Button>
-			{modalIsOpen && (
-				<EndreTilknytningModal gruppe={gruppe} modalIsOpen={modalIsOpen} closeModal={closeModal} />
-			)}
+			<EndreTilknytningModal gruppe={gruppe} open={open} setOpen={setOpen} />
 		</>
 	)
 }

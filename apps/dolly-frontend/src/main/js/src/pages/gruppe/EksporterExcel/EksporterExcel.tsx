@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { format } from 'date-fns'
-import Button from '@/components/ui/button/Button'
-import './EksporterExcel.less'
+import { Button } from '@navikt/ds-react'
+import { FilePlusIcon } from '@navikt/aksel-icons'
 
 export const EksporterExcel = ({
 	gruppeId,
@@ -44,12 +44,14 @@ export const EksporterExcel = ({
 
 	return (
 		<Button
-			className={`flexbox--align-center csv-eksport-btn`}
-			kind={`file-new-table`}
+			size="xsmall"
+			variant="tertiary"
+			data-color="success"
+			icon={<FilePlusIcon aria-hidden />}
 			onClick={handleDownload}
 			loading={isLoading}
 		>
-			EKSPORTER TIL EXCEL
+			Eksporter til Excel
 		</Button>
 	)
 }

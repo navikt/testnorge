@@ -35,7 +35,7 @@ type BrukerType = {
 }
 
 export const useAlleBrukere = () => {
-	const { data, isLoading, error } = useSWR<BrukerType, Error>(getBrukereUrl, fetcher)
+	const { data, isLoading, error } = useSWR<Array<BrukerType>, Error>(getBrukereUrl, fetcher)
 
 	return {
 		brukere: data,
