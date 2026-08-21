@@ -293,7 +293,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 		ident.ident,
 		harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer),
 	)
-	console.log('oppfoelgingsvedtak14aData: ', oppfoelgingsvedtak14aData) //TODO - SLETT MEG
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
