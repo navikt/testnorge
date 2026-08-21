@@ -1,46 +1,7 @@
-import { InternalHeader, Spacer } from '@navikt/ds-react';
+import { CheckmarkIcon, MenuGridIcon } from '@navikt/aksel-icons';
+import { ActionMenu, InternalHeader, Spacer, Theme } from '@navikt/ds-react';
 import { Link as RouterLink, useLocation } from 'react-router';
-import styled from 'styled-components';
 import ProfilLoader from '@/components/profil/ProfilLoader';
-
-const Header = styled(InternalHeader)`
-  @media (max-width: 767px) {
-    flex-wrap: wrap;
-
-    .faste-data-header__title {
-      min-height: var(--ax-space-48);
-      padding-inline: var(--ax-space-16);
-    }
-
-    .faste-data-header__navigation-button {
-      min-height: var(--ax-space-48);
-      padding-inline: var(--ax-space-16);
-    }
-
-    .faste-data-header__user {
-      min-height: var(--ax-space-48);
-    }
-  }
-`;
-
-const Navigation = styled.nav`
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-
-  @media (max-width: 767px) {
-    order: 3;
-    width: 100%;
-    min-height: var(--ax-space-48);
-    border-top: 1px solid var(--ax-border-neutral-subtleA);
-  }
-`;
-
-const HeaderSpacer = styled(Spacer)`
-  @media (max-width: 767px) {
-    display: none;
-  }
-`;
 
 const links = [
   {
@@ -64,30 +25,42 @@ const AppHeader = () => {
   const { pathname } = useLocation();
 
   return (
-    <Header>
-      <InternalHeader.Title as={RouterLink} className="faste-data-header__title" to="/">
+    <InternalHeader>
+      <InternalHeader.Title as={RouterLink} to="/">
         Faste Data
       </InternalHeader.Title>
-      <Navigation aria-label="Hovednavigasjon">
-        {links.map((link) => {
-          const active = link.isActive(pathname);
-          return (
-            <InternalHeader.Button
-              key={link.href}
-              as={RouterLink}
-              aria-current={active ? 'page' : undefined}
-              className="faste-data-header__navigation-button"
-              isActive={active}
-              to={link.href}
-            >
-              {link.label}
-            </InternalHeader.Button>
-          );
-        })}
-      </Navigation>
-      <HeaderSpacer />
+      <Spacer />
+      <ActionMenu>
+        <ActionMenu.Trigger>
+          <InternalHeader.Button>
+            <MenuGridIcon fontSize="1.5rem" title="Navigasjon" />
+          </InternalHeader.Button>
+        </ActionMenu.Trigger>
+        <Theme theme="light">
+          <ActionMenu.Content align="end">
+            <ActionMenu.Group label="Navigasjon">
+              {links.map((link) => {
+                const active = link.isActive(pathname);
+
+                return (
+                  <ActionMenu.Item
+                    key={link.href}
+                    as={RouterLink}
+                    aria-current={active ? 'page' : undefined}
+                    icon={active ? <CheckmarkIcon aria-hidden /> : undefined}
+                    indent={!active}
+                    to={link.href}
+                  >
+                    {link.label}
+                  </ActionMenu.Item>
+                );
+              })}
+            </ActionMenu.Group>
+          </ActionMenu.Content>
+        </Theme>
+      </ActionMenu>
       <ProfilLoader />
-    </Header>
+    </InternalHeader>
   );
 };
 

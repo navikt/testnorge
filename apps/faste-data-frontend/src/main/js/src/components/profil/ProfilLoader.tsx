@@ -31,5 +31,5 @@ export default () => {
 
   const name = error ? 'Profil utilgjengelig' : navn ?? 'Laster profil...';
 
-  return <InternalHeader.User className="faste-data-header__user" name={name} />;
+  return <InternalHeader.User name={name} />;
 };
