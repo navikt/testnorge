@@ -31,8 +31,10 @@ type DollyModalProps = {
 	minWidth?: string
 }
 
+const isTest = import.meta.env.MODE === 'test'
+
 // Set the app element for accessibility
-if (process.env.NODE_ENV !== 'test') {
+if (!isTest) {
 	Modal.setAppElement('#root')
 }
 
@@ -57,7 +59,7 @@ export const DollyModal: React.FC<DollyModalProps> = ({
 			shouldCloseOnEsc
 			onRequestClose={closeModal}
 			style={customStyles}
-			ariaHideApp={process.env.NODE_ENV === 'test' ? false : undefined}
+			ariaHideApp={!isTest}
 		>
 			<div className="dollymodal">
 				{children}

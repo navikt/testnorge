@@ -1,8 +1,8 @@
 import './Version.less'
 
 export default function Version() {
-	const versionStr = `v${process.env.APP_VERSION}`
-	const branch = `Branch: ${process.env.GIT_BRANCH} #${process.env.COMMIT_HASH}`
+	const versionStr = `v${import.meta.env.APP_VERSION}`
+	const branch = `Branch: ${import.meta.env.GIT_BRANCH} #${import.meta.env.COMMIT_HASH}`
 	return (
 		<div className="build-version">
 			<span title={branch}>{versionStr}</span>

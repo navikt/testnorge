@@ -1,33 +1,32 @@
 {
 	"name": "status-frontend",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"type": "module",
 	"private": true,
 	"dependencies": {
+		"@navikt/dolly-lib": "1.4.13",
 		"classnames": "^2.5.1",
 		"css-select": "^7.0.0",
 		"prop-types": "^15.8.1",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
 		"react-inlinesvg": "^4.5.0",
-		"react-router": "^8.3.0",
-		"react-use": "^17.6.1"
+		"react-router": "^8.3.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^8.0.1",
-		"@navikt/ds-css": "^7.40.0",
-		"@navikt/ds-icons": "^3.4.3",
-		"@navikt/ds-react": "^7.40.0",
+		"@navikt/ds-css": "^8.16.1",
+		"@navikt/ds-react": "^8.16.1",
 		"@rolldown/plugin-babel": "^0.2.3",
 		"@types/react": "^19.2.18",
 		"@types/react-dom": "^19.2.4",
 		"@vitejs/plugin-react": "^6.0.5",
 		"babel-plugin-react-compiler": "^1.0.0",
-		"less": "^4.8.1",
+		"less": "^4.9.0",
 		"path-browserify": "^1.0.1",
 		"prettier": "^3.9.6",
 		"typescript": "^7.0.2",
-		"vite": "^8.2.0",
+		"vite": "^8.2.1",
 		"vite-plugin-svgr": "^5.2.0"
 	},
 	"scripts": {

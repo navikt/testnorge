@@ -1,24 +1,24 @@
-import React from 'react'
-import Icon from '@/components/icon/Icon'
-// @ts-ignore
-import logo from '@/assets/img/nav-logo-hvit.png'
-import './BlankHeader.less'
+import { Hide, HStack, InternalHeader, Spacer } from '@navikt/ds-react'
+import navLogo from '../../assets/nav-logo.svg'
 
 export default () => {
 	return (
-		<header className="blank-header">
-			<div className="home-nav">
-				<div className="img-logo">
-					<img alt="NAV logo" src={logo} />
-				</div>
-				<Icon size={30} kind="dolly" className="dollysheep" />
-				<h1>Dolly</h1>
-			</div>
-			<div className="menu-links">
-				<a href="https://navikt.github.io/testnorge/" target="_blank">
+		<InternalHeader>
+			<InternalHeader.Title aria-label="NAV – Dolly status" href="/">
+				<HStack align="center" gap="space-16">
+					<img alt="" height={20} src={navLogo} width={64} />
+					<Hide below="md">Dolly status</Hide>
+				</HStack>
+			</InternalHeader.Title>
+			<Spacer />
+			<InternalHeader.Button
+				as="a"
+				href="https://navikt.github.io/testnorge/"
+				target="_blank"
+				rel="noreferrer noopener"
+			>
 					Dokumentasjon
-				</a>
-			</div>
-		</header>
+			</InternalHeader.Button>
+		</InternalHeader>
 	)
 }

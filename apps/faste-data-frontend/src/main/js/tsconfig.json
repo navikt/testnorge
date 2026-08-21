@@ -6,7 +6,9 @@
     "jsx": "react-jsx",
     "noEmit": true,
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "types": ["vite/client", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }
