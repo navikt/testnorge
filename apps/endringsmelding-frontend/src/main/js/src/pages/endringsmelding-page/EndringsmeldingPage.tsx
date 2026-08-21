@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs } from '@navikt/ds-react';
+import { Heading, Tabs, VStack } from '@navikt/ds-react';
 import styled from 'styled-components';
 import { FodselsmeldingForm } from '@/pages/endringsmelding-page/form/fodselsmelding-from/FodselsmeldingForm';
 import { DodsmeldingForm } from '@/pages/endringsmelding-page/form/dodsmelding-form/DodsmeldingForm';
@@ -30,18 +30,23 @@ const StyledTabsPanel = styled(Tabs.Panel)`
 export const EndringsmeldingPage = () => {
   return (
     <PageContent>
-      <Tabs defaultValue="fødselsmelding" size="medium">
-        <Tabs.List>
-          <Tabs.Tab value="fødselsmelding" label="Fødselsmelding" />
-          <Tabs.Tab value="dødsmelding" label="Dødsmelding" />
-        </Tabs.List>
-        <StyledTabsPanel value="fødselsmelding">
-          <FodselsmeldingForm />
-        </StyledTabsPanel>
-        <StyledTabsPanel value="dødsmelding">
-          <DodsmeldingForm />
-        </StyledTabsPanel>
-      </Tabs>
+      <VStack gap="space-24">
+        <Heading level="1" size="large">
+          Send endringsmelding
+        </Heading>
+        <Tabs defaultValue="fødselsmelding" size="medium">
+          <Tabs.List>
+            <Tabs.Tab value="fødselsmelding" label="Fødselsmelding" />
+            <Tabs.Tab value="dødsmelding" label="Dødsmelding" />
+          </Tabs.List>
+          <StyledTabsPanel value="fødselsmelding">
+            <FodselsmeldingForm />
+          </StyledTabsPanel>
+          <StyledTabsPanel value="dødsmelding">
+            <DodsmeldingForm />
+          </StyledTabsPanel>
+        </Tabs>
+      </VStack>
     </PageContent>
   );
 };

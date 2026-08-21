@@ -135,9 +135,12 @@ export default () => {
 
 	if (dataLoading) {
 		return (
-			<div className="status-page-loading">
-				<Loading label="Sjekker tjenester" />
-			</div>
+			<>
+				<BlankHeader />
+				<div className="status-page-loading">
+					<Loading label="Sjekker tjenester" />
+				</div>
+			</>
 		)
 	}
 
@@ -145,7 +148,7 @@ export default () => {
 		<>
 			<BlankHeader />
 			<div className="status-page">
-				<Heading align="center" className="status-page-title" level="2" size="large">
+				<Heading align="center" className="status-page-title" level="1" size="large">
 					Dolly tjenestestatus
 				</Heading>
 				<Accordion className="consumers-accordion" indent={false}>

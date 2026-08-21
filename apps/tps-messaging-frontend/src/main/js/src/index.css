@@ -9,20 +9,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.tps-app-header {
-  min-height: calc(var(--ax-space-64) + var(--ax-space-8));
-}
-
-.tps-app-header__title {
-  padding-inline: var(--ax-space-20) var(--ax-space-16);
-}
-
-.tps-app-header__user {
-  min-width: calc(var(--ax-space-128) + var(--ax-space-12));
-  justify-content: flex-start;
-  padding-inline: var(--ax-space-20) var(--ax-space-24);
-}
-
 .tps-login-page {
   width: min(70vw, 100%);
   margin-inline: auto;
@@ -35,8 +21,16 @@ body {
 }
 
 @media (max-width: 35.99rem) {
+  .tps-app-header__title {
+    min-width: 0;
+    padding-inline: var(--ax-space-16);
+  }
+
   .tps-app-header__user {
     min-width: 0;
+    max-width: 10rem;
+    padding-inline: var(--ax-space-12);
+    overflow: hidden;
   }
 
   .tps-login-page {
