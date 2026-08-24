@@ -115,7 +115,6 @@ export const PdlPersonForm = ({
 						size={'small'}
 						value={type}
 						onChange={(type) => handleTypeChange(type)}
-						label={'Personvalg'}
 						key={'toggle-' + path}
 					>
 						<ToggleGroup.Item
