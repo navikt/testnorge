@@ -78,7 +78,7 @@ class TilleggsstonadModelGenerator {
         var metadata = metadataCache.computeIfAbsent(type, this::loadMetadata);
         var config = typeConfig(type);
         var attempts = config.requiresValidHistory() ? 20 : 1;
-        List<Map<String, Object>> structuredHistory = List.of();
+        List<Map<String, Object>> structuredHistory;
         for (int attempt = 1; attempt <= attempts; attempt++) {
             var rawHistory = synthesizeRawHistory(type, metadata, requests, brukInnsendtTilDato);
             structuredHistory = postprocess(type, metadata, config, rawHistory, requests, brukInnsendtTilDato);
