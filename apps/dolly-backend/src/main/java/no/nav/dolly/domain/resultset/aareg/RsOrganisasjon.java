@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.aareg;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class RsOrganisasjon extends RsAktoer {
     private String orgnummer;
 
     @Override
+    @JsonIgnore
     public String getAktoertype() {
         return "ORG";
     }
