@@ -25,8 +25,7 @@ public class BrukerServiceGetTilgangCommand implements Callable<Mono<BrukerDTO>>
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(TILGANG_URL)
-                        .queryParam("id", brukerId)
-                        .build())
+                        .build(brukerId))
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(BrukerDTO.class)
