@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 src/main/resources/models/*.onnx
+src/main/resources/models/*.json.gz
 python/
 
 ### IntelliJ IDEA ###

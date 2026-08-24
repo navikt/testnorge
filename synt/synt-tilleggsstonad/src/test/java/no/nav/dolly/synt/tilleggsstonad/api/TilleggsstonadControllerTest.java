@@ -49,7 +49,7 @@ class TilleggsstonadControllerTest {
     void shouldReturn200ForAllSupportedEndpoints(String endpoint) {
 
         when(onnxService.generateVedtak(any(), anyList(), anyBoolean()))
-                .thenReturn(List.of(Map.of("VEDKTAKTYPE", "O")));
+                .thenReturn(List.of(Map.of("VEDTAKTYPE", "O")));
 
         webTestClient.post()
                 .uri(endpoint)
@@ -58,7 +58,7 @@ class TilleggsstonadControllerTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$[0].VEDKTAKTYPE").isEqualTo("O");
+                .jsonPath("$[0].VEDTAKTYPE").isEqualTo("O");
     }
 
 }

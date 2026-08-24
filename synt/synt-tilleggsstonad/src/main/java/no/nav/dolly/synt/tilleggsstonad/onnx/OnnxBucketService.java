@@ -1,9 +1,11 @@
 package no.nav.dolly.synt.tilleggsstonad.onnx;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.synt.tilleggsstonad.SyntTilleggsstonadApplication;
 import no.nav.dolly.synt.tilleggsstonad.dto.VedtakRequestDto;
-import no.nav.dolly.synt.tilleggsstonad.models.LocalModels;
+import no.nav.dolly.synt.tilleggsstonad.models.BucketModels;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -11,18 +13,21 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Profile("local")
+@Profile("prod")
 @Slf4j
-class OnnxLocalService implements OnnxService {
+@RequiredArgsConstructor
+class OnnxBucketService implements OnnxService {
 
+    private final SyntTilleggsstonadApplication.Config config;
     private TilleggsstonadModelGenerator generator;
 
     @PostConstruct
-    void postConstruct() {
+    void postConstruct()
+            throws Exception {
 
-        var modelDirectory = LocalModels.get();
+        var modelDirectory = BucketModels.get(config.getBucket(), config.getModels(), "synt-tilleggsstonad-models-");
         this.generator = new TilleggsstonadModelGenerator(modelDirectory);
-        log.info("Successfully initialized legacy model metadata from folder {}", modelDirectory.toAbsolutePath());
+        log.info("Successfully initialized legacy model metadata from bucket {}", config.getBucket());
 
     }
 

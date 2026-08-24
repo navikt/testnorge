@@ -17,10 +17,10 @@ public class LocalModels {
 
         try {
             var target = extractModelsToTemporaryDirectory();
-            log.info("Extracted ONNX models to {}", target);
+            log.info("Extracted legacy model metadata to {}", target);
             return target;
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to extract ONNX models from classpath", e);
+            throw new UncheckedIOException("Failed to extract legacy model metadata from classpath", e);
         }
 
     }
@@ -28,13 +28,13 @@ public class LocalModels {
     private static Path extractModelsToTemporaryDirectory()
             throws IOException, IllegalStateException {
 
-        var targetDir = Files.createTempDirectory("synt-dagpenger-models-");
+        var targetDir = Files.createTempDirectory("synt-tilleggsstonad-models-");
         targetDir.toFile().deleteOnExit();
 
         var resolver = new PathMatchingResourcePatternResolver();
-        var resources = resolver.getResources("classpath*:models/*.onnx");
+        var resources = resolver.getResources("classpath*:models/*.json.gz");
         if (resources.length == 0) {
-            throw new IllegalStateException("No ONNX model files found at classpath:models/*.onnx");
+            throw new IllegalStateException("No legacy model metadata files found at classpath:models/*.json.gz");
         }
         for (var resource : resources) {
             var filename = resource.getFilename();
