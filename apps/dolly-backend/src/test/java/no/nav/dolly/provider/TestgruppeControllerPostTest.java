@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -170,7 +169,9 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty()
                 .jsonPath("$.environments").isNotEmpty()
-                .jsonPath("$.environments").value(containsInAnyOrder("q1", "q2"))
+                .jsonPath("$.environments.length()").isEqualTo(2)
+                .jsonPath("$.environments[?(@ == 'q1')]").exists()
+                .jsonPath("$.environments[?(@ == 'q2')]").exists()
                 .jsonPath("$.gruppeId").isEqualTo(testgruppe.getId());
     }
 }
