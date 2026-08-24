@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.aareg;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class RsAktoerPerson extends RsAktoer {
     private String identtype;
 
     @Override
+    @JsonIgnore
     public String getAktoertype() {
         return "PERS";
     }
