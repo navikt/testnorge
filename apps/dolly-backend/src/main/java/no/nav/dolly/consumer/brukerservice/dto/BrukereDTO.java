@@ -14,7 +14,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TilgangDTO {
+public class BrukereDTO {
 
     private List<String> brukere;
 

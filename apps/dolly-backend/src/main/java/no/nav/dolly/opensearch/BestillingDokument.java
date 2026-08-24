@@ -119,9 +119,7 @@ public class BestillingDokument implements Persistable<Long> {
 
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
 
-    // For Brukertype = BANKID vil orgnr formidle tilhørende organisasjon.
     private Bruker.Brukertype brukerType;
-
     private String orgnr;
 
     @Transient

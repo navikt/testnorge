@@ -90,7 +90,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(request, bestilling)
+                        () -> saveBestillingToOpenSearchServer(request, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();

@@ -3,9 +3,10 @@ package no.nav.dolly.consumer.brukerservice;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetAlleCommand;
+import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetKollegaerCommand;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetTilgangCommand;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,11 @@ public class BrukerServiceConsumer {
                 .build();
     }
 
-    public Mono<TilgangDTO> getKollegaerIOrganisasjon(String brukerId) {
+    public Mono<BrukereDTO> getKollegaerIOrganisasjon(String brukerId) {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
-                        new BrukerServiceGetTilgangCommand(webClient, brukerId, token.getTokenValue()).call());
+                        new BrukerServiceGetKollegaerCommand(webClient, brukerId, token.getTokenValue()).call());
     }
 
     public Flux<BrukerDTO> getAlleBrukere() {
@@ -46,5 +47,12 @@ public class BrukerServiceConsumer {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new BrukerServiceGetAlleCommand(webClient, token.getTokenValue()).call());
+    }
+
+    public Mono<BrukerDTO> getBruker(String brukerId) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token ->
+                        new BrukerServiceGetTilgangCommand(webClient, brukerId, token.getTokenValue()).call());
     }
 }

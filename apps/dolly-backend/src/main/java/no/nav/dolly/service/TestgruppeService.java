@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
@@ -134,7 +134,7 @@ public class TestgruppeService {
         return brukerService.fetchOrCreateBruker()
                 .filter(bruker -> Brukertype.BANKID == bruker.getBrukertype())
                 .flatMap(bruker -> brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                        .map(TilgangDTO::getBrukere)
+                        .map(BrukereDTO::getBrukere)
                         .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere, Pageable.unpaged())
                                 .map(Testgruppe::getId)
                                 .collectList())
@@ -154,7 +154,7 @@ public class TestgruppeService {
                 .flatMap(bruker ->
                         (bruker.getBrukertype() == Brukertype.BANKID
                                 ? brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .map(TilgangDTO::getBrukere)
+                                .map(BrukereDTO::getBrukere)
                                 .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
                                                 PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
                                         .collectList()
@@ -225,7 +225,7 @@ public class TestgruppeService {
                     } else {
 
                         return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .map(TilgangDTO::getBrukere)
+                                .map(BrukereDTO::getBrukere)
                                 .flatMap(brukere -> Mono.zip(Mono.just(bruker),
                                         testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
                                                         PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))

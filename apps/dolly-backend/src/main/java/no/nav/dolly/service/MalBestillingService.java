@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.projection.MalBestillingFragment;
@@ -229,7 +229,7 @@ public class MalBestillingService {
                     } else {
 
                         return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .map(TilgangDTO::getBrukere)
+                                .map(BrukereDTO::getBrukere)
                                 .flatMapMany(Flux::fromIterable)
                                 .flatMap(bestillingMalRepository::findFragmentByBrukerId)
                                 .sort(Comparator.comparing(MalBestillingFragment::getBrukernavn))

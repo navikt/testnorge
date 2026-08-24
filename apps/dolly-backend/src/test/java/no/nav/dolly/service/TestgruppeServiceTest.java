@@ -3,7 +3,7 @@ package no.nav.dolly.service;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -269,7 +269,7 @@ class TestgruppeServiceTest {
         when(identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)).thenReturn(Mono.just(1));
         when(bestillingRepository.countByGruppeId(GROUP_ID)).thenReturn(Mono.just(1));
         when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
-        when(brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())).thenReturn(Mono.just(TilgangDTO.builder()
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())).thenReturn(Mono.just(BrukereDTO.builder()
                 .brukere(List.of(bruker.getBrukerId()))
                 .build()));
         when(testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(any(), any()))
