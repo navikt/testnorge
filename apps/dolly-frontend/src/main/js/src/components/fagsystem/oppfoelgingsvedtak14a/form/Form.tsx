@@ -59,7 +59,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 					<FormDatepicker
 						name={`${oppfoelgingsvedtak14aPath}.vedtakFattet`}
 						label="Vedtak fattet"
-						minDate={new Date().setHours(0, 0, 0, 0)}
+						minDate={new Date(new Date().setHours(0, 0, 0, 0))}
 					/>
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.oppfolgingsEnhet`}
@@ -67,6 +67,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						options={alleNavEnheter}
 						isLoading={loadingEnheter}
 						size="xlarge"
+						info="Hvis ikke valgt, vil oppfølgingsenhet automatisk settes til Nav-kontor tilhørende brukers adresse."
 					/>
 					<FormTextInput
 						name={`${oppfoelgingsvedtak14aPath}.begrunnelse`}
