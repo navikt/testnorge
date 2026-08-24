@@ -24,6 +24,8 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @RestController("brukerControllerV2")
 @RequestMapping("/api/v2/brukere")
@@ -63,11 +65,17 @@ public class BrukerController {
     @GetMapping("/{id}")
     public Mono<BrukerDTO> getBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt) {
+            @RequestHeader(required = false, value = UserConstant.USER_HEADER_JWT) String jwt) {
 
-        return jwtService.verify(jwt, id)
-                .then(userService.getUser(id))
-                .map(User::toDTO);
+            if (nonNull(jwt)) {
+                return jwtService.verify(jwt, id)
+                        .then(userService.getUser(id))
+                        .map(User::toDTO);
+            } else {
+
+                return userService.getUser(id)
+                        .map(User::toDTO);
+            }
     }
 
     @PutMapping()
