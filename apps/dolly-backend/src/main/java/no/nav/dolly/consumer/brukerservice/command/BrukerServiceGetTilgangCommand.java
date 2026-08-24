@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class BrukerServiceGetTilgangCommand implements Callable<Mono<BrukerDTO>> {
 
-    private static final String TILGANG_URL = "/api/v2/brukere";
+    private static final String TILGANG_URL = "/api/v2/brukere/{id}";
 
     private final WebClient webClient;
     private final String brukerId;
