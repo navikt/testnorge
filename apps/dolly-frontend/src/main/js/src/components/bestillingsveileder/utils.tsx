@@ -72,6 +72,7 @@ export const rootPaths = [
 	'instdataKdi',
 	'krrstub',
 	'kelvinAap',
+	'oppfoelgingsvedtak14a',
 	'arenaforvalter',
 	'udistub',
 	'inntektsmelding',
