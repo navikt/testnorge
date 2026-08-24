@@ -1,7 +1,7 @@
 package no.nav.dolly.synt.tilleggsstonad.onnx;
 
 import no.nav.dolly.synt.tilleggsstonad.dto.VedtakRequestDto;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore("This test is dependent on legacy model metadata and is not suitable for automated testing")
+@Disabled("This test is dependent on legacy model metadata and is not suitable for automated testing")
 class TilleggsstonadModelGeneratorTest {
 
     private final TilleggsstonadModelGenerator generator = new TilleggsstonadModelGenerator();
