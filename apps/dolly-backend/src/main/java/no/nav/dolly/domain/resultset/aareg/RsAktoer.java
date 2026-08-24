@@ -21,8 +21,5 @@ import lombok.experimental.SuperBuilder;
 public abstract class RsAktoer {
 
     @Schema(description = "Type av aktør er ORG eller PERS for organisasjon eller person")
-
-    private String aktoertype;
-
     public abstract String getAktoertype();
 }

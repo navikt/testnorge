@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -605,7 +606,9 @@ public class ArtifactDeleteService {
         return relasjonRepository.existsByPersonIdOrRelatertPersonId(person.getId())
                 .flatMap(exists -> {
                     if (isFalse(exists) && !isStandalonePerson) {
-                        return personService.deletePerson(person.getIdent());
+                        return personService.utfoerEksternSletting(Set.of(person.getIdent()))
+                                .flatMap(personService::slettMotDatabase)
+                                .then();
                     }
                     return Mono.empty();
                 });

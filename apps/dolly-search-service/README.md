@@ -8,7 +8,4 @@ Service som forvalter søking på personer basert på innsendte kriterier
 
 For å nå Aiven OpenSearch-instansen lokalt, kan alternativt følgende kommandoer benyttes for å hente påloggingsinformasjon:
 
-> nais aiven create opensearch ignored dolly -i bestillinger -a read -s \<ownsecretname\> -e 10
-
-> nais aiven get opensearch d\<ownsecretname\> dolly
-
+> nais opensearch credentials bestillinger --team dolly --environment dev --permission READ --ttl 14d 

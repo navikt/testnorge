@@ -1,7 +1,5 @@
 package no.nav.testnav.apps.adresseservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -14,7 +12,7 @@ import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch._types.ErrorCause;
 import org.opensearch.client.opensearch._types.OpenSearchException;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -22,6 +20,8 @@ import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -37,7 +37,7 @@ import static java.util.Objects.nonNull;
 public class OpenSearchQueryService {
 
     private final OpenSearchClient openSearchClient;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final MapperFacade mapperFacade;
 
     @Value("${opensearch.index.adresser}")
@@ -57,13 +57,13 @@ public class OpenSearchQueryService {
         return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.MatrikkeladresseDTO(), new MatrikkeladresseDTO(), antall);
     }
 
-    private <S, T> Mono<List<T>> execQuery(BoolQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
+    private <S, T> Mono<List<T>> execQuery(FunctionScoreQuery.Builder queryBuilder, S kilde, T destinasjon, Long antall) {
 
         try {
             val adresseSoekResponse = openSearchClient.search(new SearchRequest.Builder()
                     .index(adresseIndex)
                     .query(new Query.Builder()
-                            .bool(queryBuilder.build())
+                            .functionScore(queryBuilder.build())
                             .build())
                     .size(antall.intValue())
                     .timeout("3s")
@@ -89,14 +89,14 @@ public class OpenSearchQueryService {
 
     private <T, S> List<T> formatResponse(SearchResponse<JsonNode> response, S kilde, T destinasjon) {
 
-        if (nonNull(response.hits()) && nonNull(response.hits().hits())) {
+        if (nonNull(response.hits())) {
 
             return response.hits().hits().stream()
                     .map(Hit::source)
                     .filter(Objects::nonNull)
                     .map(source -> {
                         try {
-                            val data = objectMapper.treeToValue(source, kilde.getClass());
+                            val data = jsonMapper.treeToValue(source, kilde.getClass());
                             return mapperFacade.map(data, destinasjon.getClass());
                         } catch (Exception e) {
                             log.error("Feil ved mapping av {} fra OpenSearch", destinasjon.getClass().getSimpleName(), e);

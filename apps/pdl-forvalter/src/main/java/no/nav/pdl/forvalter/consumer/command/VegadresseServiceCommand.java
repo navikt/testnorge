@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand.ADRESSE_TIMEOUT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @RequiredArgsConstructor
@@ -45,7 +46,8 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
                                 throwable instanceof WebClientResponseException.BadRequest ||
                                 Exceptions.isRetryExhausted(throwable),
-                        _ -> Mono.just(new VegadresseDTO[]{defaultAdresse()}));
+                        _ -> Mono.just(new VegadresseDTO[]{defaultAdresse()}))
+                .timeout(ADRESSE_TIMEOUT);
     }
 
     public static VegadresseDTO defaultAdresse() {

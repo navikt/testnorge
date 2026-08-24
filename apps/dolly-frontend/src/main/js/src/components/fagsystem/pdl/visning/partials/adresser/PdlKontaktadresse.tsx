@@ -6,6 +6,7 @@ import {
 import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import * as _ from 'lodash-es'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type PdlKontaktadresseProps = {
 	data: Array<KontaktadresseData>
@@ -77,9 +78,11 @@ export const PdlKontaktadresse = ({
 		return null
 	}
 
-	const gyldigeAdresser = data.filter((adresse: KontaktadresseData) => !adresse.metadata?.historisk)
-	const historiskeAdresser = data.filter(
-		(adresse: KontaktadresseData) => adresse.metadata?.historisk,
+	const gyldigeAdresser = sortPdlItems(
+		data.filter((adresse: KontaktadresseData) => !adresse.metadata?.historisk),
+	)
+	const historiskeAdresser = sortPdlItems(
+		data.filter((adresse: KontaktadresseData) => adresse.metadata?.historisk),
 	)
 
 	return (

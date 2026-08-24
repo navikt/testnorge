@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,11 +37,6 @@ public class PersonerSearchService {
 
         log.info("Mottok søkeforespørsel: searchRequest={}, registreRequest={}",
                 searchRequest, registreRequest);
-
-        if (isNull(searchRequest)) {
-            log.warn("SearchRequest er null, returnerer tom respons");
-            return new SearchResponse();
-        }
 
         var safeRegistreRequest = isNull(registreRequest) ? Collections.<ElasticTyper>emptyList() : registreRequest;
 
@@ -72,7 +66,6 @@ public class PersonerSearchService {
         request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
         var query = OpenSearchQueryBuilder.buildSearchQuery(request);
-        addIdenterQuery(query, request.getIdenter());
 
         var response = openSearchQueryService.execQuery(request, query);
         return mapperFacade.map(response, SearchResponse.class);

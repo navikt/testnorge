@@ -2,11 +2,10 @@ package no.nav.testnav.dollysearchservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
+import org.opensearch.client.opensearch._types.query_dsl.FunctionScoreQuery;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
@@ -18,6 +17,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -31,28 +31,28 @@ public class OpenSearchQueryService {
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
 
-    public SearchInternalResponse execQuery(SearchRequest request, BoolQuery.Builder queryBuilder) {
+    public SearchInternalResponse execQuery(SearchRequest request, FunctionScoreQuery.Builder queryBuilder) {
 
-        if (request.getSide() == null) {
+        if (isNull(request.getSide())) {
             request.setSide(0);
         }
 
-        if (request.getAntall() == null) {
+        if (isNull(request.getAntall())) {
             request.setAntall(10);
         }
 
         try {
             var now = System.currentTimeMillis();
 
-            val response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+            var response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
                     .index(pdlIndex)
-                    .query(new Query.Builder()
-                            .bool(queryBuilder.build())
+                    .query(Query.builder()
+                            .functionScore(queryBuilder.build())
                             .build())
                     .from(request.getSide() * request.getAntall())
                     .size(request.getAntall())
                     .timeout("3s")
-                    .build(), com.fasterxml.jackson.databind.JsonNode.class);
+                    .build(), JsonNode.class);
 
             log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
@@ -64,10 +64,10 @@ public class OpenSearchQueryService {
         }
     }
 
-    private SearchInternalResponse formatResponse(SearchResponse<com.fasterxml.jackson.databind.JsonNode> response, SearchRequest request) {
+    private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
 
         var hits = response.hits();
-        if (hits == null) {
+        if (isNull(hits)) {
             return SearchInternalResponse.builder()
                     .took(Long.toString(response.took()))
                     .totalHits(0L)
@@ -83,20 +83,12 @@ public class OpenSearchQueryService {
         return SearchInternalResponse.builder()
                 .took(Long.toString(response.took()))
                 .totalHits(nonNull(hits.total()) ? hits.total().value() : 0L)
-                .antall(nonNull(hitsList) ? hitsList.size() : 0)
+                .antall(hitsList.size())
                 .side(request.getSide())
                 .seed(request.getSeed())
-                .personer(nonNull(hitsList) ? hitsList.stream()
+                .personer(hitsList.stream()
                         .map(Hit::source)
-                        .map(this::toJackson3)
-                        .toList() : List.of())
+                        .toList())
                 .build();
-    }
-
-    private JsonNode toJackson3(com.fasterxml.jackson.databind.JsonNode jackson2Node) {
-        if (jackson2Node == null) {
-            return null;
-        }
-        return jsonMapper.readTree(jackson2Node.toString());
     }
 }

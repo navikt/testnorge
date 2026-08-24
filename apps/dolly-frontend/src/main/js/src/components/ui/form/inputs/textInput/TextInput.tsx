@@ -99,10 +99,12 @@ export const TextInput = ({
 	const shouldShowError = (error && (showError || isTouched || hasSubmitted)) || !!props.manualError
 
 	useEffect(() => {
-		if (formValue !== undefined) {
-			setFieldValue(formValue || '')
+		if (name) {
+			setFieldValue(formValue ?? '')
+		} else {
+			setFieldValue(value ?? '')
 		}
-	}, [value, formValue])
+	}, [value, formValue, name])
 
 	const handleChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {

@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 class PensjonforvalterHelperTest {
 
     @Spy
-    private ErrorStatusDecoder errorStatusDecoder = new ErrorStatusDecoder(JsonMapper.builder().build());
+    private ErrorStatusDecoder errorStatusDecoder = new ErrorStatusDecoder(new JsonMapper());
 
     @InjectMocks
     private PensjonforvalterHelper pensjonforvalterHelper;

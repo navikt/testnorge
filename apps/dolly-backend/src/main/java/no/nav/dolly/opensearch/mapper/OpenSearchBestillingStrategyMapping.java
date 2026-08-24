@@ -1,7 +1,5 @@
 package no.nav.dolly.opensearch.mapper;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -11,9 +9,13 @@ import ma.glasnost.orika.MappingException;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.opensearch.BestillingDokument;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.exc.InvalidFormatException;
+import tools.jackson.databind.exc.MismatchedInputException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -24,9 +26,9 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ElasticBestillingStrategyMapping implements MappingStrategy {
+public class OpenSearchBestillingStrategyMapping implements MappingStrategy {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -39,12 +41,12 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
 
                                    try {
                                        bestillingDokument.setIgnore(isBlank(bestilling.getBestKriterier()) ||
-                                               "{}".equals(bestilling.getBestKriterier()) ||
-                                               bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
+                                                                    "{}".equals(bestilling.getBestKriterier()) ||
+                                                                    bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
 
                                        if (!bestillingDokument.isIgnore()) {
 
-                                           var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
+                                           var dollyBestilling = jsonMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
                                            mapperFacade.map(dollyBestilling, bestillingDokument);
 
                                            bestillingDokument.setMiljoer(isNotBlank(bestilling.getMiljoer()) ?
@@ -61,8 +63,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                             MappingException e) {
 
                                        bestillingDokument.setIgnore(true);
-                                       log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());
-
+                                       log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={} {}", bestilling.getId(), getErrorString(e));
                                    } finally {
 
                                        bestillingDokument.setId(bestilling.getId());
@@ -92,5 +93,18 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                 )
                 .byDefault()
                 .register();
+    }
+
+    private static String getErrorString(Exception error) {
+
+        if (error instanceof InvalidFormatException ife) {
+            return " - ugyldig format i JSON: " + ife.getLocalizedMessage();
+        }
+
+        if (error instanceof MismatchedInputException mie) {
+            return " - feil i JSON: " + mie.getLocalizedMessage();
+        }
+
+        return "";
     }
 }

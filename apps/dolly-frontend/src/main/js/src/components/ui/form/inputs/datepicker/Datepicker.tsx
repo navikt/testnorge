@@ -50,10 +50,21 @@ export const DollyDatepicker = ({
 
 	useEffect(() => {
 		const date = convertInputToDate(existingValue)
-		const formattedDate = date?.isValid?.() ? formatDate(date, dateFormat) : ''
-		setInput(formattedDate)
+		if (!existingValue || !date?.isValid?.()) {
+			setInput('')
+			setSelected(undefined)
+			validateDate(date)
+			return
+		}
+		const formattedDate = formatDate(date, dateFormat)
+		const currentDate = convertInputToDate(input, false, dateFormat)
+		const currentFormatted = currentDate?.isValid?.() ? formatDate(currentDate, dateFormat) : ''
+		if (formattedDate !== currentFormatted) {
+			setInput(formattedDate)
+			setSelected(date.toDate?.())
+		}
 		validateDate(date)
-	}, [])
+	}, [existingValue])
 
 	const validateDate = (date: any) => {
 		formMethods.clearErrors(`manual.${name}`)

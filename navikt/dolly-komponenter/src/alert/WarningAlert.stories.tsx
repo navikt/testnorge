@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react-vite';
-import Comp, { WarningAlertProps } from './WarningAlert';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import WarningAlert from './WarningAlert';
 
-export default {
+const meta = {
   title: 'Alert/WarningAlert',
-  component: Comp,
-} as Meta;
+  component: WarningAlert,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Viser en kompakt advarsel med varselsindikator.',
+      },
+    },
+  },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Advarselen som vises til brukeren.',
+    },
+  },
+} satisfies Meta<typeof WarningAlert>;
 
-const Template: Story<WarningAlertProps> = (args) => <Comp {...args} />;
-export const WarningAlert = Template.bind({});
-WarningAlert.args = {
-  label: 'Warning text',
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    label: 'Kontroller opplysningene før du fortsetter',
+  },
 };

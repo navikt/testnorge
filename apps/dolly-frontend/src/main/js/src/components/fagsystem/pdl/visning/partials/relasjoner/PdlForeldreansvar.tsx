@@ -5,6 +5,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { ForeldreansvarData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { sortPdlItems } from '@/components/fagsystem/pdl/visning/partials/utils'
 
 type PdlForeldreansvarProps = {
 	data: Array<ForeldreansvarData>
@@ -53,11 +54,11 @@ export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 		return null
 	}
 
-	const gyldigeForeldreansvar = data.filter(
-		(foreldreansvar: ForeldreansvarData) => !foreldreansvar.metadata?.historisk,
+	const gyldigeForeldreansvar = sortPdlItems(
+		data.filter((foreldreansvar: ForeldreansvarData) => !foreldreansvar.metadata?.historisk),
 	)
-	const historiskeForeldreansvar = data.filter(
-		(foreldreansvar: ForeldreansvarData) => foreldreansvar.metadata?.historisk,
+	const historiskeForeldreansvar = sortPdlItems(
+		data.filter((foreldreansvar: ForeldreansvarData) => foreldreansvar.metadata?.historisk),
 	)
 
 	return (

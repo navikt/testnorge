@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class ErrorStatusDecoderTest {
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @InjectMocks
     private ErrorStatusDecoder errorStatusDecoder;
@@ -51,7 +51,7 @@ class ErrorStatusDecoderTest {
         var throwable = new WebClientResponseException(400, "Bad request", headers, "{\"melding\":\"null\"}".getBytes(StandardCharsets.UTF_8),
                 Charset.defaultCharset());
 
-        when(objectMapper.readValue(anyString(), eq(Map.class))).thenReturn(Map.of("melding", "null"));
+        when(jsonMapper.readValue(anyString(), eq(Map.class))).thenReturn(Map.of("melding", "null"));
         var target = errorStatusDecoder.decodeThrowable(throwable);
 
         assertThat(target, containsString("BAD_REQUEST"));

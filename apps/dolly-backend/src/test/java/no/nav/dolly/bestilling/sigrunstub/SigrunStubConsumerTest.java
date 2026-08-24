@@ -37,7 +37,7 @@ class SigrunStubConsumerTest extends AbstractConsumerTest {
     private SigrunstubPensjonsgivendeInntektRequest pensjonsgivendeForFolketrygden;
 
     private static String asJsonString(final Object object) {
-        return JsonMapper.builder().build().writeValueAsString(object);
+        return new JsonMapper().writeValueAsString(object);
     }
 
     @BeforeEach

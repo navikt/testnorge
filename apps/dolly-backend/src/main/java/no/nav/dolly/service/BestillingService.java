@@ -16,8 +16,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.domain.resultset.aareg.RsAareg;
-import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -36,7 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class BestillingService {
     private final IdentRepository identRepository;
     private final MalBestillingService malBestillingService;
     private final MiljoerConsumer miljoerConsumer;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final OpenSearchService openSearchService;
     private final TestgruppeRepository testgruppeRepository;
 
@@ -249,7 +247,6 @@ public class BestillingService {
 
         return identRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testident %s ble ikke funnet", ident))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -295,7 +292,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -462,7 +458,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
@@ -497,7 +492,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(gruppeId),
@@ -593,6 +587,7 @@ public class BestillingService {
                                     .krrstub(request2.getKrrstub())
                                     .medl(request2.getMedl())
                                     .nomdata(request2.getNomdata())
+                                    .oppfoelgingsvedtak14a(request2.getOppfoelgingsvedtak14a())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
                                     .sigrunstub(request2.getSigrunstub())
@@ -705,7 +700,7 @@ public class BestillingService {
     private String toJson(Object object) {
         try {
             if (nonNull(object)) {
-                return objectMapper.writeValueAsString(object);
+                return jsonMapper.writeValueAsString(object);
             }
         } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);
@@ -725,7 +720,7 @@ public class BestillingService {
             return null;
         }
         try {
-            var kriterier = objectMapper.readValue(bestKriterierJson, BestilteKriterier.class);
+            var kriterier = jsonMapper.readValue(bestKriterierJson, BestilteKriterier.class);
             if (isNull(kriterier)) {
                 return null;
             }
@@ -744,7 +739,7 @@ public class BestillingService {
                 continue;
             }
             try {
-                var kriterier = objectMapper.readValue(json, BestilteKriterier.class);
+                var kriterier = jsonMapper.readValue(json, BestilteKriterier.class);
                 if (nonNull(kriterier)) {
                     union.addAll(UtledFagsystemUtil.resolve(kriterier, gjenopprettContext));
                 }
@@ -801,15 +796,5 @@ public class BestillingService {
         }
 
         return Mono.just(bestilling);
-    }
-
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
     }
 }

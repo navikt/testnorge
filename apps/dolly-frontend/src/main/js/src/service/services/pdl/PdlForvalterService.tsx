@@ -11,11 +11,13 @@ export default {
 		const endpoint = `${getPdlUrl()}/personer?identer=${identer}`
 		return Request.get(endpoint)
 	},
-	soekPersoner(fragment: string) {
+	soekPersoner(fragment: string, sidenummer = 0, sidestorrelse = 10) {
 		if (!fragment) {
 			return null
 		}
-		const endpoint = `${getPdlUrl()}/identiteter?fragment=${fragment}`
+		const endpoint = `${getPdlUrl()}/identiteter?fragment=${encodeURIComponent(
+			fragment,
+		)}&sidenummer=${sidenummer}&sidestorrelse=${sidestorrelse}`
 		return Request.get(endpoint)
 	},
 	getEksistens(identListe: [string]) {

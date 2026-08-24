@@ -12,7 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -29,7 +29,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Transactional
     public Flux<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
@@ -99,11 +99,11 @@ public class TransaksjonMappingService {
 
         JsonNode innhold;
         try {
-            innhold = objectMapper.readTree(transaksjonMapping.getTransaksjonId());
+            innhold = jsonMapper.readTree(transaksjonMapping.getTransaksjonId());
 
         } catch (JacksonException e) {
             log.error("Feilet å konvertere {} til JsonNode", transaksjonMapping.getTransaksjonId());
-            innhold = objectMapper.valueToTree("{\"error\":\"" + e.getMessage() + "\"}");
+            innhold = jsonMapper.valueToTree("{\"error\":\"" + e.getMessage() + "\"}");
         }
 
         return RsTransaksjonMapping.builder()

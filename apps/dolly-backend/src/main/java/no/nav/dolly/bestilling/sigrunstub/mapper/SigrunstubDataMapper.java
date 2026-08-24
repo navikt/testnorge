@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.sigrunstub.mapper;
 
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -16,6 +15,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -30,8 +30,9 @@ public class SigrunstubDataMapper implements MappingStrategy {
 
     private static final String OPPGJOER_DATO_NAVN = "skatteoppgjoersdato";
     private static final String OPPGJOER_DATO_VERDI = "%4d-05-01";
+    private static final String IDENT = "ident";
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -41,7 +42,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsLignetInntekt kilde, SigrunstubLignetInntektRequest destinasjon, MappingContext context) {
 
-                        destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
+                        destinasjon.setPersonidentifikator((String) context.getProperty(IDENT));
 
                         if (kilde.getTjeneste() == BEREGNET_SKATT) {
                             // BEREGNET_SKATT er blitt deprecated hos mottager
@@ -71,16 +72,16 @@ public class SigrunstubDataMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsPensjonsgivendeForFolketrygden kilde, SigrunstubPensjonsgivendeInntektRequest destinasjon, MappingContext context) {
 
-                        destinasjon.setNorskident((String) context.getProperty("ident"));
+                        destinasjon.setNorskident((String) context.getProperty(IDENT));
 
                         destinasjon.setTestdataEier(isNotBlank(kilde.getTestdataEier()) ? kilde.getTestdataEier() : "Dolly");
                         destinasjon.setInntektsaar(kilde.getInntektsaar());
 
                         try {
                             destinasjon.setPensjonsgivendeInntekt(
-                                    objectMapper.readTree(
-                                            objectMapper.writeValueAsString(kilde.getPensjonsgivendeInntekt())));
-                        } catch (JacksonException e) {
+                                    jsonMapper.readTree(
+                                            jsonMapper.writeValueAsString(kilde.getPensjonsgivendeInntekt())));
+                        } catch (JacksonException _) {
                             log.error("Feilet å gjøre {} om til JSON", kilde.getPensjonsgivendeInntekt());
                         }
                     }
@@ -93,7 +94,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                     public void mapAtoB(RsSummertSkattegrunnlag kilde, SigrunstubSummertskattegrunnlagRequest.Summertskattegrunnlag destinasjon, MappingContext context) {
                         log.info("Mottok summertSkattegrunnlag {}", kilde);
 
-                        destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
+                        destinasjon.setPersonidentifikator((String) context.getProperty(IDENT));
                     }
                 })
                 .byDefault()

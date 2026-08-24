@@ -1,26 +1,30 @@
 import { ifPresent, messages, requiredNumber, requiredString } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 
+const nullableNumber = () =>
+	Yup.number()
+		.transform((i, j) => (j === '' ? null : i))
+		.nullable()
+
 const grunnlagValidation = Yup.object({
 	tekniskNavn: requiredString,
 	kategori: Yup.string().nullable(),
-	andelOverfoertFraBarn: Yup.number().nullable().integer().positive(messages.positive),
-	beloep: requiredNumber.positive(messages.positive),
+	andelOverfoertFraBarn: nullableNumber().integer().positive(messages.positive),
+	beloep: requiredNumber.positive(messages.positive).transform((i, j) => (j === '' ? null : i)),
 	spesifisering: Yup.array().of(
 		Yup.object({
 			type: requiredString,
-			aarForFoerstegangsregistrering: Yup.number()
-				.nullable()
+			aarForFoerstegangsregistrering: nullableNumber()
 				.positive(messages.positive)
 				.min(1900, 'Valgt år må være etter 1900')
 				.max(new Date().getFullYear(), 'Valgt år må være senest i år'),
-			antattMarkedsverdi: Yup.number().nullable().integer(),
-			antattVerdiSomNytt: Yup.number().nullable().integer(),
-			beloep: requiredNumber.positive(messages.positive),
-			eierandel: Yup.number().nullable().integer().positive(messages.positive),
+			antattMarkedsverdi: nullableNumber().integer(),
+			antattVerdiSomNytt: nullableNumber().integer(),
+			beloep: requiredNumber.transform((i, j) => (j === '' ? null : i)).positive(messages.positive),
+			eierandel: nullableNumber().integer().positive(messages.positive),
 			fabrikatnavn: Yup.string().nullable(),
-			formuesverdi: Yup.number().nullable().integer().positive(messages.positive),
-			formuesverdiForFormuesandel: Yup.number().nullable().integer().positive(messages.positive),
+			formuesverdi: nullableNumber().integer().positive(messages.positive),
+			formuesverdiForFormuesandel: nullableNumber().integer().positive(messages.positive),
 			registreringsnummer: Yup.string().nullable(),
 		}).nullable(),
 	),

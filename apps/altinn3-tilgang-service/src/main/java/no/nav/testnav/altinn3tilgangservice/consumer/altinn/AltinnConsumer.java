@@ -25,7 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -48,7 +48,7 @@ public class AltinnConsumer {
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final MaskinportenConsumer maskinportenConsumer;
     private final BrregConsumer brregConsumer;
     @Value("${altinn.max-pages}")
@@ -57,7 +57,7 @@ public class AltinnConsumer {
     public AltinnConsumer(
             AltinnConfig altinnConfig,
             MaskinportenConsumer maskinportenConsumer,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             MapperFacade mapperFacade,
             WebClient webClient,
             BrregConsumer brregConsumer
@@ -72,7 +72,7 @@ public class AltinnConsumer {
                 .build();
         this.brregConsumer = brregConsumer;
         this.mapperFacade = mapperFacade;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
     }
 
     public Mono<String> exchangeToken(String token) {
@@ -203,7 +203,7 @@ public class AltinnConsumer {
 
         return data.stream()
                 .filter(identifier -> organisasjonsnummer.equals(identifier.get(ORGANISASJON_ID).asText()))
-                .map(identifier -> objectMapper.convertValue(identifier,
+                .map(identifier -> jsonMapper.convertValue(identifier,
                         new TypeReference<Map<String, String>>() {
                         }))
                 .map(OrganisasjonDeleteDTO::new)

@@ -79,7 +79,7 @@ export const SisteSoek = ({ type, formValues, handleChange, handleChangeList }) 
 	return (
 		<VStack gap="space-12" style={{ marginBottom: '15px' }}>
 			<Chips>
-				{lagredeSoekData?.slice(0, 10).map((option, idx) => (
+				{lagredeSoekData?.slice(0, 5).map((option, idx) => (
 					<Chips.Toggle
 						key={option.label}
 						selected={isSelected(option)}

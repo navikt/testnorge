@@ -29,7 +29,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -60,7 +60,7 @@ public class DokarkivClient implements ClientRegister {
     private final DokumentService dokumentService;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final PersonServiceConsumer personServiceConsumer;
     private final SafConsumer safConsumer;
     private final TransactionHelperService transactionHelperService;
@@ -226,7 +226,7 @@ public class DokarkivClient implements ClientRegister {
     private String toJson(Object object) {
 
         try {
-            return objectMapper.writeValueAsString(object);
+            return jsonMapper.writeValueAsString(object);
         } catch (JacksonException e) {
             log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
         }
@@ -240,7 +240,7 @@ public class DokarkivClient implements ClientRegister {
                 .forEachRemaining(node ->
                         {
                             try {
-                                transaksjoner.add(objectMapper.treeToValue(node, TransaksjonIdDTO.class));
+                                transaksjoner.add(jsonMapper.treeToValue(node, TransaksjonIdDTO.class));
                             } catch (JacksonException e) {
                                 log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
                             }
