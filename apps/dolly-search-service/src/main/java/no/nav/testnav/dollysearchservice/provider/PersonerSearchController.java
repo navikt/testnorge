@@ -9,15 +9,13 @@ import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
-import org.springframework.http.HttpCookie;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -37,9 +35,11 @@ public class PersonerSearchController {
     @Operation(description = "Henter Dolly-personer som matcher både søk i registre og søk av persondetaljer i PDL")
     public Mono<SearchResponse> getPersoner(@RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request,
-                                            @CookieValue MultiValueMap<String, HttpCookie> cookies) {
+                                            ServerWebExchange exchange) {
 
-        cookies.forEach((key, value) -> log.info("Cookie: {} = {}", key, value));
+        exchange.getRequest().getCookies()
+                .forEach((name, cookies) ->
+                        cookies.forEach(cookie -> log.info("name: {}, key: {}, value: {}",  name, cookie.getName(), cookie.getValue())));
 
         return getUserInfo.call()
                 .doOnNext(userInfo -> log.info("Mottok søk, brukernavn: {}, brukerId: {}, isBankId: {}, " +
