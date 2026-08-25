@@ -36,6 +36,7 @@ const StyledToggleGroup = styled(ToggleGroup)`
 		}
 	}
 	margin: 5px 0 10px 0;
+	width: 100%;
 `
 
 const PersonType = {

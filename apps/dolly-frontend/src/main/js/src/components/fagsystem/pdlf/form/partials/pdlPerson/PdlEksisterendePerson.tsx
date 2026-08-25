@@ -41,12 +41,16 @@ export const PdlEksisterendePerson = ({
 		formGruppeId || opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident || ident
+	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0]?.ident || ident
 	const identMaster = opts?.identMaster || 'PDLF'
 
-	identer?.push({ ident: identNy, master: identMaster })
-
-	const filtrerteIdenter = identer?.filter((ident) => ident.master == identMaster)
+	const filtrerteIdenter = React.useMemo(() => {
+		const alleIdenter = [...(identer || [])]
+		if (identNy) {
+			alleIdenter.push({ ident: identNy, master: identMaster })
+		}
+		return alleIdenter.filter((element) => element.master === identMaster)
+	}, [identer, identNy, identMaster])
 
 	const {
 		data: pdlOptions,
@@ -118,26 +122,31 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const filterOptions = (person: Option) => {
+		if (!person) {
+			return false
+		}
 		if (person.doedsfall) {
 			return false
 		}
 		if (label === 'PERSON RELATERT TIL') {
 			// Sivilstand gift/samboer osv
-			return person.alder > 17 && gyldigeSivilstanderForPartner.includes(person?.sivilstand)
+			return person?.alder > 17 && gyldigeSivilstanderForPartner.includes(person?.sivilstand)
 		} else if (label === 'FULLMEKTIG' || label === 'Kontaktperson') {
-			return person.alder > 17
+			return person?.alder > 17
 		} else if (label === 'VERGE') {
-			return !person.vergemaal && person.alder > 17
+			return !person?.vergemaal && person?.alder > 17
 		} else if (label === 'BARN') {
 			// eksisterende person er forelder
-			return eksisterendePerson?.alder - person.alder > 17 && getAntallForeldre(person.foreldre) < 3
+			return (
+				eksisterendePerson?.alder - person?.alder > 17 && getAntallForeldre(person?.foreldre) < 3
+			)
 		} else if (label === 'FORELDER') {
 			// eksisterende person er barn
-			return person.alder - eksisterendePerson?.alder > 17 && checkForeldre()
+			return person?.alder - eksisterendePerson?.alder > 17 && checkForeldre()
 		} else if (label === 'Ansvarlig') {
-			return person.alder > 17 && !harForeldreansvarForValgteBarn(person.foreldreansvar)
+			return person?.alder > 17 && !harForeldreansvarForValgteBarn(person?.foreldreansvar)
 		} else if (label.toUpperCase().includes('ANSVARSSUBJEKT')) {
-			return person.alder < 18
+			return person?.alder < 18
 		}
 		return true
 	}
