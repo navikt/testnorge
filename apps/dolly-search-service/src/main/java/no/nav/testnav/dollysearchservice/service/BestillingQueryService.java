@@ -47,7 +47,7 @@ public class BestillingQueryService {
     @Value("${open.search.index}")
     private String bestillingIndex;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer}")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer, #request.orgnr}")
     public Set<String> execRegisterCacheQuery(SearchRequest request) {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
@@ -155,7 +155,7 @@ public class BestillingQueryService {
         }
 
         FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
-        FagsystemQueryUtils.addOrgnrQuery(queryBuilder, request.getOrgnr());
+        FagsystemQueryUtils.addOrgnrQuery(queryBuilder, request);
         return queryBuilder;
     }
 }

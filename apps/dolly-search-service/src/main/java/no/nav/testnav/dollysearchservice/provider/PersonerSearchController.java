@@ -8,6 +8,7 @@ import no.nav.testnav.dollysearchservice.service.PersonerSearchService;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/personer")
@@ -25,14 +28,27 @@ import java.util.List;
 public class PersonerSearchController {
 
     private final PersonerSearchService personerSearchService;
+    private final GetUserInfo getUserInfo;
 
     @PostMapping
     @Operation(description = "Henter Dolly-personer som matcher både søk i registre og søk av persondetaljer i PDL")
     public Mono<SearchResponse> getPersoner(@RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request) {
 
-
-        return Mono.just(personerSearchService.search(request, registreRequest));
+        return getUserInfo.call()
+                .doOnNext(userInfo -> log.info("Mottok søk, brukernavn: {}, brukerId: {}, isBankId: {}, " +
+                                               "organisasjonsnummer: {}, issuer: {}, grupper: {}",
+                        userInfo.brukernavn(), userInfo.id(), userInfo.isBankId(),
+                        userInfo.organisasjonsnummer(), userInfo.issuer(), userInfo.grupper()))
+                .map(userInfo -> {
+                    if (isTrue(userInfo.isBankId())) {
+                        request.setBrukerType("BANKID");
+                        request.setOrgnr(userInfo.organisasjonsnummer());
+                    } else {
+                        request.setBrukerType("AZURE");
+                    }
+                    return personerSearchService.search(request, registreRequest);
+                });
     }
 
     @GetMapping("/typer")

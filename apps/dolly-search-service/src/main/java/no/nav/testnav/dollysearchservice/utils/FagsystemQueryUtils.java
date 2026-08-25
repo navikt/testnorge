@@ -1,6 +1,7 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
@@ -76,11 +77,13 @@ public class FagsystemQueryUtils {
         }
     }
 
-    public static void addOrgnrQuery(BoolQuery.Builder queryBuilder, String orgnr) {
+    public static void addOrgnrQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
 
-        if (isNotBlank(orgnr)) {
+        if ("BANKID".equals(request.getBrukerType())) {
             queryBuilder.must(builder ->
-                    builder.match(matchQuery("orgnr", orgnr)));
+                            builder.match(matchQuery("brukerType", "BANKID")))
+                    .must(builder ->
+                            builder.match(matchQuery("orgnr", request.getOrgnr())));
         }
     }
 

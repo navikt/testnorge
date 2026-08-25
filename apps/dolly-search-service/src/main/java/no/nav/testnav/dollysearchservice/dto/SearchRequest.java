@@ -39,6 +39,7 @@ public class SearchRequest {
 
     private Set<String> identer;
 
+    private String brukerType;
     private String orgnr;
 
     public Set<String> getIdenter() {
