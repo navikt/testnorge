@@ -137,13 +137,14 @@ export const PdlEksisterendePerson = ({
 		} else if (label === 'BARN') {
 			// eksisterende person er forelder
 			return (
-				eksisterendePerson?.alder - person?.alder > 17 && getAntallForeldre(person?.foreldre) < 3
+				eksisterendePerson?.alder - person?.alder > 17 &&
+				getAntallForeldre(person?.foreldre ?? []) < 3
 			)
 		} else if (label === 'FORELDER') {
 			// eksisterende person er barn
 			return person?.alder - eksisterendePerson?.alder > 17 && checkForeldre()
 		} else if (label === 'Ansvarlig') {
-			return person?.alder > 17 && !harForeldreansvarForValgteBarn(person?.foreldreansvar)
+			return person?.alder > 17 && !harForeldreansvarForValgteBarn(person?.foreldreansvar ?? [])
 		} else if (label.toUpperCase().includes('ANSVARSSUBJEKT')) {
 			return person?.alder < 18
 		}

@@ -38,7 +38,7 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 				}
 
 				const initialEksisterendePerson = {
-					eksisterendeIdent: null as unknown as string,
+					eksisterendeIdent: null,
 					kilde: formMethods.watch(`${path}.kilde`),
 					master: formMethods.watch(`${path}.master`),
 				}
