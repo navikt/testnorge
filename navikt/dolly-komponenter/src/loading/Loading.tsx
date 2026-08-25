@@ -1,4 +1,4 @@
 import React from 'react';
-import { Loader } from '@navikt/ds-react';
+import { Loader, type LoaderProps } from '@navikt/ds-react';
 
-export default () => <Loader />;
+export default (props: LoaderProps) => <Loader {...props} />;

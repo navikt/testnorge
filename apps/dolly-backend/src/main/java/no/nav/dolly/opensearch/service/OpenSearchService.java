@@ -1,8 +1,5 @@
 package no.nav.dolly.opensearch.service;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -20,6 +17,9 @@ import org.opensearch.client.opensearch.core.IndexResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +37,7 @@ public class OpenSearchService {
     
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Value("${open.search.index}")
     private String index;
@@ -46,6 +46,11 @@ public class OpenSearchService {
     public Mono<String> updateIndexParams(JsonNode parametere) {
 
         return openSearchConsumer.updateIndexParams(parametere);
+    }
+
+    public Mono<String> updateIndexSettings(JsonNode parametere) {
+
+        return openSearchConsumer.updateIndexSettings(parametere);
     }
 
     public Mono<String> deleteIndex() {
@@ -114,25 +119,24 @@ public class OpenSearchService {
 
             for (var dokument : bestillingDokument) {
 
-                var dokumentJson = buildDokumentJson(dokument);
-
-                if (nonNull(dokumentJson)) {
-
-                    builder.operations(op -> op
-                            .index(idx -> idx
-                                    .index(index)
-                                    .id(String.valueOf(dokument.getId()))
-                                    .document(dokumentJson)));
-                }
+                builder.operations(op -> op
+                        .index(idx -> idx
+                                .index(index)
+                                .id(String.valueOf(dokument.getId()))
+                                .document(jsonMapper.valueToTree(dokument))));
             }
 
             val response = openSearchClient.bulk(builder.build());
             if (response.errors()) {
-                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}", response.items().getFirst().error());
+                response.items().stream()
+                        .filter(item -> nonNull(item.error()))
+                        .forEach(item ->
+                            log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
+                                    nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
             }
             return Mono.just(response);
 
-        } catch (IOException | OpenSearchException e) {
+        } catch (IOException | JacksonException e) {
             log.warn("Feilet å lagre bestilling id {}, {}",
                     (!bestillingDokument.isEmpty() ?
                     bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
@@ -140,38 +144,25 @@ public class OpenSearchService {
         }
     }
 
-
     public Mono<IndexResponse> save(BestillingDokument bestillingDokument) {
 
-        var dokumentJson = buildDokumentJson(bestillingDokument);
-
-        if (nonNull(dokumentJson)) {
-            try {
-                return Mono.just(openSearchClient.index(new IndexRequest.Builder<>()
-                        .index(index)
-                        .id(String.valueOf(bestillingDokument.getId()))
-                        .document(dokumentJson)
-                        .build()));
-
-            } catch (IOException | OpenSearchException e) {
-
-                log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(), e.getLocalizedMessage());
-                return Mono.empty();
-            }
-        } else {
-            return Mono.empty();
-        }
-    }
-
-    private JsonNode buildDokumentJson(BestillingDokument dokument) {
-
         try {
-            val jsonString = objectMapper.writeValueAsString(dokument);
-            return objectMapper.readTree(jsonString);
+            return Mono.just(openSearchClient.index(new IndexRequest.Builder<BestillingDokument>()
+                    .index(index)
+                    .id(String.valueOf(bestillingDokument.getId()))
+                    .document(bestillingDokument)
+                    .build()));
 
-        } catch (JacksonException e) {
-            log.warn("Feilet å serialisere bestillingDokument id {}, {}", dokument.getId(), e.getLocalizedMessage());
-            return null;
+        } catch (IOException | OpenSearchException e) {
+
+            log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(),
+                    e instanceof OpenSearchException ose &&
+                         nonNull(ose.response()) &&
+                         nonNull(ose.response().error()) &&
+                         nonNull(ose.response().error().causedBy()) ?
+                         ose.response().error().causedBy().reason() :
+                    e.getLocalizedMessage(), e);
+            return Mono.empty();
         }
     }
 

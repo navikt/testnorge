@@ -12,7 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class OpensearchStartup {
 
     private final OpensearchParamsConsumer opensearchParamsConsumer;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final OpenSearchClient openSearchClient;
     @Value("${opensearch.index.personer}")
     private String personIndex;
@@ -55,7 +55,7 @@ public class OpensearchStartup {
         val resource = new ClassPathResource(pathResource);
         try (val reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
             val contents = reader.lines().collect(Collectors.joining("\n"));
-            return objectMapper.readTree(contents);
+            return jsonMapper.readTree(contents);
 
         } catch (IOException e) {
             log.error("Lesing av json ressurs {} feilet", pathResource, e);

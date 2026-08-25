@@ -19,7 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,7 +45,7 @@ public class OrganisasjonConsumer {
     public OrganisasjonConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient) {
 
         this.tokenService = tokenService;
@@ -53,7 +53,7 @@ public class OrganisasjonConsumer {
         this.webClient = webClient
                 .mutate()
                 .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
     }
 
@@ -83,7 +83,7 @@ public class OrganisasjonConsumer {
                         .bodyToMono(OrganisasjonDeployStatus.class)
                         .doOnError(WebClientError.logTo(log))
                         .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(WebClientResponseException.NotFound.class, throwable -> Mono.empty())
+                        .onErrorResume(WebClientResponseException.NotFound.class, _ -> Mono.empty())
                 );
     }
 
@@ -102,7 +102,7 @@ public class OrganisasjonConsumer {
                         .bodyValue(bestillingRequest)
                         .retrieve()
                         .bodyToMono(BestillingResponse.class)
-                       );
+                );
     }
 
     @Timed(name = "providers", tags = {"operation", "organisasjon-deploy"})
@@ -127,7 +127,7 @@ public class OrganisasjonConsumer {
                         .bodyValue(deployRequest)
                         .retrieve()
                         .bodyToMono(DeployResponse.class)
-                       );
+                );
     }
 
     private static String getNavCallId() {

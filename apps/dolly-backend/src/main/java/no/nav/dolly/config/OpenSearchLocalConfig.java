@@ -9,6 +9,7 @@ import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
 import org.apache.hc.core5.http.HttpHost;
+import org.opensearch.client.json.jackson3.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.OpenSearchTransport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URISyntaxException;
 
@@ -24,6 +26,8 @@ import java.net.URISyntaxException;
 @Profile("local")
 @RequiredArgsConstructor
 public class OpenSearchLocalConfig {
+
+    private final JsonMapper jsonMapper;
 
     @Value("${open.search.username}")
     private String username;
@@ -43,6 +47,7 @@ public class OpenSearchLocalConfig {
                 new UsernamePasswordCredentials(username, password.toCharArray()));
 
         val builder = ApacheHttpClient5TransportBuilder.builder(host);
+        builder.setMapper(new JacksonJsonpMapper(jsonMapper));
         builder.setHttpClientConfigCallback(httpClientBuilder -> {
             val tlsStrategy = ClientTlsStrategyBuilder.create()
                     .buildAsync();

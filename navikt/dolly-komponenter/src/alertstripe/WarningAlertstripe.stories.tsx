@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react-vite';
-import Comp, { WarningAlertstripeProps } from './WarningAlertstripe';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import WarningAlertstripe from './WarningAlertstripe';
 
-export default {
+const meta = {
   title: 'Alertstripe/WarningAlertstripe',
-  component: Comp,
-} as Meta;
+  component: WarningAlertstripe,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Viser en tydelig Aksel-advarsel i full bredde.',
+      },
+    },
+  },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Advarselen som vises til brukeren.',
+    },
+  },
+} satisfies Meta<typeof WarningAlertstripe>;
 
-const Template: Story<WarningAlertstripeProps> = (args) => <Comp {...args} />;
-export const WarningAlertstripe = Template.bind({});
-WarningAlertstripe.args = {
-  label: 'Success text',
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    label: 'Noen opplysninger mangler',
+  },
 };

@@ -22,7 +22,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class OppdaterPersonService extends DollyBestillingService {
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
@@ -59,7 +59,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                 identService,
                 clientRegisters,
                 mapperFacade,
-                objectMapper,
+                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -77,7 +77,7 @@ public class OppdaterPersonService extends DollyBestillingService {
         identService.getTestIdent(bestilling.getIdent())
                 .flatMap(testident -> oppdaterPerson(bestilling, request, testident))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
-                        error -> doFerdig(bestilling).subscribe(),
+                        _ -> doFerdig(bestilling).subscribe(),
                         () -> saveBestillingToElasticServer(request, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
@@ -100,7 +100,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                 .flatMap(tuple -> (!tuple.getT1().getIdent().equals(testident.getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))
                         .thenReturn(tuple))
-                .doOnNext(tuple -> counterCustomRegistry.invoke(request))
+                .doOnNext(_ -> counterCustomRegistry.invoke(request))
                 .flatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), request, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())

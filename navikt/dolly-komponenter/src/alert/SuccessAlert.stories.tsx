@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react-vite';
-import Comp, { SuccessAlertProps } from './SuccessAlert';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import SuccessAlert from './SuccessAlert';
 
-export default {
+const meta = {
   title: 'Alert/SuccessAlert',
-  component: Comp,
-} as Meta;
+  component: SuccessAlert,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Viser en kompakt bekreftelse med suksessindikator.',
+      },
+    },
+  },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Bekreftelsen som vises til brukeren.',
+    },
+  },
+} satisfies Meta<typeof SuccessAlert>;
 
-const Template: Story<SuccessAlertProps> = (args) => <Comp {...args} />;
-export const SuccessAlert = Template.bind({});
-SuccessAlert.args = {
-  label: 'Success text',
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    label: 'Endringen ble lagret',
+  },
 };

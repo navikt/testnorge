@@ -70,7 +70,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
     }
 
     private static String asJsonString(final Object object) {
-        return JsonMapper.builder().build().writeValueAsString(object);
+        return new JsonMapper().writeValueAsString(object);
     }
 
     @BeforeEach
@@ -97,7 +97,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
     }
 
     @Test
-    void opprettArbeidsforhold() throws Exception {
+    void opprettArbeidsforhold() {
 
         stubOpprettArbeidsforhold(arbeidsforhold);
 
@@ -114,7 +114,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
     }
 
     @Test
-    void oppdaterArbeidsforhold() throws Exception {
+    void oppdaterArbeidsforhold() {
 
         stubOppdaterArbeidsforhold(arbeidsforhold);
 
@@ -131,7 +131,7 @@ class AaregConsumerTest extends AbstractConsumerTest {
     }
 
     @Test
-    void hentArbeidsforhold() throws Exception {
+    void hentArbeidsforhold() {
 
         stubHentArbeidsforhold(arbeidsforhold);
 

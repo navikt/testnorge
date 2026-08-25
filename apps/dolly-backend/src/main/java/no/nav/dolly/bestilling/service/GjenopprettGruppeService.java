@@ -25,7 +25,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +51,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             IdentService identService,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
@@ -68,7 +68,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 identService,
                 clientRegisters,
                 mapperFacade,
-                objectMapper,
+                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -93,7 +93,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId())
                                 .flatMap(testident -> utfoergjenoppretting(bestKriterier, bestilling, testident), 3))
                 .subscribe(progress -> log.info("Fullført gjenoppretting av ident: {}", progress.getIdent()),
-                        error -> doFerdig(bestilling).subscribe(),
+                        _ -> doFerdig(bestilling).subscribe(),
                         () -> doFerdig(bestilling).subscribe());
     }
 
@@ -103,13 +103,13 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .filter(BooleanUtils::isFalse)
-                .doOnNext(ok -> counterIdentBestilling.put(testident.getIdent(), false))
-                .concatMap(ok -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
+                .doOnNext(_ -> counterIdentBestilling.put(testident.getIdent(), false))
+                .concatMap(_ -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
-                .doOnNext(tuple -> counterCustomRegistry.invoke(bestKriterier))
+                .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .zipWith(Mono.just(tuple.getT1())))

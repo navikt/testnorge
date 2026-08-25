@@ -9,6 +9,10 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 import { initialKelvinAap, kelvinAapPath } from '@/components/fagsystem/kelvin/initialValues'
+import {
+	initialOppfoelgingsvedtak14a,
+	oppfoelgingsvedtak14aPath,
+} from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
 
 export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
@@ -30,7 +34,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={() => {
 				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
-					sm.batchAdd(['kelvinAap', 'ikkeServicebehov', 'ingenYtelser'])
+					sm.batchAdd(['kelvinAap', 'oppfoelgingsvedtak14a', 'ikkeServicebehov', 'ingenYtelser'])
 				}
 				if (!syntetisk) {
 					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser', 'aap', 'aap115', 'dagpenger'])
@@ -38,7 +42,11 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
-			startOpen={harValgtAttributt(formValues, [arenaPath, kelvinAapPath])}
+			startOpen={harValgtAttributt(formValues, [
+				arenaPath,
+				kelvinAapPath,
+				oppfoelgingsvedtak14aPath,
+			])}
 		>
 			<AttributtKategori title="Kelvin" attr={sm.attrs}>
 				<Attributt
@@ -52,10 +60,23 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 					}
 				/>
 			</AttributtKategori>
+			<AttributtKategori title="Arbeidsoppfølging" attr={sm.attrs}>
+				<Attributt
+					attr={sm.attrs.oppfoelgingsvedtak14a}
+					disabled={
+						sm.attrs.ingenYtelser.checked ||
+						sm.attrs.aap115.checked ||
+						sm.attrs.aap.checked ||
+						sm.attrs.dagpenger.checked ||
+						sm.attrs.ikkeServicebehov.checked
+					}
+				/>
+			</AttributtKategori>
 			<AttributtKategori title={'Aktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
 						sm.attrs.kelvinAap.checked ||
+						sm.attrs.oppfoelgingsvedtak14a.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -67,6 +88,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						sm.attrs.kelvinAap.checked ||
+						sm.attrs.oppfoelgingsvedtak14a.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -76,6 +98,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						sm.attrs.kelvinAap.checked ||
+						sm.attrs.oppfoelgingsvedtak14a.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -85,6 +108,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						sm.attrs.kelvinAap.checked ||
+						sm.attrs.oppfoelgingsvedtak14a.checked ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -97,6 +121,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						sm.attrs.kelvinAap.checked ||
+						sm.attrs.oppfoelgingsvedtak14a.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap.checked ||
 						sm.attrs.aap115.checked ||
@@ -152,6 +177,17 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			},
 			remove() {
 				del('kelvinAap')
+			},
+		},
+
+		oppfoelgingsvedtak14a: {
+			label: 'Oppfølgingsvedtak § 14 a',
+			checked: has('oppfoelgingsvedtak14a'),
+			add() {
+				set('oppfoelgingsvedtak14a', initialOppfoelgingsvedtak14a)
+			},
+			remove() {
+				del('oppfoelgingsvedtak14a')
 			},
 		},
 

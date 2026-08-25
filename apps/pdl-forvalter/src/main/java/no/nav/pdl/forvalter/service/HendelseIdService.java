@@ -38,7 +38,7 @@ public class HendelseIdService {
         return Flux.concat(Mono.just(response.getHovedperson()),
                         Flux.fromIterable(response.getRelasjoner()))
                 .flatMap(personHendelse -> personRepository.findByIdent(personHendelse.getIdent())
-                        .flatMapMany(dbPerson -> Flux.fromIterable(personHendelse.getOrdrer())
+                        .flatMap(dbPerson -> Flux.fromIterable(personHendelse.getOrdrer())
                                 .filter(OrdreResponseDTO.PdlStatusDTO::isDataElement)
                                 .flatMap(ordre -> {
                                     try {
@@ -56,8 +56,7 @@ public class HendelseIdService {
                                         return Mono.empty();
                                     }
                                 })
-                        ))
-                .collectList()
+                                .then(personRepository.save(dbPerson))))
                 .then();
     }
 
@@ -118,6 +117,7 @@ public class HendelseIdService {
                         .build());
     }
 
+    @Transactional
     public Mono<Void> deletePdlHendelse(String ident, String artifact, Integer id) {
 
         if (isTestnorgeIdent(ident)) {

@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class TenorOrganisasjonResultMapperService {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public TenorOversiktOrganisasjonResponse mapOrganisasjon(TenorResponse resultat, String query) {
 
@@ -45,7 +45,7 @@ public class TenorOrganisasjonResultMapperService {
                     preamble.append(StringUtils.capitalize(noHyphenCharsInValues.nextToken()));
                 }
 
-                var response = objectMapper.readValue(preamble.toString(), TenorOrganisasjonRawResponse.class);
+                var response = jsonMapper.readValue(preamble.toString(), TenorOrganisasjonRawResponse.class);
                 return TenorOversiktOrganisasjonResponse.Data.builder()
                         .rader(response.getRader())
                         .treff(response.getTreff())
@@ -68,8 +68,8 @@ public class TenorOrganisasjonResultMapperService {
     @SneakyThrows
     private TenorOversiktOrganisasjonResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
 
-        var organisasjonResponse = objectMapper.readValue(
-                objectMapper.writeValueAsString(dokument),
+        var organisasjonResponse = jsonMapper.readValue(
+                jsonMapper.writeValueAsString(dokument),
                 TenorOversiktOrganisasjonResponse.Organisasjon.class);
 
         log.info("Organisasjon response: {}", organisasjonResponse);
@@ -78,7 +78,7 @@ public class TenorOrganisasjonResultMapperService {
         organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
         try {
             if (nonNull(dokument.getTenorMetadata().getKildedata())) {
-                organisasjonResponse.setBrregKildedata(objectMapper.readTree(dokument.getTenorMetadata().getKildedata()));
+                organisasjonResponse.setBrregKildedata(jsonMapper.readTree(dokument.getTenorMetadata().getKildedata()));
             }
         } catch (Exception e) {
             log.error("Feil ved konvertering av tenor organisasjon BRREG kildedata {} \nkildedata:\n{}",

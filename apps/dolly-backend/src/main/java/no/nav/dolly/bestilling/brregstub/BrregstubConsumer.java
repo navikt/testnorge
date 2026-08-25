@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -30,14 +30,14 @@ public class BrregstubConsumer extends ConsumerStatus {
     public BrregstubConsumer(
             TokenExchange tokenService,
             Consumers consumers,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             WebClient webClient) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

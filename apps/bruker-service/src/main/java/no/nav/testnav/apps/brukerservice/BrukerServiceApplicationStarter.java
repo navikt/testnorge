@@ -17,7 +17,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @SpringBootApplication
 public class BrukerServiceApplicationStarter {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         new SpringApplicationBuilder(BrukerServiceApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);

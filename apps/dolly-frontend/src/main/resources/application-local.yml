@@ -49,9 +49,6 @@ consumers:
     url: https://testnav-varslinger-service-dev.intern.dev.nav.no
   oppsummeringsdokument-service:
     url: https://testnav-oppsummeringsdokument-service.intern.dev.nav.no
-  testnav-bruker-service:
-    name: testnav-bruker-service-dev
-    url: https://testnav-bruker-service-dev.intern.dev.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no

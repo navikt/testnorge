@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
-import tools.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.ApplicationConfig;
@@ -21,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Set;
@@ -54,13 +54,13 @@ class InntektsmeldingClientTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @InjectMocks
     private InntektsmeldingClient inntektsmeldingClient;
 
     @Test
-    void shouldCallTransaksjonMappingServiceForEachEnvironment() throws Exception {
+    void shouldCallTransaksjonMappingServiceForEachEnvironment() {
 
         var dokument = InntektsmeldingResponse.Dokument
                 .builder()
@@ -79,7 +79,7 @@ class InntektsmeldingClientTest {
         when(mapperFacade.map(any(), eq(InntektsmeldingRequest.class), any())).thenReturn(InntektsmeldingRequest.builder()
                 .inntekter(List.of(new RsInntektsmeldingRequest()))
                 .build());
-        when(objectMapper.writeValueAsString(any())).thenReturn("{\"key\":\"value\"}");
+        when(jsonMapper.writeValueAsString(any())).thenReturn("{\"key\":\"value\"}");
 
         var inntekter = RsInntektsmelding.Inntektsmelding
                 .builder()

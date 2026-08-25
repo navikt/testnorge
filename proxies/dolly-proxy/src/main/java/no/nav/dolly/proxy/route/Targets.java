@@ -42,10 +42,11 @@ class Targets {
     String pensjon;
     String pensjonAfp;
     String pensjonSamboer;
+    String oppfoelging;
+    String oppfoelgingsvedtak14a;
     String saf;
     String sigrunstub;
     String skjermingsregister;
     String sykemelding;
     String udistub;
-
 }

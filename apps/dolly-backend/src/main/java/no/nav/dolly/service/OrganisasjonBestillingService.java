@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public class OrganisasjonBestillingService {
     private final BrukerService brukerService;
     private final BestillingEventPublisher bestillingEventPublisher;
     private final JsonBestillingMapper jsonBestillingMapper;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final OrganisasjonBestillingProgressRepository organisasjonProgressRepository;
@@ -251,7 +251,7 @@ public class OrganisasjonBestillingService {
 
         Flux.interval(Duration.ofSeconds(5))
                 .concatMap(tick -> fetchBestillingStatusById(bestillingId)
-                        .doOnNext(status -> bestillingEventPublisher.publishOrg(bestillingId))
+                        .doOnNext(_ -> bestillingEventPublisher.publishOrg(bestillingId))
                         .onErrorResume(e -> {
                             log.warn("Feil under overvåking av org-bestilling {}: {}", bestillingId, e.getMessage());
                             return Mono.empty();
@@ -336,7 +336,7 @@ public class OrganisasjonBestillingService {
 
         try {
             if (nonNull(object)) {
-                return objectMapper.writer().writeValueAsString(object);
+                return jsonMapper.writer().writeValueAsString(object);
             }
         } catch (RuntimeException e) {
             log.info("Konvertering til Json feilet", e);

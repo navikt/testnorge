@@ -21,7 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -52,13 +52,13 @@ public class PersonServiceClient {
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final ApplicationConfig applicationConfig;
 
     public Mono<BestillingProgress> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
 
         return Mono.just(dollyPerson)
-                .flatMap(dp -> {
+                .flatMap(_ -> {
                     if (!dollyPerson.isOrdre()) {
                         return transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, PDL_SYNC_START);
                     }
@@ -106,7 +106,7 @@ public class PersonServiceClient {
                         transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus))
                 .flatMap(json -> {
                     try {
-                        return Mono.just(objectMapper.readTree(json));
+                        return Mono.just(jsonMapper.readTree(json));
                     } catch (JacksonException e) {
                         return Mono.error(new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e));
                     }
@@ -227,7 +227,7 @@ public class PersonServiceClient {
         } else {
             return Flux.just(1)
                     .delayElements(Duration.ofMillis(TIMEOUT))
-                    .flatMap(delayed -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
+                    .flatMap(_ -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
                             .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
         }
     }
@@ -236,6 +236,6 @@ public class PersonServiceClient {
         if (node == null || node.isMissingNode() || node.isNull()) {
             return "";
         }
-        return node.isTextual() ? node.textValue() : node.toString();
+        return node.isString() ? node.stringValue() : node.toString();
     }
 }

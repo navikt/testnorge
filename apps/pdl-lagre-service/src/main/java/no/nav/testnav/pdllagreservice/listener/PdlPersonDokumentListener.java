@@ -3,7 +3,6 @@ package no.nav.testnav.pdllagreservice.listener;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import no.nav.testnav.pdllagreservice.consumers.OpensearchDocumentService;
 import no.nav.testnav.pdllagreservice.dto.OpensearchDocumentData;
 import no.nav.testnav.pdllagreservice.utility.CollectionUtils;
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 
@@ -33,7 +32,7 @@ import static no.nav.testnav.pdllagreservice.utility.MetricUtils.KEY;
 public class PdlPersonDokumentListener {
 
     private final OpensearchDocumentService opensearchDocumentService;
-    private final ObjectMapper mapper;
+    private final JsonMapper jsonMapper;
 
     @Value("${opensearch.index.personer}")
     private String personIndex;
@@ -50,7 +49,7 @@ public class PdlPersonDokumentListener {
 
         log.info("Received {} records", records.count());
 
-        val documentList = KafkaUtilities.asStream(records)
+        var documentList = KafkaUtilities.asStream(records)
                 .map(this::convert)
                 .toList();
 
@@ -64,9 +63,9 @@ public class PdlPersonDokumentListener {
             if (isNull(post.value())) {
                 return new OpensearchDocumentData(personIndex, post.key(), null);
             } else {
-                val dokument = mapper.readValue(post.value(), new TypeReference<HashMap<String, Object>>() {
+                var dokument = jsonMapper.readValue(post.value(), new TypeReference<HashMap<String, Object>>() {
                 });
-                val dokumentMedSizeAttributter = appendSizeAttribute(dokument);
+                var dokumentMedSizeAttributter = appendSizeAttribute(dokument);
                 return new OpensearchDocumentData(personIndex, post.key(), dokumentMedSizeAttributter);
             }
         } catch (RuntimeException exception) {

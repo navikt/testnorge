@@ -29,7 +29,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ class PensjonPensjonsdataServiceTest {
 
     private static final String IDENT = "11111111111";
 
-    private static final ObjectMapper objectMapper = JsonMapper.builder().build();
+    private static final JsonMapper JSON_MAPPER = new JsonMapper();
 
     @Mock
     private TransaksjonMappingRepository transaksjonMappingRepository;
@@ -66,9 +65,9 @@ class PensjonPensjonsdataServiceTest {
 
     @Spy
     private PensjonforvalterHelper pensjonforvalterHelper =
-            new PensjonforvalterHelper(new ErrorStatusDecoder(objectMapper),
-                    objectMapper,
-                    new TransaksjonMappingService(transaksjonMappingRepository, objectMapper));
+            new PensjonforvalterHelper(new ErrorStatusDecoder(JSON_MAPPER),
+                    JSON_MAPPER,
+                    new TransaksjonMappingService(transaksjonMappingRepository, JSON_MAPPER));
 
     @Mock
     private MapperFacade mapperFacade;

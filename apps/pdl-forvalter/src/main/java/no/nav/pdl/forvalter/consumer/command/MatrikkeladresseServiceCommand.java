@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand.ADRESSE_TIMEOUT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @RequiredArgsConstructor
@@ -66,7 +67,8 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
                                 Exceptions.isRetryExhausted(throwable),
-                        throwable -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}));
+                        _ -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}))
+                .timeout(ADRESSE_TIMEOUT);
     }
 
     private MultiValueMap<String, String> getQuery() {

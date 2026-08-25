@@ -1,18 +1,42 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react-vite';
-import Comp, { ProfilProps } from './Profil';
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import Profil from './Profil';
 
-export default {
+const meta = {
   title: 'Profil/Profil',
-  component: Comp,
-} as Meta;
+  component: Profil,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Viser profilbilde og valgfritt visningsnavn i Dolly-headeren.',
+      },
+    },
+  },
+  argTypes: {
+    url: {
+      control: 'text',
+      description: 'URL til profilbildet. Dolly-logoen brukes når feltet er tomt.',
+    },
+    visningsnavn: {
+      control: 'text',
+      description: 'Navnet som vises ved siden av profilbildet.',
+    },
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ backgroundColor: '#3e3832', display: 'inline-block' }}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof Profil>;
 
-const Template: Story<ProfilProps> = (args) => <Comp {...args} />;
-export const Profil = Template.bind({});
-Profil.args = {
-  url: null,
-  visningsnavn: 'Jon Smith',
-};
-Profil.parameters = {
-  backgrounds: { default: 'dark' },
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    visningsnavn: 'Ola Nordmann',
+  },
 };
