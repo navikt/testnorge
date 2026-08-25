@@ -37,9 +37,9 @@ public class PersonerSearchController {
                                             @RequestBody SearchRequest request,
                                             ServerWebExchange exchange) {
 
-        exchange.getRequest().getCookies()
-                .forEach((name, cookies) ->
-                        cookies.forEach(cookie -> log.info("name: {}, key: {}, value: {}",  name, cookie.getName(), cookie.getValue())));
+       exchange.getRequest().getCookies().toSingleValueMap()
+                .forEach((name, cookie) ->
+                         log.info("name: {}, key: {}, value: {}",  name, cookie.getName(), cookie.getValue()));
 
         return getUserInfo.call()
                 .doOnNext(userInfo -> log.info("Mottok søk, brukernavn: {}, brukerId: {}, isBankId: {}, " +
