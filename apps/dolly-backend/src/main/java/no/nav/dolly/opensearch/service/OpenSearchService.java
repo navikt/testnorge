@@ -120,9 +120,7 @@ public class OpenSearchService {
         val builder = new BulkRequest.Builder()
                 .index(index);
         try {
-
             for (var dokument : bestillingDokument) {
-
                 builder.operations(op -> op
                         .index(idx -> idx
                                 .index(index)
@@ -155,17 +153,14 @@ public class OpenSearchService {
                     bestillingDokument.setBrukerType(bruker.getBrukertype());
                     if (Brukertype.BANKID.equals(bruker.getBrukertype())) {
                         return brukerServiceConsumer.getBruker(bruker.getBrukerId())
-                                .doOnNext(userInfo -> log.info("brukerId: {}, brukerNavn: {}, orgnr: {}",
-                                        userInfo.getId(), userInfo.getBrukernavn(), userInfo.getOrganisasjonsnummer()))
-                                .flatMap(userInfo -> {
+                                .map(userInfo -> {
                                     bestillingDokument.setOrgnr(userInfo.getOrganisasjonsnummer());
-                                    return Mono.just(bestillingDokument);
+                                    return bestillingDokument;
                                 });
                     }
                     return Mono.just(bestillingDokument);
                 })
                 .flatMap(dokument -> {
-
                     try {
                         return Mono.just(openSearchClient.index(new IndexRequest.Builder<BestillingDokument>()
                                 .index(index)
@@ -183,7 +178,6 @@ public class OpenSearchService {
                                         e.getLocalizedMessage(), e);
                         return Mono.empty();
                     }
-
                 });
     }
 
