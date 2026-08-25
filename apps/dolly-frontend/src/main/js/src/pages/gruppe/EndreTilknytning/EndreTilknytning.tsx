@@ -2,8 +2,13 @@ import React, { useState } from 'react'
 import { EndreTilknytningModal } from '@/pages/gruppe/EndreTilknytning/EndreTilknytningModal'
 import { Button } from '@navikt/ds-react'
 import { PersonPencilIcon } from '@navikt/aksel-icons'
+import { Gruppe } from '@/utils/hooks/useGruppe'
 
-export const EndreTilknytning = ({ gruppe }) => {
+type EndreTilknytningProps = {
+	gruppe: Gruppe
+}
+
+export const EndreTilknytning = ({ gruppe }: EndreTilknytningProps) => {
 	const [open, setOpen] = useState(false)
 
 	return (

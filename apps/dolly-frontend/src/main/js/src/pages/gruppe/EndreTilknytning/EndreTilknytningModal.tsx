@@ -3,10 +3,17 @@ import { useAlleBrukere } from '@/utils/hooks/useBruker'
 import { DollyApi } from '@/service/Api'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Button, Dialog, InlineMessage, UNSAFE_Combobox, VStack } from '@navikt/ds-react'
+import { Gruppe } from '@/utils/hooks/useGruppe'
 
-export const EndreTilknytningModal = ({ gruppe, open, setOpen }) => {
+type EndreTilknytningModalProps = {
+	gruppe: Gruppe
+	open: boolean
+	setOpen: (open: boolean) => void
+}
+
+export const EndreTilknytningModal = ({ gruppe, open, setOpen }: EndreTilknytningModalProps) => {
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
-	const [valgtBruker, setValgtBruker] = useState(gruppe.opprettetAv?.brukerId)
+	const [valgtBruker, setValgtBruker] = useState((gruppe.opprettetAv as any)?.brukerId)
 	const [feilmelding, setFeilmelding] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 

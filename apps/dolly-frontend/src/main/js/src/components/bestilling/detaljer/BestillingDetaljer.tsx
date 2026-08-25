@@ -9,7 +9,19 @@ import React from 'react'
 import { DollyApi } from '@/service/Api'
 import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
 
-export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
+type BestillingDetaljerProps = {
+	bestilling: any
+	iLaastGruppe?: boolean
+	brukerId?: string
+	brukertype?: string
+}
+
+export default function BestillingDetaljer({
+	bestilling,
+	iLaastGruppe,
+	brukerId,
+	brukertype,
+}: BestillingDetaljerProps) {
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0 || bestilling.antallLevert > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')

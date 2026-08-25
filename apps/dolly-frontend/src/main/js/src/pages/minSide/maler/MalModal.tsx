@@ -15,7 +15,14 @@ export const malTyper = {
 	PERSON: 'PERSON',
 }
 
-export const MalModal = ({ id, malType, open, setOpen }) => {
+type MalModalProps = {
+	id: string
+	malType: string
+	open: boolean
+	setOpen: (open: boolean) => void
+}
+
+export const MalModal = ({ id, malType, open, setOpen }: MalModalProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [nyttMalnavn, setMalnavn] = useState('')
 	const matchMutate = useMatchMutate()

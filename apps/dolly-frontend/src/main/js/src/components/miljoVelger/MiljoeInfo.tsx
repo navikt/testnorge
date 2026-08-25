@@ -11,7 +11,17 @@ import { filterMiljoe } from '@/components/miljoVelger/MiljoVelgerUtils'
 
 const SKATTEKORT_MILJOER = ['q1', 'q2']
 
-export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments, tilgjengeligeMiljoer }) => {
+type MiljoeInfoProps = {
+	bestillingsdata: Record<string, any>
+	dollyEnvironments: any[]
+	tilgjengeligeMiljoer: string[] | null
+}
+
+export const MiljoeInfo = ({
+	bestillingsdata,
+	dollyEnvironments,
+	tilgjengeligeMiljoer,
+}: MiljoeInfoProps) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
 	const {
 		pensjonEnvironments,

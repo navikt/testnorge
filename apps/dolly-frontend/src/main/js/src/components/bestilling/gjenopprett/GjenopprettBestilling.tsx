@@ -5,7 +5,15 @@ import { useSWRConfig } from 'swr'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import * as _ from 'lodash-es'
 
-export default function GjenopprettBestilling(props) {
+type GjenopprettBestillingProps = {
+	bestilling: any
+	disabled?: boolean
+	title?: string
+	gjenopprettBestilling: (envs: string) => Promise<any>
+	gjenopprettOrganisasjonBestilling: (envs: string) => Promise<any>
+}
+
+export default function GjenopprettBestilling(props: GjenopprettBestillingProps) {
 	const { bestilling, disabled, title } = props
 	const { environments } = bestilling
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')

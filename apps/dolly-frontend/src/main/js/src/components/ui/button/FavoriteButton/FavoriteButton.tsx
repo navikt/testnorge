@@ -6,7 +6,12 @@ import { Button } from '@navikt/ds-react'
 import { StarFillIcon, StarIcon } from '@navikt/aksel-icons'
 import React from 'react'
 
-export default function FavoriteButton({ hideLabel, groupId }: any) {
+type FavoriteButtonProps = {
+	hideLabel?: boolean
+	groupId: number
+}
+
+export default function FavoriteButton({ hideLabel, groupId }: FavoriteButtonProps) {
 	const dispatch = useDispatch()
 
 	const { currentBruker } = useCurrentBruker()

@@ -5,7 +5,13 @@ import React, { useEffect, useState } from 'react'
 import { Button, Dialog, HStack } from '@navikt/ds-react'
 import { ArrowLeftIcon, ArrowRightIcon, InformationSquareIcon } from '@navikt/aksel-icons'
 
-export const BestillingSammendragModal = ({ bestillinger: usorterteBestillinger }) => {
+type BestillingSammendragModalProps = {
+	bestillinger: any[]
+}
+
+export const BestillingSammendragModal = ({
+	bestillinger: usorterteBestillinger,
+}: BestillingSammendragModalProps) => {
 	const bestillingerSortert = usorterteBestillinger?.sort?.((a, b) => a?.id - b?.id)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [aktivBestilling, setAktivBestilling] = useState(bestillingerSortert[0])
