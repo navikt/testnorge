@@ -76,7 +76,6 @@ export const PdlEksisterendePerson = ({
 			.watch('pdldata.person.forelderBarnRelasjon')
 			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
 			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
-
 		valgteBarn?.forEach((barn: string) => {
 			if (foreldreansvar.includes(barn)) {
 				harEksisterendeAnsvar = true
