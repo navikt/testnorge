@@ -79,7 +79,7 @@ public class FagsystemQueryUtils {
 
     public static void addOrgnrQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
 
-        if ("BANKID".equals(request.getBrukerType())) {
+        if ("BANKID".equals(request.getBrukerType()) && isNotBlank(request.getOrgnr())) {
             queryBuilder.must(builder ->
                             builder.match(matchQuery("brukerType", "BANKID")))
                     .must(builder ->

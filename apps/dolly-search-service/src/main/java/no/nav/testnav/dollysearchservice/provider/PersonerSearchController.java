@@ -35,7 +35,7 @@ public class PersonerSearchController {
     private final PersonerSearchService personerSearchService;
     private final JsonMapper jsonMapper;
 
-    private static final Base64.Decoder DECODER = Base64.getDecoder();
+    private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
 
     @PostMapping
     @Operation(description = "Henter Dolly-personer som matcher både søk i registre og søk av persondetaljer i PDL")
