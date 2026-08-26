@@ -12,6 +12,7 @@ import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,12 @@ public class PersonerSearchController {
     @Operation(description = "Henter Dolly-personer som matcher både søk i registre og søk av persondetaljer i PDL")
     public Mono<SearchResponse> getPersoner(@RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request,
-                                            ServerWebExchange exchange) {
+                                            ServerWebExchange exchange,
+                                            @RequestHeader(required = false) String header) {
+
+       log.info("Mottatt request header: {}", header);
+
+       log.info("Mottatt request cookies: {}", exchange.getRequest().getCookies());
 
        exchange.getRequest().getCookies().toSingleValueMap()
                 .forEach((name, cookie) ->
