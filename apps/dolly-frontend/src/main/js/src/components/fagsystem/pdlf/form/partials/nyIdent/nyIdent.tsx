@@ -2,13 +2,12 @@ import * as React from 'react'
 import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { PdlPersonForm } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 
 interface NyIdentForm {
 	formMethods: UseFormReturn
@@ -39,26 +38,22 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 				}
 
 				const initialEksisterendePerson = {
-					eksisterendeIdent: '',
+					eksisterendeIdent: null,
 					kilde: formMethods.watch(`${path}.kilde`),
 					master: formMethods.watch(`${path}.master`),
 				}
 
 				return (
 					<div className="flexbox--flex-wrap">
-						<PdlPersonExpander
+						<PdlPersonForm
 							path={path}
 							nyPersonPath={path}
 							eksisterendePersonPath={`${path}.eksisterendeIdent`}
-							initialNyIdent={initialNyIdent}
-							initialEksisterendePerson={initialEksisterendePerson}
 							label="NY IDENTITET"
 							formMethods={formMethods}
 							nyIdentValg={nyIdentValg}
-							isExpanded={
-								!isEmpty(nyIdentValg, ['syntetisk']) ||
-								formMethods.watch(`${path}.eksisterendeIdent`) !== null
-							}
+							initialNyIdent={initialNyIdent}
+							initialEksisterendePerson={initialEksisterendePerson}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={opts?.identtype !== 'NPID'} />
 					</div>

@@ -13,6 +13,7 @@ import { sikkerhetstiltak } from '@/components/fagsystem/pdlf/form/validation/pa
 import { tilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/validation/partials/tilrettelagtKommunikasjon'
 import {
 	falskIdentitet,
+	nyident,
 	utenlandskId,
 } from '@/components/fagsystem/pdlf/form/validation/partials/identifikasjon'
 import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials/telefonnummer'
@@ -152,6 +153,7 @@ export const validation = {
 					'$pdldata.person.utenlandskIdentifikasjonsnummer',
 					Yup.array().of(utenlandskId),
 				),
+				nyident: ifPresent('$pdldata.person.nyident', Yup.array().of(nyident)),
 				kontaktinformasjonForDoedsbo: ifPresent(
 					'$pdldata.person.kontaktinformasjonForDoedsbo',
 					Yup.array().of(kontaktDoedsbo),
