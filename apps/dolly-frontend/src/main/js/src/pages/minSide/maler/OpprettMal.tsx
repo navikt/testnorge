@@ -10,7 +10,7 @@ export const OpprettMal = ({ id, malType }: { id: string; malType: string }) => 
 	return (
 		<>
 			<Button
-				data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL} //TODO: Tilpasse denne for alle stedene OpprettMal blir brukt?
+				data-testid={TestComponentSelectors.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
 				size="xsmall"
 				variant="tertiary"
 				icon={<FileLoadingIcon aria-hidden />}

@@ -1,4 +1,3 @@
-import './SlettModal.less'
 import { useNavigate } from 'react-router'
 import {
 	REGEX_BACKEND_BESTILLINGER,

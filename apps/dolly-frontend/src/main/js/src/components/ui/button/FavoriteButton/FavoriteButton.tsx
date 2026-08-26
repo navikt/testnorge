@@ -24,10 +24,12 @@ export default function FavoriteButton({ hideLabel, groupId }: FavoriteButtonPro
 
 	const isFavorite = currentBruker?.favoritter.some((fav: any) => fav.id === groupId)
 
-	const handleClick = () =>
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.stopPropagation()
 		isFavorite
 			? dispatch(removeFavorite(groupId)).then(() => mutate(REGEX_BACKEND_BRUKER))
 			: dispatch(addFavorite(groupId)).then(() => mutate(REGEX_BACKEND_BRUKER))
+	}
 
 	return (
 		<Button
