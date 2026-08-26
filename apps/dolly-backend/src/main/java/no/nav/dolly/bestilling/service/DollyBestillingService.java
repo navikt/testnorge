@@ -250,7 +250,7 @@ public class DollyBestillingService {
                 .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
     }
 
-    protected Mono<Void> saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
+    protected Mono<Void> saveBestillingToOpenSearchServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
 
         if (isBlank(bestilling.getFeil()) &&
                 isNull(bestilling.getOpprettetFraId()) &&
@@ -267,7 +267,7 @@ public class DollyBestillingService {
                         request.setIdenter(identer);
                         return request;
                     })
-                    .flatMap(openSearchService::save)
+                    .flatMap(_ -> openSearchService.save(request, bestilling.getBruker()))
                     .then();
         } else {
             return Mono.empty();

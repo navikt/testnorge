@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
@@ -117,6 +118,9 @@ public class BestillingDokument implements Persistable<Long> {
     private RsKelvinAapRequestDTO kelvinAap;
 
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+
+    private Bruker.Brukertype brukerType;
+    private String orgnr;
 
     @Transient
     @JsonIgnore

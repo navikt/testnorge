@@ -3,9 +3,10 @@ package no.nav.dolly.repository;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
+import no.nav.dolly.domain.projection.BestillingBrukerFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
-import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.BestillingFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
@@ -26,7 +27,17 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
 
     Mono<Bestilling> findById(Long id);
 
-    Flux<Bestilling> findByOrderByIdDesc();
+    @Query("""
+            select b.id, b.best_kriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
+            join bruker br on br.id = b.bruker_id
+            and b.opprett_fra_gruppe is null
+            and b.gjenopprettet_fra_ident is null
+            and b.opprettet_fra_id is null
+            and b.best_kriterier is not null
+            and b.best_kriterier <> '{}'
+            order by b.id desc
+            """)
+    Flux<BestillingBrukerFragment> findByOrderByIdDesc();
 
     Mono<Void> deleteById(Long id);
 
@@ -42,7 +53,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and cast(b.id as VARCHAR) ilike :id
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByIdContaining(@Param("id") String id);
+    Flux<BestillingFragment> findByIdContaining(@Param("id") String id);
 
     @Query("""
             select b.id as id, g.navn as navn
@@ -52,7 +63,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByGruppenavnContaining(@Param("gruppenavn") String gruppenavn);
+    Flux<BestillingFragment> findByGruppenavnContaining(@Param("gruppenavn") String gruppenavn);
 
     @Query("""
             select b.id as id, g.navn as navn
@@ -62,7 +73,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             and g.navn like :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsBestillingFragment> findByIdContainingAndGruppeNavnContaining(
+    Flux<BestillingFragment> findByIdContainingAndGruppeNavnContaining(
             @Param("id") String id,
             @Param("gruppenavn") String gruppenavn
     );

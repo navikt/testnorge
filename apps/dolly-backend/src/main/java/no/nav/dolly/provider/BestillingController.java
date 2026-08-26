@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
-import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.BestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.service.BestillingEventPublisher;
@@ -69,7 +69,7 @@ public class BestillingController {
 
     @GetMapping("/soekBestilling")
     @Operation(description = "Hent Bestillinger basert på fragment")
-    public Flux<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+    public Flux<BestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
 
         return bestillingService.fetchBestillingByFragment(fragment);
     }
@@ -157,7 +157,7 @@ public class BestillingController {
 
                     var updates = bestillingEventPublisher.subscribe(bestillingId)
                             .sample(Duration.ofMillis(200))
-                            .concatMap(id -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
+                            .concatMap(_ -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
                                     .onErrorResume(e -> {
@@ -166,10 +166,10 @@ public class BestillingController {
                                     }));
 
                     var fallbackCheck = Flux.interval(Duration.ofSeconds(3), Duration.ofSeconds(3))
-                            .concatMap(tick -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
+                            .concatMap(_ -> bestillingService.fetchBestillingByIdMedUtlededeFagsystemer(bestillingId)
                                     .map(bestilling -> mapperFacade.map(bestilling, RsBestillingStatus.class))
                                     .timeout(Duration.ofSeconds(5))
-                                    .onErrorResume(e -> Mono.empty()));
+                                    .onErrorResume(_ -> Mono.empty()));
 
                     return Flux.concat(Flux.just(initial), Flux.merge(updates, fallbackCheck))
                             .distinctUntilChanged(this::statusFingerprint)
