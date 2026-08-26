@@ -1,24 +1,20 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange.user;
 
-import tools.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Slf4j
 @Component
@@ -44,25 +40,25 @@ public class UserJwtExchange {
     }
 
     public Mono<String> generateJwt(String id, ServerWebExchange exchange) {
+        return generateJwt(id, () -> tokenExchange.exchange(serviceProperties, exchange)
+                .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call()));
+    }
 
+    public Mono<String> generateJwt(String id, String accessToken) {
+        return generateJwt(id, () -> new GetTokenCommand(webClient, accessToken, id).call());
+    }
+
+    private Mono<String> generateJwt(String id, Supplier<Mono<String>> tokenSupplier) {
         if (!tokenCache.containsKey(id) || expires(tokenCache.get(id))) {
-
             synchronized (this) {
                 if (!tokenCache.containsKey(id) || expires(tokenCache.get(id))) {
-                    return tokenExchange.exchange(serviceProperties, exchange)
-                            .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call())
-                            .doOnNext(token ->
-                                    tokenCache.put(id, token));
-                } else {
-
-                    return Mono.just(tokenCache.get(id));
+                    return tokenSupplier.get()
+                            .doOnNext(token -> tokenCache.put(id, token));
                 }
+                return Mono.just(tokenCache.get(id));
             }
-
-        } else {
-
-            return Mono.just(tokenCache.get(id));
         }
+        return Mono.just(tokenCache.get(id));
     }
 
     @SneakyThrows

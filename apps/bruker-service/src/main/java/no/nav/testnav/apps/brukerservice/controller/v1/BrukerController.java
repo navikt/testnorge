@@ -7,7 +7,9 @@ import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.apps.brukerservice.service.v1.JwtService;
 import no.nav.testnav.apps.brukerservice.service.v1.UserService;
 import no.nav.testnav.apps.brukerservice.service.v1.ValidateService;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,6 +37,7 @@ public class BrukerController {
     private final ValidateService validateService;
     private final UserService userService;
     private final JwtService jwtService;
+    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
 
     @PostMapping
     public Mono<ResponseEntity<BrukerDTO>> createBruker(
@@ -106,9 +109,16 @@ public class BrukerController {
 
     @PostMapping("/{id}/token")
     public Mono<ResponseEntity<String>> getToken(@PathVariable String id) {
+        return getAuthenticatedResourceServerType.call()
+                .flatMap(resourceServerType -> ResourceServerType.AZURE_AD.equals(resourceServerType)
+                        ? jwtService.getAzureToken(id)
+                        : getIdportenToken(id))
+                .map(ResponseEntity::ok);
+    }
+
+    private Mono<String> getIdportenToken(String id) {
         return userService.getUser(id, true)
                 .doOnNext(user -> validateService.validateOrganiasjonsnummerAccess(user.getOrganisasjonsnummer()))
-                .flatMap(jwtService::getToken)
-                .map(ResponseEntity::ok);
+                .flatMap(jwtService::getToken);
     }
 }

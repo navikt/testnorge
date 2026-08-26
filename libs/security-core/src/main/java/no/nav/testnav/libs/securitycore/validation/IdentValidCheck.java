@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.utils;
+package no.nav.testnav.libs.securitycore.validation;
 
 import lombok.experimental.UtilityClass;
 
