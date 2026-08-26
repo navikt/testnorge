@@ -354,16 +354,7 @@ export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
 })
 
 export const getInitialNyIdent = (master = 'FREG') => ({
-	eksisterendeIdent: null as unknown as string,
 	identtype: null as unknown as string,
-	kjoenn: null as unknown as string,
-	foedtEtter: null as unknown as string,
-	foedtFoer: null as unknown as string,
-	alder: '',
-	syntetisk: true,
-	nyttNavn: {
-		hasMellomnavn: false,
-	},
 	eksisterendePerson: false,
 	kilde: 'Dolly',
 	master: master,

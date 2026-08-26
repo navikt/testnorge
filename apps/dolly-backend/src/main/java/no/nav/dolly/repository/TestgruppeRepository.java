@@ -1,7 +1,7 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.projection.RsGruppeFragment;
+import no.nav.dolly.domain.projection.GruppeFragment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -63,7 +63,7 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
             and cast(g.id as VARCHAR) ilike :id
             fetch first 10 rows only
             """)
-    Flux<RsGruppeFragment> findByIdContaining(@Param("id") String id);
+    Flux<GruppeFragment> findByIdContaining(@Param("id") String id);
 
     @Query("""
             select g.id as id, g.navn as navn
@@ -72,7 +72,7 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsGruppeFragment> findByNavnContaining(@Param("gruppenavn") String gruppenavn);
+    Flux<GruppeFragment> findByNavnContaining(@Param("gruppenavn") String gruppenavn);
 
     @Query("""
             select g.id as id, g.navn as navn
@@ -81,7 +81,7 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
             and g.navn ilike :gruppenavn
             fetch first 10 rows only
             """)
-    Flux<RsGruppeFragment> findByIdContainingAndNavnContaining(
+    Flux<GruppeFragment> findByIdContainingAndNavnContaining(
             @Param("id") String id,
             @Param("gruppenavn") String gruppenavn
     );

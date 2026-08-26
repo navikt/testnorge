@@ -85,7 +85,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                         .flatMap(_ -> opprettPerson(bestilling, bestKriterier, originator), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                        () -> saveBestillingToOpenSearchServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();
