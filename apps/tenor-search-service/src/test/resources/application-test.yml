@@ -1,0 +1,7 @@
+
+open:
+  search:
+    uri: dummy
+    username: dummy
+    password: dummy
+    index-dev: dummy
