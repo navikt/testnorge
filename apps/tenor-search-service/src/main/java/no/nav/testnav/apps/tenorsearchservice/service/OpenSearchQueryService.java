@@ -80,7 +80,7 @@ public class OpenSearchQueryService {
                         .map(jsonNode -> jsonNode.path("identer"))
                         .flatMap(jsonNode -> StreamSupport
                                 .stream(jsonNode.spliterator(), false))
-                        .map(Object::toString)
+                        .map(JsonNode::asString)
                         .collect(Collectors.toSet()))
                 .build();
     }
