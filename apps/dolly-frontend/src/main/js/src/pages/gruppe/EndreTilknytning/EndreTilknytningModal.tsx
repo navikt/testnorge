@@ -13,7 +13,7 @@ type EndreTilknytningModalProps = {
 
 export const EndreTilknytningModal = ({ gruppe, open, setOpen }: EndreTilknytningModalProps) => {
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
-	const [valgtBruker, setValgtBruker] = useState((gruppe.opprettetAv as any)?.brukerId)
+	const [valgtBruker, setValgtBruker] = useState(null)
 	const [feilmelding, setFeilmelding] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -80,7 +80,7 @@ export const EndreTilknytningModal = ({ gruppe, open, setOpen }: EndreTilknytnin
 							Avbryt
 						</Button>
 					</Dialog.CloseTrigger>
-					<Button form="bytt-eier-form" loading={isLoading}>
+					<Button form="bytt-eier-form" loading={isLoading} disabled={!valgtBruker}>
 						Bytt eier
 					</Button>
 				</Dialog.Footer>

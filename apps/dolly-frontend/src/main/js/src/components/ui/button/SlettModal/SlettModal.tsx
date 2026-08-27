@@ -13,7 +13,6 @@ type Props = {
 	gruppeId?: string | number
 	bestillingId?: string | number
 	loading: boolean
-	disabled?: boolean
 	navigateHome?: boolean
 	autoMutate?: boolean
 	slettType: string

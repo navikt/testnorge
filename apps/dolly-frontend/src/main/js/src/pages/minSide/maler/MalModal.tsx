@@ -38,7 +38,6 @@ export const MalModal = ({ id, malType, open, setOpen }: MalModalProps) => {
 					.then(() => matchMutate(REGEX_BACKEND_ORGANISASJONER))
 					.then(setIsLoading(false))
 					.then(setOpen(false))
-
 				break
 			case malTyper.BESTILLING:
 				DollyApi.lagreMalFraBestillingId(id, nyttMalnavn)

@@ -34,9 +34,9 @@ export const GjenopprettGruppe = ({ gruppeId }: GjenopprettGruppeProps) => {
 			environments={miljoer}
 			submitForm={submitForm}
 			title={`Gjenopprett gruppe: ${gruppe?.navn} (#${gruppe?.id})`}
-			beskrivelse="Alle personene i gruppen blir gjenopprettet til de valgte miljøene. Miljøene personene
+			beskrivelse={`Alle personene i gruppen blir gjenopprettet til de valgte miljøene. Miljøene personene
 				tidligere er bestilt til er allerede huket av. Dette kan du endre på, men husk at noen
-				egenskaper er avhengig av miljø."
+				egenskaper er avhengig av miljø.`}
 			antallIdenter={antallPersoner}
 			bestilteMiljoer={miljoer}
 			disabled={antallPersoner < 1}
