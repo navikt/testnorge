@@ -91,7 +91,7 @@ public class JwtService {
         if (containsValidPersonIdentifier(id)
                 || containsValidPersonIdentifier(username)
                 || containsValidPersonIdentifier(organizationNumber)) {
-            throw new AccessDeniedException("User-Jwt kan ikke inneholde norsk personident.");
+            throw new AccessDeniedException("User-Jwt kan ikke inneholde personnummer.");
         }
 
         var date = Calendar.getInstance();
