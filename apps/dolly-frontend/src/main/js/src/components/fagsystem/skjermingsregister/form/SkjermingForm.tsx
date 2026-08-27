@@ -32,7 +32,11 @@ export const SkjermingForm = () => {
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
-				<FormDatepicker name="skjerming.egenAnsattDatoTom" label="Skjerming til" visHvisAvhuket />
+				<FormDatepicker
+					name="skjerming.egenAnsattDatoTom"
+					label="Skjerming til"
+					visHvisAvhuket={false}
+				/>
 			)}
 		</div>
 	)
