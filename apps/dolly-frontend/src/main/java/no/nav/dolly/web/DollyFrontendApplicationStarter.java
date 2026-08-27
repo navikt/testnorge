@@ -5,13 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
+import no.nav.dolly.web.service.UserJwtResolver;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
-import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -27,9 +26,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -43,7 +39,7 @@ import java.util.function.Function;
 public class DollyFrontendApplicationStarter {
 
     private final AccessService accessService;
-    private final UserJwtExchange userJwtExchange;
+    private final UserJwtResolver userJwtResolver;
     private final Consumers consumers;
     private final GatewayFilter removeCookiesFilter = (exchange, chain) -> {
         ServerWebExchange modifiedExchange = exchange.mutate()
@@ -104,13 +100,7 @@ public class DollyFrontendApplicationStarter {
     }
 
     private GatewayFilter addUserJwtHeaderFilter() {
-        return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
-            return exchange.getSession()
-                    .flatMap(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY))
-                            .map(value -> Mono.just((String) value))
-                            .orElse(Mono.empty())
-                    ).flatMap(id -> userJwtExchange.generateJwt(id, exchange));
-        });
+        return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(userJwtResolver::resolve);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
