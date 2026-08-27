@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
-import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { useFormContext } from 'react-hook-form'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
+import { Box, Button, HStack, TextField } from '@navikt/ds-react'
 
 const FeedbackText = styled.div`
 	margin-top: 10px;
@@ -19,14 +18,14 @@ export default () => {
 	const [gruppeId, setGruppeId] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
 
-	const [navn, setNavn] = useState('')
-	const [hensikt, setHensikt] = useState('')
-	const [navnError, setNavnError] = useState(null as unknown as string)
-	const [hensiktError, setHensiktError] = useState(null as unknown as string)
-
 	const formMethods = useFormContext()
 	const formErrors = formMethods.formState.errors
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+
+	const navn = formMethods.watch('gruppeNavn') || ''
+	const hensikt = formMethods.watch('gruppeHensikt') || ''
+	const [navnError, setNavnError] = useState(null as unknown as string)
+	const [hensiktError, setHensiktError] = useState(null as unknown as string)
 
 	useEffect(() => {
 		formMethods.setValue('gruppeId', gruppeId)
@@ -70,43 +69,46 @@ export default () => {
 
 	return (
 		<div className={'ny-gruppe'}>
-			<div className="flexbox--flex-wrap">
-				<DollyTextInput
-					useControlled
-					name={'gruppeNavn'}
-					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_NAVN}
-					onChange={(event) => {
-						setNavn(event.target.value)
-						setNavnError(null as unknown as string)
+			<HStack gap="space-16" width="100%" wrap={false}>
+				<Box flexGrow="1" flexBasis="0">
+					<TextField
+						name={'gruppeNavn'}
+						data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_NAVN}
+						onChange={(event) => {
+							formMethods.setValue('gruppeNavn', event.target.value)
+							setNavnError(null as unknown as string)
+						}}
+						value={navn}
+						label="Navn"
+						error={navnError}
+					/>
+				</Box>
+				<Box flexGrow="1" flexBasis="0">
+					<TextField
+						name={'gruppeHensikt'}
+						data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT}
+						onChange={(event) => {
+							formMethods.setValue('gruppeHensikt', event.target.value)
+							setHensiktError(null as unknown as string)
+						}}
+						value={hensikt}
+						label="Hensikt"
+						error={hensiktError}
+					/>
+				</Box>
+				<Button
+					data-testid={TestComponentSelectors.BUTTON_NY_GRUPPE_OPPRETT}
+					variant="primary"
+					disabled={nyGruppe.length > 0}
+					onClick={(event) => {
+						event.preventDefault()
+						return onHandleSubmit()
 					}}
-					label="NAVN"
-					size="large"
-					manualError={navnError}
-				/>
-				<DollyTextInput
-					useControlled
-					name={'gruppeHensikt'}
-					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT}
-					onChange={(event) => {
-						setHensikt(event.target.value)
-						setHensiktError(null as unknown as string)
-					}}
-					label="HENSIKT"
-					size="large"
-					manualError={hensiktError}
-				/>
-			</div>
-			<NavButton
-				data-testid={TestComponentSelectors.BUTTON_NY_GRUPPE_OPPRETT}
-				variant="primary"
-				disabled={nyGruppe.length > 0}
-				onClick={(event) => {
-					event.preventDefault()
-					return onHandleSubmit()
-				}}
-			>
-				Opprett
-			</NavButton>
+					style={{ height: 'fit-content', marginTop: '32px' }}
+				>
+					Opprett
+				</Button>
+			</HStack>
 			<FeedbackText>
 				{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
 				{feilmelding && <div className="error-message">{feilmelding}</div>}

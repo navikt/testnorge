@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { DollyApi } from '@/service/Api'
-import styled from 'styled-components'
 import { useNavigate } from 'react-router'
 import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { FlyttPersonForm } from '@/components/ui/button/FlyttPersonButton/FlyttPersonForm'
+import { Button, Dialog } from '@navikt/ds-react'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
-	modalIsOpen: boolean
-	closeModal: Function
+	open: boolean
+	setOpen: Function
 }
 
 type Person = {
@@ -32,22 +32,14 @@ const validation = Yup.object().shape({
 	gruppeId: Yup.string().required('Velg eksisterende gruppe eller opprett ny gruppe'),
 })
 
-const ModalContent = styled.div`
-	display: flex;
-	flex-direction: column;
+const initialValues = { identer: [], gruppeId: undefined }
 
-	&&& {
-		h2 {
-			font-size: 1.2em;
-		}
-	}
-`
-
-export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
+export const FlyttPersonModal = ({ gruppeId, open, setOpen }: FlyttPersonButtonTypes) => {
 	const formMethods = useForm({
-		defaultValues: { identer: [], gruppeId: undefined },
+		defaultValues: initialValues,
 		resolver: yupResolver(validation),
 	})
+
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
@@ -78,10 +70,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	const gruppeOptions = getGruppeOptions()
 
 	const gruppeIdenterListe = Array.isArray(gruppeOptions)
-		? gruppeOptions
-				?.map((person) => person?.value)
-				.filter((person) => person)
-				.map((person) => ({ fnr: person }))
+		? gruppeOptions?.map((person) => person?.value).filter((person) => person)
 		: []
 
 	const getRelatertePersoner = (identer: Array<string>, identerHentet = [] as Array<string>) => {
@@ -103,15 +92,14 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		return relatertePersonerHentet
 	}
 
-	const harRelatertePersoner = (identer: Array<{ fnr: string }>) => {
+	const harRelatertePersoner = (identer: Array<string>) => {
 		if (!identer || identer?.length < 1) {
 			return false
 		}
 		let relatert = false
 		identer.forEach((ident) => {
 			if (
-				gruppeOptions?.find((option: Option) => option?.value === ident?.fnr)?.relasjoner?.length >
-				0
+				gruppeOptions?.find((option: Option) => option?.value === ident)?.relasjoner?.length > 0
 			) {
 				relatert = true
 			}
@@ -120,50 +108,68 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	}
 
 	const handleSubmit = () => {
+		setLoading(true)
 		const { identer, gruppeId } = formMethods.getValues()
-		const identerFormatert = identer.map((ident) => ident.fnr)
-		const relasjoner = getRelatertePersoner(identerFormatert)
-		const identerSamlet = Array.from(new Set([...identerFormatert, ...relasjoner]))
+		const relasjoner = getRelatertePersoner(identer)
+		const identerSamlet = Array.from(new Set([...identer, ...relasjoner]))
 		DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
 			.then(() => {
-				closeModal()
-				setLoading(false)
 				navigate(`../gruppe/${gruppeId}`)
 			})
-			.catch((e: Error) => {
+			.then(() => setOpen(false))
+			.catch((e: any) => {
 				setError(e.message)
-				setLoading(false)
 			})
+			.finally(() => setLoading(false))
 	}
 
-	const handleClose = () => {
-		closeModal()
-		setError(null)
-		setLoading(false)
+	const handleOpenChange = (isOpen: boolean) => {
+		if (!loading) {
+			setOpen(isOpen)
+			formMethods.reset()
+			setError(null)
+		}
 	}
 
 	return (
-		<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
-			<ModalContent>
-				<FormProvider {...formMethods}>
-					<Form onSubmit={handleSubmit}>
-						<FlyttPersonForm
-							gruppeId={gruppeId}
-							gruppeLoading={gruppeLoading}
-							error={error}
-							loading={loading}
-							gruppeIdenterListe={gruppeIdenterListe}
-							gruppeOptions={gruppeOptions}
-							pdlLoading={pdlLoading}
-							pdlError={pdlError}
-							testnorgeLoading={testnorgeLoading}
-							testnorgeError={testnorgeError}
-							handleClose={handleClose}
-							harRelatertePersoner={harRelatertePersoner}
-						/>
-					</Form>
-				</FormProvider>
-			</ModalContent>
-		</DollyModal>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
+			<Dialog.Popup width="large" closeOnOutsideClick={false}>
+				<Dialog.Header>
+					<Dialog.Title>Flytt personer til gruppe</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<FormProvider {...formMethods}>
+						<Form id="flytt-person-form" onSubmit={handleSubmit}>
+							<FlyttPersonForm
+								gruppeId={gruppeId}
+								gruppeLoading={gruppeLoading}
+								error={error}
+								gruppeIdenterListe={gruppeIdenterListe}
+								gruppeOptions={gruppeOptions}
+								pdlLoading={pdlLoading}
+								pdlError={pdlError}
+								testnorgeLoading={testnorgeLoading}
+								testnorgeError={testnorgeError}
+								harRelatertePersoner={harRelatertePersoner}
+							/>
+						</Form>
+					</FormProvider>
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<Button
+							type="button"
+							variant="secondary"
+							data-testid={TestComponentSelectors.BUTTON_FLYTT_PERSONER_AVBRYT}
+						>
+							Avbryt
+						</Button>
+					</Dialog.CloseTrigger>
+					<Button form="flytt-person-form" loading={loading}>
+						Flytt personer
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
 	)
 }

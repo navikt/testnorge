@@ -1,30 +1,16 @@
 import React, { useState } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import Button from '@/components/ui/button/Button'
-import Icon from '@/components/ui/icon/Icon'
-import Loading from '@/components/ui/loading/Loading'
 import { DollyApi } from '@/service/Api'
-import './RelatertPersonImportButton.less'
 import { allCapsToCapitalized } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { FormProvider, useForm } from 'react-hook-form'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react'
-import { UseFormReturn } from 'react-hook-form/dist/types'
+import { BodyLong, Button, Checkbox, CheckboxGroup, Dialog, InlineMessage } from '@navikt/ds-react'
+import { PersonTallShortIcon } from '@navikt/aksel-icons'
 
 type RelatertPersonProps = {
 	type: string
 	id: string
-}
-
-type IdentFormProps = {
-	formMethods: UseFormReturn
-	relatertPersonIdenter: Array<RelatertPersonProps>
-	gruppeIdenter: string[]
-	closeModal: () => void
-	handleImport: (identer: string[]) => Promise<void>
 }
 
 type Props = {
@@ -32,52 +18,6 @@ type Props = {
 	gruppeId: string
 	gruppeIdenter: string[]
 	master: string
-}
-
-const IdentForm = ({
-	formMethods,
-	relatertPersonIdenter,
-	gruppeIdenter,
-	closeModal,
-	handleImport,
-}: IdentFormProps) => {
-	const handleChange = (identer: string[]) => {
-		formMethods.setValue('identer', identer)
-	}
-
-	return (
-		<div className="checkbox-form">
-			<CheckboxGroup
-				legend="Velg hvilke relaterte personer du ønsker å importere"
-				style={{ marginTop: '25px' }}
-				onChange={handleChange}
-			>
-				{relatertPersonIdenter.map((ident) => {
-					const label = `${allCapsToCapitalized(ident.type)} (${ident.id})`
-					const disabledCheckbox = gruppeIdenter?.includes(ident.id)
-					return (
-						<Checkbox
-							key={ident.id}
-							value={ident.id}
-							disabled={disabledCheckbox}
-							description={disabledCheckbox ? 'Person finnes allerede i gruppen' : undefined}
-						>
-							{label}
-						</Checkbox>
-					)
-				})}
-			</CheckboxGroup>
-			<ModalActionKnapper
-				submitknapp="Importer"
-				onSubmit={() => {
-					handleImport(formMethods.getValues()?.identer)
-					closeModal()
-				}}
-				onAvbryt={closeModal}
-				center
-			/>
-		</div>
-	)
 }
 
 export const RelatertPersonImportButton = ({
@@ -89,7 +29,7 @@ export const RelatertPersonImportButton = ({
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState<string | null>(null)
-	const [fullfoert, setFullfoert] = useState(false)
+
 	const mutate = useMatchMutate()
 	const formMethods = useForm({ mode: 'onBlur', defaultValues: { identer: [] as string[] } })
 
@@ -102,98 +42,103 @@ export const RelatertPersonImportButton = ({
 
 	const foersteRelatertPersonType = _.lowerCase(relatertPersonIdenter[0]?.type)
 
-	const handleImport = async (identer = null as unknown as string[]) => {
-		setLoading(true)
-		setFeilmelding(null)
-		const results = await Promise.allSettled(
-			identer.map(
-				(ident) => DollyApi.importerRelatertPerson(gruppeId, ident, master), // return the promise
-			),
-		)
-		const hasFailure = results.some((r) => r.status === 'rejected')
-		if (hasFailure) {
-			setFeilmelding('Noe gikk galt')
-			setFullfoert(false)
-		} else {
-			setFullfoert(true)
-			mutate(REGEX_BACKEND_GRUPPER)
-		}
-		setLoading(false)
+	const handleChange = (identer: string[]) => {
+		formMethods.setValue('identer', identer)
 	}
 
-	const handleCloseModal = () => {
-		closeModal()
-		setFeilmelding(null)
-		formMethods.reset()
-	}
-
-	if (loading) {
-		return <Loading label="importerer..." />
-	}
-
-	if (fullfoert) {
-		return (
-			<div className={'success-text'}>
-				<Icon size={16} kind={'feedback-check-circle'} />
-				<span>VENNLIGST LUKK VISNING</span>
-			</div>
-		)
-	}
+	const importerTitle =
+		relatertPersonIdenter.length > 1
+			? 'Importer relaterte personer'
+			: `Importer ${relatertPersonIdenter[0]?.type?.toLowerCase()}`
 
 	return (
-		<FormProvider {...formMethods}>
-			<div>
-				<Button
-					onClick={openModal}
-					disabled={disabled}
-					title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
-					kind="relasjoner"
-					className="svg-icon-blue"
-				>
-					{relatertPersonIdenter.length > 1
-						? 'IMPORTER RELATERTE PERSONER'
-						: `IMPORTER ${relatertPersonIdenter[0]?.type}`}
-				</Button>
-				{feilmelding && (
-					<div className="error-message" style={{ margin: '5px 0 0 30px' }}>
-						{feilmelding}
-					</div>
-				)}
-				<DollyModal isOpen={modalIsOpen} closeModal={handleCloseModal} width="40%" overflow="auto">
-					<div className="modal">
-						{relatertPersonIdenter.length > 1 ? (
-							<>
-								<h1>Importer relaterte personer</h1>
-								<IdentForm
-									formMethods={formMethods}
-									gruppeIdenter={gruppeIdenter}
-									closeModal={handleCloseModal}
-									relatertPersonIdenter={relatertPersonIdenter}
-									handleImport={handleImport}
-								/>
-							</>
-						) : (
-							<>
-								<h1>{`Importer ${foersteRelatertPersonType}`}</h1>
-								<h4>
-									{`Er du sikker på at du vil importere og legge til valgt persons ${
-										foersteRelatertPersonType || 'relaterte person'
-									} i gruppen?`}
-								</h4>
-								<ModalActionKnapper
-									submitknapp="Ja"
-									onSubmit={() => {
-										handleImport([relatertPersonIdenter[0]?.id])
-										handleCloseModal()
-									}}
-									onAvbryt={handleCloseModal}
-									center
-								/>
-							</>
-						)}
-					</div>
-				</DollyModal>
-			</div>
-		</FormProvider>
+		<>
+			<Button
+				size="xsmall"
+				variant="tertiary"
+				icon={<PersonTallShortIcon aria-hidden />}
+				onClick={openModal}
+				disabled={disabled}
+				title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
+			>
+				{importerTitle}
+			</Button>
+			<Dialog open={modalIsOpen} onOpenChange={modalIsOpen ? closeModal : openModal}>
+				<Dialog.Popup>
+					<Dialog.Header>
+						<Dialog.Title>{importerTitle}</Dialog.Title>
+					</Dialog.Header>
+					<Dialog.Body>
+						<FormProvider {...formMethods}>
+							<form
+								id="importer-relatert-person"
+								onSubmit={formMethods.handleSubmit(async (data) => {
+									setLoading(true)
+									const identer =
+										relatertPersonIdenter.length > 1
+											? data?.identer
+											: [relatertPersonIdenter[0]?.id]
+									setFeilmelding(null)
+									const results = await Promise.allSettled(
+										identer.map((ident) =>
+											DollyApi.importerRelatertPerson(gruppeId, ident, master),
+										),
+									)
+									const hasFailure = results.some((r) => r.status === 'rejected')
+									if (hasFailure) {
+										setFeilmelding('Noe gikk galt')
+									} else {
+										mutate(REGEX_BACKEND_GRUPPER)
+										closeModal()
+									}
+									setLoading(false)
+								})}
+							>
+								{relatertPersonIdenter.length > 1 ? (
+									<CheckboxGroup
+										legend="Velg hvilke relaterte personer du ønsker å importere"
+										onChange={handleChange}
+									>
+										{relatertPersonIdenter.map((ident) => {
+											const label = `${allCapsToCapitalized(ident.type)} (${ident.id})`
+											const disabledCheckbox = gruppeIdenter?.includes(ident.id)
+											return (
+												<Checkbox
+													key={ident.id}
+													value={ident.id}
+													disabled={disabledCheckbox}
+													description={
+														disabledCheckbox ? 'Person finnes allerede i gruppen' : undefined
+													}
+												>
+													{label}
+												</Checkbox>
+											)
+										})}
+									</CheckboxGroup>
+								) : (
+									<BodyLong>
+										{`Er du sikker på at du vil importere og legge til valgt persons ${
+											foersteRelatertPersonType || 'relaterte person'
+										} i gruppen?`}
+									</BodyLong>
+								)}
+								{feilmelding && <InlineMessage status="error">{feilmelding}</InlineMessage>}
+							</form>
+						</FormProvider>
+					</Dialog.Body>
+					<Dialog.Footer>
+						<Dialog.CloseTrigger>
+							<Button type="button" variant="secondary">
+								Avbryt
+							</Button>
+						</Dialog.CloseTrigger>
+						<Button form="importer-relatert-person" loading={loading}>
+							Importer
+						</Button>
+					</Dialog.Footer>
+				</Dialog.Popup>
+			</Dialog>
+		</>
 	)
 }
