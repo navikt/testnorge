@@ -23,6 +23,7 @@ spec:
         - application: dolly-auth-local
         - application: dolly-backend
         - application: dolly-frontend
+        - application: dolly-frontend-dev
         - application: dolly-idporten
         - application: testnav-tps-messaging-frontend
         - application: testnav-oversikt-frontend
