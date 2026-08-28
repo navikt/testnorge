@@ -23,15 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.BestillingIndexSelector.DEV;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.BestillingIndexSelector.REGULAR;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @RestController
@@ -60,12 +61,11 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        var kallendeApp = headers.get("Origin");
-        log.info("Kallende applikasjon: {}", kallendeApp);
-
-        var selector = kallendeApp.contains("ekstern") ? REGULAR : DEV;
-
+        var kallendeApp = headers.getOrDefault("Origin", headers.get("origin"));
+        var selector = isNotBlank(kallendeApp) && kallendeApp.contains("ekstern") ? REGULAR : DEV;
         var orgnr = getBankIdOrgNr(headers.get(USER_HEADER_JWT));
+
+        log.info("Kallende app: {}, selector: {}, orgnr: {}", kallendeApp, selector, orgnr);
 
         return tenorSearchService.getTestdata(searchData, antall, side, seed, selector, ikkeFiltrer, orgnr);
     }
@@ -121,11 +121,17 @@ public class TenorSearchController {
             return null;
         }
 
-        var body = userJwt.split("\\.")[1];
-        var payload = new String(DECODER.decode(body));
-        var tree = jsonMapper.readTree(payload);
-        var orgnr = tree.get("org");
+        try {
+            var body = userJwt.split("\\.")[1];
+            var payload = new String(DECODER.decode(body), StandardCharsets.UTF_8);
+            var orgnr = jsonMapper.readTree(payload)
+                    .path("org")
+                    .asString(null);
 
-        return nonNull(orgnr) && !NAV_ORG_NR.equals(orgnr.toString()) ? orgnr.asString() : null;
+            return isBlank(orgnr) || NAV_ORG_NR.equals(orgnr) ? null : orgnr;
+        } catch (Exception e) {
+            log.warn("Kunne ikke hente BankID orgnr fra User-Jwt", e);
+            return null;
+        }
     }
 }

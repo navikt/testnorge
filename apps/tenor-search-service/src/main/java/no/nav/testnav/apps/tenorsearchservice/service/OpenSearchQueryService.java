@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,29 +40,30 @@ public class OpenSearchQueryService {
 
     public Mono<SearchResponse> execQuery(List<String> identer, BestillingIndexSelector selector, String bankIdOrgnr) {
 
-        try {
-            var now = System.currentTimeMillis();
+            return Mono.fromCallable(() -> {
+                var now = System.currentTimeMillis();
 
-            var queryBuilder = new BoolQuery.Builder();
-            identerQuery(queryBuilder, identer);
-            bankIdOrgnrQuery(queryBuilder, bankIdOrgnr);
+                var queryBuilder = new BoolQuery.Builder();
+                identerQuery(queryBuilder, identer);
+                bankIdOrgnrQuery(queryBuilder, bankIdOrgnr);
 
-            var response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
-                    .index(selector == BestillingIndexSelector.REGULAR ? index : indexDev)
-                    .query(Query.builder()
-                            .bool(queryBuilder.build())
-                            .build())
-                    .timeout("3s")
-                    .build(), JsonNode.class);
+                var response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                        .index(selector == BestillingIndexSelector.REGULAR ? index : indexDev)
+                        .query(Query.builder()
+                                .bool(queryBuilder.build())
+                                .build())
+                        .timeout("3s")
+                        .build(), JsonNode.class);
 
-            log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
+                log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
-            return Mono.just(formatResponse(response));
+                return formatResponse(response);
 
-        } catch (IOException | RuntimeException e) {
-            log.error("Feil ved personsøk i OpenSearch", e);
-            return Mono.error(new ResponseStatusException(INTERNAL_SERVER_ERROR, "Feil ved personsøk i OpenSearch", e));
-        }
+            }).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
+                    .onErrorMap(e -> {
+                        log.error("Feil ved personsøk i OpenSearch", e);
+                        return new ResponseStatusException(INTERNAL_SERVER_ERROR, "Feil ved personsøk i OpenSearch", e);
+                    });
     }
 
     private SearchResponse formatResponse(org.opensearch.client.opensearch.core.SearchResponse<JsonNode> response) {
