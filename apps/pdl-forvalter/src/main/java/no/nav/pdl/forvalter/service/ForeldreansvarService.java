@@ -15,6 +15,7 @@ import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
+import no.nav.pdl.forvalter.utils.OptimisticLockingRetryUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
@@ -327,7 +328,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                         if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
 
                             return getBarnMorRelasjoner(person)
-                                    .flatMap(barnMorRelasjon ->
+                                    .concatMap(barnMorRelasjon ->
                                             setRelasjon(barnMorRelasjon, foreldreansvar, person.getIdent())
                                                     .thenReturn(barnMorRelasjon))
                                     .doOnNext(barnMorRelasjon ->
@@ -337,7 +338,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                         } else if (foreldreansvar.getAnsvar() == Ansvar.FAR) {
 
                             return getBarnFarRelasjoner(person)
-                                    .flatMap(barnFarRelasjon ->
+                                    .concatMap(barnFarRelasjon ->
                                             setRelasjon(barnFarRelasjon, foreldreansvar, person.getIdent())
                                                     .thenReturn(barnFarRelasjon))
                                     .doOnNext(barnFarRelasjon ->
@@ -348,7 +349,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                             return Flux.concat(getBarnMorRelasjoner(person),
                                             getBarnFarRelasjoner(person))
-                                    .flatMap(barnRelasjon ->
+                                    .concatMap(barnRelasjon ->
                                             setRelasjon(barnRelasjon, foreldreansvar, person.getIdent()))
                                     .then();
 
@@ -370,9 +371,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                         foreldreansvar.setEksisterendePerson(isNotBlank(foreldreansvar.getAnsvarlig()));
 
                                         return getBarnRelasjoner(foreldreansvar, person)
-                                                .flatMap(barnRelasjon -> setRelasjon(barnRelasjon, foreldreansvar, person.getIdent())
+                                                .concatMap(barnRelasjon -> setRelasjon(barnRelasjon, foreldreansvar, person.getIdent())
                                                         .thenReturn(barnRelasjon))
-                                                .doOnNext(barnRelasjon -> slettForeldreansvar(person, foreldreansvar.getId()))
+                                                .doOnNext(_ -> slettForeldreansvar(person, foreldreansvar.getId()))
                                                 .then();
                                     }));
 
@@ -380,9 +381,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                             return makeAnsvarligUtenIdentifikator(foreldreansvar, person)
                                     .then(getBarnRelasjoner(foreldreansvar, person)
-                                            .flatMap(barnRelasjon -> setRelasjon(barnRelasjon, foreldreansvar, person.getIdent())
+                                            .concatMap(barnRelasjon -> setRelasjon(barnRelasjon, foreldreansvar, person.getIdent())
                                                     .thenReturn(barnRelasjon))
-                                            .doOnNext(barnRelasjon -> slettForeldreansvar(person, foreldreansvar.getId()))
+                                            .doOnNext(_ -> slettForeldreansvar(person, foreldreansvar.getId()))
                                             .then());
                         }
                         return Mono.empty()
@@ -533,17 +534,30 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
     private Mono<Void> oppdaterRelatertAnsvar(ForeldreansvarDTO foreldreansvar, PersonDTO barn, String forelder) {
 
-        return personRepository.findByIdent(forelder)
-                .doOnNext(dbPerson -> {
-                    var subjektAnsvar = mapperFacade.map(foreldreansvar, ForeldreansvarDTO.class);
-                    subjektAnsvar.setNyAnsvarlig(null);
-                    subjektAnsvar.setAnsvarlig(null);
-                    subjektAnsvar.setAnsvarssubjekt(barn.getIdent());
-                    subjektAnsvar.setId(dbPerson.getPerson().getForeldreansvar().size() + 1);
-                    dbPerson.getPerson().getForeldreansvar().addFirst(subjektAnsvar);
-                })
-                .flatMap(personRepository::save)
+        if (Objects.equals(forelder, barn.getIdent())) {
+            // "forelder" er samme person som "barn" (hovedpersonen som allerede oppdateres i den ytre
+            // transaksjonen). Muter det in-memory-objektet direkte i stedet for å hente/lagre personen
+            // uavhengig av den ytre flyten, som kan føre til OptimisticLockingFailureException pga.
+            // konkurrerende versjonering av samme person-rad.
+            leggTilForeldreansvar(foreldreansvar, barn, barn.getIdent());
+            return Mono.empty();
+        }
+
+        return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                personRepository.findByIdent(forelder)
+                        .doOnNext(dbPerson -> leggTilForeldreansvar(foreldreansvar, dbPerson.getPerson(), barn.getIdent()))
+                        .flatMap(personRepository::save))
                 .then();
+    }
+
+    private void leggTilForeldreansvar(ForeldreansvarDTO foreldreansvar, PersonDTO forelder, String barnIdent) {
+
+        var subjektAnsvar = mapperFacade.map(foreldreansvar, ForeldreansvarDTO.class);
+        subjektAnsvar.setNyAnsvarlig(null);
+        subjektAnsvar.setAnsvarlig(null);
+        subjektAnsvar.setAnsvarssubjekt(barnIdent);
+        subjektAnsvar.setId(forelder.getForeldreansvar().size() + 1);
+        forelder.getForeldreansvar().addFirst(subjektAnsvar);
     }
 
     private Mono<Void> setFellesRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
@@ -623,24 +637,27 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
     private Mono<Void> setRelasjon(BarnRelasjon barnRelasjon, ForeldreansvarDTO foreldreansvar, String person) {
 
-        return Mono.just(barnRelasjon)
-                .doOnNext(relasjon ->
-                        barnRelasjon.getBarn().getPerson().getForeldreansvar()
-                                .addFirst(ForeldreansvarDTO.builder()
-                                        .ansvar(foreldreansvar.getAnsvar())
-                                        .ansvarlig(barnRelasjon.getAnsvarlig())
-                                        .eksisterendePerson(foreldreansvar.getEksisterendePerson())
-                                        .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
-                                        .kilde(foreldreansvar.getKilde())
-                                        .master(foreldreansvar.getMaster())
-                                        .id(barnRelasjon.getBarn().getPerson().getForeldreansvar().stream()
-                                                    .max(Comparator.comparing(ForeldreansvarDTO::getId))
-                                                    .map(ForeldreansvarDTO::getId)
-                                                    .orElse(0) + 1)
-                                        .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
-                                        .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
-                                        .build()))
-                .flatMap(relasjon -> personRepository.save(relasjon.getBarn()))
+        return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                        personRepository.findByIdent(barnRelasjon.getBarn().getIdent())
+                                .doOnNext(barn -> {
+                                    barnRelasjon.setBarn(barn);
+                                    barn.getPerson().getForeldreansvar()
+                                            .addFirst(ForeldreansvarDTO.builder()
+                                                    .ansvar(foreldreansvar.getAnsvar())
+                                                    .ansvarlig(barnRelasjon.getAnsvarlig())
+                                                    .eksisterendePerson(foreldreansvar.getEksisterendePerson())
+                                                    .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
+                                                    .kilde(foreldreansvar.getKilde())
+                                                    .master(foreldreansvar.getMaster())
+                                                    .id(barn.getPerson().getForeldreansvar().stream()
+                                                                .max(Comparator.comparing(ForeldreansvarDTO::getId))
+                                                                .map(ForeldreansvarDTO::getId)
+                                                                .orElse(0) + 1)
+                                                    .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                                                    .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
+                                                    .build());
+                                })
+                                .flatMap(personRepository::save))
                 .then(Mono.defer(() -> {
 
                     if (isNotBlank(barnRelasjon.getAnsvarlig())) {
@@ -655,21 +672,22 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .flatMap(relasjon -> {
 
                     if (!person.equals(relasjon.getAnsvarlig())) {
-                        return personRepository.findByIdent(relasjon.getAnsvarlig())
-                                .doOnNext(ansvarlig -> ansvarlig.getPerson().getForeldreansvar()
-                                        .addFirst(ForeldreansvarDTO.builder()
-                                                .ansvar(foreldreansvar.getAnsvar())
-                                                .ansvarssubjekt(relasjon.getBarn().getIdent())
-                                                .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
-                                                .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
-                                                .kilde(foreldreansvar.getKilde())
-                                                .master(foreldreansvar.getMaster())
-                                                .id(ansvarlig.getPerson().getForeldreansvar().stream()
-                                                            .max(Comparator.comparing(ForeldreansvarDTO::getId))
-                                                            .map(ForeldreansvarDTO::getId)
-                                                            .orElse(0) + 1)
-                                                .build()))
-                                .flatMap(personRepository::save)
+                        return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                                personRepository.findByIdent(relasjon.getAnsvarlig())
+                                        .doOnNext(ansvarlig -> ansvarlig.getPerson().getForeldreansvar()
+                                                .addFirst(ForeldreansvarDTO.builder()
+                                                        .ansvar(foreldreansvar.getAnsvar())
+                                                        .ansvarssubjekt(relasjon.getBarn().getIdent())
+                                                        .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                                                        .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
+                                                        .kilde(foreldreansvar.getKilde())
+                                                        .master(foreldreansvar.getMaster())
+                                                        .id(ansvarlig.getPerson().getForeldreansvar().stream()
+                                                                    .max(Comparator.comparing(ForeldreansvarDTO::getId))
+                                                                    .map(ForeldreansvarDTO::getId)
+                                                                    .orElse(0) + 1)
+                                                        .build()))
+                                        .flatMap(personRepository::save))
                                 .then();
                     }
                     return Mono.empty();
