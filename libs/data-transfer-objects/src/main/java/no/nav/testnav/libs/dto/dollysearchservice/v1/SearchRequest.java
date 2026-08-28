@@ -20,8 +20,4 @@ public class SearchRequest {
     private List<String> miljoer;
 
     private PersonRequest personRequest;
-
-    // hvis brukerType == BANKID vil orgnr formidle tilhørende organisajon
-    private String brukerType;
-    private String orgnr;
 }

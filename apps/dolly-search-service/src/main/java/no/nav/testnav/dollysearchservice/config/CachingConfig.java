@@ -17,12 +17,14 @@ import java.util.concurrent.TimeUnit;
 public class CachingConfig {
 
     public static final String CACHE_REGISTRE = "registre";
+    public static final String CACHE_TESTNORGE_IDENTER = "testnorge_identer";
 
     @Bean
     @Profile({ "dev", "prod"})
     public CacheManager cacheManager(Caffeine caffeine) {
-        var caffeineCacheManager = new CaffeineCacheManager(CACHE_REGISTRE
-        );
+        var caffeineCacheManager = new CaffeineCacheManager(
+                CACHE_REGISTRE,
+                CACHE_TESTNORGE_IDENTER);
         caffeineCacheManager.setCaffeine(caffeine);
         caffeineCacheManager.setAsyncCacheMode(true);
         return caffeineCacheManager;
@@ -36,6 +38,6 @@ public class CachingConfig {
 
     @Bean
     public Caffeine<Object, Object> caffeineConfig() {
-        return Caffeine.newBuilder().expireAfterWrite(12, TimeUnit.HOURS);
+        return Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES);
     }
 }

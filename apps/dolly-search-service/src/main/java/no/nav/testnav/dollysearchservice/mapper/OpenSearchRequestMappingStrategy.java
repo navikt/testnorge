@@ -11,6 +11,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class OpenSearchRequestMappingStrategy implements MappingStrategy {
@@ -25,6 +26,8 @@ public class OpenSearchRequestMappingStrategy implements MappingStrategy {
                         var registreRequest = (List<ElasticTyper>) context.getProperty("registreRequest");
                         destinasjon.setRegistreRequest(registreRequest);
                         destinasjon.setMiljoer(getBetingedeMiljoer(kilde.getMiljoer(), registreRequest));
+                        destinasjon.setOrgnr((String) context.getProperty("orgnr"));
+                        destinasjon.setBrukerType(isBlank(destinasjon.getOrgnr()) ? "AZURE" : "BANKID");
                     }
                 })
                 .exclude("miljoer")

@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchIdenterQueryUtils.addIdenterQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchPdlIdenterQueryUtils.addIdenterQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseBydelsnrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseKommunenrQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchPersonQueryUtils.addAdresseMatrikkelQuery;

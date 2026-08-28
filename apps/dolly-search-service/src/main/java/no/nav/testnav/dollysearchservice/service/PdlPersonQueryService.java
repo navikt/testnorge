@@ -11,57 +11,58 @@ import org.opensearch.client.opensearch.core.SearchResponse;
 import org.opensearch.client.opensearch.core.search.Hit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OpenSearchQueryService {
+public class PdlPersonQueryService {
 
     private final OpenSearchClient openSearchClient;
-    private final JsonMapper jsonMapper;
 
     @Value("${open.search.pdl-index}")
     private String pdlIndex;
 
-    public SearchInternalResponse execQuery(SearchRequest request, FunctionScoreQuery.Builder queryBuilder) {
+    public Mono<SearchInternalResponse> execQuery(SearchRequest request, FunctionScoreQuery.Builder queryBuilder) {
 
-        if (isNull(request.getSide())) {
-            request.setSide(0);
-        }
+        return Mono.fromCallable(() -> {
+                    if (isNull(request.getSide())) {
+                        request.setSide(0);
+                    }
 
-        if (isNull(request.getAntall())) {
-            request.setAntall(10);
-        }
+                    if (isNull(request.getAntall())) {
+                        request.setAntall(10);
+                    }
 
-        try {
-            var now = System.currentTimeMillis();
+                    var now = System.currentTimeMillis();
 
-            var response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
-                    .index(pdlIndex)
-                    .query(Query.builder()
-                            .functionScore(queryBuilder.build())
-                            .build())
-                    .from(request.getSide() * request.getAntall())
-                    .size(request.getAntall())
-                    .timeout("3s")
-                    .build(), JsonNode.class);
+                    var response = openSearchClient.search(new org.opensearch.client.opensearch.core.SearchRequest.Builder()
+                            .index(pdlIndex)
+                            .query(Query.builder()
+                                    .functionScore(queryBuilder.build())
+                                    .build())
+                            .from(request.getSide() * request.getAntall())
+                            .size(request.getAntall())
+                            .timeout("3s")
+                            .build(), JsonNode.class);
 
-            log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
+                    log.info("Personsøk tok: {} ms", System.currentTimeMillis() - now);
 
-            return formatResponse(response, request);
+                    return formatResponse(response, request);
 
-        } catch (IOException e) {
-            log.error("Feil ved personsøk i OpenSearch", e);
-            throw new InternalError("Feil ved personsøk i OpenSearch", e);
-        }
+                }).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
+                .onErrorMap(e -> {
+                    log.error("Feil ved personsøk i OpenSearch", e);
+                    return new ResponseStatusException(INTERNAL_SERVER_ERROR, "Feil ved personsøk i OpenSearch", e);
+                });
     }
 
     private SearchInternalResponse formatResponse(SearchResponse<JsonNode> response, SearchRequest request) {
