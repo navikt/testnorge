@@ -29,10 +29,13 @@ export const SkjermingForm = () => {
 				label="Skjerming fra"
 				disabled={harSkjerming}
 				maxDate={new Date()}
-				visHvisAvhuket
 			/>
 			{harSkjerming && (
-				<FormDatepicker name="skjerming.egenAnsattDatoTom" label="Skjerming til" visHvisAvhuket />
+				<FormDatepicker
+					name="skjerming.egenAnsattDatoTom"
+					label="Skjerming til"
+					visHvisAvhuket={false}
+				/>
 			)}
 		</div>
 	)
