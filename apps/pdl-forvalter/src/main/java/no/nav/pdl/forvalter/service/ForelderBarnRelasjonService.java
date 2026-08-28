@@ -14,6 +14,7 @@ import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
+import no.nav.pdl.forvalter.utils.OptimisticLockingRetryUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
@@ -125,7 +126,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                 .flatMap(relasjon1 ->
                         setForelderBarnRelasjon(relasjon, hovedperson, request)
                                 .then(Mono.just(relasjon1))
-                                .flatMap(relasjon2 -> {
+                                .flatMap(_ -> {
                                     if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
                                         return deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getRelatertPerson());
                                     }
@@ -149,7 +150,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                                         .then(Mono.just((person))))
                                 .flatMap(person -> addForelderBarnRelasjon(forelderRelasjon, hovedperson)
                                         .thenReturn(person))
-                                .doOnNext(dbPerson -> {
+                                .doOnNext(_ -> {
                                     forelderRelasjon.setId(hovedperson.getForelderBarnRelasjon().stream()
                                                                    .map(ForelderBarnRelasjonDTO::getId)
                                                                    .findFirst()
@@ -158,7 +159,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                                     forelderRelasjon.setKilde(getKilde(forelderRelasjon));
                                 })
                                 .flatMap(personRepository::save)
-                                .doOnNext(type -> hovedperson.getForelderBarnRelasjon().addFirst(forelderRelasjon))
+                                .doOnNext(_ -> hovedperson.getForelderBarnRelasjon().addFirst(forelderRelasjon))
                                 .thenReturn(forelderRelasjon);
                     }
                     return Mono.just(relasjon);
@@ -187,18 +188,19 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                     .sorted(Comparator.comparing(SivilstandDato::getSivilstandsdato).reversed())
                     .toList();
 
-            return personRepository.findByIdent(relasjon.getRelatertPerson())
-                    .map(relatertPerson -> FoedselsdatoUtility.getFoedselsdato(relatertPerson.getPerson()))
-                    .map(foedselsdato -> getPartnerIdent(partnere, foedselsdato))
-                    .flatMap(personRepository::findByIdent)
-                    .flatMap(partnerPerson -> addForelderBarnRelasjon(request, partnerPerson.getPerson())
-                            .doOnNext(forelderBarnRelasjon -> {
-                                forelderBarnRelasjon.setMaster(getMaster(forelderBarnRelasjon, partnerPerson.getPerson()));
-                                forelderBarnRelasjon.setKilde(getKilde(forelderBarnRelasjon));
-                                partnerPerson.getPerson().getForelderBarnRelasjon()
-                                        .addFirst(forelderBarnRelasjon);
-                            }).thenReturn(partnerPerson))
-                    .flatMap(personRepository::save)
+            return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                    personRepository.findByIdent(relasjon.getRelatertPerson())
+                            .map(relatertPerson -> FoedselsdatoUtility.getFoedselsdato(relatertPerson.getPerson()))
+                            .map(foedselsdato -> getPartnerIdent(partnere, foedselsdato))
+                            .flatMap(personRepository::findByIdent)
+                            .flatMap(partnerPerson -> addForelderBarnRelasjon(request, partnerPerson.getPerson())
+                                    .doOnNext(forelderBarnRelasjon -> {
+                                        forelderBarnRelasjon.setMaster(getMaster(forelderBarnRelasjon, partnerPerson.getPerson()));
+                                        forelderBarnRelasjon.setKilde(getKilde(forelderBarnRelasjon));
+                                        partnerPerson.getPerson().getForelderBarnRelasjon()
+                                                .addFirst(forelderBarnRelasjon);
+                                    }).thenReturn(partnerPerson))
+                            .flatMap(personRepository::save))
                     .then();
         }
         return Mono.empty();
@@ -217,7 +219,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private Mono<ForelderBarnRelasjonDTO> addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
         return setRolle(relasjon, hovedperson).then(Mono.just(relasjon))
-                .flatMap(type -> {
+                .flatMap(_ -> {
                     if (isBlank(relasjon.getRelatertPerson())) {
                         return Mono.just(relasjon);
                     } else {
@@ -236,7 +238,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         relasjon.setEksisterendePerson(isNotBlank(relasjon.getRelatertPerson()));
 
         return Mono.just(true)
-                .flatMap(type -> {
+                .flatMap(_ -> {
                     if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
 
                         var request = mapperFacade.map(relasjon.getRelatertPersonUtenFolkeregisteridentifikator(),
@@ -307,11 +309,12 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
         } else if (Rolle.FORELDER == relasjon.getRelatertPersonsRolle()) {
 
-            return personRepository.findByIdent(relasjon.getRelatertPerson())
-                    .doOnNext(relatertPerson ->
-                            relasjon.setRelatertPersonsRolle(KjoennFraIdentUtility
-                                                                     .getKjoenn(relatertPerson.getPerson()) == MANN ? Rolle.FAR : Rolle.MOR))
-                    .flatMap(personRepository::save)
+            return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                    personRepository.findByIdent(relasjon.getRelatertPerson())
+                            .doOnNext(relatertPerson ->
+                                    relasjon.setRelatertPersonsRolle(KjoennFraIdentUtility
+                                                                             .getKjoenn(relatertPerson.getPerson()) == MANN ? Rolle.FAR : Rolle.MOR))
+                            .flatMap(personRepository::save))
                     .then();
         }
         return Mono.empty();
@@ -332,30 +335,31 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
     private Mono<Void> createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
 
-        return personRepository.findByIdent(relasjon.getRelatertPerson())
-                .switchIfEmpty(Mono.just(DbPerson.builder()
-                                .ident(relasjon.getRelatertPerson())
-                                .person(PersonDTO.builder()
+        return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                personRepository.findByIdent(relasjon.getRelatertPerson())
+                        .switchIfEmpty(Mono.just(DbPerson.builder()
                                         .ident(relasjon.getRelatertPerson())
+                                        .person(PersonDTO.builder()
+                                                .ident(relasjon.getRelatertPerson())
+                                                .build())
+                                        .sistOppdatert(LocalDateTime.now())
                                         .build())
-                                .sistOppdatert(LocalDateTime.now())
-                                .build())
+                                .flatMap(personRepository::save))
+
+                        .doOnNext(relatertPerson -> {
+
+                            val relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
+                            relatertFamilierelasjon.setRelatertPerson(hovedperson);
+                            swapRoller(relatertFamilierelasjon);
+                            relatertFamilierelasjon.setMaster(getMaster(relatertFamilierelasjon, relatertPerson.getPerson()));
+                            relatertFamilierelasjon.setKilde(getKilde(relatertFamilierelasjon));
+                            relatertFamilierelasjon.setId(relatertPerson.getPerson().getForelderBarnRelasjon().stream().findFirst()
+                                                                  .map(ForelderBarnRelasjonDTO::getId)
+                                                                  .orElse(0) + 1);
+
+                            relatertPerson.getPerson().getForelderBarnRelasjon().addFirst(relatertFamilierelasjon);
+                        })
                         .flatMap(personRepository::save))
-
-                .doOnNext(relatertPerson -> {
-
-                    val relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
-                    relatertFamilierelasjon.setRelatertPerson(hovedperson);
-                    swapRoller(relatertFamilierelasjon);
-                    relatertFamilierelasjon.setMaster(getMaster(relatertFamilierelasjon, relatertPerson.getPerson()));
-                    relatertFamilierelasjon.setKilde(getKilde(relatertFamilierelasjon));
-                    relatertFamilierelasjon.setId(relatertPerson.getPerson().getForelderBarnRelasjon().stream().findFirst()
-                                                          .map(ForelderBarnRelasjonDTO::getId)
-                                                          .orElse(0) + 1);
-
-                    relatertPerson.getPerson().getForelderBarnRelasjon().addFirst(relatertFamilierelasjon);
-                })
-                .flatMap(personRepository::save)
                 .then();
     }
 
