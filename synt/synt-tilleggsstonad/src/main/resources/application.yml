@@ -1,0 +1,18 @@
+spring:
+  config:
+    import: "dolly-application.yml"
+
+springdoc:
+  api-docs:
+    version: OPENAPI_3_0
+  show-actuator: false
+
+logging:
+  level:
+    root: INFO
+    no.nav.dolly: DEBUG
+
+server:
+  servlet:
+    context-path: /
+  shutdown: graceful
