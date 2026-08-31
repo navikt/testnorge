@@ -52,11 +52,9 @@ public class JwtService {
         return getAuthenticatedUserId
                 .call()
                 .map(userId -> cryptographyService.createId(userId, user.getOrganisasjonsnummer()))
-                .map(id -> id.equals(user.getId())
-                        ? Mono.empty()
-                        : Mono.error(new JwtIdMismatchException(user.getId(), id))
-                )
-                .then(Mono.just(encodeJwt(user)));
+                .flatMap(id -> id.equals(user.getId())
+                        ? Mono.fromSupplier(() -> encodeJwt(user))
+                        : Mono.error(new JwtIdMismatchException()));
     }
 
     public Mono<String> getAzureToken(String id) {

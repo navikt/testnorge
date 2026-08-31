@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -87,6 +88,20 @@ class BrukerControllerTest {
         verify(jwtService).getAzureToken(USER_ID);
         verify(userService, never()).getUser(USER_ID, true);
         verify(validateService, never()).validateOrganiasjonsnummerAccess(ORGANIZATION_NUMBER);
+    }
+
+    @Test
+    void shouldFailClosedWhenResourceServerTypeCannotBeResolved() {
+        when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.empty());
+
+        StepVerifier.create(brukerController.getToken(USER_ID))
+                .expectErrorMatches(error ->
+                        error instanceof AccessDeniedException &&
+                                error.getMessage().equals("Autentiseringstype kunne ikke fastslås."))
+                .verify();
+
+        verify(jwtService, never()).getAzureToken(USER_ID);
+        verify(userService, never()).getUser(USER_ID, true);
     }
 
     private static User user() {

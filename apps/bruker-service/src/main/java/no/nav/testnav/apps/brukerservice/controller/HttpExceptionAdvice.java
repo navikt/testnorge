@@ -8,6 +8,7 @@ import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
 import no.nav.testnav.apps.brukerservice.exception.UserAlreadyExistsException;
 import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +46,7 @@ public class HttpExceptionAdvice {
     @ExceptionHandler({
             JWTVerificationException.class,
             JwtIdMismatchException.class,
+            AccessDeniedException.class,
             UserHasNoAccessToOrgnisasjonException.class
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)

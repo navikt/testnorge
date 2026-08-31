@@ -12,8 +12,8 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -24,7 +24,7 @@ public class UserJwtExchange {
     private final TestnavBrukerServiceProperties serviceProperties;
     private final TokenXExchange tokenExchange;
     private final ObjectMapper objectMapper;
-    private final Map<String, String> tokenCache;
+    private final ConcurrentMap<String, String> tokenCache;
 
     public UserJwtExchange(TestnavBrukerServiceProperties serviceProperties,
                            TokenXExchange tokenExchange,
@@ -36,7 +36,7 @@ public class UserJwtExchange {
                 .baseUrl(serviceProperties.getUrl())
                 .build();
         this.objectMapper = objectMapper;
-        this.tokenCache = new HashMap<>();
+        this.tokenCache = new ConcurrentHashMap<>();
     }
 
     public Mono<String> generateJwt(String id, ServerWebExchange exchange) {

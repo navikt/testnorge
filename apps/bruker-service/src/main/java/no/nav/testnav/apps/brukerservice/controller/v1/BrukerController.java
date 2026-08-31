@@ -12,6 +12,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -110,6 +111,7 @@ public class BrukerController {
     @PostMapping("/{id}/token")
     public Mono<ResponseEntity<String>> getToken(@PathVariable String id) {
         return getAuthenticatedResourceServerType.call()
+                .switchIfEmpty(Mono.error(new AccessDeniedException("Autentiseringstype kunne ikke fastslås.")))
                 .flatMap(resourceServerType -> ResourceServerType.AZURE_AD.equals(resourceServerType)
                         ? jwtService.getAzureToken(id)
                         : getIdportenToken(id))

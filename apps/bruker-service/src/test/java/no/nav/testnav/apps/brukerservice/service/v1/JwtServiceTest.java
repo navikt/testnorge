@@ -2,6 +2,7 @@ package no.nav.testnav.apps.brukerservice.service.v1;
 
 import com.auth0.jwt.JWT;
 import no.nav.testnav.apps.brukerservice.domain.User;
+import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
 import no.nav.testnav.apps.brukerservice.repository.UserEntity;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
@@ -81,6 +82,26 @@ class JwtServiceTest {
                     assertThat(IdentValidCheck.isIdentValid(Set.of(organizationNumber))).isEmpty();
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldRejectIdportenUserIdMismatch() {
+        var entity = new UserEntity();
+        entity.setId(HASHED_USER_ID);
+        entity.setBrukernavn("brukernavn");
+        entity.setOrganisasjonsnummer(ORGANIZATION_NUMBER);
+
+        when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BANKID_USER_ID));
+        when(cryptographyService.createId(BANKID_USER_ID, ORGANIZATION_NUMBER))
+                .thenReturn("different-hashed-user-id");
+
+        StepVerifier.create(jwtService.getToken(new User(entity)))
+                .expectErrorMatches(error ->
+                        error instanceof JwtIdMismatchException &&
+                                !error.getMessage().contains(BANKID_USER_ID) &&
+                                !error.getMessage().contains(HASHED_USER_ID) &&
+                                !error.getMessage().contains("different-hashed-user-id"))
+                .verify();
     }
 
     @Test
