@@ -10,6 +10,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  openSearch:
+    instance: bestillinger
+    access: read
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
