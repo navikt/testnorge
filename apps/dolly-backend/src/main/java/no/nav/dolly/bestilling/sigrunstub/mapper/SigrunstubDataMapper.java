@@ -28,7 +28,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-                factory.classMap(RsPensjonsgivendeForFolketrygden.class, SigrunstubPensjonsgivendeInntektRequest.class)
+        factory.classMap(RsPensjonsgivendeForFolketrygden.class, SigrunstubPensjonsgivendeInntektRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsPensjonsgivendeForFolketrygden kilde, SigrunstubPensjonsgivendeInntektRequest destinasjon, MappingContext context) {

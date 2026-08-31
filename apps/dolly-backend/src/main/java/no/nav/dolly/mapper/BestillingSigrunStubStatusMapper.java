@@ -19,7 +19,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSigrunStubStatusMapper {
 
-    private static final String SIGRUNSTUB = "SIGRUNSTUB";
     private static final String PENSJONSGIVENDE_INNTEKT = "SIGRUN_PENSJONSGIVENDE";
     private static final String SUMMERT_SKATTEGRUNNLAG = "SIGRUN_SUMMERT";
 
@@ -45,19 +44,21 @@ public final class BestillingSigrunStubStatusMapper {
     private static void insertArtifact(String entry, String ident, Map<String, Map<String, List<String>>> msgStatusIdents) {
 
         var meldingStatus = entry.split(":");
-        var melding = meldingStatus.length > 1 ? meldingStatus[0] : SIGRUNSTUB;
-        var status = (meldingStatus.length > 1 ? meldingStatus[1] : meldingStatus[0]).replace("=", ":");
+        var melding = meldingStatus.length > 1 ? meldingStatus[0] : null;
+        if (isNotBlank(melding)) {
 
-        if (msgStatusIdents.containsKey(melding)) {
-            if (msgStatusIdents.get(melding).containsKey(status)) {
-                msgStatusIdents.get(melding).get(status).add((ident));
+            var status = meldingStatus[1];
+            if (msgStatusIdents.containsKey(melding)) {
+                if (msgStatusIdents.get(melding).containsKey(status)) {
+                    msgStatusIdents.get(melding).get(status).add((ident));
+                } else {
+                    msgStatusIdents.get(melding).put(status, new ArrayList<>(List.of(ident)));
+                }
             } else {
-                msgStatusIdents.get(melding).put(status, new ArrayList<>(List.of(ident)));
+                var statusMap = new HashMap<String, List<String>>();
+                statusMap.put(status, new ArrayList<>(List.of(ident)));
+                msgStatusIdents.put(melding, statusMap);
             }
-        } else {
-            var statusMap = new HashMap<String, List<String>>();
-            statusMap.put(status, new ArrayList<>(List.of(ident)));
-            msgStatusIdents.put(melding, statusMap);
         }
     }
 
