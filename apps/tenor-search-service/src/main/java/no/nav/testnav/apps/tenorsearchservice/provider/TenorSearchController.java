@@ -21,12 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.DEV;
-import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.REGULAR;
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.BestillingIndexSelector.DEV;
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.BestillingIndexSelector.REGULAR;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -35,9 +40,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class TenorSearchController {
 
+    private static final String NAV_ORG_NR = "889640782";
+
     private final TenorSearchService tenorSearchService;
     private final MaskinportenConsumer maskinportenConsumer;
     private final LookupService lookupService;
+    private final JsonMapper jsonMapper;
+
+    private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
 
     @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
     public Mono<TenorOversiktResponse> getTestdata(@RequestHeader Map<String, String> headers,
@@ -51,11 +61,13 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        var kallendeApp = isNotBlank(headers.get("Origin")) ? headers.get("Origin") : headers.get("origin");
-        log.info("Kallende applikasjon: {}", kallendeApp);
+        var kallendeApp = getCookieValue(headers, "Origin");
+        var selector = isNotBlank(kallendeApp) && kallendeApp.contains("ekstern") ? REGULAR : DEV;
+        var orgnr = getBankIdOrgNr(getCookieValue(headers, USER_HEADER_JWT));
 
-        var selector = kallendeApp.contains("ekstern") ? REGULAR : DEV;
-        return tenorSearchService.getTestdata(searchData, antall, side, seed, selector, ikkeFiltrer);
+        log.info("Kallende app: {}, selector: {}, orgnr: {}", kallendeApp, selector, orgnr);
+
+        return tenorSearchService.getTestdata(searchData, antall, side, seed, selector, ikkeFiltrer, orgnr);
     }
 
     @GetMapping("/testdata/raw")
@@ -101,5 +113,34 @@ public class TenorSearchController {
 
         return maskinportenConsumer.getAccessToken()
                 .map(AccessToken::value);
+    }
+
+    private String getBankIdOrgNr(String userJwt) {
+
+        if (isBlank(userJwt) || !userJwt.contains(".")) {
+            return null;
+        }
+
+        try {
+            var body = userJwt.split("\\.")[1];
+            var payload = new String(DECODER.decode(body), StandardCharsets.UTF_8);
+            var orgnr = jsonMapper.readTree(payload)
+                    .path("org")
+                    .asString(null);
+
+            return isBlank(orgnr) || NAV_ORG_NR.equals(orgnr) ? null : orgnr;
+        } catch (Exception e) {
+            log.warn("Kunne ikke hente BankID orgnr fra User-Jwt", e);
+            return null;
+        }
+    }
+
+    private static String getCookieValue(Map<String, String> headers, String cookie) {
+
+        return headers.entrySet().stream()
+                .filter(e -> e.getKey().equalsIgnoreCase(cookie))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
     }
 }

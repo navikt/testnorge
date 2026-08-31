@@ -36,7 +36,6 @@ public class CounterCustomRegistry {
 
         addTag(tags, !bestilling.getAareg().isEmpty(), "AAREG");
         addTag(tags, nonNull(bestilling.getArenaforvalter()), "ARENA");
-        addTag(tags, !bestilling.getSigrunstub().isEmpty(), "SIGRUNSTUB");
         addTag(tags, !bestilling.getInstdata().isEmpty(), "INST");
         addTag(tags, nonNull(bestilling.getInntektstub()), "INNTKSTUB");
         addTag(tags, nonNull(bestilling.getKrrstub()), "KRRSTUB");

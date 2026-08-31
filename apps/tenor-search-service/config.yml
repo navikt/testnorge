@@ -13,6 +13,9 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+  openSearch:
+    instance: bestillinger
+    access: read
   tokenx:
     enabled: true
   maskinporten:

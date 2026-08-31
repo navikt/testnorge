@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 @Configuration(enforceUniqueMethods = false)
 @EnableCaching
@@ -17,25 +17,31 @@ import java.util.concurrent.TimeUnit;
 public class CachingConfig {
 
     public static final String CACHE_REGISTRE = "registre";
+    public static final String CACHE_TESTNORGE_IDENTER = "testnorge_identer";
 
     @Bean
     @Profile({ "dev", "prod"})
-    public CacheManager cacheManager(Caffeine caffeine) {
-        var caffeineCacheManager = new CaffeineCacheManager(CACHE_REGISTRE
-        );
-        caffeineCacheManager.setCaffeine(caffeine);
-        caffeineCacheManager.setAsyncCacheMode(true);
-        return caffeineCacheManager;
+    public CacheManager cacheManager() {
+        var cacheManager = new CaffeineCacheManager();
+        cacheManager.setAsyncCacheMode(true);
+
+        // Define individual caches with different timeout values
+        cacheManager.registerCustomCache(CACHE_TESTNORGE_IDENTER,
+                Caffeine.newBuilder()
+                        .expireAfterAccess(Duration.ofMinutes(5))
+                        .buildAsync());
+
+        cacheManager.registerCustomCache(CACHE_REGISTRE,
+                Caffeine.newBuilder()
+                        .expireAfterAccess(Duration.ofHours(8))
+                        .buildAsync());
+
+        return cacheManager;
     }
 
     @Bean
     @Profile("local")
     public CacheManager cacheManagerLocal() {
         return new NoOpCacheManager();
-    }
-
-    @Bean
-    public Caffeine<Object, Object> caffeineConfig() {
-        return Caffeine.newBuilder().expireAfterWrite(12, TimeUnit.HOURS);
     }
 }

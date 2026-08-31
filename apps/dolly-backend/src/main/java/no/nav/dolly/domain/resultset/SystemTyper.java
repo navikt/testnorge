@@ -46,8 +46,6 @@ public enum SystemTyper {
     PEN_PENSJONSAVTALE("Pensjonsavtale (PEN)"),
     PEN_SAMBOER("Pensjon samboerregister"),
     PEN_UT("Uføretrygd (UT)"),
-    SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),
-    SIGRUN_LIGNET("Lignet skatteinntekt (Sigrunstub)"),
     SIGRUN_PENSJONSGIVENDE("Pensjonsgivende inntekt (Sigrunstub)"),
     SIGRUN_SUMMERT("Summert skattegrunnlag (Sigrunstub)"),
     SKATTEKORT("Nav skattekort"),
