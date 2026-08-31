@@ -45,6 +45,7 @@ import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.AfpOffentlig;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.Alderspensjon;
@@ -56,8 +57,6 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData.TpOrdning;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.TpYtelse;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.TpYtelseType;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.Uforetrygd;
-import no.nav.dolly.domain.resultset.sigrunstub.KodeverknavnGrunnlag;
-import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
@@ -67,20 +66,19 @@ import no.nav.dolly.domain.resultset.sykemelding.SykmeldingType;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.yrkesskade.v1.FerdigstillSak;
-import no.nav.testnav.libs.dto.yrkesskade.v1.InnmelderRolletype;
-import no.nav.testnav.libs.dto.yrkesskade.v1.Klassifisering;
-import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.yrkesskade.v1.FerdigstillSak;
+import no.nav.testnav.libs.dto.yrkesskade.v1.InnmelderRolletype;
+import no.nav.testnav.libs.dto.yrkesskade.v1.Klassifisering;
+import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -250,28 +248,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                         .institusjonstype(InstdataInstitusjonstype.AS)
                         .kategori(InstdataKategori.A)
                         .startdato(LocalDate.of(2025, 1, 1).atStartOfDay())
-                        .build()));
-    }
-
-    @Test
-    void shouldAccumulateSigrunstub() {
-        var target = mapperFacade.map(buildSigrunstub1(), RsDollyUtvidetBestilling.class);
-        mapperFacade.map(buildSigrunstub2(), target);
-
-        assertThat(target.getSigrunstub(), hasItems(
-                RsLignetInntekt.builder()
-                        .inntektsaar("2023")
-                        .grunnlag(List.of(KodeverknavnGrunnlag.builder()
-                                .tekniskNavn("GRUNNLAG_1")
-                                .verdi("GRUNNLAG_2")
-                                .build()))
-                        .build(),
-                RsLignetInntekt.builder()
-                        .inntektsaar("2025")
-                        .grunnlag(List.of(KodeverknavnGrunnlag.builder()
-                                .tekniskNavn("GRUNNLAG_3")
-                                .verdi("GRUNNLAG_4")
-                                .build()))
                         .build()));
     }
 
@@ -1255,13 +1231,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
     private static RsDollyUtvidetBestilling buildSigrunstub1() {
 
         val bestilling = new RsDollyUtvidetBestilling();
-        bestilling.setSigrunstub(List.of(RsLignetInntekt.builder()
-                .inntektsaar("2023")
-                .grunnlag(List.of(KodeverknavnGrunnlag.builder()
-                        .tekniskNavn("GRUNNLAG_1")
-                        .verdi("GRUNNLAG_2")
-                        .build()))
-                .build()));
         bestilling.setSigrunstubPensjonsgivende(List.of(RsPensjonsgivendeForFolketrygden.builder()
                 .inntektsaar("2023")
                 .pensjonsgivendeInntekt(List.of(Map.of("key", "value")))
@@ -1281,13 +1250,6 @@ class DollyRequest2MalBestillingMappingStrategyTest {
     private static RsDollyUtvidetBestilling buildSigrunstub2() {
 
         val bestilling = new RsDollyUtvidetBestilling();
-        bestilling.setSigrunstub(List.of(RsLignetInntekt.builder()
-                .inntektsaar("2025")
-                .grunnlag(List.of(KodeverknavnGrunnlag.builder()
-                        .tekniskNavn("GRUNNLAG_3")
-                        .verdi("GRUNNLAG_4")
-                        .build()))
-                .build()));
         bestilling.setSigrunstubPensjonsgivende(List.of(RsPensjonsgivendeForFolketrygden.builder()
                 .inntektsaar("2025")
                 .pensjonsgivendeInntekt(List.of(Map.of("key", "value")))

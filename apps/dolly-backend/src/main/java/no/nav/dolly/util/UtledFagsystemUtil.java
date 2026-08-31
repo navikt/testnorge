@@ -33,6 +33,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.KONTOREGISTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.KRRSTUB;
 import static no.nav.dolly.domain.resultset.SystemTyper.MEDL;
 import static no.nav.dolly.domain.resultset.SystemTyper.NOM;
+import static no.nav.dolly.domain.resultset.SystemTyper.OPPFOELGINGSVEDTAK14A;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDLIMPORT;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_ORDRE;
@@ -44,7 +45,6 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_PENSJONSAVTALE;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
-import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUN_LIGNET;
 import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUN_PENSJONSGIVENDE;
 import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUN_SUMMERT;
 import static no.nav.dolly.domain.resultset.SystemTyper.SKATTEKORT;
@@ -108,7 +108,7 @@ public class UtledFagsystemUtil {
                 .map(name -> {
                     try {
                         return SystemTyper.valueOf(name);
-                    } catch (IllegalArgumentException e) {
+                    } catch (IllegalArgumentException _) {
                         log.warn("Ukjent SystemTyper ved deserialisering: {}", name);
                         return null;
                     }
@@ -198,7 +198,6 @@ public class UtledFagsystemUtil {
         if (nonNull(kriterier.getEtterlatteYtelser()) && !kriterier.getEtterlatteYtelser().isEmpty())
             result.add(ETTERLATTE);
         if (nonNull(kriterier.getKelvinAap())) result.add(KELVIN_AAP);
-        if (nonNull(kriterier.getSigrunstub()) && !kriterier.getSigrunstub().isEmpty()) result.add(SIGRUN_LIGNET);
         if (nonNull(kriterier.getSigrunstubPensjonsgivende()) && !kriterier.getSigrunstubPensjonsgivende().isEmpty())
             result.add(SIGRUN_PENSJONSGIVENDE);
         if (nonNull(kriterier.getSigrunstubSummertSkattegrunnlag()) && !kriterier.getSigrunstubSummertSkattegrunnlag().isEmpty())
@@ -208,6 +207,7 @@ public class UtledFagsystemUtil {
                 nonNull(kriterier.getSkjerming()) ||
                 (nonNull(kriterier.getPdldata()) && nonNull(kriterier.getPdldata().getPerson())))
             result.add(TPS_MESSAGING);
+        if (nonNull(kriterier.getOppfoelgingsvedtak14a())) result.add(OPPFOELGINGSVEDTAK14A);
     }
 
     private boolean harSkjerming(BestilteKriterier kriterier) {
