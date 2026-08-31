@@ -61,9 +61,9 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        var kallendeApp = headers.getOrDefault("Origin", headers.get("origin"));
+        var kallendeApp = getCookieValue(headers, "Origin");
         var selector = isNotBlank(kallendeApp) && kallendeApp.contains("ekstern") ? REGULAR : DEV;
-        var orgnr = getBankIdOrgNr(headers.get(USER_HEADER_JWT));
+        var orgnr = getBankIdOrgNr(getCookieValue(headers, USER_HEADER_JWT));
 
         log.info("Kallende app: {}, selector: {}, orgnr: {}", kallendeApp, selector, orgnr);
 
@@ -133,5 +133,14 @@ public class TenorSearchController {
             log.warn("Kunne ikke hente BankID orgnr fra User-Jwt", e);
             return null;
         }
+    }
+
+    private static String getCookieValue(Map<String, String> headers, String cookie) {
+
+        return headers.entrySet().stream()
+                .filter(e -> e.getKey().equalsIgnoreCase(cookie))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
     }
 }
