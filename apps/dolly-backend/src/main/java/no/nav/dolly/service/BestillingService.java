@@ -590,7 +590,6 @@ public class BestillingService {
                                     .oppfoelgingsvedtak14a(request2.getOppfoelgingsvedtak14a())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
-                                    .sigrunstub(request2.getSigrunstub())
                                     .sigrunstubPensjonsgivende(request2.getSigrunstubPensjonsgivende())
                                     .sigrunstubSummertSkattegrunnlag(request2.getSigrunstubSummertSkattegrunnlag())
                                     .skattekort(request2.getSkattekort())

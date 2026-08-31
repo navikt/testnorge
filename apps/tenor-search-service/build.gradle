@@ -18,6 +18,9 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
 
+    implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
+    implementation "org.apache.httpcomponents.client5:httpclient5"
+
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
     testImplementation "no.nav.testnav.libs:integration-test"

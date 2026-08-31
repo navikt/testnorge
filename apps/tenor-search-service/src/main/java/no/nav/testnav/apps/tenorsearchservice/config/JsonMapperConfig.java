@@ -28,6 +28,7 @@ public class JsonMapperConfig {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+                .configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, false)
                 .configure(EnumFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .disable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)

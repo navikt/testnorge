@@ -28,7 +28,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @UtilityClass
-public class OpenSearchIdenterQueryUtils {
+public class OpenSearchPdlIdenterQueryUtils {
 
     private static final String PERSON_FORNAVN = "hentPerson.navn.fornavn";
     private static final String PERSON_ETTERNAVN = "hentPerson.navn.etternavn";
