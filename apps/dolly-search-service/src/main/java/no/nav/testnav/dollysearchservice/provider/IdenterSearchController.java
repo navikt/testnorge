@@ -14,7 +14,6 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Map;
 
-import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,7 +37,7 @@ public class IdenterSearchController extends AbstractJwtOrgnrExtractor {
             @RequestParam(required = false) Integer seed) {
 
         return isNotBlank(fragment) ?
-                identerSearchService.getIdenter(fragment, side, antall, seed, getBankIdOrgNr(headers.get(USER_HEADER_JWT))) :
+                identerSearchService.getIdenter(fragment, side, antall, seed, getBankIdOrgNr(headers)) :
                 Flux.empty();
     }
 }

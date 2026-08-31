@@ -6,7 +6,9 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -18,7 +20,13 @@ public abstract class AbstractJwtOrgnrExtractor {
 
     private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
 
-    public String getBankIdOrgNr(String userJwt) {
+    public String getBankIdOrgNr(Map<String, String> headers) {
+
+        var userJwt = headers.entrySet().stream()
+                .filter(e -> e.getKey().equalsIgnoreCase(USER_HEADER_JWT))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
 
         if (isBlank(userJwt) || !userJwt.contains(".")) {
             return null;

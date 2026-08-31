@@ -20,7 +20,6 @@ import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -41,7 +40,7 @@ public class PersonerSearchController extends AbstractJwtOrgnrExtractor {
                                             @RequestParam(required = false) List<ElasticTyper> registreRequest,
                                             @RequestBody SearchRequest request) {
 
-        var orgnr = getBankIdOrgNr(headers.get(USER_HEADER_JWT));
+        var orgnr = getBankIdOrgNr(headers);
         var brukerType = isBlank(orgnr) ? "AZURE" : "BANKID";
 
         log.info("Mottatt søk med brukerType: {}, orgnr: {}", brukerType, orgnr);
