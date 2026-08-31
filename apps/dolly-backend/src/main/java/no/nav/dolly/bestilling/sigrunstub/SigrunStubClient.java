@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest;
@@ -33,7 +32,6 @@ public class SigrunStubClient implements ClientRegister {
     private static final String IDENT = "ident";
     private static final String SIGRUNSTUB_SUMMERT = "SIGRUN_SUMMERT:%s";
     private static final String SIGRUNSTUB_PENSJONSGIVENDE = "SIGRUN_PENSJONSGIVENDE:%s";
-    private static final String SIGRUNSTUB_LIGNET = "SIGRUN_LIGNET:%s";
 
     private final SigrunStubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -44,7 +42,6 @@ public class SigrunStubClient implements ClientRegister {
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.merge(
-                        doLignetInntekt(bestilling, dollyPerson),
                         doPensjonsgivendeInntekt(bestilling, dollyPerson),
                         doSummertSkattegrunnlag(bestilling, dollyPerson))
                 .collect(Collectors.joining(","))
@@ -57,7 +54,7 @@ public class SigrunStubClient implements ClientRegister {
                     if (isTestnorgeIdent(dollyPerson.getIdent())) {
                         return sigrunStubConsumer.importCheckSummertSkattegrunnlag(dollyPerson.getIdent())
                                 .filter(SigrunstubResponse::isOK)
-                                .flatMap(status ->
+                                .flatMap(_ ->
                                         sigrunStubConsumer.importSummertSkattegrunnlag(dollyPerson.getIdent())
                                                 .map(this::getStatus)
                                                 .map(SIGRUNSTUB_SUMMERT::formatted));
@@ -91,7 +88,7 @@ public class SigrunStubClient implements ClientRegister {
                     if (isTestnorgeIdent(dollyPerson.getIdent())) {
                         return sigrunStubConsumer.importCheckPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent())
                                 .filter(SigrunstubResponse::isOK)
-                                .flatMap(status -> sigrunStubConsumer.importPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent()))
+                                .flatMap(_ -> sigrunStubConsumer.importPensjonsgivendeInntektForFolketrygden(dollyPerson.getIdent()))
                                 .map(this::getStatus)
                                 .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
                     } else {
@@ -114,25 +111,6 @@ public class SigrunStubClient implements ClientRegister {
                                     .map(this::getStatus)
                                     .map(SIGRUNSTUB_PENSJONSGIVENDE::formatted);
                         }));
-    }
-
-    private Flux<String> doLignetInntekt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
-
-        return Flux.just(bestilling)
-                .filter(bestilling1 -> !bestilling1.getSigrunstub().isEmpty())
-                .map(RsDollyUtvidetBestilling::getSigrunstub)
-                .flatMap(lignetInntekt -> {
-
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty(IDENT, dollyPerson.getIdent());
-
-                    var skattegrunnlag =
-                            mapperFacade.mapAsList(lignetInntekt, SigrunstubLignetInntektRequest.class, context);
-
-                    return sigrunStubConsumer.updateLignetInntekt(skattegrunnlag)
-                            .map(this::getStatus)
-                            .map(SIGRUNSTUB_LIGNET::formatted);
-                });
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
