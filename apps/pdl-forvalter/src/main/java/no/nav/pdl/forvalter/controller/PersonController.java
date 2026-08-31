@@ -58,6 +58,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.List;
 
+import static java.lang.System.currentTimeMillis;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Slf4j
@@ -118,8 +119,13 @@ public class PersonController {
                              @PathVariable String ident) {
 
         if (!isTestnorgeIdent(ident)) {
-            return personService.deletePerson(ident);
 
+            var startTime = currentTimeMillis();
+            return personService.finnOgOppdaterIdenterForSletting(ident)
+                    .flatMap(personService::utfoerEksternSletting)
+                    .flatMap(personService::slettMotDatabase)
+                    .doOnNext(_ -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
+                    .then();
         } else {
             return personService.deletePdlArtifacter(ident);
         }

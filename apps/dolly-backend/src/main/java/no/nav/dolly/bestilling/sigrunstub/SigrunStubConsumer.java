@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubSummertSkattgrunnlag
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostImportCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostSummertSkattegrunnlagCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPutCommand;
-import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubSummertskattegrunnlagRequest;
@@ -33,7 +32,6 @@ public class SigrunStubConsumer extends ConsumerStatus {
 
     private static final String PREFIX = "/sigrunstub";
     private static final String PREFIX_V1 = PREFIX + "/api/v1";
-    private static final String LIGNET_INNTEKT_URL = PREFIX_V1 + "/lignetinntekt";
     private static final String PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden";
     private static final String IMPORT_SUMMERT_SKATTEGRUNNLAG_URL = PREFIX_V1 + "/summertskattegrunnlag/import";
     private static final String IMPORT_PENSJONSGIVENDE_INNTEKT_URL = PREFIX_V1 + "/pensjonsgivendeinntektforfolketrygden/import";
@@ -86,15 +84,6 @@ public class SigrunStubConsumer extends ConsumerStatus {
                         .delayElements(Duration.ofMillis(50))
                         .map(ident -> new SigrunstubSummertSkattgrunnlagDeleteCommand(webClient, ident, token.getTokenValue()).call())
                         .flatMap(Flux::from));
-    }
-
-    @Timed(name = "providers", tags = {"operation", "sigrun_createGrunnlag"})
-    public Mono<SigrunstubResponse> updateLignetInntekt(List<SigrunstubLignetInntektRequest> request) {
-
-        log.info("Put lignet inntekt til Sigrunstub med data {}", request);
-
-        return tokenService.exchange(serverProperties)
-                .flatMap(token -> new SigurunstubPutCommand(webClient, LIGNET_INNTEKT_URL, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_createPensjonsgivendeInntekt"})

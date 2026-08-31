@@ -35,21 +35,19 @@ export const PersonDropdown = () => {
 					<Icon kind="person" fontSize="1.5rem" />
 					<DropdownStyledLink href="/gruppe">Mine personer</DropdownStyledLink>
 				</PreloadableActionMenuItem>
-				{notBankidUser && (
-					<PreloadableActionMenuItem
-						route="/dollysoek"
-						dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK}
-						style={{ color: '#212529' }}
+				<PreloadableActionMenuItem
+					route="/dollysoek"
+					dataTestId={TestComponentSelectors.BUTTON_HEADER_DOLLYSOEK}
+					style={{ color: '#212529' }}
+				>
+					<Icon kind="search" fontSize="1.5rem" />
+					<DropdownStyledLink
+						onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
+						href="/dollysoek"
 					>
-						<Icon kind="search" fontSize="1.5rem" />
-						<DropdownStyledLink
-							onClick={() => localStorage.removeItem(dollySoekLocalStorageKey)}
-							href="/dollysoek"
-						>
-							Søk i Dolly
-						</DropdownStyledLink>
-					</PreloadableActionMenuItem>
-				)}
+						Søk i Dolly
+					</DropdownStyledLink>
+				</PreloadableActionMenuItem>
 				<PreloadableActionMenuItem
 					route="/tenorpersoner"
 					dataTestId={TestComponentSelectors.BUTTON_HEADER_TENOR}

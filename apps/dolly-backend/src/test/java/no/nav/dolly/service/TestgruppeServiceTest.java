@@ -3,12 +3,12 @@ package no.nav.dolly.service;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.projection.RsGruppeFragment;
+import no.nav.dolly.domain.projection.GruppeFragment;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -269,7 +269,7 @@ class TestgruppeServiceTest {
         when(identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)).thenReturn(Mono.just(1));
         when(bestillingRepository.countByGruppeId(GROUP_ID)).thenReturn(Mono.just(1));
         when(mapperFacade.map(any(), eq(RsTestgruppe.class), any())).thenReturn(new RsTestgruppe());
-        when(brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())).thenReturn(Mono.just(TilgangDTO.builder()
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())).thenReturn(Mono.just(BrukereDTO.builder()
                 .brukere(List.of(bruker.getBrukerId()))
                 .build()));
         when(testgruppeRepository.findByOpprettetAvIdOrderByIdDesc(any(), any()))
@@ -299,7 +299,7 @@ class TestgruppeServiceTest {
     @Test
     void fetchGruppeByFragment_shouldSearchByIdWhenFragmentIsNumeric() {
 
-        var fragment1 = new RsGruppeFragment(1L, "Testgruppe A");
+        var fragment1 = new GruppeFragment(1L, "Testgruppe A");
         when(testgruppeRepository.findByIdContaining("%1%")).thenReturn(Flux.just(fragment1));
         when(testgruppeRepository.findByNavnContaining("")).thenReturn(Flux.empty());
 
@@ -317,7 +317,7 @@ class TestgruppeServiceTest {
     @Test
     void fetchGruppeByFragment_shouldSearchByNameWhenFragmentIsText() {
 
-        var fragment1 = new RsGruppeFragment(2L, "Testgruppe B");
+        var fragment1 = new GruppeFragment(2L, "Testgruppe B");
         when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
         when(testgruppeRepository.findByNavnContaining("%Test%")).thenReturn(Flux.just(fragment1));
 
@@ -335,7 +335,7 @@ class TestgruppeServiceTest {
     @Test
     void fetchGruppeByFragment_shouldSearchByBothIdAndNameWhenFragmentContainsBoth() {
 
-        var fragment1 = new RsGruppeFragment(5L, "Min gruppe");
+        var fragment1 = new GruppeFragment(5L, "Min gruppe");
         when(testgruppeRepository.findByIdContainingAndNavnContaining("%5%", "%Min%")).thenReturn(Flux.just(fragment1));
 
         StepVerifier.create(testgruppeService.fetchGruppeByFragment("5 Min"))
@@ -361,9 +361,9 @@ class TestgruppeServiceTest {
     @Test
     void fetchGruppeByFragment_shouldReturnResultsSortedById() {
 
-        var fragment1 = new RsGruppeFragment(10L, "Gruppe A");
-        var fragment2 = new RsGruppeFragment(20L, "Gruppe B");
-        var fragment3 = new RsGruppeFragment(30L, "Gruppe C");
+        var fragment1 = new GruppeFragment(10L, "Gruppe A");
+        var fragment2 = new GruppeFragment(20L, "Gruppe B");
+        var fragment3 = new GruppeFragment(30L, "Gruppe C");
         when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
         when(testgruppeRepository.findByNavnContaining("%Gruppe%")).thenReturn(Flux.just(fragment3, fragment1, fragment2));
 
@@ -377,7 +377,7 @@ class TestgruppeServiceTest {
     @Test
     void fetchGruppeByFragment_shouldHandleMultipleWordTextSearch() {
 
-        var fragment1 = new RsGruppeFragment(7L, "Min Test Gruppe");
+        var fragment1 = new GruppeFragment(7L, "Min Test Gruppe");
         when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
         when(testgruppeRepository.findByNavnContaining("%Min% %Test%")).thenReturn(Flux.just(fragment1));
 

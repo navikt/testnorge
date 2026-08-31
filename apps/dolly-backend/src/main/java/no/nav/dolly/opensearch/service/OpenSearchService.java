@@ -3,6 +3,9 @@ package no.nav.dolly.opensearch.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.opensearch.consumer.OpenSearchConsumer;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -34,10 +37,11 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class OpenSearchService {
 
     private static final String INDEKS = "Indeks \"";
-    
+
     private final OpenSearchConsumer openSearchConsumer;
     private final OpenSearchClient openSearchClient;
     private final JsonMapper jsonMapper;
+    private final BrukerServiceConsumer brukerServiceConsumer;
 
     @Value("${open.search.index}")
     private String index;
@@ -116,9 +120,7 @@ public class OpenSearchService {
         val builder = new BulkRequest.Builder()
                 .index(index);
         try {
-
             for (var dokument : bestillingDokument) {
-
                 builder.operations(op -> op
                         .index(idx -> idx
                                 .index(index)
@@ -131,33 +133,52 @@ public class OpenSearchService {
                 response.items().stream()
                         .filter(item -> nonNull(item.error()))
                         .forEach(item ->
-                            log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
-                                    nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
+                                log.warn("Feil ved lagring av bestillinger, meldinger i bulk response {}",
+                                        nonNull(item.error().reason()) ? item.error().reason() : "Ukjent feil"));
             }
             return Mono.just(response);
 
         } catch (IOException | JacksonException e) {
             log.warn("Feilet å lagre bestilling id {}, {}",
                     (!bestillingDokument.isEmpty() ?
-                    bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
+                            bestillingDokument.getFirst().getId() : "N/A"), e.getLocalizedMessage());
             return Mono.empty();
         }
     }
 
-    public Mono<IndexResponse> save(BestillingDokument bestillingDokument) {
+    public Mono<IndexResponse> save(BestillingDokument bestillingDokument, Bruker bruker) {
 
-        try {
-            return Mono.just(openSearchClient.index(new IndexRequest.Builder<BestillingDokument>()
-                    .index(index)
-                    .id(String.valueOf(bestillingDokument.getId()))
-                    .document(bestillingDokument)
-                    .build()));
+        return Mono.just(bestillingDokument)
+                .flatMap(_ -> {
+                    bestillingDokument.setBrukerType(bruker.getBrukertype());
+                    if (Brukertype.BANKID.equals(bruker.getBrukertype())) {
+                        return brukerServiceConsumer.getBruker(bruker.getBrukerId())
+                                .map(userInfo -> {
+                                    bestillingDokument.setOrgnr(userInfo.getOrganisasjonsnummer());
+                                    return bestillingDokument;
+                                });
+                    }
+                    return Mono.just(bestillingDokument);
+                })
+                .flatMap(dokument -> {
+                    try {
+                        return Mono.just(openSearchClient.index(new IndexRequest.Builder<BestillingDokument>()
+                                .index(index)
+                                .id(String.valueOf(dokument.getId()))
+                                .document(dokument)
+                                .build()));
 
-        } catch (IOException | OpenSearchException e) {
-
-            log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(), e.getLocalizedMessage());
-            return Mono.empty();
-        }
+                    } catch (IOException | OpenSearchException e) {
+                        log.warn("Feilet å lagre bestilling id {}, {}", bestillingDokument.getId(),
+                                e instanceof OpenSearchException ose &&
+                                nonNull(ose.response()) &&
+                                nonNull(ose.response().error()) &&
+                                nonNull(ose.response().error().causedBy()) ?
+                                        ose.response().error().causedBy().reason() :
+                                        e.getLocalizedMessage(), e);
+                        return Mono.empty();
+                    }
+                });
     }
 
     public Mono<Boolean> exists(Long id) {
@@ -166,6 +187,7 @@ public class OpenSearchService {
             val exists = openSearchClient.exists(new ExistsRequest.Builder()
                     .index(index)
                     .id(String.valueOf(id))
+                    .source(s -> s.fetch(false))
                     .build());
 
             return Mono.just(exists.value());

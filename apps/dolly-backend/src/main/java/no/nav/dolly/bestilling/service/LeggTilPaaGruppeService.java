@@ -84,7 +84,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                        () -> saveBestillingToOpenSearchServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();

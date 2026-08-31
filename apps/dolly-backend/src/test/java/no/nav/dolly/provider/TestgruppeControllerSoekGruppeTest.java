@@ -1,7 +1,7 @@
 package no.nav.dolly.provider;
 
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.projection.RsGruppeFragment;
+import no.nav.dolly.domain.projection.GruppeFragment;
 import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(2));
                     assertThat(resultat.get(0).getNavn(), is("SoekTestUnikNavn Alpha"));
@@ -67,7 +67,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(1));
                     assertThat(resultat.getFirst().getId(), is(testgruppe.getId()));
@@ -87,7 +87,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> assertThat(resultat.size(), is(0)));
     }
 
@@ -103,7 +103,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(1));
                     assertThat(resultat.getFirst().getNavn(), is("CaseTestXyzUnikt"));
@@ -123,7 +123,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(1));
                     assertThat(resultat.getFirst().getNavn(), is("PartialTestXyz for skattetesting"));
@@ -144,7 +144,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(3));
                     assertThat(resultat.get(0).getId(), is(gruppe1.getId()));
@@ -167,7 +167,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(1));
                     assertThat(resultat.getFirst().getId(), is(matchGruppe.getId()));
@@ -187,7 +187,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> assertThat(resultat.size(), is(0)));
     }
 
@@ -204,7 +204,7 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBodyList(RsGruppeFragment.class)
+                .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(1));
                     assertThat(resultat.getFirst().getNavn(), is("FlereordUnik for skattetesting"));

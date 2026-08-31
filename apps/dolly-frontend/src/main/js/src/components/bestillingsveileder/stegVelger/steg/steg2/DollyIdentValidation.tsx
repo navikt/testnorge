@@ -29,6 +29,7 @@ import { validation as pdlfValidation } from '@/components/fagsystem/pdlf/form/v
 import BankkontoForm from '@/components/fagsystem/bankkonto/form/Form'
 import { KelvinAapForm } from '@/components/fagsystem/kelvin/form/Form'
 import { KdiForm } from '@/components/fagsystem/kdi/form/Form'
+import { Oppfoelgingsvedtak14aForm } from '@/components/fagsystem/oppfoelgingsvedtak14a/form/Form'
 
 export const DollyIdentValidation = Yup.object({
 	antall: ifPresent(
@@ -58,6 +59,7 @@ export const DollyIdentValidation = Yup.object({
 	...KrrstubForm.validation,
 	...MedlForm.validation,
 	...KelvinAapForm.validation,
+	...Oppfoelgingsvedtak14aForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,
 	...SkjermingForm.validation,

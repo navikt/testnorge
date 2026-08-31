@@ -18,6 +18,4 @@ public class Consumers {
 
     private ServerProperties tenorSearchService;
     private ServerProperties pdlTestdata;
-    private ServerProperties dollyBackend;
-    private ServerProperties dollyBackendDev;
 }

@@ -9,15 +9,13 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.projection.GruppeBestillingIdent;
-import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.BestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.domain.resultset.aareg.RsAareg;
-import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -101,7 +99,7 @@ public class BestillingService {
                 .flatMap(this::resolveUtlededeFagsystemerForBestilling);
     }
 
-    public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+    public Flux<BestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
 
         var searchQueries = bestillingFragment.split(" ");
         var bestillingID = Arrays.stream(searchQueries)
@@ -121,7 +119,7 @@ public class BestillingService {
                         Flux.merge(
                                 bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
                                 bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn))))
-                .sort(Comparator.comparing(RsBestillingFragment::getId));
+                .sort(Comparator.comparing(BestillingFragment::getId));
     }
 
     public Flux<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
@@ -249,7 +247,6 @@ public class BestillingService {
 
         return identRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Testident %s ble ikke funnet", ident))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -295,7 +292,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(testgruppe -> Mono.zip(
                         Mono.just(testgruppe),
                         brukerService.fetchOrCreateBruker(),
@@ -462,7 +458,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         miljoerConsumer.getMiljoer()))
@@ -497,7 +492,6 @@ public class BestillingService {
 
         return testgruppeRepository.findById(gruppeId)
                 .switchIfEmpty(Mono.error(new NotFoundException(FINNES_IKKE.formatted(gruppeId))))
-                .doOnNext(_ -> fixAaregAbstractClassProblem(request.getAareg()))
                 .flatMap(_ -> Mono.zip(
                         brukerService.fetchOrCreateBruker(),
                         identRepository.countByGruppeId(gruppeId),
@@ -596,7 +590,6 @@ public class BestillingService {
                                     .oppfoelgingsvedtak14a(request2.getOppfoelgingsvedtak14a())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
-                                    .sigrunstub(request2.getSigrunstub())
                                     .sigrunstubPensjonsgivende(request2.getSigrunstubPensjonsgivende())
                                     .sigrunstubSummertSkattegrunnlag(request2.getSigrunstubSummertSkattegrunnlag())
                                     .skattekort(request2.getSkattekort())
@@ -802,15 +795,5 @@ public class BestillingService {
         }
 
         return Mono.just(bestilling);
-    }
-
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
     }
 }

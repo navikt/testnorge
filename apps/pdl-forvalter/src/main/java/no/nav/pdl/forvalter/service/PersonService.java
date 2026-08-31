@@ -36,13 +36,14 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -104,7 +105,7 @@ public class PersonService {
                             mergedPerson.setFornavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
                             mergedPerson.setMellomnavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
                             mergedPerson.setEtternavn(mergedPerson.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
-                            mergedPerson.setSistOppdatert(now());
+                            mergedPerson.setSistOppdatert(now(ZoneId.of("Europe/Oslo")));
                             return mergedPerson;
                         }))
                 .flatMap(personRepository::save)
@@ -112,9 +113,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Mono<Void> deletePerson(String ident) {
-
-        var startTime = currentTimeMillis();
+    public Mono<Set<String>> finnOgOppdaterIdenterForSletting(String ident) {
 
         return checkAlias(ident)
                 .then(personRepository.findByIdent(ident))
@@ -127,20 +126,25 @@ public class PersonService {
                                         .map(DbRelasjon::getRelatertPersonId))
                         .flatMap(personRepository::findById)
                         .map(DbPerson::getIdent))
-                .collect(Collectors.toCollection(HashSet::new))
-                .flatMap(identerSomSkalSlettesHosPdl -> pdlTestdataConsumer.delete(identerSomSkalSlettesHosPdl)
-                        .thenReturn(identerSomSkalSlettesHosPdl))
-                .flatMap(identerSomSkalFriMarkeresIIdentpool ->
-                        identPoolConsumer.releaseIdents(identerSomSkalFriMarkeresIIdentpool, Bruker.PDLF)
-                                .thenReturn(identerSomSkalFriMarkeresIIdentpool))
-                .flatMap(identerSomSkalSlettesIAliaser -> aliasRepository.deleteByIdentIn(identerSomSkalSlettesIAliaser)
-                        .then(Mono.just(identerSomSkalSlettesIAliaser)))
+                .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public Mono<Set<String>> utfoerEksternSletting(Set<String> identer) {
+
+        return pdlTestdataConsumer.delete(identer)
+                .then(identPoolConsumer.releaseIdents(identer, Bruker.PDLF))
+                .thenReturn(identer);
+    }
+
+    @Transactional
+    public Mono<Set<String>> slettMotDatabase(Set<String> identerSomSkalSlettesIAliaser) {
+
+        return aliasRepository.deleteByIdentIn(identerSomSkalSlettesIAliaser)
+                .then(Mono.just(identerSomSkalSlettesIAliaser))
                 .flatMap(identerSomSkalSlettesIRelasjoner -> relasjonRepository.deleteByPersonIdentIn(identerSomSkalSlettesIRelasjoner)
                         .then(Mono.just(identerSomSkalSlettesIRelasjoner)))
                 .flatMap(identerSomSkalSlettesIPdlForvalter -> personRepository.deleteByIdentIn(identerSomSkalSlettesIPdlForvalter)
-                        .then(Mono.just(identerSomSkalSlettesIPdlForvalter)))
-                .doOnNext(identer -> log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime))
-                .then();
+                        .then(Mono.just(identerSomSkalSlettesIPdlForvalter)));
     }
 
     @Transactional(readOnly = true)
@@ -184,7 +188,7 @@ public class PersonService {
                                                 context.setProperty("relatertePersoner", relatertePersoner);
                                                 return context;
                                             }))
-                            .doOnNext(person -> log.info("Henting av personer tok {} ms", System.currentTimeMillis() - now))
+                            .doOnNext(_ -> log.info("Henting av personer tok {} ms", System.currentTimeMillis() - now))
                             .flatMap(context -> Flux.fromIterable(personer)
                                     .map(person -> mapperFacade.map(person, FullPersonDTO.class, context))));
         } else {
@@ -192,7 +196,6 @@ public class PersonService {
         }
     }
 
-    @Transactional
     public Mono<String> createPerson(BestillingRequestDTO request) {
 
         val now = System.currentTimeMillis();
@@ -211,7 +214,7 @@ public class PersonService {
                     }
                     if (request.getPerson().getFoedselsdato().isEmpty()) {
                         request.getPerson().getFoedselsdato().add(FoedselsdatoDTO.builder()
-                                .foedselsdato(nonNull(identifier) && nonNull(identifier.getFoedselsdato()) ?
+                                .foedselsdato(nonNull(identifier.getFoedselsdato()) ?
                                         identifier.getFoedselsdato().atStartOfDay() : null)
                                 .build());
                     }
@@ -234,7 +237,7 @@ public class PersonService {
                         request.getPerson().getNavPersonIdentifikator().add(new NavPersonIdentifikatorDTO());
                     }
                 })
-                .flatMap(identifier -> updatePersonInternal(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
+                .flatMap(_ -> updatePersonInternal(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
                         .person(request.getPerson())
                         .build(), null))
                 .doOnNext(ident -> log.info("Oppretting av person {} tok {} ms", ident, System.currentTimeMillis() - now));
@@ -275,7 +278,7 @@ public class PersonService {
                         .person(PersonDTO.builder()
                                 .ident(ident)
                                 .build())
-                        .sistOppdatert(now())
+                        .sistOppdatert(now(ZoneId.of("Europe/Oslo")))
                         .build()));
     }
 
@@ -285,9 +288,8 @@ public class PersonService {
         return personRepository.findByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException(format("Ident %s ble ikke funnet", ident))))
                 .flatMap(person -> hendelseIdService.deletePdlHendelser(person)
-                        .then(unhookEksternePersonerService.unhook(person)
-                                .then(relasjonRepository.deleteByPersonIdOrRelatertPersonId(person.getId())
-                                        .thenReturn(person))))
+                        .then(unhookEksternePersonerService.unhook(person))
+                        .then(relasjonRepository.deleteByPersonIdOrRelatertPersonId(person.getId())))
                 .then(personRepository.deleteByIdent(ident));
     }
 }

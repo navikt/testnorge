@@ -59,6 +59,7 @@ import { SigrunstubSummertSkattegrunnlag } from '@/components/fagsystem/sigrunst
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { KelvinAap } from '@/components/fagsystem/kelvin/bestilling/KelvinAap'
 import { KdiBestilling } from '@/components/fagsystem/kdi/bestilling/KdiBestilling'
+import { Oppfoelgingsvedtak14a } from '@/components/fagsystem/oppfoelgingsvedtak14a/bestilling/Oppfoelgingsvedtak14a'
 
 type BestillingsdataTypes = {
 	bestilling: any
@@ -131,6 +132,7 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<Uforetrygd pensjon={bestilling.pensjonforvalter?.uforetrygd} />
 			<AfpOffentlig pensjon={bestilling.pensjonforvalter?.afpOffentlig} />
 			<KelvinAap kelvinAap={bestilling.kelvinAap} />
+			<Oppfoelgingsvedtak14a vedtak={bestilling.oppfoelgingsvedtak14a} />
 			<Arena arbeidsytelse={bestilling.arenaforvalter} />
 			<Sykemelding sykemelding={bestilling.sykemelding} />
 			<Yrkesskader yrkesskader={bestilling.yrkesskader} />

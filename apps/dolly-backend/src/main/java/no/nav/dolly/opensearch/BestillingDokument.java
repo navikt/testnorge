@@ -7,11 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
@@ -25,9 +25,9 @@ import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
@@ -69,8 +69,6 @@ public class BestillingDokument implements Persistable<Long> {
     private RsInstdataKdi instdataKdi;
     
     private List<RsAareg> aareg;
-    
-    private List<RsLignetInntekt> sigrunstub;
     
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     
@@ -117,6 +115,9 @@ public class BestillingDokument implements Persistable<Long> {
     private RsKelvinAapRequestDTO kelvinAap;
 
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+
+    private Bruker.Brukertype brukerType;
+    private String orgnr;
 
     @Transient
     @JsonIgnore

@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers.dto;
 
-public enum DollyBackendSelector {
+public enum BestillingIndexSelector {
     REGULAR,
     DEV
 }

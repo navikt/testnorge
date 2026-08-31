@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.utils.EgenskaperFraHovedperson;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
+import no.nav.pdl.forvalter.utils.OptimisticLockingRetryUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -165,25 +166,26 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
 
     private Mono<Void> createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
 
-        return personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
-                .switchIfEmpty(Mono.error(new RuntimeException("Relatert person med ident %s ikke funnet"
-                        .formatted(sivilstand.getRelatertVedSivilstand()))))
-                .doOnNext(relatertPerson -> {
+        return OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure(
+                personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
+                        .switchIfEmpty(Mono.error(new RuntimeException("Relatert person med ident %s ikke funnet"
+                                .formatted(sivilstand.getRelatertVedSivilstand()))))
+                        .doOnNext(relatertPerson -> {
 
-                    val relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
-                    relatertSivilstand.setRelatertVedSivilstand(hovedperson);
-                    relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
-                                                     .max(Comparator.comparing(SivilstandDTO::getId))
-                                                     .map(SivilstandDTO::getId)
-                                                     .orElse(0) + 1);
-                    relatertSivilstand.setKilde(getKilde(relatertSivilstand));
-                    relatertSivilstand.setMaster(getMaster(relatertSivilstand, relatertPerson.getPerson()));
+                            val relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
+                            relatertSivilstand.setRelatertVedSivilstand(hovedperson);
+                            relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
+                                                             .max(Comparator.comparing(SivilstandDTO::getId))
+                                                             .map(SivilstandDTO::getId)
+                                                             .orElse(0) + 1);
+                            relatertSivilstand.setKilde(getKilde(relatertSivilstand));
+                            relatertSivilstand.setMaster(getMaster(relatertSivilstand, relatertPerson.getPerson()));
 
-                    relatertPerson.getPerson().getSivilstand().addFirst(relatertSivilstand);
+                            relatertPerson.getPerson().getSivilstand().addFirst(relatertSivilstand);
 
-                    relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
-                })
-                .flatMap(personRepository::save)
+                            relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
+                        })
+                        .flatMap(personRepository::save))
                 .then();
     }
 
