@@ -1,12 +1,7 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
 import SessionService from '@/services/SessionService'
-import styled from 'styled-components'
-import { InputFormItem, Knapp } from '@navikt/dolly-komponenter'
-
-const StyledHovedknapp = styled(Knapp)`
-	margin: 5px 0;
-`
+import { Button, TextField } from '@navikt/ds-react'
 
 const AddToSessionBox = () => {
 	const [orgnummer, setOrgnummer] = useState('')
@@ -16,14 +11,10 @@ const AddToSessionBox = () => {
 			header="Legg til organisasjon til sessionen"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<InputFormItem
-						label="Orgnummer"
-						type="text"
-						onBlur={(event) => setOrgnummer(event.target.value)}
-					/>
-					<StyledHovedknapp loading={loading} onClick={onSubmit}>
+					<TextField label="Orgnummer" onBlur={(event) => setOrgnummer(event.target.value)} />
+					<Button loading={loading} onClick={onSubmit}>
 						Velg
-					</StyledHovedknapp>
+					</Button>
 				</>
 			)}
 		/>

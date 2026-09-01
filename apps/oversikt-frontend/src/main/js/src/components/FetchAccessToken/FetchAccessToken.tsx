@@ -1,20 +1,12 @@
 import React, { useState } from 'react'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
-// @ts-ignore
-import ApplicationService from '@/services/ApplicationService'
 import TokenService from '@/services/TokenService'
 import styled from 'styled-components'
-import {
-	ErrorAlertstripe,
-	InputFormItem,
-	Knapp,
-	WarningAlertstripe,
-} from '@navikt/dolly-komponenter'
 import { NotFoundError } from '@navikt/dolly-lib'
 
 import OrganisasjonService from '@/services/OrganisasjonService'
-import { Checkbox } from '@navikt/ds-react'
+import { Button, Checkbox, InlineMessage, TextField } from '@navikt/ds-react'
 
 type Props = {
 	scope: string
@@ -28,47 +20,74 @@ type Props = {
 const ButtonGroup = styled.div`
 	display: flex;
 	justify-content: center;
+	gap: var(--ax-space-12);
+	flex-wrap: wrap;
+
+	@media (max-width: 767px) {
+		justify-content: stretch;
+
+		> * {
+			flex: 1 1 100%;
+		}
+	}
 `
 
-const FetchAccessToken = styled.div`
-	max-width: 500px;
-	padding-bottom: 25px;
+const FetchAccessTokenContainer = styled.div`
+	inline-size: 100%;
+	max-inline-size: 31.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-16);
 `
 
-const GetTokenButton = styled(Knapp)`
-	margin: 10px 5px;
+const HeaderBlock = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-8);
+
+	h1,
+	h2,
+	p {
+		margin: 0;
+	}
 `
 
-const CopyTokenButton = styled(Knapp)`
-	margin: 10px 5px 10px 20px;
-`
-
-const StyledInput = styled(InputFormItem)`
+const StyledInput = styled(TextField)`
 	&& {
 		width: 100%;
-		margin-top: 15px;
-		padding-right: unset;
 	}
 `
 
 const AccessTokenTextArea = styled.textarea`
-	min-height: 200px;
-	min-width: 494px;
+	inline-size: 100%;
+	min-block-size: 12.5rem;
 	text-align: left;
 	resize: vertical;
-	background: white;
+	padding: var(--ax-space-12);
+	border: 1px solid var(--ax-border-neutral-subtle);
+	border-radius: var(--ax-radius-8);
+	background: var(--ax-bg-input);
+	color: var(--ax-text-neutral);
+	opacity: 1;
 `
 
 const StyledCheckbox = styled(Checkbox)`
-	padding: 5px 0;
-	margin-left: 172px;
+	align-self: flex-start;
 `
 
+const isNotFoundError = (error: unknown) =>
+	error instanceof NotFoundError ||
+	(error instanceof Error && error.name === NotFoundError.name) ||
+	(typeof error === 'object' &&
+		error !== null &&
+		'name' in error &&
+		error.name === NotFoundError.name)
+
 export default ({ labels = {}, scope }: Props) => {
-	const [accessToken, setAccessToken] = useState(null)
+	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [clientCredentials, setClientCredentials] = useState(false)
 	const [loading, setLoading] = useState(false)
-	const [error, setError] = useState(null)
+	const [error, setError] = useState<unknown>(null)
 
 	const onGetTokenFromScope = (scope: string) => {
 		const parts = scope.split('.')
@@ -97,19 +116,29 @@ export default ({ labels = {}, scope }: Props) => {
 	const onClick = () => onGetTokenFromScope(scope)
 
 	const getError = () => {
-		if (error && error.name === NotFoundError.name) {
-			return <WarningAlertstripe label="Token ikke funnet." />
+		if (isNotFoundError(error)) {
+			return (
+				<InlineMessage role="alert" size="small" status="warning">
+					Token ikke funnet.
+				</InlineMessage>
+			)
 		} else if (error) {
-			return <ErrorAlertstripe label="Noe gikk galt. Prøv på nytt." />
+			return (
+				<InlineMessage role="alert" size="small" status="error">
+					Noe gikk galt. Prøv på nytt.
+				</InlineMessage>
+			)
 		}
 		return null
 	}
 
 	return (
-		<FetchAccessToken>
-			{labels.header && <h1>{labels.header}</h1>}
-			{labels.subHeader && <h2>{labels.subHeader}</h2>}
-			{labels.description && <p>{labels.description}</p>}
+		<FetchAccessTokenContainer>
+			<HeaderBlock>
+				{labels.header && <h1>{labels.header}</h1>}
+				{labels.subHeader && <h2>{labels.subHeader}</h2>}
+				{labels.description && <p>{labels.description}</p>}
+			</HeaderBlock>
 			<AccessTokenTextArea
 				disabled={true}
 				value={loading ? 'Laster token...' : accessToken ? accessToken : ''}
@@ -117,19 +146,19 @@ export default ({ labels = {}, scope }: Props) => {
 			{getError()}
 			<StyledCheckbox
 				name="client-credentials-radio"
-				value={clientCredentials}
+				checked={clientCredentials}
 				onChange={(event) => setClientCredentials(event.target.checked)}
 			>
 				Client credentials
 			</StyledCheckbox>
 			<ButtonGroup>
-				<GetTokenButton disabled={loading} onClick={onClick}>
+				<Button disabled={loading} onClick={onClick}>
 					Hent token
-				</GetTokenButton>
-				<CopyToClipboard text={accessToken}>
-					<CopyTokenButton variant={'secondary'} disabled={loading}>
+				</Button>
+				<CopyToClipboard text={accessToken ?? ''}>
+					<Button disabled={loading || !accessToken} variant="secondary">
 						Kopier
-					</CopyTokenButton>
+					</Button>
 				</CopyToClipboard>
 			</ButtonGroup>
 			<StyledInput
@@ -139,6 +168,6 @@ export default ({ labels = {}, scope }: Props) => {
 					event.target.value && OrganisasjonService.setOrganisasjonsnummer(event.target.value)
 				}
 			/>
-		</FetchAccessToken>
+		</FetchAccessTokenContainer>
 	)
 }

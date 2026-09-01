@@ -5,9 +5,18 @@ export type Organisasjon = {
 	organisasjonsnummer: string
 	organisasjonsform: string
 }
+
+let organisasjonsnummer = ''
+
 const getOrganisasjoner = (): Promise<Organisasjon[]> =>
 	Api.fetchJson('/api/v1/person-organisasjoner', {
 		method: 'GET',
 	})
 
-export default { getOrganisasjoner }
+const setOrganisasjonsnummer = (value: string) => {
+	organisasjonsnummer = value
+}
+
+const getOrganisasjonsnummer = () => organisasjonsnummer
+
+export default { getOrganisasjoner, setOrganisasjonsnummer, getOrganisasjonsnummer }

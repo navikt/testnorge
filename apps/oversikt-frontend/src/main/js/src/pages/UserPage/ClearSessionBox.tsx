@@ -1,21 +1,16 @@
 import React from 'react'
 import { Box } from '@/components/Box'
 import SessionService from '@/services/SessionService'
-import styled from 'styled-components'
-import { Knapp } from '@navikt/dolly-komponenter'
-
-const StyledFareknapp = styled(Knapp)`
-	margin: 5px 0;
-`
+import { Button } from '@navikt/ds-react'
 const ClearSessionBox = () => (
 	<Box
 		onSubmit={() => SessionService.clear()}
 		header="Fjern session"
 		onRender={({ onSubmit, loading }) => (
 			<>
-				<StyledFareknapp variant={'danger'} loading={loading} onClick={onSubmit}>
+				<Button data-color="danger" loading={loading} onClick={onSubmit}>
 					Fjern
-				</StyledFareknapp>
+				</Button>
 			</>
 		)}
 	/>

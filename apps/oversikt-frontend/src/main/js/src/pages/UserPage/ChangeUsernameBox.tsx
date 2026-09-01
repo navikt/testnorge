@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
-import styled from 'styled-components'
 import BrukerService from '@/services/BrukerService'
-import { InputFormItem, Knapp } from '@navikt/dolly-komponenter'
-
-const StyledHovedknapp = styled(Knapp)`
-	margin: 5px 0;
-`
+import { Button, TextField } from '@navikt/ds-react'
 
 const ChangeUsernameBox = () => {
-	const [username, setUsername] = useState(null)
-	const [id, setId] = useState(null)
-	const [jwt, setJwt] = useState(null)
+	const [username, setUsername] = useState('')
+	const [id, setId] = useState('')
+	const [jwt, setJwt] = useState('')
 
 	return (
 		<Box
@@ -19,21 +14,18 @@ const ChangeUsernameBox = () => {
 				if (username && id) {
 					return BrukerService.changeBukernavn(id, username, jwt)
 				}
+				return Promise.resolve()
 			}}
 			header="Endre brukernavn"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<InputFormItem label="Id" type="text" onBlur={(event) => setId(event.target.value)} />
-					<InputFormItem
-						label="Brukernavn"
-						type="text"
-						onBlur={(event) => setUsername(event.target.value)}
-					/>
+					<TextField label="Id" onBlur={(event) => setId(event.target.value)} />
+					<TextField label="Brukernavn" onBlur={(event) => setUsername(event.target.value)} />
 
-					<InputFormItem label="Jwt" type="text" onBlur={(event) => setJwt(event.target.value)} />
-					<StyledHovedknapp loading={loading} onClick={onSubmit}>
+					<TextField label="Jwt" onBlur={(event) => setJwt(event.target.value)} />
+					<Button loading={loading} onClick={onSubmit}>
 						Endre
-					</StyledHovedknapp>
+					</Button>
 				</>
 			)}
 		/>

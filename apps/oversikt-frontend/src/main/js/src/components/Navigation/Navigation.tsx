@@ -1,20 +1,31 @@
 import React from 'react'
 
 import './Navigation.less'
-import { Link } from 'react-router'
+import { Button } from '@navikt/ds-react'
+import { Link, useLocation } from 'react-router'
+import type { AppNavigationItem } from './types'
 
 type Props<T> = {
-	navigation: Navigation<T>
+	navigation: AppNavigationItem<T>
 	className?: string
 }
 
-const Navigation = <T extends object>({ navigation, className }: Props<T>) => {
+const Navigation = <T extends unknown>({ navigation, className }: Props<T>) => {
+	const location = useLocation()
 	const value = className ? className : ''
+	const isActive = location.pathname === navigation.href
 
 	return (
-		<Link className={'navigation__button ' + value} to={navigation.href}>
+		<Button
+			as={Link}
+			aria-current={isActive ? 'page' : undefined}
+			className={'navigation__button ' + value}
+			data-color="neutral"
+			to={navigation.href}
+			variant="secondary"
+		>
 			{navigation.label}
-		</Link>
+		</Button>
 	)
 }
 

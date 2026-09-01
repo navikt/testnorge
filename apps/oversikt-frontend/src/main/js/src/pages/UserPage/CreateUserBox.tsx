@@ -1,16 +1,11 @@
 import { Box } from '@/components/Box'
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import BrukerService from '@/services/BrukerService'
-import { InputFormItem, Knapp } from '@navikt/dolly-komponenter'
-
-const StyledHovedknapp = styled(Knapp)`
-	margin: 5px 0;
-`
+import { Button, TextField } from '@navikt/ds-react'
 
 const CreateUserBox = () => {
-	const [brukernavn, setBurkernavn] = useState(null)
-	const [orgnummer, setOrgnummer] = useState(null)
+	const [brukernavn, setBurkernavn] = useState('')
+	const [orgnummer, setOrgnummer] = useState('')
 
 	return (
 		<Box
@@ -18,19 +13,11 @@ const CreateUserBox = () => {
 			header="Opprett bruker"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<InputFormItem
-						label="Brukernavn"
-						type="text"
-						onBlur={(event) => setBurkernavn(event.target.value)}
-					/>
-					<InputFormItem
-						label="Orgnummer"
-						type="text"
-						onBlur={(event) => setOrgnummer(event.target.value)}
-					/>
-					<StyledHovedknapp loading={loading} onClick={onSubmit}>
+					<TextField label="Brukernavn" onBlur={(event) => setBurkernavn(event.target.value)} />
+					<TextField label="Orgnummer" onBlur={(event) => setOrgnummer(event.target.value)} />
+					<Button loading={loading} onClick={onSubmit}>
 						Opprett
-					</StyledHovedknapp>
+					</Button>
 				</>
 			)}
 		/>

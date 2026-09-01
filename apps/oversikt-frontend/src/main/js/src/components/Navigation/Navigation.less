@@ -1,8 +1,14 @@
 .navigation {
   &__button {
-    display: inline-flex;
-    padding: 20px;
-    background: white;
-    font-size: x-large;
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    text-decoration: none;
+    padding-inline: var(--ax-space-20);
+
+    &[aria-current='page'] {
+      background: var(--ax-bg-neutral-moderate);
+      border-color: var(--ax-border-neutral);
+    }
   }
 }
