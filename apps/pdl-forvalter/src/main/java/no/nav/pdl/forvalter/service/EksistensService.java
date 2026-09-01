@@ -7,7 +7,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.dto.ProdSjekkDTO;
-import no.nav.pdl.forvalter.utils.IdentValidCheck;
+import no.nav.testnav.libs.securitycore.validation.IdentValidCheck;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
