@@ -1,11 +1,11 @@
 {
 	"name": "oversikt-frontend",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"private": true,
 	"type": "module",
 	"dependencies": {
 		"@navikt/aksel-icons": "8.16.1",
-		"@navikt/dolly-lib": "^1.4.13",
+		"@navikt/dolly-lib": "^1.4.15",
 		"@navikt/ds-css": "8.16.1",
 		"@navikt/ds-react": "8.16.1",
 		"lodash.throttle": "^4.1.1",
@@ -15,7 +15,7 @@
 		"react-copy-to-clipboard": "^5.1.1",
 		"react-dom": "^19.2.8",
 		"react-inlinesvg": "^4.5.0",
-		"react-router": "^8.3.0",
+		"react-router": "^8.3.1",
 		"stream-browserify": "^3.0.0",
 		"styled-components": "^6.5.3"
 	},
@@ -23,15 +23,15 @@
 		"@babel/core": "^8.0.1",
 		"@rolldown/plugin-babel": "^0.2.3",
 		"@types/react": "^19.2.18",
-		"@types/react-dom": "^19.2.4",
-		"@vitejs/plugin-react": "^6.0.5",
+		"@types/react-dom": "^19.2.5",
+		"@vitejs/plugin-react": "^6.1.1",
 		"babel-plugin-react-compiler": "^1.0.0",
 		"less": "^4.9.0",
 		"lodash-es": "^4.18.1",
 		"path-browserify": "^1.0.1",
 		"prettier": "^3.9.6",
 		"typescript": "^7.0.2",
-		"vite": "^8.2.1",
+		"vite": "^8.2.2",
 		"vite-plugin-svgr": "^5.2.0"
 	},
 	"scripts": {
