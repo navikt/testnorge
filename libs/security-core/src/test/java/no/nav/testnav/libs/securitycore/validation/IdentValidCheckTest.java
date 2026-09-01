@@ -11,11 +11,13 @@ class IdentValidCheckTest {
     @Test
     void shouldDetectValidDNumber() {
         assertThat(IdentValidCheck.isIdentValid(Set.of("41010100044"))).containsExactly("41010100044");
+        assertThat(IdentValidCheck.isIdentValid("41010100044")).isTrue();
     }
 
     @Test
     void shouldRejectInvalidControlDigits() {
         assertThat(IdentValidCheck.isIdentValid(Set.of("41010100045"))).isEmpty();
+        assertThat(IdentValidCheck.isIdentValid("41010100045")).isFalse();
     }
 
     @Test
