@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.utils;
+package no.nav.testnav.libs.securitycore.validation;
 
 import lombok.experimental.UtilityClass;
 
@@ -17,11 +17,15 @@ public class IdentValidCheck {
     public Set<String> isIdentValid(Collection<String> identer) {
 
         return identer.stream()
-                .filter(ident -> isNumeric(ident) &&
-                        ident.length() == 11 &&
-                        isValidFnrDnrOrBost(ident) &&
-                        isCheckDigitValid(ident))
+                .filter(IdentValidCheck::isIdentValid)
                 .collect(Collectors.toSet());
+    }
+
+    public boolean isIdentValid(String ident) {
+        return isNumeric(ident) &&
+                ident.length() == 11 &&
+                isValidFnrDnrOrBost(ident) &&
+                isCheckDigitValid(ident);
     }
 
     private boolean isValidFnrDnrOrBost(String ident) {
@@ -55,14 +59,14 @@ public class IdentValidCheck {
     }
 
     private int calculateCheckDigit(String ident, boolean isFirstCheckDigit, int... multipliers) {
-        var xontrolDigit = 0;
+        var controlDigit = 0;
         var skipEnd = isFirstCheckDigit ? 2 : 1;
         for (int index = 0; index < ident.length() - skipEnd; index++) {
             int number = Character.getNumericValue(ident.charAt(index));
-            xontrolDigit += number * multipliers[index];
+            controlDigit += number * multipliers[index];
         }
-        xontrolDigit = Math.abs((xontrolDigit % 11) - 11);
+        controlDigit = Math.abs((controlDigit % 11) - 11);
 
-        return xontrolDigit == 11 ? 0 : xontrolDigit;
+        return controlDigit == 11 ? 0 : controlDigit;
     }
 }
