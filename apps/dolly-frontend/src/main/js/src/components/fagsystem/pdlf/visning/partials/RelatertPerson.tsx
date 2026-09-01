@@ -19,10 +19,16 @@ const StyledPdlData = styled.div`
 type RelatertPersonData = {
 	data: PersonData
 	tittel: string
-	marginTop: string
+	marginTop?: string
+	visIdenttype?: boolean
 }
 
-export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPersonData) => {
+export const RelatertPerson = ({
+	data,
+	tittel,
+	marginTop = '0',
+	visIdenttype = false,
+}: RelatertPersonData) => {
 	if (!data) {
 		return null
 	}
@@ -41,6 +47,7 @@ export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPerson
 			<div className="person-visning_content">
 				<h4 style={{ width: '100%', marginTop: marginTop }}>{tittel}</h4>
 				<TitleValue title="Ident" value={data.ident} visKopier />
+				{visIdenttype && <TitleValue title="Identtype" value={data.identtype} />}
 				<TitleValue title="Fornavn" value={data.navn?.[0].fornavn} />
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
 				<TitleValue title="Etternavn" value={data.navn?.[0].etternavn} />
