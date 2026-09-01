@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class BrukerServiceGetOrgBrukereCommand implements Callable<Mono<BrukereD
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(_ -> Mono.just(BrukereDTO.builder()
+                        .brukere(List.of("__OPPSLAG_FEILET__"))
                         .build()));
     }
 }

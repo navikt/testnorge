@@ -43,7 +43,7 @@ public class BestillingQueryService {
     @Value("${open.search.index}")
     private String bestillingIndex;
 
-    @Cacheable(cacheNames = CACHE_IDENTER, key = "{#orgnr}")
+    @Cacheable(cacheNames = CACHE_IDENTER, key = "#orgnr")
     public Mono<Set<String>> execIdenterCacheQuery(String orgnr) {
 
         var queryBuilder = QueryBuilders.bool();
