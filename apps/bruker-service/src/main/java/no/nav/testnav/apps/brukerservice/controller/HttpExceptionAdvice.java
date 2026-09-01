@@ -54,5 +54,4 @@ public class HttpExceptionAdvice {
         log.trace("FORBIDDEN: {}", e.getMessage());
         return e.getMessage();
     }
-
 }

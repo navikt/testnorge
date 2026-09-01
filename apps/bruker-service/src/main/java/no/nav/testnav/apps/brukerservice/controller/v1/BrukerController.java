@@ -9,7 +9,6 @@ import no.nav.testnav.apps.brukerservice.service.v1.UserService;
 import no.nav.testnav.apps.brukerservice.service.v1.ValidateService;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -112,15 +111,17 @@ public class BrukerController {
     public Mono<ResponseEntity<String>> getToken(@PathVariable String id) {
         return getAuthenticatedResourceServerType.call()
                 .switchIfEmpty(Mono.error(new AccessDeniedException("Autentiseringstype kunne ikke fastslås.")))
-                .flatMap(resourceServerType -> ResourceServerType.AZURE_AD.equals(resourceServerType)
-                        ? jwtService.getAzureToken(id)
-                        : getIdportenToken(id))
+                .flatMap(resourceServerType -> switch (resourceServerType) {
+                    case AZURE_AD -> jwtService.getAzureToken(id);
+                    case TOKEN_X -> getIdportenToken(id);
+                })
                 .map(ResponseEntity::ok);
     }
 
     private Mono<String> getIdportenToken(String id) {
         return userService.getUser(id, true)
-                .doOnNext(user -> validateService.validateOrganiasjonsnummerAccess(user.getOrganisasjonsnummer()))
-                .flatMap(jwtService::getToken);
+                .flatMap(user -> validateService
+                        .validateOrganiasjonsnummerAccess(user.getOrganisasjonsnummer())
+                        .then(Mono.defer(() -> jwtService.getToken(user))));
     }
 }

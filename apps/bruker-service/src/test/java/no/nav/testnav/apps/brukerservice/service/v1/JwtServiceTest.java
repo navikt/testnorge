@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +33,6 @@ class JwtServiceTest {
     private static final String BANKID_USER_ID = "fake-bankid-user-id";
     private static final String HASHED_USER_ID = "fake-hashed-bankid-user-id";
     private static final String AZURE_USER_ID = "00000000-0000-0000-0000-000000000000";
-    private static final String ORGANIZATION_NUMBER = "889640782";
 
     @Mock
     private GetAuthenticatedUserId getAuthenticatedUserId;
@@ -64,10 +64,10 @@ class JwtServiceTest {
         var entity = new UserEntity();
         entity.setId(HASHED_USER_ID);
         entity.setBrukernavn("brukernavn");
-        entity.setOrganisasjonsnummer(ORGANIZATION_NUMBER);
+        entity.setOrganisasjonsnummer(NAV_ORGANIZATION_NUMBER);
 
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BANKID_USER_ID));
-        when(cryptographyService.createId(BANKID_USER_ID, ORGANIZATION_NUMBER)).thenReturn(HASHED_USER_ID);
+        when(cryptographyService.createId(BANKID_USER_ID, NAV_ORGANIZATION_NUMBER)).thenReturn(HASHED_USER_ID);
 
         StepVerifier.create(jwtService.getToken(new User(entity)))
                 .assertNext(token -> {
@@ -89,10 +89,10 @@ class JwtServiceTest {
         var entity = new UserEntity();
         entity.setId(HASHED_USER_ID);
         entity.setBrukernavn("brukernavn");
-        entity.setOrganisasjonsnummer(ORGANIZATION_NUMBER);
+        entity.setOrganisasjonsnummer(NAV_ORGANIZATION_NUMBER);
 
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(BANKID_USER_ID));
-        when(cryptographyService.createId(BANKID_USER_ID, ORGANIZATION_NUMBER))
+        when(cryptographyService.createId(BANKID_USER_ID, NAV_ORGANIZATION_NUMBER))
                 .thenReturn("different-hashed-user-id");
 
         StepVerifier.create(jwtService.getToken(new User(entity)))
@@ -101,6 +101,24 @@ class JwtServiceTest {
                                 !error.getMessage().contains(BANKID_USER_ID) &&
                                 !error.getMessage().contains(HASHED_USER_ID) &&
                                 !error.getMessage().contains("different-hashed-user-id"))
+                .verify();
+    }
+
+    @Test
+    void shouldFailClosedWhenAuthenticatedIdportenUserIsMissing() {
+        when(getAuthenticatedUserId.call()).thenReturn(Mono.empty());
+
+        StepVerifier.create(jwtService.getToken(user(HASHED_USER_ID, "brukernavn")))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldFailClosedWhenAuthenticatedUserIsMissingDuringVerification() {
+        when(getAuthenticatedUserId.call()).thenReturn(Mono.empty());
+
+        StepVerifier.create(jwtService.verify("fake-user-jwt", HASHED_USER_ID))
+                .expectError(AccessDeniedException.class)
                 .verify();
     }
 
@@ -117,7 +135,7 @@ class JwtServiceTest {
 
                     assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_ID).asString()).isEqualTo(AZURE_USER_ID);
                     assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_USERNAME).asString()).isEqualTo("Azure User");
-                    assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_ORG).asString()).isEqualTo(ORGANIZATION_NUMBER);
+                    assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_ORG).asString()).isEqualTo(NAV_ORGANIZATION_NUMBER);
                 })
                 .verifyComplete();
     }
@@ -127,6 +145,15 @@ class JwtServiceTest {
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
                 .clientCredentials(true)
                 .build()));
+
+        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldRejectMissingAzureToken() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.empty());
 
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
                 .expectError(AccessDeniedException.class)
@@ -146,6 +173,52 @@ class JwtServiceTest {
     }
 
     @Test
+    void shouldRejectMissingAzureUserInfo() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
+                .clientCredentials(false)
+                .build()));
+        when(getUserInfo.call()).thenReturn(Mono.empty());
+
+        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldRejectBlankAzureUsername() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
+                .clientCredentials(false)
+                .build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo(" ")));
+
+        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldRejectAzureUserIdContainingValidPersonIdentifier() {
+        var personIdentifier = "41010100044";
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
+                .clientCredentials(false)
+                .build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(new UserInfoExtended(
+                personIdentifier,
+                NAV_ORGANIZATION_NUMBER,
+                "issuer",
+                "Azure User",
+                "user@nav.no",
+                false,
+                List.of())));
+
+        StepVerifier.create(jwtService.getAzureToken(personIdentifier))
+                .expectErrorMatches(error ->
+                        error instanceof AccessDeniedException &&
+                                !error.getMessage().contains(personIdentifier))
+                .verify();
+    }
+
+    @Test
     void shouldNeverIssueAzureUserJwtContainingValidPersonIdentifier() {
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
                 .clientCredentials(false)
@@ -153,18 +226,28 @@ class JwtServiceTest {
         when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("User 41010100044")));
 
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
-                .expectError(AccessDeniedException.class)
+                .expectErrorMatches(error ->
+                        error instanceof AccessDeniedException &&
+                                !error.getMessage().contains("41010100044"))
                 .verify();
     }
 
     private static UserInfoExtended azureUserInfo(String username) {
         return new UserInfoExtended(
                 AZURE_USER_ID,
-                ORGANIZATION_NUMBER,
+                NAV_ORGANIZATION_NUMBER,
                 "issuer",
                 username,
                 "user@nav.no",
                 false,
                 List.of());
+    }
+
+    private static User user(String id, String username) {
+        var entity = new UserEntity();
+        entity.setId(id);
+        entity.setBrukernavn(username);
+        entity.setOrganisasjonsnummer(NAV_ORGANIZATION_NUMBER);
+        return new User(entity);
     }
 }

@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.brukerservice.service.v1;
 
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -16,22 +15,25 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
+
+import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class JwtService {
-    private static final String NAV_ORG_NUMBER = "889640782";
+
+    private static final Duration TOKEN_LIFETIME = Duration.ofHours(2);
 
     private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final GetAuthenticatedToken getAuthenticatedToken;
     private final GetUserInfo getUserInfo;
     private final CryptographyService cryptographyService;
     private final String secretKey;
-    private final  String issuer;
+    private final String issuer;
 
     public JwtService(
             GetAuthenticatedUserId getAuthenticatedUserId,
@@ -51,6 +53,7 @@ public class JwtService {
     public Mono<String> getToken(User user) {
         return getAuthenticatedUserId
                 .call()
+                .switchIfEmpty(Mono.error(new AccessDeniedException("Autentisert bruker mangler.")))
                 .map(userId -> cryptographyService.createId(userId, user.getOrganisasjonsnummer()))
                 .flatMap(id -> id.equals(user.getId())
                         ? Mono.fromSupplier(() -> encodeJwt(user))
@@ -64,18 +67,18 @@ public class JwtService {
                 .then(Mono.defer(getUserInfo::call))
                 .filter(userInfo -> Objects.equals(id, userInfo.id()))
                 .switchIfEmpty(Mono.error(new AccessDeniedException("Azure bruker-ID samsvarer ikke med autentisert bruker.")))
-                .map(userInfo -> encodeJwt(id, userInfo.brukernavn(), NAV_ORG_NUMBER));
+                .map(userInfo -> encodeJwt(id, userInfo.brukernavn(), NAV_ORGANIZATION_NUMBER));
     }
 
     public Mono<DecodedJWT> verify(String jwt, String id) {
-        return getAuthenticatedUserId.call().map(ident -> {
-            var verifier = JWT
-                    .require(Algorithm.HMAC256(secretKey))
-                    .withClaim(UserConstant.USER_CLAIM_ID, id)
-                    .withIssuer(issuer)
-                    .build();
-            return verifier.verify(jwt);
-        });
+        return getAuthenticatedUserId.call()
+                .switchIfEmpty(Mono.error(new AccessDeniedException("Autentisert bruker mangler.")))
+                .then(Mono.fromCallable(() -> JWT
+                        .require(Algorithm.HMAC256(secretKey))
+                        .withClaim(UserConstant.USER_CLAIM_ID, id)
+                        .withIssuer(issuer)
+                        .build()
+                        .verify(jwt)));
     }
 
     private String encodeJwt(User user) {
@@ -92,32 +95,27 @@ public class JwtService {
             throw new AccessDeniedException("User-Jwt kan ikke inneholde personnummer.");
         }
 
-        var date = Calendar.getInstance();
+        var issuedAt = Instant.now();
         return JWT
                 .create()
                 .withIssuer(issuer)
                 .withClaim(UserConstant.USER_CLAIM_ID, id)
                 .withClaim(UserConstant.USER_CLAIM_USERNAME, username)
                 .withClaim(UserConstant.USER_CLAIM_ORG, organizationNumber)
-                .withIssuedAt(date.getTime())
-                .withNotBefore(date.getTime())
+                .withIssuedAt(issuedAt)
+                .withNotBefore(issuedAt)
                 .withJWTId(UUID.randomUUID().toString())
-                .withExpiresAt(new Date(date.getTimeInMillis() + (2 * 60 * 60 * 1000)))
+                .withExpiresAt(issuedAt.plus(TOKEN_LIFETIME))
                 .sign(Algorithm.HMAC256(secretKey));
-    }
-
-    private static boolean isBlank(String value) {
-        return value == null || value.isBlank();
     }
 
     private static boolean containsValidPersonIdentifier(String value) {
         for (var index = 0; index <= value.length() - 11; index++) {
             var candidate = value.substring(index, index + 11);
-            if (!IdentValidCheck.isIdentValid(Set.of(candidate)).isEmpty()) {
+            if (IdentValidCheck.isIdentValid(candidate)) {
                 return true;
             }
         }
         return false;
     }
-
 }

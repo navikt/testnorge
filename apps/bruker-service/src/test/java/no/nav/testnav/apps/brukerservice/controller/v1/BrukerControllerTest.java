@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.brukerservice.controller.v1;
 
 import no.nav.testnav.apps.brukerservice.domain.User;
+import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonException;
 import no.nav.testnav.apps.brukerservice.repository.UserEntity;
 import no.nav.testnav.apps.brukerservice.service.v1.JwtService;
 import no.nav.testnav.apps.brukerservice.service.v1.UserService;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,7 +28,6 @@ import static org.mockito.Mockito.when;
 class BrukerControllerTest {
 
     private static final String USER_ID = "fake-hashed-bankid-user-id";
-    private static final String ORGANIZATION_NUMBER = "889640782";
     private static final String USER_JWT = "fake-user-jwt";
 
     @Mock
@@ -57,7 +58,7 @@ class BrukerControllerTest {
         var user = user();
         when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.TOKEN_X));
         when(userService.getUser(USER_ID, true)).thenReturn(Mono.just(user));
-        when(validateService.validateOrganiasjonsnummerAccess(ORGANIZATION_NUMBER)).thenReturn(Mono.empty());
+        when(validateService.validateOrganiasjonsnummerAccess(NAV_ORGANIZATION_NUMBER)).thenReturn(Mono.empty());
         when(jwtService.getToken(user)).thenReturn(Mono.just(USER_JWT));
 
         StepVerifier.create(brukerController.getToken(USER_ID))
@@ -68,7 +69,7 @@ class BrukerControllerTest {
                 .verifyComplete();
 
         verify(userService).getUser(USER_ID, true);
-        verify(validateService).validateOrganiasjonsnummerAccess(ORGANIZATION_NUMBER);
+        verify(validateService).validateOrganiasjonsnummerAccess(NAV_ORGANIZATION_NUMBER);
         verify(jwtService).getToken(user);
         verify(jwtService, never()).getAzureToken(USER_ID);
     }
@@ -87,7 +88,22 @@ class BrukerControllerTest {
 
         verify(jwtService).getAzureToken(USER_ID);
         verify(userService, never()).getUser(USER_ID, true);
-        verify(validateService, never()).validateOrganiasjonsnummerAccess(ORGANIZATION_NUMBER);
+        verify(validateService, never()).validateOrganiasjonsnummerAccess(NAV_ORGANIZATION_NUMBER);
+    }
+
+    @Test
+    void shouldNotIssueIdportenTokenWhenOrganizationAccessIsDenied() {
+        var user = user();
+        when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.TOKEN_X));
+        when(userService.getUser(USER_ID, true)).thenReturn(Mono.just(user));
+        when(validateService.validateOrganiasjonsnummerAccess(NAV_ORGANIZATION_NUMBER))
+                .thenReturn(Mono.error(new UserHasNoAccessToOrgnisasjonException(NAV_ORGANIZATION_NUMBER)));
+
+        StepVerifier.create(brukerController.getToken(USER_ID))
+                .expectError(UserHasNoAccessToOrgnisasjonException.class)
+                .verify();
+
+        verify(jwtService, never()).getToken(user);
     }
 
     @Test
@@ -108,7 +124,7 @@ class BrukerControllerTest {
         var entity = new UserEntity();
         entity.setId(USER_ID);
         entity.setBrukernavn("fake-user");
-        entity.setOrganisasjonsnummer(ORGANIZATION_NUMBER);
+        entity.setOrganisasjonsnummer(NAV_ORGANIZATION_NUMBER);
         return new User(entity);
     }
 }

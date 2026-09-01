@@ -61,16 +61,14 @@ class UserJwtResolverTest {
         when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.AZURE_AD));
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(AZURE_USER_ID));
         when(accessService.getAccessToken(brukerServiceProperties, exchange)).thenReturn(Mono.just("obo-token"));
-        when(userJwtExchange.generateJwt(AZURE_USER_ID, "obo-token")).thenReturn(Mono.just("azure-user-jwt"));
+        when(userJwtExchange.generateJwtWithAccessToken(AZURE_USER_ID, "obo-token"))
+                .thenReturn(Mono.just("azure-user-jwt"));
 
         StepVerifier.create(userJwtResolver.resolve(exchange))
                 .expectNext("azure-user-jwt")
                 .verifyComplete();
 
-        verify(userJwtExchange).generateJwt(AZURE_USER_ID, "obo-token");
-        verify(userJwtExchange, never()).generateJwt(
-                org.mockito.ArgumentMatchers.anyString(),
-                org.mockito.ArgumentMatchers.any(ServerWebExchange.class));
+        verify(userJwtExchange).generateJwtWithAccessToken(AZURE_USER_ID, "obo-token");
     }
 
     @Test
@@ -86,7 +84,7 @@ class UserJwtResolverTest {
 
         verify(userJwtExchange).generateJwt(HASHED_SESSION_USER_ID, exchange);
         verify(getAuthenticatedUserId, never()).call();
-        verify(userJwtExchange, never()).generateJwt(
+        verify(userJwtExchange, never()).generateJwtWithAccessToken(
                 org.mockito.ArgumentMatchers.anyString(),
                 org.mockito.ArgumentMatchers.anyString());
     }
@@ -124,8 +122,51 @@ class UserJwtResolverTest {
         when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.AZURE_AD));
         when(getAuthenticatedUserId.call()).thenReturn(Mono.just(AZURE_USER_ID));
         when(accessService.getAccessToken(brukerServiceProperties, exchange)).thenReturn(Mono.just("obo-token"));
-        when(userJwtExchange.generateJwt(AZURE_USER_ID, "obo-token"))
+        when(userJwtExchange.generateJwtWithAccessToken(AZURE_USER_ID, "obo-token"))
                 .thenReturn(Mono.error(new AccessDeniedException("rejected")));
+
+        StepVerifier.create(userJwtResolver.resolve(exchange))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldFailClosedWhenResourceServerTypeIsMissing() {
+        when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.empty());
+
+        StepVerifier.create(userJwtResolver.resolve(exchange))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldFailClosedWhenAzureUserIdIsMissing() {
+        when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.AZURE_AD));
+        when(getAuthenticatedUserId.call()).thenReturn(Mono.empty());
+        when(accessService.getAccessToken(brukerServiceProperties, exchange)).thenReturn(Mono.just("obo-token"));
+
+        StepVerifier.create(userJwtResolver.resolve(exchange))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldFailClosedWhenAzureAccessTokenIsMissing() {
+        when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.AZURE_AD));
+        when(getAuthenticatedUserId.call()).thenReturn(Mono.just(AZURE_USER_ID));
+        when(accessService.getAccessToken(brukerServiceProperties, exchange)).thenReturn(Mono.empty());
+
+        StepVerifier.create(userJwtResolver.resolve(exchange))
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldFailClosedWhenGeneratedAzureUserJwtIsMissing() {
+        when(getAuthenticatedResourceServerType.call()).thenReturn(Mono.just(ResourceServerType.AZURE_AD));
+        when(getAuthenticatedUserId.call()).thenReturn(Mono.just(AZURE_USER_ID));
+        when(accessService.getAccessToken(brukerServiceProperties, exchange)).thenReturn(Mono.just("obo-token"));
+        when(userJwtExchange.generateJwtWithAccessToken(AZURE_USER_ID, "obo-token")).thenReturn(Mono.empty());
 
         StepVerifier.create(userJwtResolver.resolve(exchange))
                 .expectError(AccessDeniedException.class)
