@@ -6,13 +6,14 @@ import type { AppNavigationItem } from '@/components/Navigation'
 import './PageWithMenu.less'
 import { Page } from '@/pages/Page'
 
-type Props = {
+type Props<T> = {
 	children: React.ReactNode
-	navigations: AppNavigationItem<unknown>[]
+	navigations: AppNavigationItem<T>[]
 	menuTitle: string
+	renderLeadingAction?: (navigation: AppNavigationItem<T>) => React.ReactNode
 }
 
-export default ({ children, navigations, menuTitle }: Props) => {
+const PageWithMenu = <T,>({ children, navigations, menuTitle, renderLeadingAction }: Props<T>) => {
 	const [search, setSearch] = useState('')
 
 	return (
@@ -34,7 +35,8 @@ export default ({ children, navigations, menuTitle }: Props) => {
 							.sort((first, second) => first.label.localeCompare(second.label))
 							.map((navigation) => (
 								<li className="page-with-menu__item" key={navigation.label}>
-									<Navigation navigation={navigation} />
+									{renderLeadingAction?.(navigation)}
+									<Navigation className="page-with-menu__navigation" navigation={navigation} />
 								</li>
 							))}
 					</ul>
@@ -44,3 +46,5 @@ export default ({ children, navigations, menuTitle }: Props) => {
 		</Page>
 	)
 }
+
+export default PageWithMenu

@@ -1,14 +1,14 @@
 .navigation {
-  &__button {
-    width: 100%;
-    justify-content: flex-start;
-    text-align: left;
-    text-decoration: none;
-    white-space: nowrap;
+	&__button {
+		width: 100%;
+		justify-content: flex-start;
+		text-align: left;
+		text-decoration: none;
+		white-space: nowrap;
 
-    &[aria-current='page'] {
-      background: var(--ax-bg-neutral-moderate);
-      border-color: var(--ax-border-neutral);
-    }
-  }
+		&[aria-current='page'] {
+			background: var(--ax-bg-neutral-moderate);
+			box-shadow: inset var(--ax-space-4) 0 0 var(--ax-border-brand-blue);
+		}
+	}
 }

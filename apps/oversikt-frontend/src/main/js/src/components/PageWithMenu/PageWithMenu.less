@@ -1,60 +1,71 @@
 .page-with-menu {
-  display: grid;
-  grid-template-columns: minmax(22rem, 26rem) minmax(0, 1fr);
-  gap: var(--ax-space-32);
-  align-items: start;
+	display: grid;
+	grid-template-columns: minmax(22rem, 26rem) minmax(0, 1fr);
+	gap: var(--ax-space-32);
+	align-items: start;
 }
 
 .page-with-menu__menu {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ax-space-12);
-  padding-inline-end: var(--ax-space-24);
-  border-inline-end: 1px solid var(--ax-border-neutral-subtle);
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-12);
+	padding-inline-end: var(--ax-space-24);
+	border-inline-end: 1px solid var(--ax-border-neutral-subtle);
 }
 
 .page-with-menu__title {
-  margin: 0;
-  padding-block-end: var(--ax-space-8);
-  border-block-end: var(--ax-space-2) solid var(--ax-border-brand-blue);
-  text-align: center;
+	margin: 0;
+	padding-block-end: var(--ax-space-8);
+	border-block-end: var(--ax-space-2) solid var(--ax-border-brand-blue);
+	text-align: center;
 }
 
 .page-with-menu__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ax-space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 .page-with-menu__item {
-  margin: 0;
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	column-gap: var(--ax-space-4);
+	row-gap: var(--ax-space-2);
+	align-items: start;
+	margin: 0;
+}
+
+.page-with-menu__navigation {
+	grid-column: 2;
+	grid-row: 1;
+	min-width: 0;
 }
 
 .page-with-menu__content {
-  min-width: 0;
-  display: flex;
-  justify-content: center;
-  text-align: center;
+	min-width: 0;
+	display: flex;
+	justify-content: center;
+	text-align: center;
 }
 
 @media (max-width: 899px) {
-  .page-with-menu {
-    grid-template-columns: 1fr;
-    gap: var(--ax-space-32);
-  }
+	.page-with-menu {
+		grid-template-columns: 1fr;
+		gap: var(--ax-space-32);
+	}
 
-  .page-with-menu__menu {
-    padding-inline-end: 0;
-    border-inline-end: 0;
-    padding-block-end: var(--ax-space-24);
-    border-block-end: 1px solid var(--ax-border-neutral-subtle);
-  }
+	.page-with-menu__menu {
+		padding-inline-end: 0;
+		border-inline-end: 0;
+		padding-block-end: var(--ax-space-24);
+		border-block-end: 1px solid var(--ax-border-neutral-subtle);
+	}
 
-  .page-with-menu__content {
-    justify-content: stretch;
-    text-align: left;
-  }
+	.page-with-menu__content {
+		justify-content: stretch;
+		text-align: left;
+	}
 }

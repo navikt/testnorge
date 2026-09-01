@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-// @ts-ignore
-import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
 import TokenService from '@/services/TokenService'
 import styled from 'styled-components'
 import { NotFoundError } from '@navikt/dolly-lib'
 
 import OrganisasjonService from '@/services/OrganisasjonService'
-import { Button, Checkbox, InlineMessage, TextField } from '@navikt/ds-react'
+import { Button, Checkbox, CopyButton, InlineMessage, TextField } from '@navikt/ds-react'
 
 type Props = {
 	scope: string
@@ -103,7 +101,7 @@ export default ({ labels = {}, scope }: Props) => {
 			},
 			clientCredentials,
 		)
-			.then((response: any) => {
+			.then((response) => {
 				setAccessToken(response.token)
 				setLoading(false)
 			})
@@ -155,11 +153,12 @@ export default ({ labels = {}, scope }: Props) => {
 				<Button disabled={loading} onClick={onClick}>
 					Hent token
 				</Button>
-				<CopyToClipboard text={accessToken ?? ''}>
-					<Button disabled={loading || !accessToken} variant="secondary">
-						Kopier
-					</Button>
-				</CopyToClipboard>
+				<CopyButton
+					activeText="Kopiert"
+					copyText={accessToken ?? ''}
+					disabled={loading || !accessToken}
+					text="Kopier"
+				/>
 			</ButtonGroup>
 			<StyledInput
 				label="Orgnummer (midlertidig)"

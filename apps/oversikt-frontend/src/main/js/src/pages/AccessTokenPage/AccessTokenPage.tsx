@@ -1,4 +1,5 @@
 import React from 'react'
+import ApplicationTokenCopyButton from '@/components/ApplicationTokenCopyButton'
 import PageWithMenu from '@/components/PageWithMenu'
 import type { AppNavigationItem } from '@/components/Navigation'
 import FetchAccessToken from '@/components/FetchAccessToken'
@@ -12,7 +13,13 @@ type Props = {
 const AccessTokenPage = ({ navigations }: Props) => {
 	const { name } = useParams<{ name: string }>()
 	return (
-		<PageWithMenu navigations={navigations} menuTitle="Applikasjoner">
+		<PageWithMenu
+			navigations={navigations}
+			menuTitle="Applikasjoner"
+			renderLeadingAction={(navigation) => (
+				<ApplicationTokenCopyButton application={navigation.content} label={navigation.label} />
+			)}
+		>
 			<FetchAccessToken
 				scope={name ?? ''}
 				labels={{
