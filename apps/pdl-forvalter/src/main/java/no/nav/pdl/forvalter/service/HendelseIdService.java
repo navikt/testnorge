@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -52,7 +53,10 @@ public class HendelseIdService {
                                     } catch (NoSuchMethodException |
                                              InvocationTargetException |
                                              IllegalAccessException e) {
-                                        log.error("Feilet å lagre hendelseId, {}", e.getMessage());
+                                        log.error("Feilet å lagre hendelseId for ident {}, infoelement {}",
+                                                personHendelse.getIdent(),
+                                                ordre.getInfoElement(),
+                                                unwrap(e));
                                         return Mono.empty();
                                     }
                                 })
@@ -65,16 +69,21 @@ public class HendelseIdService {
         return Mono.just(dbPerson)
                 .map(DbPerson::getPerson)
                 .flatMapMany(person -> Flux.fromArray(person.getClass().getMethods())
-                        .filter(method -> method.getName().contains("get"))
+                        .filter(method -> method.getName().startsWith("get"))
+                        .filter(method -> method.getParameterCount() == 0)
+                        .filter(method -> List.class.equals(method.getReturnType()))
                         .flatMap(method -> {
                             try {
-                                return Mono.just(method.invoke(person));
-                            } catch (NullPointerException | IllegalAccessException | InvocationTargetException e) {
-                                log.error("Feilet å hente hendelseId, {}", e.getMessage());
+                                return Mono.justOrEmpty(method.invoke(person));
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                log.error("Feilet å hente hendelseId for ident {} ved kall til {}.{}()",
+                                        dbPerson.getIdent(),
+                                        person.getClass().getSimpleName(),
+                                        method.getName(),
+                                        unwrap(e));
                                 return Mono.empty();
                             }
                         })
-                        .filter(List.class::isInstance)
                         .map(value -> (List<DbVersjonDTO>) value)
                         .flatMap(Flux::fromIterable)
                         .filter(DbVersjonDTO::isPdlMaster)
@@ -128,8 +137,8 @@ public class HendelseIdService {
                         try {
                             val method = person.getClass().getMethod("get" + artifact);
                             return Mono.just(method.invoke(person));
-                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException _) {
-                            log.error("Feilet å hente get{} fra person med ident {}", artifact, ident);
+                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                            log.error("Feilet å hente get{} fra person med ident {}", artifact, ident, unwrap(e));
                             return Mono.empty();
                         }
                     })
@@ -145,5 +154,11 @@ public class HendelseIdService {
                     .then();
         }
         return Mono.empty();
+    }
+
+    private static Throwable unwrap(Throwable error) {
+
+        return error instanceof InvocationTargetException && nonNull(error.getCause()) ?
+                error.getCause() : error;
     }
 }
