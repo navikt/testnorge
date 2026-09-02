@@ -30,11 +30,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     @Query("""
             select b.id, b.best_kriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
             join bruker br on br.id = b.bruker_id
-            and b.opprett_fra_gruppe is null
+            where b.opprett_fra_gruppe is null
             and b.gjenopprettet_fra_ident is null
             and b.opprettet_fra_id is null
-            and b.best_kriterier is not null
-            and b.best_kriterier <> '{}'
             order by b.id desc
             """)
     Flux<BestillingBrukerFragment> findByOrderByIdDesc();
