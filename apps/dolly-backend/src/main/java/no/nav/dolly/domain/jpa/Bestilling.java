@@ -119,7 +119,7 @@ public class Bestilling implements Serializable {
                 .append(ident, that.ident)
                 .append(opprettetFraGruppeId, that.opprettetFraGruppeId)
                 .append(gjenopprettetFraIdent, that.gjenopprettetFraIdent)
-                .append(bruker, that.bruker)
+                .append(brukerId, that.brukerId)
                 .append(pdlImport, that.pdlImport)
                 .append(kildeMiljoe, that.kildeMiljoe)
                 .append(navSyntetiskIdent, that.navSyntetiskIdent)
@@ -145,7 +145,7 @@ public class Bestilling implements Serializable {
                 .append(ident)
                 .append(opprettetFraGruppeId)
                 .append(gjenopprettetFraIdent)
-                .append(bruker)
+                .append(brukerId)
                 .append(pdlImport)
                 .append(kildeMiljoe)
                 .append(navSyntetiskIdent)
@@ -171,7 +171,7 @@ public class Bestilling implements Serializable {
                 ", ident='" + ident + '\'' +
                 ", opprettetFraGruppeId=" + opprettetFraGruppeId +
                 ", gjenopprettetFraIdent='" + gjenopprettetFraIdent + '\'' +
-                ", bruker=" + bruker +
+                ", brukerId=" + brukerId +
                 ", pdlImport='" + pdlImport + '\'' +
                 ", kildeMiljoe='" + kildeMiljoe + '\'' +
                 ", navSyntetiskIdent=" + navSyntetiskIdent +
