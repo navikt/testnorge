@@ -9,12 +9,14 @@ import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.BestillingProgressDTO;
+import no.nav.dolly.domain.dto.DashboardAdferdDTO;
 import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardOversiktDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.projection.AdferdFragment;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
@@ -22,6 +24,7 @@ import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.domain.resultset.BAFeilkoder;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -38,14 +41,15 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.databind.node.StringNode;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
@@ -53,6 +57,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -62,6 +69,7 @@ public class DashboardService {
 
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
     private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident");
+    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
     private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
@@ -105,7 +113,7 @@ public class DashboardService {
                 .distinct()
                 .buffer(500)
                 .flatMap(teamkatalogConsumer::getTeamForEpost, 3)
-                .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
+                .collect(toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -129,9 +137,9 @@ public class DashboardService {
     public Flux<DashboardOrganisasjonerDTO> getOrganisasjonerStatus() {
 
         return Mono.zip(altinn3TilgangServiceConsumer.getOrganisasjoner()
-                                .collect(Collectors.toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
+                                .collect(toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
                         brukerServiceConsumer.getAlleBrukere()
-                                .collect(Collectors.toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
+                                .collect(toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
                         .groupBy(OrganisasjonFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -154,7 +162,7 @@ public class DashboardService {
     public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
 
         return teamRepository.findAllTeamBrukere()
-                .collect(Collectors.toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
+                .collect(toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
                         .groupBy(DollyTeamFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -272,7 +280,7 @@ public class DashboardService {
         var grouped = new HashMap<String, Set<String>>();
         fragments.forEach(fragment -> {
             var orgNummer = brukerToOrgnummer.get(fragment.getBrukerid());
-            if (Objects.nonNull(orgNummer)) {
+            if (nonNull(orgNummer)) {
                 grouped.computeIfAbsent(orgNummer, _ -> new HashSet<>()).add(fragment.getBrukerid());
             }
         });
@@ -323,7 +331,7 @@ public class DashboardService {
             });
         });
         var summert = resultat.entrySet().stream()
-                .collect(Collectors.toMap(entry -> {
+                .collect(toMap(entry -> {
                             var key = entry.getKey();
                             if (key.contains("Status")) {
                                 return key.replace("Status", "Feil");
@@ -419,5 +427,105 @@ public class DashboardService {
                                 .build())
                         .toList())
                 .build();
+    }
+
+    public Flux<DashboardAdferdDTO> getAdferd(int year, Month month) {
+
+        var interval = "%4d-%02d".formatted(year, month.getValue());
+        return bestillingRepository.findByBestKriterier(interval)
+                .groupBy(AdferdFragment::getDato)
+                .flatMap(Flux::collectList)
+                .map(adferd -> DashboardAdferdDTO.builder()
+                        .dato(adferd.getFirst().getDato())
+                        .kriterier(getAkkumulerteKriterier(adferd))
+                        .build())
+                .sort(Comparator.comparing(DashboardAdferdDTO::getDato));
+    }
+
+    private List<DashboardAdferdDTO.Entry> getAkkumulerteKriterier(List<AdferdFragment> kriterier) {
+
+        return kriterier.stream()
+                .map(kriterium -> {
+                    var bestilling = jsonMapper.readValue(kriterium.getBestkriterier(), RsDollyBestilling.class);
+                    return getAntallAdferd(bestilling, kriterium.getAntall());
+                })
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
+                .entrySet().stream()
+                .map(entry -> DashboardAdferdDTO.Entry.builder()
+                        .fagsystem(entry.getKey())
+                        .antall(entry.getValue())
+                        .build())
+                .toList();
+    }
+
+    private static Map<String, Integer> getAntallAdferd(RsDollyBestilling bestilling, Integer antall) {
+
+        var adferd = new HashMap<String, Integer>();
+        Arrays.stream(bestilling.getClass().getMethods())
+                .filter(metode -> metode.getName().startsWith("get"))
+                .filter(metode -> !EXCLUDE_METHODS.contains(metode.getName()))
+                .forEach(metode -> {
+                    var system = metode.getName().substring(3);
+                    try {
+
+                        var verdi = metode.invoke(bestilling);
+
+                        if (metode.getReturnType().equals(List.class) && !((List) verdi).isEmpty()
+                            || !metode.getReturnType().equals(List.class) && nonNull(verdi)) {
+
+                            adferd.merge(decodeData(bestilling, system), antall, Integer::sum);
+                        }
+
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        log.error("Feil ved henting av adferd: {}", e.getMessage(), e);
+                        throw new RuntimeException(e);
+                    }
+                });
+        return adferd;
+    }
+
+    private static String decodeData(RsDollyBestilling bestilling, String navn) {
+
+        var builder = new StringBuilder("pdlData");
+        if (!"Pdldata".equals(navn)) {
+            return navn;
+
+        } else {
+
+            var pdldata = bestilling.getPdldata();
+            if (nonNull(pdldata.getOpprettNyPerson())) {
+                if (isTrue(pdldata.getOpprettNyPerson().getId2032())) {
+                    builder.append(".Id2032:true");
+                } else {
+                    builder.append(".Syntetisk:")
+                            .append(isTrue(pdldata.getOpprettNyPerson().getSyntetisk()));
+                }
+            } else {
+                builder.append(".Legg-til/endre:true");
+            }
+            if (nonNull(pdldata.getPerson())) {
+                Arrays.stream(pdldata.getPerson().getClass().getMethods())
+                        .filter(metode -> metode.getName().startsWith("get"))
+                        .filter(metode -> metode.getReturnType().equals(List.class))
+                        .forEach(metode -> {
+                            var opplysning = metode.getName().substring(3);
+                            try {
+                                var verdi = (List) metode.invoke(pdldata.getPerson());
+                                if (!verdi.isEmpty()) {
+
+                                    builder.append(",")
+                                            .append(opplysning)
+                                            .append(':')
+                                            .append(verdi.size());
+                                }
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                log.error("Feil ved henting av adferd: {}", e.getMessage(), e);
+                                throw new RuntimeException(e);
+                            }
+                        });
+            }
+        }
+        return builder.toString();
     }
 }

@@ -51,8 +51,6 @@ import static java.util.Objects.nonNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDollyBestilling {
 
-    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata", "getId");
-
     @JsonIgnore
     private long id; // Ved gjenopprett vil denne ID ha verdi fra bestillingen som gjenopprettes
 
