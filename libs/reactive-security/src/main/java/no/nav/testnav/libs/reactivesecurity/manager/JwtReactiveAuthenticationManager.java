@@ -21,6 +21,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 /**
  * hentet fra org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager
@@ -37,12 +40,21 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
             List<ResourceServerProperties> resourceServerProperties,
             String proxy
     ) {
-        this.getJwtDecoder = jwt -> resourceServerProperties
+        var jwtDecoders = resourceServerProperties
                 .stream()
-                .filter(props -> props.getIssuerUri().equals(getIssuer(jwt)))
-                .findFirst()
-                .map(props -> new NonBeanJwtDecoder(webClient, props, proxy).jwtDecoder())
-                .orElseThrow(() -> new AuthenticationServiceException("Finner ikke støtte for issuer " + getIssuer(jwt)));
+                .collect(Collectors.toMap(
+                        ResourceServerProperties::getIssuerUri,
+                        props -> new NonBeanJwtDecoder(webClient, props, proxy).jwtDecoder(),
+                        (first, _) -> first));
+
+        this.getJwtDecoder = jwt -> {
+            var issuer = getIssuer(jwt);
+            var jwtDecoder = jwtDecoders.get(issuer);
+            if (isNull(jwtDecoder)) {
+                throw new AuthenticationServiceException("Finner ikke støtte for issuer " + issuer);
+            }
+            return jwtDecoder;
+        };
     }
 
     @Override
