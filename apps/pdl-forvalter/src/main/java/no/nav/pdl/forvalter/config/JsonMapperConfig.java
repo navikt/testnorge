@@ -31,6 +31,7 @@ public class JsonMapperConfig {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, false)
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .addModule(new SimpleModule("pdlForvalterDateTimeModule")
                 .addDeserializer(LocalDateTime.class, new TestnavLocalDateTimeDeserializer())
