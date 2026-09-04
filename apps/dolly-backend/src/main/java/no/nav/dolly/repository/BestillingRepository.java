@@ -30,11 +30,9 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     @Query("""
             select b.id, b.best_kriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
             join bruker br on br.id = b.bruker_id
-            and b.opprett_fra_gruppe is null
+            where b.opprett_fra_gruppe is null
             and b.gjenopprettet_fra_ident is null
             and b.opprettet_fra_id is null
-            and b.best_kriterier is not null
-            and b.best_kriterier <> '{}'
             order by b.id desc
             """)
     Flux<BestillingBrukerFragment> findByOrderByIdDesc();
@@ -48,35 +46,28 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     @Query("""
             select b.id as id, g.navn as navn
             from Bestilling b
-            join Gruppe g on b.gruppe_id = g.id
-            where length(:id) > 0
-            and cast(b.id as VARCHAR) ilike :id
-            fetch first 10 rows only
-            """)
-    Flux<BestillingFragment> findByIdContaining(@Param("id") String id);
-
-    @Query("""
-            select b.id as id, g.navn as navn
-            from Bestilling b
-            join Gruppe g on b.gruppe_id = g.id
-            where length(:gruppenavn) > 0
-            and g.navn ilike :gruppenavn
-            fetch first 10 rows only
-            """)
-    Flux<BestillingFragment> findByGruppenavnContaining(@Param("gruppenavn") String gruppenavn);
-
-    @Query("""
-            select b.id as id, g.navn as navn
-            from Bestilling b
             join gruppe g on b.gruppe_id = g.id
-            where cast(b.id as varchar) like :id
-            and g.navn like :gruppenavn
+            join bruker br on g.opprettet_av = br.id
+            where (
+               coalesce(cardinality(:brukerIds), 0) = 0
+               or cast(br.bruker_id as text) = any(:brukerIds)
+            )
+            and (
+                :id is null
+                or length(:id) = 0
+                or cast(b.id as varchar) ilike concat('%', :id, '%')
+            )
+            and (
+                :gruppenavn is null
+                or length(:gruppenavn) = 0
+                or g.navn ilike concat('%', :gruppenavn, '%')
+            )
+            order by b.id
             fetch first 10 rows only
             """)
-    Flux<BestillingFragment> findByIdContainingAndGruppeNavnContaining(
-            @Param("id") String id,
-            @Param("gruppenavn") String gruppenavn
-    );
+    Flux<BestillingFragment> findByIdAndGruppeNavnAndBrukere(@Param("id") String id,
+                                                             @Param("gruppenavn") String gruppenavn,
+                                                             @Param("brukerIds") String[] brukerIds);
 
     Mono<Bestilling> save(Bestilling bestilling);
 
@@ -202,19 +193,19 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<DollyTeamFragment> findBestillingerForDollyTeamsOrderBySistOppdatert();
 
     @Query("""
-            SELECT TO_CHAR(b.sist_oppdatert, 'YYYY-MM') maaned,
-               COUNT(*) antall,
-               CASE
-                    when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
-                    when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
-                    when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
-                    when b.best_kriterier = '{}' then 'GJENOPPRETTING'
-                    else 'NYBESTILLING'
-                 END gjenopprettStatus
-            FROM bestilling b
-            JOIN bestilling_progress bp ON b.id = bp.bestilling_id
-            GROUP BY maaned, gjenopprettStatus
-            ORDER BY maaned DESC;
-          """)
+              SELECT TO_CHAR(b.sist_oppdatert, 'YYYY-MM') maaned,
+                 COUNT(*) antall,
+                 CASE
+                      when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
+                      when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
+                      when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                      when b.best_kriterier = '{}' then 'GJENOPPRETTING'
+                      else 'NYBESTILLING'
+                   END gjenopprettStatus
+              FROM bestilling b
+              JOIN bestilling_progress bp ON b.id = bp.bestilling_id
+              GROUP BY maaned, gjenopprettStatus
+              ORDER BY maaned DESC;
+            """)
     Flux<OversiktFragment> findByAvailIntervals();
 }

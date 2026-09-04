@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetAlleCommand;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetKollegaerCommand;
+import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetOrgBrukereCommand;
 import no.nav.dolly.consumer.brukerservice.command.BrukerServiceGetTilgangCommand;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
@@ -40,6 +41,13 @@ public class BrukerServiceConsumer {
         return tokenService.exchange(serverProperties)
                 .flatMap(token ->
                         new BrukerServiceGetKollegaerCommand(webClient, brukerId, token.getTokenValue()).call());
+    }
+
+    public Mono<BrukereDTO> getBrukereIOrganisasjon(String orgnr) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token ->
+                        new BrukerServiceGetOrgBrukereCommand(webClient, orgnr, token.getTokenValue()).call());
     }
 
     public Flux<BrukerDTO> getAlleBrukere() {

@@ -1,5 +1,7 @@
 package no.nav.dolly.provider;
 
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.GruppeFragment;
 import no.nav.dolly.service.BrukerService;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,6 +29,9 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
 
     @MockitoBean
     private BrukerService brukerService;
+
+    @MockitoBean
+    private BrukerServiceConsumer brukerServiceConsumer;
 
     private Bruker bruker;
 
@@ -176,8 +184,8 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
     }
 
     @Test
-    @DisplayName("Returnerer tomt resultat ved kun mellomrom som fragment")
-    void shouldReturnEmptyForBlankFragment() {
+    @DisplayName("Returnerer grupper ved kun mellomrom som fragment")
+    void shouldReturnGroupsForBlankFragment() {
 
         createTestgruppe("BlankTestUnik Gruppe", bruker).block();
 
@@ -188,14 +196,14 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .expectStatus()
                 .isOk()
                 .expectBodyList(GruppeFragment.class)
-                .value(resultat -> assertThat(resultat.size(), is(0)));
+                .value(resultat -> assertThat(resultat.isEmpty(), is(false)));
     }
 
     @Test
-    @DisplayName("Returnerer kun grupper der alle ord i søk matcher på navn")
-    void shouldMatchAllWordsInMultiWordSearch() {
+    @DisplayName("Returnerer grupper som matcher en flerordsfrase")
+    void shouldMatchMultiWordPhrase() {
 
-        createTestgruppe("FlereordUnik for skattetesting", bruker).block();
+        createTestgruppe("FlereordUnik skattetesting", bruker).block();
         createTestgruppe("FlereordUnik for pensjonstesting", bruker).block();
 
         webTestClient
@@ -207,7 +215,39 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
                 .expectBodyList(GruppeFragment.class)
                 .value(resultat -> {
                     assertThat(resultat.size(), is(1));
-                    assertThat(resultat.getFirst().getNavn(), is("FlereordUnik for skattetesting"));
+                    assertThat(resultat.getFirst().getNavn(), is("FlereordUnik skattetesting"));
                 });
+    }
+
+    @Test
+    @DisplayName("Returnerer kun grupper til brukere i BankID-organisasjonen")
+    void shouldReturnOnlyGroupsForBankIdOrganization() {
+
+        var annenBruker = createBruker().block();
+        createTestgruppe("OrganisasjonSoekUnik tillatt", bruker).block();
+        createTestgruppe("OrganisasjonSoekUnik skjult", annenBruker).block();
+        when(brukerServiceConsumer.getBrukereIOrganisasjon("123456789"))
+                .thenReturn(Mono.just(new BrukereDTO(java.util.List.of(bruker.getBrukerId()))));
+
+        webTestClient
+                .get()
+                .uri("/api/v1/gruppe/soekGruppe?fragment=OrganisasjonSoekUnik")
+                .header("User-Jwt", createUserJwt("123456789"))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(GruppeFragment.class)
+                .value(resultat -> {
+                    assertThat(resultat.size(), is(1));
+                    assertThat(resultat.getFirst().getNavn(), is("OrganisasjonSoekUnik tillatt"));
+                });
+    }
+
+    private static String createUserJwt(String orgnr) {
+
+        var encoder = Base64.getUrlEncoder().withoutPadding();
+        var header = encoder.encodeToString("{}".getBytes(StandardCharsets.UTF_8));
+        var payload = encoder.encodeToString(("{\"org\":\"" + orgnr + "\"}").getBytes(StandardCharsets.UTF_8));
+        return header + "." + payload + ".signature";
     }
 }

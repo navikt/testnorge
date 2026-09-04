@@ -20,7 +20,6 @@ import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
@@ -40,9 +39,7 @@ public class OpenSearchBestillingStrategyMapping implements MappingStrategy {
                                public void mapAtoB(BestillingBrukerFragment bestilling, BestillingDokument bestillingDokument, MappingContext context) {
 
                                    try {
-                                       bestillingDokument.setIgnore(isBlank(bestilling.getBestKriterier()) ||
-                                                                    "{}".equals(bestilling.getBestKriterier()) ||
-                                                                    bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
+                                       bestillingDokument.setIgnore(bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
 
                                        if (!bestillingDokument.isIgnore()) {
 
