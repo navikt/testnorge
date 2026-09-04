@@ -102,6 +102,14 @@ public class RelasjonerAlderService {
                 });
 
         if (request.hasAlder() && nonNull(request.getAlder())) {
+            if (nonNull(request.getFoedtFoer()) &&
+                LocalDate.now().getYear() - request.getFoedtFoer().getYear() > request.getAlder()) {
+                throw new IllegalArgumentException("Ønsket alder for hovedperson er motstridende til valg av født-før-dato.");
+            }
+            if (nonNull(request.getFoedtEtter()) &&
+                LocalDate.now().getYear() - request.getFoedtEtter().getYear() < request.getAlder()) {
+                throw new IllegalArgumentException("Ønsket alder for hovedperson er motstridende til valg av født-etter-dato.");
+            }
             request.setFoedtEtter(LocalDateTime.now(clock).minusYears(request.getAlder()).minusMonths(6));
             request.setFoedtFoer(LocalDateTime.now(clock).minusYears(request.getAlder()));
             request.setAlder(null);

@@ -27,6 +27,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,9 +108,7 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
-    void shouldPreferAlderOverFoedselsdato() {
-
-        stubClock();
+    void shouldThrowExceptionWhenAlderConflictsWithFoedselsdato() {
 
         var bestilling = buildBestilling(PersonDTO.builder()
                 .foedsel(List.of(FoedselDTO.builder()
@@ -118,10 +117,28 @@ class RelasjonerAlderServiceTest {
                 .build());
         bestilling.setAlder(25);
 
-        var result = relasjonerAlderService.fixRelasjonerAlder(bestilling);
+        var exception = assertThrows(IllegalArgumentException.class,
+                () -> relasjonerAlderService.fixRelasjonerAlder(bestilling));
 
-        assertThat(result.getAlder(), is(nullValue()));
-        assertThat(result.getFoedtFoer(), is(equalTo(NOW.minusYears(25))));
+        assertThat(exception.getMessage(), is(equalTo(
+                "Ønsket alder for hovedperson er motstridende til valg av født-før-dato.")));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAlderConflictsWithFoedselsaar() {
+
+        var bestilling = buildBestilling(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
+                        .foedselsaar(1985)
+                        .build()))
+                .build());
+        bestilling.setAlder(24);
+
+        var exception = assertThrows(IllegalArgumentException.class,
+                () -> relasjonerAlderService.fixRelasjonerAlder(bestilling));
+
+        assertThat(exception.getMessage(), is(equalTo(
+                "Ønsket alder for hovedperson er motstridende til valg av født-før-dato.")));
     }
 
     // --- fixFoedsel: no birth info ---
