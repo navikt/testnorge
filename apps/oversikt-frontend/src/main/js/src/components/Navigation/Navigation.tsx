@@ -20,7 +20,7 @@ const Navigation = <T extends unknown>({ navigation, className }: Props<T>) => {
 			as={Link}
 			aria-current={isActive ? 'page' : undefined}
 			className={'navigation__button ' + value}
-			data-color="neutral"
+			data-color="accent"
 			role="link"
 			size="small"
 			to={navigation.href}

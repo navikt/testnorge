@@ -54,13 +54,6 @@ public class OversiktFrontendApplicationStarter {
                 .build();
     }
 
-    static void main(String[] args) {
-
-        new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
-    }
-
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
 
         return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
@@ -79,5 +72,12 @@ public class OversiktFrontendApplicationStarter {
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
                         .filters(filter)
                 ).uri(host);
+    }
+
+    static void main(String[] args) {
+
+        new SpringApplicationBuilder(OversiktFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }
