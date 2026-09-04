@@ -9,12 +9,14 @@ import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.BestillingProgressDTO;
+import no.nav.dolly.domain.dto.DashboardAdferdDTO;
 import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardOversiktDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.projection.AdferdFragment;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
@@ -22,11 +24,13 @@ import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.domain.resultset.BAFeilkoder;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -38,14 +42,15 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.databind.node.StringNode;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
@@ -53,6 +58,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -62,7 +70,9 @@ public class DashboardService {
 
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
     private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident");
+    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
     private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
+    private static final String INTERVAL = "%4d-%02d";
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -76,7 +86,7 @@ public class DashboardService {
 
     public Flux<DashboardBestillingerDTO> getBestillingerStatus(int year, Month month) {
 
-        var interval = "%4d-%02d".formatted(year, month.getValue());
+        var interval = INTERVAL.formatted(year, month.getValue());
         return bestillingRepository.findBestillingerOrderBySistOppdatert(interval)
                 .groupBy(BestillingerFragment::getDato)
                 .flatMap(Flux::collectList)
@@ -105,7 +115,7 @@ public class DashboardService {
                 .distinct()
                 .buffer(500)
                 .flatMap(teamkatalogConsumer::getTeamForEpost, 3)
-                .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
+                .collect(toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -129,9 +139,9 @@ public class DashboardService {
     public Flux<DashboardOrganisasjonerDTO> getOrganisasjonerStatus() {
 
         return Mono.zip(altinn3TilgangServiceConsumer.getOrganisasjoner()
-                                .collect(Collectors.toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
+                                .collect(toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
                         brukerServiceConsumer.getAlleBrukere()
-                                .collect(Collectors.toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
+                                .collect(toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
                         .groupBy(OrganisasjonFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -154,7 +164,7 @@ public class DashboardService {
     public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
 
         return teamRepository.findAllTeamBrukere()
-                .collect(Collectors.toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
+                .collect(toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
                         .groupBy(DollyTeamFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -177,7 +187,7 @@ public class DashboardService {
 
     public Flux<JsonNode> getFeilstatusSummert(int year, Month month) {
 
-        var filter = "%4d-%02d".formatted(year, month.getValue());
+        var filter = INTERVAL.formatted(year, month.getValue());
         return buildFeilWhereFragment()
                 .map(feilFilter -> "select b.sist_oppdatert::date bestilling_dato, bp.* " +
                                    "from bestilling b " +
@@ -272,7 +282,7 @@ public class DashboardService {
         var grouped = new HashMap<String, Set<String>>();
         fragments.forEach(fragment -> {
             var orgNummer = brukerToOrgnummer.get(fragment.getBrukerid());
-            if (Objects.nonNull(orgNummer)) {
+            if (nonNull(orgNummer)) {
                 grouped.computeIfAbsent(orgNummer, _ -> new HashSet<>()).add(fragment.getBrukerid());
             }
         });
@@ -323,7 +333,7 @@ public class DashboardService {
             });
         });
         var summert = resultat.entrySet().stream()
-                .collect(Collectors.toMap(entry -> {
+                .collect(toMap(entry -> {
                             var key = entry.getKey();
                             if (key.contains("Status")) {
                                 return key.replace("Status", "Feil");
@@ -419,5 +429,208 @@ public class DashboardService {
                                 .build())
                         .toList())
                 .build();
+    }
+
+    public Flux<DashboardAdferdDTO> getAdferd(int year, Month month) {
+
+        var interval = INTERVAL.formatted(year, month.getValue());
+        return bestillingRepository.findByBestKriterier(interval)
+                .groupBy(AdferdFragment::getDato)
+                .flatMap(Flux::collectList)
+                .map(adferd -> DashboardAdferdDTO.builder()
+                        .dato(adferd.getFirst().getDato())
+                        .kriterier(getAkkumulerteKriterier(adferd))
+                        .build())
+                .sort(Comparator.comparing(DashboardAdferdDTO::getDato));
+    }
+
+    private List<DashboardAdferdDTO.Entry> getAkkumulerteKriterier(List<AdferdFragment> kriterier) {
+
+        return kriterier.stream()
+                .map(kriterium -> {
+                    var bestilling = jsonMapper.readValue(kriterium.getBestkriterier(), RsDollyBestilling.class);
+                    return getAntallAdferd(bestilling, kriterium.getAntall());
+                })
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
+                .entrySet().stream()
+                .map(entry -> DashboardAdferdDTO.Entry.builder()
+                        .fagsystem(entry.getKey().split("=")[0])
+                        .detaljer(entry.getKey().split("=").length>1 ?
+                                Arrays.stream(entry.getKey().split("=")[1].split(","))
+                                        .filter(StringUtils::isNotBlank)
+                                        .collect(Collectors.toMap(s -> s.split(":")[0], s -> s.split(":")[1]))
+                                : null)
+                        .antall(entry.getValue())
+                        .build())
+                .toList();
+    }
+
+    private static Map<String, Integer> getAntallAdferd(RsDollyBestilling bestilling, Integer antall) {
+
+        var adferd = new HashMap<String, Integer>();
+        Arrays.stream(bestilling.getClass().getMethods())
+                .filter(metode -> metode.getName().startsWith("get"))
+                .filter(metode -> !EXCLUDE_METHODS.contains(metode.getName()))
+                .forEach(metode -> {
+                    var system = metode.getName().substring(3);
+                    try {
+
+                        var verdi = metode.invoke(bestilling);
+
+                        if (metode.getReturnType().equals(List.class) && !((List) verdi).isEmpty()
+                            || !metode.getReturnType().equals(List.class) && nonNull(verdi)) {
+
+                            adferd.merge(decodeData(system, bestilling), antall, Integer::sum);
+                        }
+
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        log.error("Feil ved henting av adferd: {}", e.getMessage(), e);
+                        throw new RuntimeException(e);
+                    }
+                });
+        return adferd;
+    }
+
+    private static String decodeData(String system, RsDollyBestilling bestilling) {
+
+        return switch (system) {
+            case "Pdldata" -> decodePdl(bestilling);
+            case "Pensjonforvalter" -> decodePensjon(bestilling);
+            case "Arenaforvalter" -> decodeArena(bestilling);
+            case "Aareg" -> decodeAareg(bestilling);
+            case "Fullmakt", "Instdata", "SigrunstubPensjonsgivende",
+                 "SigrunstubSummertSkattegrunnlag", "Dokarkiv",
+                 "Yrkesskader","EtterlatteYtelser" -> decodeAntall(bestilling, system);
+            default -> system;
+        };
+    }
+
+    private static String decodeAntall(RsDollyBestilling bestilling, String system) {
+
+        var builder = new StringBuilder("%s=".formatted(system));
+
+        try {
+            var register = (List) bestilling.getClass().getMethod("get%s".formatted(system))
+                    .invoke(bestilling);
+
+            builder.append(",Antall elementer:")
+                    .append(register.size());
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            log.error("Feil ved henting av antall: {}", e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+
+        return builder.toString();
+    }
+
+    private static String decodeAareg(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Aareg=");
+
+        var aaregdata = bestilling.getAareg();
+                builder.append(",Antall arbeidsforhold:")
+                        .append(aaregdata.size());
+
+        return builder.toString();
+    }
+
+    private static String decodeArena(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Arena=");
+
+        var arenadata = bestilling.getArenaforvalter();
+        if (nonNull(arenadata)) {
+            if (nonNull(arenadata.getAap())) {
+                builder.append(",AAP:true");
+            }
+            if (nonNull(arenadata.getAap115())) {
+                builder.append(",AAP115:true");
+            }
+            if (nonNull(arenadata.getDagpenger())) {
+                builder.append(",Dagpenger:true");
+            }
+            if (nonNull(arenadata.getArenaBrukertype())) {
+                builder.append(",ArenaBrukertype:")
+                        .append(arenadata.getArenaBrukertype());
+            }
+            if (nonNull(arenadata.getKvalifiseringsgruppe())) {
+                builder.append(",Kvalifiseringsgruppe:")
+                        .append(arenadata.getKvalifiseringsgruppe());
+            }
+        }
+        return builder.toString();
+    }
+
+    private static String decodePensjon(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Pensjon=");
+
+        var pensjonsdata = bestilling.getPensjonforvalter();
+        if (nonNull(pensjonsdata)) {
+            if (nonNull(pensjonsdata.getInntekt())) {
+                builder.append(",PoppInntekt:true");
+            }
+            if (nonNull(pensjonsdata.getGenerertInntekt())) {
+                builder.append(",PoppSpesifisertInntekt:true");
+            }
+            if (nonNull(pensjonsdata.getAlderspensjon())) {
+                builder.append(",Alderspensjon:true");
+            }
+            if (nonNull(pensjonsdata.getUforetrygd())) {
+                builder.append(",Uforetrygd:true");
+            }
+            if (!pensjonsdata.getPensjonsavtale().isEmpty()) {
+                builder.append(",Pensjonsavtale:")
+                        .append(pensjonsdata.getPensjonsavtale().size());
+            }
+            if (!pensjonsdata.getTp().isEmpty()) {
+                builder.append(",Tjenestepensjon:")
+                        .append(pensjonsdata.getTp().size());
+            }
+            if (nonNull(pensjonsdata.getAfpOffentlig())) {
+                builder.append(",AfpOffentlig:true");
+            }
+        }
+        return builder.toString();
+    }
+
+    private static String decodePdl(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("PdlData=");
+
+        var pdldata = bestilling.getPdldata();
+        if (nonNull(pdldata.getOpprettNyPerson())) {
+            if (isTrue(pdldata.getOpprettNyPerson().getId2032())) {
+                builder.append(",Id2032:true");
+            } else {
+                builder.append(",Syntetisk:")
+                        .append(isTrue(pdldata.getOpprettNyPerson().getSyntetisk()));
+            }
+        } else {
+            builder.append(",Legg-til/endre:true");
+        }
+        if (nonNull(pdldata.getPerson())) {
+            Arrays.stream(pdldata.getPerson().getClass().getMethods())
+                    .filter(metode -> metode.getName().startsWith("get"))
+                    .filter(metode -> metode.getReturnType().equals(List.class))
+                    .forEach(metode -> {
+                        var opplysning = metode.getName().substring(3);
+                        try {
+                            var verdi = (List) metode.invoke(pdldata.getPerson());
+                            if (!verdi.isEmpty()) {
+
+                                builder.append(",")
+                                        .append(opplysning)
+                                        .append(':')
+                                        .append(verdi.size());
+                            }
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            log.error("Feil ved henting av adferd: {}", e.getMessage(), e);
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+        return builder.toString();
     }
 }
