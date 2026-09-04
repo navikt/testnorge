@@ -1,4 +1,4 @@
-import { Alert, Box, Tag, Tooltip, VStack } from '@navikt/ds-react'
+import { Alert, Box, HStack, Tag, Tooltip, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
@@ -7,6 +7,9 @@ import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
+import { malTyper } from '@/pages/minSide/maler/MalModal'
+import { SoekNyMalDialog } from '@/components/ui/soekMaler/SoekNyMalDialog'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -97,12 +100,15 @@ export const TreffListe = ({
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
 							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
-						<ImporterValgtePersoner
-							identer={markertePersoner}
-							isMultiple={true}
-							inkluderPartnere={inkluderPartnere}
-							setInkluderPartnere={setInkluderPartnere}
-						/>
+						<HStack gap="space-12">
+							<SoekNyMalDialog id={0} malType={malTyper.TENORSOEK} />
+							<ImporterValgtePersoner
+								identer={markertePersoner}
+								isMultiple={true}
+								inkluderPartnere={inkluderPartnere}
+								setInkluderPartnere={setInkluderPartnere}
+							/>
+						</HStack>
 					</div>
 				</Box>
 			</div>

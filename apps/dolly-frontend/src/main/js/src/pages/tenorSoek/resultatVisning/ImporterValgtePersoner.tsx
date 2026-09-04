@@ -74,19 +74,21 @@ export const ImporterValgtePersoner = ({
 		<>
 			{isMultiple ? (
 				<>
-					<CheckboxWrapper>
-						<Checkbox
-							checked={inkluderPartnere}
-							size="small"
-							onChange={(event) => setInkluderPartnere(event.target.checked)}
-						>
-							Inkluder eventuelle partnere
-						</Checkbox>
-						<Hjelpetekst placement={top}>
-							Dersom en eller flere av de valgte personene har en partner, vil du inkludere
-							partner(e) i importen?
-						</Hjelpetekst>
-					</CheckboxWrapper>
+					{/*TODO: Maa vaere med, men hvor???*/}
+					{/*<CheckboxWrapper>*/}
+					{/*	<Checkbox*/}
+					{/*		checked={inkluderPartnere}*/}
+					{/*		size="small"*/}
+					{/*		onChange={(event) => setInkluderPartnere(event.target.checked)}*/}
+					{/*		// disabled={identer?.length < 1}*/}
+					{/*	>*/}
+					{/*		Inkluder evt. partnere*/}
+					{/*	</Checkbox>*/}
+					{/*	<Hjelpetekst placement={top}>*/}
+					{/*		Dersom en eller flere av de valgte personene har en partner, vil du inkludere*/}
+					{/*		partner(e) i importen?*/}
+					{/*	</Hjelpetekst>*/}
+					{/*</CheckboxWrapper>*/}
 					<Button
 						variant="primary"
 						size="small"

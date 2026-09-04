@@ -13,6 +13,8 @@ export const malTyper = {
 	ORGANISASJON: 'ORGANISASJON',
 	BESTILLING: 'BESTILLING',
 	PERSON: 'PERSON',
+	DOLLYSOEK: 'DOLLYSOEK',
+	TENORSOEK: 'TENORSOEK',
 }
 
 type MalModalProps = {
@@ -68,6 +70,12 @@ export const MalModal = ({ id, malType, open, setOpen }: MalModalProps) => {
 			break
 		case malTyper.PERSON:
 			topic = 'person'
+			break
+		case malTyper.TENORSOEK:
+			topic = 'søk'
+			break
+		case malTyper.DOLLYSOEK:
+			topic = 'søk'
 			break
 	}
 
