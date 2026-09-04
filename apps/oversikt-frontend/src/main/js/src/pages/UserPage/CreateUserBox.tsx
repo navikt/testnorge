@@ -4,7 +4,7 @@ import BrukerService from '@/services/BrukerService'
 import { Button, TextField } from '@navikt/ds-react'
 
 const CreateUserBox = () => {
-	const [brukernavn, setBurkernavn] = useState('')
+	const [brukernavn, setBrukernavn] = useState('')
 	const [orgnummer, setOrgnummer] = useState('')
 
 	return (
@@ -13,7 +13,7 @@ const CreateUserBox = () => {
 			header="Opprett bruker"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<TextField label="Brukernavn" onBlur={(event) => setBurkernavn(event.target.value)} />
+					<TextField label="Brukernavn" onBlur={(event) => setBrukernavn(event.target.value)} />
 					<TextField label="Orgnummer" onBlur={(event) => setOrgnummer(event.target.value)} />
 					<Button loading={loading} onClick={onSubmit}>
 						Opprett

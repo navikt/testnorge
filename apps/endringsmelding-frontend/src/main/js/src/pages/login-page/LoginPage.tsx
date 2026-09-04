@@ -40,7 +40,7 @@ export const LoginPage = () => (
         title="Advarsel"
         style={{ fontSize: '3rem', color: 'var(--ax-text-warning-decoration)' }}
       />
-      <Heading size="large" level="2">
+      <Heading size="large" level="1">
         Du har ikke tilgang til denne siden
       </Heading>
       <BodyShort size="large">
