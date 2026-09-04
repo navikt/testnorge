@@ -1,112 +1,161 @@
 @import '@navikt/ds-css';
 @import (reference) '@/styles/variables.less';
 
-@media (max-width: 600px) {
-
-  .consumer-service {
-    flex-direction: column;
-  }
+.status-page-loading {
+	display: flex;
+	width: 100%;
+	min-height: 100vh;
+	align-items: center;
+	justify-content: center;
 }
 
-@media (max-width: 1100px) {
-  .consumer-OK {
-    color: @color-success;
-  }
-
-  .consumer-Warn {
-    color: @color-warning;
-  }
-
-  .consumer-Feil {
-    color: @color-error;
-  }
-
-  .consumer-name {
-    svg {
-      display: none;
-    }
-  }
-
-  .navds-accordion__content {
-    padding: 0;
-  }
-
-  .navds-accordion__header {
-    padding: 0;
-  }
+.status-page {
+	display: flex;
+	flex-direction: column;
+	padding: 0 0 var(--ax-space-24);
 }
 
-@media (min-width: 1100px) {
-  .consumer-OK {
-    color: inherit;
-  }
-
-  .consumer-Warn {
-    color: inherit;
-  }
-
-  .consumer-Feil {
-    color: inherit;
-  }
-
+.status-page-title {
+	margin: var(--ax-space-20) 0 0;
 }
 
-.navds-accordion__header-content {
-  width: 100%;
-}
-
-.consumers-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.consumers-accordion {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
 }
 
 .consumer-status {
-  border: 1px solid grey;
-  width: min(20vw, 500px);
-  min-width: 220px;
-  padding: 1.2vw;
-  background-color: #fefefe;
-  margin-top: 1.2vw;
-  margin-left: 0.5em;
+	width: min(20vw, 31.25rem);
+	min-width: 13.75rem;
+	border: 1px solid @color-bg-grey-border-darker;
+	background-color: #fefefe;
+	margin: 1.2vw 0 0 0.5em;
+	padding: clamp(0.75rem, 1.2vw, 1.5rem);
 
-  .consumer-status-icon {
-    display: flex;
-    align-items: center;
-  }
+	.consumer-header-content {
+		display: flex;
+		width: 100%;
+		min-width: 0;
+		align-items: center;
+		gap: var(--ax-space-4);
+	}
 
-  .consumer-name {
-    display: flex;
-    align-items: center;
-    font-size: clamp(12px, 1.5vw, 18px);
+	.consumer-name {
+		display: flex;
+		align-items: center;
+		flex-grow: 2;
+		min-width: 0;
+		text-align: left;
+		overflow-wrap: anywhere;
+		font-size: clamp(12px, 1.5vw, 18px);
+		font-weight: 600;
+	}
 
-    h2 {
-      flex-grow: 2;
-    }
-  }
+	.consumer-status-icon,
+	.consumer-service-status {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		flex-shrink: 0;
+	}
 
-  .consumer-name div:first-child {
-    flex-grow: 2;
-  }
+	.consumer-header {
+		padding: 0;
+		color: inherit;
+	}
 
-  .consumer-service {
-    display: flex;
-    align-items: center;
+	.consumer-header::before,
+	.consumer-header::after {
+		display: none;
+	}
 
-    .consumer-service-name {
-      display: flex;
-      margin-left: 0.5em;
-      flex-grow: 2;
-      align-items: center;
+	.consumer-content {
+		margin: 0;
+		padding-top: 0;
+	}
 
-      h5 {
-        margin-right: 1em;
-        font-size: clamp(12px, 1.5vw, 16px);
-      }
+	.consumer-services {
+		display: flex;
+		flex-direction: column;
+		gap: var(--ax-space-8);
+	}
 
-      span {
-        font-size: small;
-      }
-    }
-  }
+	.consumer-service {
+		display: flex;
+		align-items: center;
+
+		.consumer-service-name {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1em;
+			margin-left: 0.5em;
+			align-items: center;
+			flex-grow: 2;
+		}
+
+		.consumer-service-title {
+			font-size: clamp(12px, 1.5vw, 16px);
+			font-weight: 600;
+		}
+
+		.consumer-service-team {
+			font-size: 0.875rem;
+		}
+	}
+}
+
+.consumer-status[data-expanded='true'] > .consumer-content {
+	margin: var(--ax-space-8) 0 0;
+}
+
+.consumer-status-assistive {
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+@media (max-width: 600px) {
+	.consumer-status {
+		width: calc(100% - 0.5em);
+		max-width: 31.25rem;
+	}
+
+	.consumer-service {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.consumer-service-name {
+		margin-left: 0;
+		gap: var(--ax-space-4);
+	}
+
+	.consumer-service-status {
+		justify-content: flex-start;
+	}
+}
+
+@media (max-width: 1100px) {
+	.consumer-OK {
+		color: @color-success;
+	}
+
+	.consumer-Warn {
+		color: @color-warning;
+	}
+
+	.consumer-Feil {
+		color: @color-error;
+	}
+
+	.consumer-header-content {
+		svg {
+			display: none;
+		}
+	}
 }

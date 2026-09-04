@@ -2,13 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const POLL_INTERVAL_MS = 2 * 60_000
 
-const getCurrentCommitHash = (): string => {
-	try {
-		return (process.env.COMMIT_HASH || '').trim()
-	} catch {
-		return ''
-	}
-}
+const getCurrentCommitHash = (): string => (import.meta.env.COMMIT_HASH || '').trim()
 
 export const CURRENT_COMMIT_HASH = getCurrentCommitHash()
 

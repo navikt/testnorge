@@ -8,7 +8,9 @@ SyntaxHighlighter.registerLanguage('xml', xml);
 const StyledSyntaxHighlighter = styled(SyntaxHighlighter)`
   font-size: 0.9em;
   width: 100%;
+  max-width: 100%;
   margin: 0;
+  overflow-x: auto;
 `;
 
 type Props = {
