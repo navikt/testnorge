@@ -4,6 +4,11 @@ import './index.less'
 import App from './App'
 
 const container = document.getElementById('root')
-const root = createRoot(container as HTMLElement)
+
+if (!container) {
+	throw new Error('Fant ikke rotnoden for applikasjonen')
+}
+
+const root = createRoot(container)
 
 root.render(<App />)

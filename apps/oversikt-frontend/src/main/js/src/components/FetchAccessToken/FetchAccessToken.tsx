@@ -3,8 +3,7 @@ import TokenService from '@/services/TokenService'
 import styled from 'styled-components'
 import { NotFoundError } from '@navikt/dolly-lib'
 
-import OrganisasjonService from '@/services/OrganisasjonService'
-import { Button, Checkbox, CopyButton, InlineMessage, TextField } from '@navikt/ds-react'
+import { Button, Checkbox, CopyButton, InlineMessage } from '@navikt/ds-react'
 
 type Props = {
 	scope: string
@@ -47,12 +46,6 @@ const HeaderBlock = styled.div`
 	h2,
 	p {
 		margin: 0;
-	}
-`
-
-const StyledInput = styled(TextField)`
-	&& {
-		width: 100%;
 	}
 `
 
@@ -160,13 +153,6 @@ export default ({ labels = {}, scope }: Props) => {
 					text="Kopier"
 				/>
 			</ButtonGroup>
-			<StyledInput
-				label="Orgnummer (midlertidig)"
-				type="text"
-				onBlur={(event) =>
-					event.target.value && OrganisasjonService.setOrganisasjonsnummer(event.target.value)
-				}
-			/>
 		</FetchAccessTokenContainer>
 	)
 }
