@@ -64,7 +64,7 @@ const ApplicationTokenCopyButton = ({ application, label }: Props) => {
 				disabled={loading}
 				ref={buttonRef}
 				size="small"
-				title={`Kopier token for ${label}`}
+				title={`Hent og kopier token for ${label}`}
 				activeText={`Token for ${label} kopiert`}
 				icon={loading ? <Loader size="xsmall" title={`Henter token for ${label}`} /> : undefined}
 				onClick={handleClick}
