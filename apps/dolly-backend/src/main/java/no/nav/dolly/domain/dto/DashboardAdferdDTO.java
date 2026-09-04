@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -25,5 +26,6 @@ public class DashboardAdferdDTO {
 
         private String fagsystem;
         private Integer antall;
+        private Map<String,Object> detaljer;
     }
 }

@@ -30,6 +30,7 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -71,6 +72,7 @@ public class DashboardService {
     private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident");
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
     private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
+    private static final String INTERVAL = "%4d-%02d";
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -84,7 +86,7 @@ public class DashboardService {
 
     public Flux<DashboardBestillingerDTO> getBestillingerStatus(int year, Month month) {
 
-        var interval = "%4d-%02d".formatted(year, month.getValue());
+        var interval = INTERVAL.formatted(year, month.getValue());
         return bestillingRepository.findBestillingerOrderBySistOppdatert(interval)
                 .groupBy(BestillingerFragment::getDato)
                 .flatMap(Flux::collectList)
@@ -185,7 +187,7 @@ public class DashboardService {
 
     public Flux<JsonNode> getFeilstatusSummert(int year, Month month) {
 
-        var filter = "%4d-%02d".formatted(year, month.getValue());
+        var filter = INTERVAL.formatted(year, month.getValue());
         return buildFeilWhereFragment()
                 .map(feilFilter -> "select b.sist_oppdatert::date bestilling_dato, bp.* " +
                                    "from bestilling b " +
@@ -431,7 +433,7 @@ public class DashboardService {
 
     public Flux<DashboardAdferdDTO> getAdferd(int year, Month month) {
 
-        var interval = "%4d-%02d".formatted(year, month.getValue());
+        var interval = INTERVAL.formatted(year, month.getValue());
         return bestillingRepository.findByBestKriterier(interval)
                 .groupBy(AdferdFragment::getDato)
                 .flatMap(Flux::collectList)
@@ -453,7 +455,12 @@ public class DashboardService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
                 .entrySet().stream()
                 .map(entry -> DashboardAdferdDTO.Entry.builder()
-                        .fagsystem(entry.getKey())
+                        .fagsystem(entry.getKey().split("=")[0])
+                        .detaljer(entry.getKey().split("=").length>1 ?
+                                Arrays.stream(entry.getKey().split("=")[1].split(","))
+                                        .filter(StringUtils::isNotBlank)
+                                        .collect(Collectors.toMap(s -> s.split(":")[0], s -> s.split(":")[1]))
+                                : null)
                         .antall(entry.getValue())
                         .build())
                 .toList();
@@ -474,7 +481,7 @@ public class DashboardService {
                         if (metode.getReturnType().equals(List.class) && !((List) verdi).isEmpty()
                             || !metode.getReturnType().equals(List.class) && nonNull(verdi)) {
 
-                            adferd.merge(decodeData(bestilling, system), antall, Integer::sum);
+                            adferd.merge(decodeData(system, bestilling), antall, Integer::sum);
                         }
 
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -485,46 +492,144 @@ public class DashboardService {
         return adferd;
     }
 
-    private static String decodeData(RsDollyBestilling bestilling, String navn) {
+    private static String decodeData(String system, RsDollyBestilling bestilling) {
 
-        var builder = new StringBuilder("pdlData");
-        if (!"Pdldata".equals(navn)) {
-            return navn;
+        return switch (system) {
+            case "Pdldata" -> decodePdl(bestilling);
+            case "Pensjonforvalter" -> decodePensjon(bestilling);
+            case "Arenaforvalter" -> decodeArena(bestilling);
+            case "Aareg" -> decodeAareg(bestilling);
+            case "Fullmakt", "Instdata", "SigrunstubPensjonsgivende",
+                 "SigrunstubSummertSkattegrunnlag", "Dokarkiv",
+                 "Yrkesskader","EtterlatteYtelser" -> decodeAntall(bestilling, system);
+            default -> system;
+        };
+    }
 
-        } else {
+    private static String decodeAntall(RsDollyBestilling bestilling, String system) {
 
-            var pdldata = bestilling.getPdldata();
-            if (nonNull(pdldata.getOpprettNyPerson())) {
-                if (isTrue(pdldata.getOpprettNyPerson().getId2032())) {
-                    builder.append(".Id2032:true");
-                } else {
-                    builder.append(".Syntetisk:")
-                            .append(isTrue(pdldata.getOpprettNyPerson().getSyntetisk()));
-                }
+        var builder = new StringBuilder("%s=".formatted(system));
+
+        try {
+            var register = (List) bestilling.getClass().getMethod("get%s".formatted(system))
+                    .invoke(bestilling);
+
+            builder.append(",Antall elementer:")
+                    .append(register.size());
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            log.error("Feil ved henting av antall: {}", e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+
+        return builder.toString();
+    }
+
+    private static String decodeAareg(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Aareg=");
+
+        var aaregdata = bestilling.getAareg();
+                builder.append(",Antall arbeidsforhold:")
+                        .append(aaregdata.size());
+
+        return builder.toString();
+    }
+
+    private static String decodeArena(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Arena=");
+
+        var arenadata = bestilling.getArenaforvalter();
+        if (nonNull(arenadata)) {
+            if (nonNull(arenadata.getAap())) {
+                builder.append(",AAP:true");
+            }
+            if (nonNull(arenadata.getAap115())) {
+                builder.append(",AAP115:true");
+            }
+            if (nonNull(arenadata.getDagpenger())) {
+                builder.append(",Dagpenger:true");
+            }
+            if (nonNull(arenadata.getArenaBrukertype())) {
+                builder.append(",ArenaBrukertype:")
+                        .append(arenadata.getArenaBrukertype());
+            }
+            if (nonNull(arenadata.getKvalifiseringsgruppe())) {
+                builder.append(",Kvalifiseringsgruppe:")
+                        .append(arenadata.getKvalifiseringsgruppe());
+            }
+        }
+        return builder.toString();
+    }
+
+    private static String decodePensjon(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Pensjon=");
+
+        var pensjonsdata = bestilling.getPensjonforvalter();
+        if (nonNull(pensjonsdata)) {
+            if (nonNull(pensjonsdata.getInntekt())) {
+                builder.append(",PoppInntekt:true");
+            }
+            if (nonNull(pensjonsdata.getGenerertInntekt())) {
+                builder.append(",PoppSpesifisertInntekt:true");
+            }
+            if (nonNull(pensjonsdata.getAlderspensjon())) {
+                builder.append(",Alderspensjon:true");
+            }
+            if (nonNull(pensjonsdata.getUforetrygd())) {
+                builder.append(",Uforetrygd:true");
+            }
+            if (!pensjonsdata.getPensjonsavtale().isEmpty()) {
+                builder.append(",Pensjonsavtale:")
+                        .append(pensjonsdata.getPensjonsavtale().size());
+            }
+            if (!pensjonsdata.getTp().isEmpty()) {
+                builder.append(",Tjenestepensjon:")
+                        .append(pensjonsdata.getTp().size());
+            }
+            if (nonNull(pensjonsdata.getAfpOffentlig())) {
+                builder.append(",AfpOffentlig:true");
+            }
+        }
+        return builder.toString();
+    }
+
+    private static String decodePdl(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("PdlData=");
+
+        var pdldata = bestilling.getPdldata();
+        if (nonNull(pdldata.getOpprettNyPerson())) {
+            if (isTrue(pdldata.getOpprettNyPerson().getId2032())) {
+                builder.append(",Id2032:true");
             } else {
-                builder.append(".Legg-til/endre:true");
+                builder.append(",Syntetisk:")
+                        .append(isTrue(pdldata.getOpprettNyPerson().getSyntetisk()));
             }
-            if (nonNull(pdldata.getPerson())) {
-                Arrays.stream(pdldata.getPerson().getClass().getMethods())
-                        .filter(metode -> metode.getName().startsWith("get"))
-                        .filter(metode -> metode.getReturnType().equals(List.class))
-                        .forEach(metode -> {
-                            var opplysning = metode.getName().substring(3);
-                            try {
-                                var verdi = (List) metode.invoke(pdldata.getPerson());
-                                if (!verdi.isEmpty()) {
+        } else {
+            builder.append(",Legg-til/endre:true");
+        }
+        if (nonNull(pdldata.getPerson())) {
+            Arrays.stream(pdldata.getPerson().getClass().getMethods())
+                    .filter(metode -> metode.getName().startsWith("get"))
+                    .filter(metode -> metode.getReturnType().equals(List.class))
+                    .forEach(metode -> {
+                        var opplysning = metode.getName().substring(3);
+                        try {
+                            var verdi = (List) metode.invoke(pdldata.getPerson());
+                            if (!verdi.isEmpty()) {
 
-                                    builder.append(",")
-                                            .append(opplysning)
-                                            .append(':')
-                                            .append(verdi.size());
-                                }
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                log.error("Feil ved henting av adferd: {}", e.getMessage(), e);
-                                throw new RuntimeException(e);
+                                builder.append(",")
+                                        .append(opplysning)
+                                        .append(':')
+                                        .append(verdi.size());
                             }
-                        });
-            }
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            log.error("Feil ved henting av adferd: {}", e.getMessage(), e);
+                            throw new RuntimeException(e);
+                        }
+                    });
         }
         return builder.toString();
     }
