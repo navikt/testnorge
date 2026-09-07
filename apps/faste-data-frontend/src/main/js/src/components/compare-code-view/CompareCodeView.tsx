@@ -1,10 +1,6 @@
 import React from 'react';
 import { CodeView } from '@/components/code-view';
-import styled from 'styled-components';
-
-const CompareCodeView = styled.div`
-  display: flex;
-`;
+import { ResponsiveSplit } from '@/components/layout';
 
 type Props = {
   left: {
@@ -21,11 +17,9 @@ type Props = {
 
 export default ({ left, right }: Props) => {
   return (
-    <div>
-      <CompareCodeView>
-        <CodeView {...left} />
-        <CodeView {...right} />
-      </CompareCodeView>
-    </div>
+    <ResponsiveSplit>
+      <CodeView {...left} />
+      <CodeView {...right} />
+    </ResponsiveSplit>
   );
 };

@@ -1,43 +1,50 @@
 import React, { useState } from 'react'
+import { TextField } from '@navikt/ds-react'
 
 import Navigation from '@/components/Navigation'
+import type { AppNavigationItem } from '@/components/Navigation'
 import './PageWithMenu.less'
 import { Page } from '@/pages/Page'
 
-type Props = {
+type Props<T> = {
 	children: React.ReactNode
-	navigations: Navigation[]
+	navigations: AppNavigationItem<T>[]
 	menuTitle: string
+	renderLeadingAction?: (navigation: AppNavigationItem<T>) => React.ReactNode
 }
 
-export default ({ children, navigations, menuTitle }: Props) => {
+const PageWithMenu = <T,>({ children, navigations, menuTitle, renderLeadingAction }: Props<T>) => {
 	const [search, setSearch] = useState('')
 
 	return (
 		<Page>
 			<div className="page-with-menu">
-				<div className="container--left">
-					<h4>Søk etter applikasjon</h4>
-					<input
-						type="text"
+				<aside className="page-with-menu__menu">
+					<TextField
 						autoFocus
-						className="search"
+						className="page-with-menu__search"
+						label="Søk etter applikasjon"
+						size="small"
+						value={search}
 						onChange={(event) => setSearch(event.target.value)}
 					/>
-					<h3>{menuTitle}</h3>
-					<ul>
+					<h2 className="page-with-menu__title">{menuTitle}</h2>
+					<ul className="page-with-menu__list">
 						{navigations
 							.filter((name) => name.label.includes(search))
 							.sort((first, second) => first.label.localeCompare(second.label))
 							.map((navigation) => (
-								<li key={navigation.label}>
-									<Navigation navigation={navigation} />
+								<li className="page-with-menu__item" key={navigation.label}>
+									{renderLeadingAction?.(navigation)}
+									<Navigation className="page-with-menu__navigation" navigation={navigation} />
 								</li>
 							))}
 					</ul>
-				</div>
-				<div className="container--right">{children}</div>
+				</aside>
+				<section className="page-with-menu__content">{children}</section>
 			</div>
 		</Page>
 	)
 }
+
+export default PageWithMenu

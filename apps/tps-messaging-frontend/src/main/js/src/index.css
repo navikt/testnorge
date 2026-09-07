@@ -1,14 +1,45 @@
 body {
-  background: #f1f1f1f1;
+  background: var(--ax-bg-neutral-moderate);
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  color: var(--ax-text-neutral);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.tps-login-page {
+  width: min(70vw, 100%);
+  margin-inline: auto;
+  padding-top: calc(var(--ax-space-128) + var(--ax-space-24));
+  padding-bottom: var(--ax-space-64);
+}
+
+.tps-login-page__card {
+  text-align: center;
+}
+
+@media (max-width: 35.99rem) {
+  .tps-app-header__title {
+    min-width: 0;
+    padding-inline: var(--ax-space-16);
+  }
+
+  .tps-app-header__user {
+    min-width: 0;
+    max-width: 10rem;
+    padding-inline: var(--ax-space-12);
+    overflow: hidden;
+  }
+
+  .tps-login-page {
+    width: 100%;
+    padding-top: var(--ax-space-64);
+    padding-bottom: var(--ax-space-48);
+  }
+}
+
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

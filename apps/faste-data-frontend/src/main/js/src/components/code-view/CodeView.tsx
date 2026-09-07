@@ -1,7 +1,9 @@
 import React from 'react';
+import { Heading } from '@navikt/ds-react';
 import { a11yDark as customStyle } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import styled from 'styled-components';
+import { ScrollArea } from '@/components/layout';
 
 type Props = {
   code: string | object;
@@ -10,22 +12,28 @@ type Props = {
 };
 
 const CodeView = styled.div`
-  width: 50%;
-  margin: 1px;
+  width: 100%;
+  min-width: 0;
 `;
 
-const Label = styled.h3`
+const Label = styled(Heading)`
   text-align: center;
+  margin: 0;
 `;
 
 export default ({ code, language, label }: Props) => {
-  const _code = JSON.stringify(code, null, 2);
+  const formattedCode = typeof code === 'string' ? code : JSON.stringify(code, null, 2);
+
   return (
     <CodeView>
-      <Label>{label}</Label>
-      <SyntaxHighlighter language={language} style={customStyle}>
-        {_code}
-      </SyntaxHighlighter>
+      <Label level="3" size="small">
+        {label}
+      </Label>
+      <ScrollArea>
+        <SyntaxHighlighter customStyle={{ margin: 0 }} language={language} style={customStyle}>
+          {formattedCode}
+        </SyntaxHighlighter>
+      </ScrollArea>
     </CodeView>
   );
 };

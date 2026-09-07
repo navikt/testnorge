@@ -10,14 +10,13 @@ const Content = styled.div`
 `
 
 export default () => {
-	// @ts-ignore
-	const { scope } = useParams()
+	const { scope } = useParams<{ scope: string }>()
 
 	return (
 		<Page>
 			<Content>
 				<FetchAccessToken
-					scope={scope}
+					scope={scope ?? ''}
 					labels={{
 						header: 'Access Token',
 						subHeader: `Generer token fra scope.`,

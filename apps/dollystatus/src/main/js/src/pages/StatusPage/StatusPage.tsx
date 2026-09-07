@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { useBoolean } from 'react-use'
 
 import './StatusPage.less'
-import { Accordion } from '@navikt/ds-react'
+import { Accordion, Heading } from '@navikt/ds-react'
 
 import BlankHeader from '@/components/BlankHeader/BlankHeader'
 import Loading from '@/components/loading/Loading'
 import Icon from '@/components/icon/Icon'
 
+type Service = {
+	alive: string
+	ready: string
+	team: string
+}
+
+type Statuses = Record<string, Record<string, Service>>
+
+type ServiceStatus = 'OK' | 'Warn' | 'Feil'
+
+const statusLabels: Record<ServiceStatus, string> = {
+	OK: 'OK',
+	Warn: 'Varsel',
+	Feil: 'Feil',
+}
+
 export default () => {
-	const [statuses, setStatuses] = useState({})
-	const [dataLoading, setDataLoading] = useBoolean(true)
+	const [statuses, setStatuses] = useState<Statuses>({})
+	const [dataLoading, setDataLoading] = useState(true)
 
 	useEffect(() => {
 		const endpoint = 'https://dolly-backend.intern.dev.nav.no/internal/status'
@@ -22,16 +37,16 @@ export default () => {
 			},
 		})
 			.then((response) => response.json())
-			.then((json) => {
+			.then((json: Statuses) => {
 				setStatuses(json)
 				setDataLoading(false)
 			})
-			.catch((err) => {
+			.catch(() => {
 				setDataLoading(false)
 			})
 	}, [])
 
-	const serviceStatus = (service) => {
+	const serviceStatus = (service: Service): ServiceStatus => {
 		if (service.alive === 'OK' && service.ready === 'OK') {
 			return 'OK'
 		}
@@ -41,10 +56,7 @@ export default () => {
 		return 'Feil'
 	}
 
-	const aggregateStatus = (services) => {
-		if (!services) {
-			return null
-		}
+	const aggregateStatus = (services: Service[]): ServiceStatus => {
 		const statuses = services.map((service) => serviceStatus(service))
 
 		const haveOk = statuses.includes('OK')
@@ -60,7 +72,7 @@ export default () => {
 		return 'Warn'
 	}
 
-	const iconType = (status) => {
+	const iconType = (status: ServiceStatus) => {
 		if (status === 'OK') {
 			return 'feedback-check-circle'
 		}
@@ -73,68 +85,76 @@ export default () => {
 		return 'arbeid'
 	}
 
-	const clientStatus = (consumer) => {
-		const services = statuses[consumer]
-		const serviceNames = Object.keys(services).map((name) => {
-			return (
-				<div className="consumer-service">
-					<div className="consumer-service-name">
-						<h5>{name}</h5> <span>({services[name].team})</span>
-					</div>
-					<div className="consumer-service-status">
-						<Icon kind={iconType(serviceStatus(services[name]))} />
-					</div>
-				</div>
-			)
-		})
+	const clientStatus = (consumer: string, services: Record<string, Service>) => {
 		const consumerStatus = aggregateStatus(Object.values(services))
-		const cssConsumerClass = 'consumer-name ' + `consumer-${consumerStatus}`
+
 		return (
-			<div className="consumer-status" key={consumer}>
-				<Accordion style={{ width: '100%' }}>
-					<Accordion.Item>
-						<Accordion.Header>
-							<div className={cssConsumerClass}>
-								<div>{consumer}</div>
-								<div className="consumer-status-icon">
-									<Icon kind={iconType(consumerStatus)} />
+			<Accordion.Item className="consumer-status" key={consumer}>
+				<Accordion.Header className="consumer-header">
+					<span className={`consumer-header-content consumer-${consumerStatus}`}>
+						<span className="consumer-name">
+							{consumer}
+							<span className="consumer-status-assistive">
+								{' '}
+								har status {statusLabels[consumerStatus]}
+							</span>
+						</span>
+						<span className="consumer-status-icon">
+							<Icon kind={iconType(consumerStatus)} />
+						</span>
+					</span>
+				</Accordion.Header>
+				<Accordion.Content className="consumer-content">
+					<div className="consumer-services">
+						{Object.entries(services).map(([name, service]) => {
+							const status = serviceStatus(service)
+
+							return (
+								<div className="consumer-service" key={name}>
+									<div className="consumer-service-name">
+										<span className="consumer-service-title">{name}</span>
+										<span className="consumer-service-team">({service.team})</span>
+										<span className="consumer-status-assistive">
+											{' '}
+											har status {statusLabels[status]}
+										</span>
+									</div>
+									<div className="consumer-service-status">
+										<Icon kind={iconType(status)} />
+									</div>
 								</div>
-							</div>
-						</Accordion.Header>
-						<Accordion.Content>
-							<div>{serviceNames}</div>
-						</Accordion.Content>
-					</Accordion.Item>
-				</Accordion>
-			</div>
+							)
+						})}
+					</div>
+				</Accordion.Content>
+			</Accordion.Item>
 		)
 	}
 
-	const clients = Object.keys(statuses).map((name) => clientStatus(name))
+	const clients = Object.entries(statuses).map(([name, services]) => clientStatus(name, services))
 
 	if (dataLoading) {
 		return (
-			<div
-				style={{
-					display: 'flex',
-					width: '100%',
-					height: '100vh',
-					alignItems: 'center',
-					justifyContent: 'center',
-				}}
-			>
-				<Loading label="Sjekker tjenester" />
-			</div>
+			<>
+				<BlankHeader />
+				<div className="status-page-loading">
+					<Loading label="Sjekker tjenester" />
+				</div>
+			</>
 		)
 	}
 
 	return (
 		<>
 			<BlankHeader />
-			<div style={{ textAlign: 'center' }}>
-				<h2>Dolly tjenestestatus</h2>
+			<div className="status-page">
+				<Heading align="center" className="status-page-title" level="1" size="large">
+					Dolly tjenestestatus
+				</Heading>
+				<Accordion className="consumers-accordion" indent={false}>
+					{clients}
+				</Accordion>
 			</div>
-			<div className="consumers-container">{clients}</div>
 		</>
 	)
 }
