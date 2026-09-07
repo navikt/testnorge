@@ -49,7 +49,7 @@ const GruppeOversikt: React.FC = () => {
 
 	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
-	const { brukerId, brukertype } = currentBruker
+	const { brukerId } = currentBruker
 	const teamId = currentBruker?.representererTeam?.brukerId
 
 	const [visningType, setVisningType] = useState<VisningType>(VisningType.MINE)
@@ -64,8 +64,6 @@ const GruppeOversikt: React.FC = () => {
 	useEffect(() => {
 		dispatch(setVisning('personer'))
 	}, [dispatch])
-
-	const isBankIdBruker = useMemo(() => brukertype === 'BANKID', [brukertype])
 
 	const gruppeDetaljer = useMemo(
 		() => ({
@@ -114,7 +112,7 @@ const GruppeOversikt: React.FC = () => {
 				>
 					Ny gruppe
 				</StyledNavButton>
-				{!isBankIdBruker && <Navigering />}
+				<Navigering />
 			</div>
 
 			{visNyGruppeState && <RedigerGruppe onCancel={skjulNyGruppe} />}

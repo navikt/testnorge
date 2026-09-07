@@ -300,61 +300,60 @@ class TestgruppeServiceTest {
     void fetchGruppeByFragment_shouldSearchByIdWhenFragmentIsNumeric() {
 
         var fragment1 = new GruppeFragment(1L, "Testgruppe A");
-        when(testgruppeRepository.findByIdContaining("%1%")).thenReturn(Flux.just(fragment1));
-        when(testgruppeRepository.findByNavnContaining("")).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByIdAndNavnAndBrukere(eq("1"), eq(""), any(String[].class)))
+                .thenReturn(Flux.just(fragment1));
 
-        StepVerifier.create(testgruppeService.fetchGruppeByFragment("1"))
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("1", ""))
                 .assertNext(result -> {
                     assertThat(result.getId(), is(1L));
                     assertThat(result.getNavn(), is("Testgruppe A"));
                 })
                 .verifyComplete();
 
-        verify(testgruppeRepository).findByIdContaining("%1%");
-        verify(testgruppeRepository).findByNavnContaining("");
+        verify(testgruppeRepository).findByIdAndNavnAndBrukere(eq("1"), eq(""), any(String[].class));
     }
 
     @Test
     void fetchGruppeByFragment_shouldSearchByNameWhenFragmentIsText() {
 
         var fragment1 = new GruppeFragment(2L, "Testgruppe B");
-        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
-        when(testgruppeRepository.findByNavnContaining("%Test%")).thenReturn(Flux.just(fragment1));
+        when(testgruppeRepository.findByIdAndNavnAndBrukere(eq(""), eq("Test"), any(String[].class)))
+                .thenReturn(Flux.just(fragment1));
 
-        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Test"))
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Test", ""))
                 .assertNext(result -> {
                     assertThat(result.getId(), is(2L));
                     assertThat(result.getNavn(), is("Testgruppe B"));
                 })
                 .verifyComplete();
 
-        verify(testgruppeRepository).findByIdContaining("");
-        verify(testgruppeRepository).findByNavnContaining("%Test%");
+        verify(testgruppeRepository).findByIdAndNavnAndBrukere(eq(""), eq("Test"), any(String[].class));
     }
 
     @Test
     void fetchGruppeByFragment_shouldSearchByBothIdAndNameWhenFragmentContainsBoth() {
 
         var fragment1 = new GruppeFragment(5L, "Min gruppe");
-        when(testgruppeRepository.findByIdContainingAndNavnContaining("%5%", "%Min%")).thenReturn(Flux.just(fragment1));
+        when(testgruppeRepository.findByIdAndNavnAndBrukere(eq("5"), eq("Min"), any(String[].class)))
+                .thenReturn(Flux.just(fragment1));
 
-        StepVerifier.create(testgruppeService.fetchGruppeByFragment("5 Min"))
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("5 Min", ""))
                 .assertNext(result -> {
                     assertThat(result.getId(), is(5L));
                     assertThat(result.getNavn(), is("Min gruppe"));
                 })
                 .verifyComplete();
 
-        verify(testgruppeRepository).findByIdContainingAndNavnContaining("%5%", "%Min%");
+        verify(testgruppeRepository).findByIdAndNavnAndBrukere(eq("5"), eq("Min"), any(String[].class));
     }
 
     @Test
     void fetchGruppeByFragment_shouldReturnEmptyWhenNoResults() {
 
-        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
-        when(testgruppeRepository.findByNavnContaining("%ukjent%")).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByIdAndNavnAndBrukere(eq(""), eq("ukjent"), any(String[].class)))
+                .thenReturn(Flux.empty());
 
-        StepVerifier.create(testgruppeService.fetchGruppeByFragment("ukjent"))
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("ukjent", ""))
                 .verifyComplete();
     }
 
@@ -364,10 +363,10 @@ class TestgruppeServiceTest {
         var fragment1 = new GruppeFragment(10L, "Gruppe A");
         var fragment2 = new GruppeFragment(20L, "Gruppe B");
         var fragment3 = new GruppeFragment(30L, "Gruppe C");
-        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
-        when(testgruppeRepository.findByNavnContaining("%Gruppe%")).thenReturn(Flux.just(fragment3, fragment1, fragment2));
+        when(testgruppeRepository.findByIdAndNavnAndBrukere(eq(""), eq("Gruppe"), any(String[].class)))
+                .thenReturn(Flux.just(fragment1, fragment2, fragment3));
 
-        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Gruppe"))
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Gruppe", ""))
                 .assertNext(result -> assertThat(result.getId(), is(10L)))
                 .assertNext(result -> assertThat(result.getId(), is(20L)))
                 .assertNext(result -> assertThat(result.getId(), is(30L)))
@@ -378,16 +377,49 @@ class TestgruppeServiceTest {
     void fetchGruppeByFragment_shouldHandleMultipleWordTextSearch() {
 
         var fragment1 = new GruppeFragment(7L, "Min Test Gruppe");
-        when(testgruppeRepository.findByIdContaining("")).thenReturn(Flux.empty());
-        when(testgruppeRepository.findByNavnContaining("%Min% %Test%")).thenReturn(Flux.just(fragment1));
+        when(testgruppeRepository.findByIdAndNavnAndBrukere(eq(""), eq("Min Test"), any(String[].class)))
+                .thenReturn(Flux.just(fragment1));
 
-        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Min Test"))
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("Min Test", ""))
                 .assertNext(result -> {
                     assertThat(result.getId(), is(7L));
                     assertThat(result.getNavn(), is("Min Test Gruppe"));
                 })
                 .verifyComplete();
 
-        verify(testgruppeRepository).findByNavnContaining("%Min% %Test%");
+        verify(testgruppeRepository).findByIdAndNavnAndBrukere(eq(""), eq("Min Test"), any(String[].class));
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldUseBrukerFilterWhenBankIdOrgNrHasBrukere() {
+
+        var fragment1 = new GruppeFragment(1L, "Testgruppe A");
+        var brukere = singletonList(BRUKERID);
+        when(brukerServiceConsumer.getBrukereIOrganisasjon("orgnr"))
+                .thenReturn(Mono.just(new BrukereDTO(brukere)));
+        when(testgruppeRepository.findByIdAndNavnAndBrukere("1", "", new String[]{BRUKERID}))
+                .thenReturn(Flux.just(fragment1));
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("1", "orgnr"))
+                .assertNext(result -> assertThat(result.getId(), is(1L)))
+                .verifyComplete();
+
+        verify(testgruppeRepository).findByIdAndNavnAndBrukere("1", "", new String[]{BRUKERID});
+    }
+
+    @Test
+    void fetchGruppeByFragment_shouldNotUseBrukerFilterWhenBankIdOrgNrHasNoBrukere() {
+
+        var fragment1 = new GruppeFragment(1L, "Testgruppe A");
+        when(brukerServiceConsumer.getBrukereIOrganisasjon("orgnr"))
+                .thenReturn(Mono.just(new BrukereDTO(List.of())));
+        when(testgruppeRepository.findByIdAndNavnAndBrukere("1", "", new String[0]))
+                .thenReturn(Flux.just(fragment1));
+
+        StepVerifier.create(testgruppeService.fetchGruppeByFragment("1", "orgnr"))
+                .assertNext(result -> assertThat(result.getId(), is(1L)))
+                .verifyComplete();
+
+        verify(testgruppeRepository).findByIdAndNavnAndBrukere("1", "", new String[0]);
     }
 }

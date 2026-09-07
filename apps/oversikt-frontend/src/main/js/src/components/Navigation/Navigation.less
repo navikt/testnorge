@@ -1,8 +1,16 @@
 .navigation {
-  &__button {
-    display: inline-flex;
-    padding: 20px;
-    background: white;
-    font-size: x-large;
-  }
+	&__button {
+		width: 100%;
+		justify-content: flex-start;
+		text-align: left;
+		text-decoration: none;
+		white-space: nowrap;
+
+		&[aria-current='page'] {
+			background: var(--ax-bg-accent-moderate);
+			text-decoration: underline;
+			text-decoration-thickness: var(--ax-space-2);
+			text-underline-offset: var(--ax-space-4);
+		}
+	}
 }

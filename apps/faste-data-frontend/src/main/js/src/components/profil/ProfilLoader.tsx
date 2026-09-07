@@ -1,15 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Profil } from '@navikt/dolly-komponenter';
+import { InternalHeader } from '@navikt/ds-react';
 import ProfilService from '@/service/ProfilService';
 
 export default () => {
   const [navn, setNavn] = useState<string>();
-  const [bilde, setBilde] = useState<Response>();
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    ProfilService.fetchProfil().then(({ visningsNavn }) => setNavn(visningsNavn));
-    ProfilService.fetchBilde().then((response) => setBilde(response));
+    let active = true;
+
+    ProfilService.fetchProfil()
+      .then(({ visningsNavn }) => {
+        if (!active) {
+          return;
+        }
+
+        setNavn(visningsNavn?.trim() || 'Ukjent bruker');
+      })
+      .catch(() => {
+        if (!active) {
+          return;
+        }
+        setError(true);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
-  return <Profil visningsnavn={navn} profilbilde={bilde} />;
+  const name = error ? 'Profil utilgjengelig' : navn ?? 'Laster profil...';
+
+  return <InternalHeader.User name={name} />;
 };

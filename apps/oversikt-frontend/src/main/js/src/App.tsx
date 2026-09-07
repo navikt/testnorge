@@ -5,12 +5,13 @@ import ApplicationService from '@/services/ApplicationService'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import MagicTokenPage from '@/pages/MagicTokenPage'
 import AccessTokenPage from '@/pages/AccessTokenPage'
-import { LoadableComponent } from '@navikt/dolly-komponenter'
 import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
 import LoginPage from '@/pages/LoginPage'
 import { UserPage } from '@/pages/UserPage'
+import { AsyncContent } from '@/components/AsyncContent'
 import * as _ from 'lodash-es'
 import '@navikt/ds-css'
+import { Application } from '@/services/ApplicationService'
 
 export default () => (
 	<BrowserRouter>
@@ -21,13 +22,13 @@ export default () => (
 			<Route
 				path="/access-token/:name"
 				element={
-					<LoadableComponent
+					<AsyncContent
 						onFetch={ApplicationService.fetchApplications}
 						render={(items) => {
 							const uniqueItems = _.uniqBy(items, 'name')
 							return (
 								<AccessTokenPage
-									navigations={uniqueItems.map((application) => {
+									navigations={uniqueItems.map((application: Application) => {
 										const cluster = application.cluster?.replace(
 											'unknown',
 											application?.name?.includes('proxy') ? 'dev-fss' : 'dev-gcp',

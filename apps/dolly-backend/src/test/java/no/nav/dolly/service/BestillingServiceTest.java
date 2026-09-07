@@ -1,21 +1,21 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.BestillingFragment;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.DokumentRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.jupiter.api.Test;
@@ -60,25 +60,13 @@ class BestillingServiceTest {
     private BrukerService brukerService;
 
     @Mock
-    private DokumentRepository dokumentRepository;
-
-    @Mock
-    private DokumentService dokumentService;
+    private BrukerServiceConsumer brukerServiceConsumer;
 
     @Mock
     private IdentRepository identRepository;
 
     @Mock
-    private MalBestillingService malBestillingService;
-
-    @Mock
     private MiljoerConsumer miljoerConsumer;
-
-    @Mock
-    private JsonMapper jsonMapper;
-
-    @Mock
-    private OpenSearchService openSearchService;
 
     @Mock
     private TestgruppeRepository testgruppeRepository;
@@ -348,5 +336,67 @@ class BestillingServiceTest {
         var captor = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(captor.capture());
         assertThat(captor.getValue().getBestKriterier(), is("{}"));
+    }
+
+    @Test
+    void shouldSearchForBestillingById() {
+
+        var fragment = new BestillingFragment(BEST_ID, "Testgruppe");
+        when(bestillingRepository.findByIdAndGruppeNavnAndBrukere(eq("1"), eq(""), any(String[].class)))
+                .thenReturn(Flux.just(fragment));
+
+        StepVerifier.create(bestillingService.fetchBestillingByFragment("1", null))
+                .expectNext(fragment)
+                .verifyComplete();
+
+        verify(bestillingRepository).findByIdAndGruppeNavnAndBrukere(eq("1"), eq(""), any(String[].class));
+    }
+
+    @Test
+    void shouldSearchForBestillingByGroupName() {
+
+        var fragment = new BestillingFragment(BEST_ID, "Min testgruppe");
+        when(bestillingRepository.findByIdAndGruppeNavnAndBrukere(eq(""), eq("Min testgruppe"), any(String[].class)))
+                .thenReturn(Flux.just(fragment));
+
+        StepVerifier.create(bestillingService.fetchBestillingByFragment("Min testgruppe", ""))
+                .expectNext(fragment)
+                .verifyComplete();
+
+        verify(bestillingRepository)
+                .findByIdAndGruppeNavnAndBrukere(eq(""), eq("Min testgruppe"), any(String[].class));
+    }
+
+    @Test
+    void shouldSearchForBestillingByIdAndGroupName() {
+
+        var fragment = new BestillingFragment(BEST_ID, "Min testgruppe");
+        when(bestillingRepository.findByIdAndGruppeNavnAndBrukere(eq("1"), eq("Min testgruppe"),
+                any(String[].class))).thenReturn(Flux.just(fragment));
+
+        StepVerifier.create(bestillingService.fetchBestillingByFragment("1 Min testgruppe", null))
+                .expectNext(fragment)
+                .verifyComplete();
+
+        verify(bestillingRepository)
+                .findByIdAndGruppeNavnAndBrukere(eq("1"), eq("Min testgruppe"), any(String[].class));
+    }
+
+    @Test
+    void shouldRestrictSearchToUsersInBankIdOrganization() {
+
+        var fragment = new BestillingFragment(BEST_ID, "Testgruppe");
+        var brukerIds = List.of("bruker1", "bruker2");
+        when(brukerServiceConsumer.getBrukereIOrganisasjon("123456789"))
+                .thenReturn(Mono.just(new BrukereDTO(brukerIds)));
+        when(bestillingRepository.findByIdAndGruppeNavnAndBrukere("", "Testgruppe",
+                new String[]{"bruker1", "bruker2"})).thenReturn(Flux.just(fragment));
+
+        StepVerifier.create(bestillingService.fetchBestillingByFragment("Testgruppe", "123456789"))
+                .expectNext(fragment)
+                .verifyComplete();
+
+        verify(bestillingRepository).findByIdAndGruppeNavnAndBrukere("", "Testgruppe",
+                new String[]{"bruker1", "bruker2"});
     }
 }

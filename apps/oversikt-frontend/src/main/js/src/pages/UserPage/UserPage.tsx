@@ -16,6 +16,7 @@ const Content = styled.div`
 	display: flex;
 	justify-content: center;
 	flex-flow: wrap;
+	gap: var(--ax-space-20);
 `
 
 export default () => (

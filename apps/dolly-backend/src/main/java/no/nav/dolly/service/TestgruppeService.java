@@ -40,14 +40,15 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.ceilDiv;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -215,7 +216,7 @@ public class TestgruppeService {
                                 testgruppeRepository.countByOpprettetAvId(bruker.getId()));
 
                     } else if (bruker.getBrukertype() == Brukertype.AZURE ||
-                            bruker.getBrukertype() == Brukertype.TEAM) {
+                               bruker.getBrukertype() == Brukertype.TEAM) {
 
                         return Mono.zip(Mono.just(bruker),
                                 testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
@@ -334,26 +335,25 @@ public class TestgruppeService {
                 .then();
     }
 
-    public Flux<GruppeFragment> fetchGruppeByFragment(String gruppeFragment) {
+    public Flux<GruppeFragment> fetchGruppeByFragment(String gruppeFragment, String bankIdOrgNr) {
 
         var searchQueries = gruppeFragment.split(" ");
         var gruppeId = Arrays.stream(searchQueries)
                 .filter(word -> word.matches("\\d+"))
-                .map(id -> "%" + id + "%")
                 .findFirst()
                 .orElse("");
         var gruppeNavn = Arrays.stream(searchQueries)
                 .filter(word -> !word.matches("\\d+"))
                 .filter(StringUtils::isNotBlank)
-                .map(word -> "%" + word + "%")
                 .collect(Collectors.joining(" "));
 
-        return Mono.just(gruppeFragment)
-                .flatMapMany(_ -> isNotBlank(gruppeNavn) && isNotBlank(gruppeId) ?
-                        testgruppeRepository.findByIdContainingAndNavnContaining(gruppeId, gruppeNavn) :
-                        Flux.merge(
-                                testgruppeRepository.findByIdContaining(gruppeId),
-                                testgruppeRepository.findByNavnContaining(gruppeNavn)))
-                .sort(Comparator.comparing(GruppeFragment::getId));
+        Mono<List<String>> optionalBankIdBrukere = isBlank(bankIdOrgNr) ?
+                Mono.just(emptyList()) :
+                brukerServiceConsumer.getBrukereIOrganisasjon(bankIdOrgNr)
+                        .map(BrukereDTO::getBrukere);
+
+        return optionalBankIdBrukere
+                .flatMapMany(brukere ->
+                        testgruppeRepository.findByIdAndNavnAndBrukere(gruppeId, gruppeNavn, brukere.toArray(new String[0])));
     }
 }

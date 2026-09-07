@@ -1,7 +1,6 @@
 package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettGruppeService;
@@ -36,23 +35,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
+import java.util.Map;
 import java.util.Set;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
-@RestController
-@RequiredArgsConstructor
 @Slf4j
+@RestController
 @RequestMapping(value = "api/v1/gruppe")
-public class TestgruppeController {
+public class TestgruppeController extends AbstractJwtOrgnrExtractor {
 
     private final BestillingService bestillingService;
     private final MapperFacade mapperFacade;
@@ -63,6 +64,25 @@ public class TestgruppeController {
     private final OpprettPersonerFraIdenterMedKriterierService opprettPersonerFraIdenterMedKriterierService;
     private final GjenopprettGruppeService gjenopprettGruppeService;
     private final SplittGruppeService splittGruppeService;
+
+    public TestgruppeController(JsonMapper jsonMapper, BestillingService bestillingService,
+                                MapperFacade mapperFacade, ImportAvPersonerFraPdlService importAvPersonerFraPdlService,
+                                LeggTilPaaGruppeService leggTilPaaGruppeService, TestgruppeService testgruppeService,
+                                OpprettPersonerByKriterierService opprettPersonerByKriterierService,
+                                OpprettPersonerFraIdenterMedKriterierService opprettPersonerFraIdenterMedKriterierService,
+                                GjenopprettGruppeService gjenopprettGruppeService, SplittGruppeService splittGruppeService) {
+
+        super(jsonMapper);
+        this.bestillingService = bestillingService;
+        this.mapperFacade = mapperFacade;
+        this.importAvPersonerFraPdlService = importAvPersonerFraPdlService;
+        this.leggTilPaaGruppeService = leggTilPaaGruppeService;
+        this.testgruppeService = testgruppeService;
+        this.opprettPersonerByKriterierService = opprettPersonerByKriterierService;
+        this.opprettPersonerFraIdenterMedKriterierService = opprettPersonerFraIdenterMedKriterierService;
+        this.gjenopprettGruppeService = gjenopprettGruppeService;
+        this.splittGruppeService = splittGruppeService;
+    }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
@@ -171,9 +191,11 @@ public class TestgruppeController {
 
     @GetMapping("/soekGruppe")
     @Operation(description = "Hent grupper basert på fragment")
-    public Flux<GruppeFragment> getGrupperByFragment(@RequestParam(value = "fragment") String fragment) {
+    public Flux<GruppeFragment> getGrupperByFragment(@RequestHeader Map<String, String> headers,
+                                                     @RequestParam(value = "fragment") String fragment) {
 
-        return testgruppeService.fetchGruppeByFragment(fragment);
+        var bankIdOrgNr = getBankIdOrgNr(headers);
+        return testgruppeService.fetchGruppeByFragment(fragment, bankIdOrgNr);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

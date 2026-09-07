@@ -1,4 +1,4 @@
-import { Knapp } from '@navikt/dolly-komponenter'
+import { Button } from '@navikt/ds-react'
 import React from 'react'
 
 export default () => {
@@ -19,15 +19,17 @@ export default () => {
 					</a>
 					).
 				</p>
-				<Knapp className="login-modal_button-nav" onClick={getOnClick('/oauth2/authorization/aad')}>
-					Logg inn med NAV epost
-				</Knapp>
-				<Knapp
-					className="login-modal_button-bankid"
-					onClick={getOnClick('/oauth2/authorization/idporten')}
-				>
-					Logg inn med BankId
-				</Knapp>
+				<div className="login-modal__actions">
+					<Button className="login-modal_button-nav" onClick={getOnClick('/oauth2/authorization/aad')}>
+						Logg inn med NAV epost
+					</Button>
+					<Button
+						className="login-modal_button-bankid"
+						onClick={getOnClick('/oauth2/authorization/idporten')}
+					>
+						Logg inn med BankId
+					</Button>
+				</div>
 			</div>
 		</div>
 	)

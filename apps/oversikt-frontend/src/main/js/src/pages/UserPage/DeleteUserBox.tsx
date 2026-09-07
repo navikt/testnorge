@@ -1,16 +1,11 @@
 import { Box } from '@/components/Box'
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import BrukerService from '@/services/BrukerService'
-import { Knapp, InputFormItem } from '@navikt/dolly-komponenter'
-
-const StyledFareknapp = styled(Knapp)`
-	margin: 5px 0;
-`
+import { Button, TextField } from '@navikt/ds-react'
 
 const DeleteUserBox = () => {
-	const [id, setId] = useState(null)
-	const [jwt, setJwt] = useState(null)
+	const [id, setId] = useState('')
+	const [jwt, setJwt] = useState('')
 
 	return (
 		<Box
@@ -18,11 +13,11 @@ const DeleteUserBox = () => {
 			header="Slett bruker"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<InputFormItem label="Id" type="text" onBlur={(event) => setId(event.target.value)} />
-					<InputFormItem label="Jwt" type="text" onBlur={(event) => setJwt(event.target.value)} />
-					<StyledFareknapp variant={'danger'} loading={loading} onClick={onSubmit}>
+					<TextField label="Id" onBlur={(event) => setId(event.target.value)} />
+					<TextField label="Jwt" onBlur={(event) => setJwt(event.target.value)} />
+					<Button data-color="danger" loading={loading} onClick={onSubmit}>
 						Slett
-					</StyledFareknapp>
+					</Button>
 				</>
 			)}
 		/>

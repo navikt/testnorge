@@ -1,7 +1,6 @@
 package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
@@ -21,13 +20,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
@@ -39,9 +41,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Transactional
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bestilling", produces = MediaType.APPLICATION_JSON_VALUE)
-public class BestillingController {
+public class BestillingController extends AbstractJwtOrgnrExtractor {
 
     private final BestillingService bestillingService;
     private final BestillingEventPublisher bestillingEventPublisher;
@@ -49,6 +50,21 @@ public class BestillingController {
     private final MapperFacade mapperFacade;
     private final NavigasjonService navigasjonService;
     private final OrganisasjonBestillingService organisasjonBestillingService;
+
+    public BestillingController(JsonMapper jsonMapper, BestillingService bestillingService,
+                                BestillingEventPublisher bestillingEventPublisher,
+                                GjenopprettBestillingService gjenopprettBestillingService,
+                                MapperFacade mapperFacade, NavigasjonService navigasjonService,
+                                OrganisasjonBestillingService organisasjonBestillingService) {
+
+        super(jsonMapper);
+        this.bestillingService = bestillingService;
+        this.bestillingEventPublisher = bestillingEventPublisher;
+        this.gjenopprettBestillingService = gjenopprettBestillingService;
+        this.mapperFacade = mapperFacade;
+        this.navigasjonService = navigasjonService;
+        this.organisasjonBestillingService = organisasjonBestillingService;
+    }
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
@@ -69,9 +85,11 @@ public class BestillingController {
 
     @GetMapping("/soekBestilling")
     @Operation(description = "Hent Bestillinger basert på fragment")
-    public Flux<BestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+    public Flux<BestillingFragment> getBestillingerByFragment(@RequestHeader Map<String, String> headers,
+                                                              @RequestParam(value = "fragment") String fragment) {
 
-        return bestillingService.fetchBestillingByFragment(fragment);
+        var bankIdOrgNr = getBankIdOrgNr(headers);
+        return bestillingService.fetchBestillingByFragment(fragment, bankIdOrgNr);
     }
 
     @Operation(description = "Naviger til ønsket bestilling")

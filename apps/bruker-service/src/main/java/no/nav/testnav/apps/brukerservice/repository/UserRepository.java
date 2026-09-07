@@ -16,4 +16,8 @@ public interface UserRepository extends ReactiveCrudRepository<UserEntity, Strin
             "join user_entity as u on u.organisasjonsnummer = ue.organisasjonsnummer " +
             "and u.id = :brukerId")
     Flux<UserEntity> findBrukereISammeOrganisasjoner(@Param("brukerId") String brukerId);
+
+    @Query("select * from user_entity as ue " +
+           "where ue.organisasjonsnummer = :orgnr")
+    Flux<UserEntity> findBrukereIOrganisasjon(@Param("orgnr") String orgnr);
 }
