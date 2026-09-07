@@ -54,7 +54,8 @@ public class BestillingQueryService {
     @Value("${open.search.index}")
     private String bestillingIndex;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer, #request.orgnr}")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer, " +
+                                                  "#request.kilde, #request.orgnr}")
     public Mono<Set<String>> execRegisterCacheQuery(SearchRequest request) {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
