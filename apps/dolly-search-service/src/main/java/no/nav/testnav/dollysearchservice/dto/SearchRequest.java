@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.*;
 
 @Data
 @Builder
@@ -28,6 +29,8 @@ public class SearchRequest {
 
     private org.opensearch.client.opensearch.core.SearchRequest query;
     private SearchRequest request;
+    private Kilde kilde;
+
     private String index;
 
     private Set<String> mustHaveTags;

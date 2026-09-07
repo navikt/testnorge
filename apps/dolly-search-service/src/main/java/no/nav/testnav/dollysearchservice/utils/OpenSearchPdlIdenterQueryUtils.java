@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.FOLKEREGISTERIDENTIFIKATOR;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.HENT_IDENTER;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.nestedRegexpQuery;
@@ -32,7 +31,7 @@ public class OpenSearchPdlIdenterQueryUtils {
 
     private static final String PERSON_FORNAVN = "hentPerson.navn.fornavn";
     private static final String PERSON_ETTERNAVN = "hentPerson.navn.etternavn";
-    private static final String IDENTIFIKASJONSNUMMER = "identifikasjonsnummer";
+    private static final String IDENT= "ident";
 
     public static FunctionScoreQuery.Builder buildTestnorgeIdentSearchQuery(IdentSearch search) {
 
@@ -109,7 +108,7 @@ public class OpenSearchPdlIdenterQueryUtils {
 
         if (nonNull(identer) && !identer.isEmpty()) {
             queryBuilder
-                    .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, "ident", identer)));
+                    .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, IDENT, identer)));
         }
     }
 
@@ -119,7 +118,7 @@ public class OpenSearchPdlIdenterQueryUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(q ->
-                                q.nested(nestedRegexpQuery(FOLKEREGISTERIDENTIFIKATOR, IDENTIFIKASJONSNUMMER, ".*" + value + ".*")));
+                                q.nested(nestedRegexpQuery(HENT_IDENTER, IDENT, ".*" + value + ".*")));
                     }
                 });
     }

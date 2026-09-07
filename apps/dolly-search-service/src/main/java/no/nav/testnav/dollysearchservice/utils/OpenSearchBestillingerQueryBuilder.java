@@ -61,7 +61,7 @@ import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.match
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.termsQuery;
 
 @UtilityClass
-public class OpenSearchQueryBuilder {
+public class OpenSearchBestillingerQueryBuilder {
 
     private static final Random RANDOM = new SecureRandom();
 
@@ -157,4 +157,6 @@ public class OpenSearchQueryBuilder {
             queryBuilder.mustNot(q -> q.terms(termsQuery("tags", request.getMustNotHaveTags())));
         }
     }
+
+
 }
