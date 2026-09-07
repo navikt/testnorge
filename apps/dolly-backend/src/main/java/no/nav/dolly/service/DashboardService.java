@@ -502,8 +502,26 @@ public class DashboardService {
             case "Fullmakt", "Instdata", "SigrunstubPensjonsgivende",
                  "SigrunstubSummertSkattegrunnlag", "Dokarkiv",
                  "Yrkesskader","EtterlatteYtelser" -> decodeAntall(bestilling, system);
+            case "Bankkonto" -> decodeBankkonto(bestilling);
             default -> system;
         };
+    }
+
+    private static String decodeBankkonto(RsDollyBestilling bestilling) {
+
+        var builder = new StringBuilder("Bankkonto=");
+
+        var bankkonto = bestilling.getBankkonto();
+        if (nonNull(bankkonto)) {
+            if (nonNull(bankkonto.getNorskBankkonto())) {
+                builder.append(",NorskBankkonto:true");
+            }
+            if (nonNull(bankkonto.getUtenlandskBankkonto())){
+                builder.append(",UtenlandskBankkonto:true");
+            }
+        }
+
+        return builder.toString();
     }
 
     private static String decodeAntall(RsDollyBestilling bestilling, String system) {
@@ -514,7 +532,7 @@ public class DashboardService {
             var register = (List) bestilling.getClass().getMethod("get%s".formatted(system))
                     .invoke(bestilling);
 
-            builder.append(",Antall elementer:")
+            builder.append(",Array/matrise antall:")
                     .append(register.size());
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.error("Feil ved henting av antall: {}", e.getMessage(), e);
@@ -606,6 +624,15 @@ public class DashboardService {
             } else {
                 builder.append(",Syntetisk:")
                         .append(isTrue(pdldata.getOpprettNyPerson().getSyntetisk()));
+            }
+            if (nonNull(pdldata.getOpprettNyPerson().getAlder())) {
+                builder.append(",Alder:true");
+            }
+            if (nonNull(pdldata.getOpprettNyPerson().getFoedtEtter())) {
+                builder.append(",FødtEtter:true");
+            }
+            if (nonNull(pdldata.getOpprettNyPerson().getAlder())) {
+                builder.append(",FødtFør:true");
             }
         } else {
             builder.append(",Legg-til/endre:true");
