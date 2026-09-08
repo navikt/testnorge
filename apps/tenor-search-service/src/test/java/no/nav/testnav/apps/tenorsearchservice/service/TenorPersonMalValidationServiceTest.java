@@ -48,6 +48,19 @@ class TenorPersonMalValidationServiceTest {
     }
 
     @Test
+    void shouldRejectPersonIdentifierInObjectFieldName() {
+        var request = new OpprettTenorPersonMalRequest(
+                "Min mal",
+                jsonMapper.readTree("""
+                        {"avansert":{"41010100044":"verdi"}}
+                        """));
+
+        assertThatThrownBy(() -> validationService.validate(request))
+                .isInstanceOf(TenorMalValidationException.class)
+                .hasMessage("Malen kan ikke inneholde fødselsnummer eller d-nummer.");
+    }
+
+    @Test
     void shouldRejectUnsupportedCharactersInTemplateName() {
         var request = new OpprettTenorPersonMalRequest(
                 "Min mal!",

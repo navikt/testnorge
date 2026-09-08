@@ -80,6 +80,13 @@ public class TenorPersonMalValidationService {
             validateNoPersonidentifikator(node.asString());
             return;
         }
+        if (node.isObject()) {
+            node.forEachEntry((fieldName, value) -> {
+                validateNoPersonidentifikator(fieldName);
+                validateNoPersonidentifikator(value);
+            });
+            return;
+        }
         node.forEach(this::validateNoPersonidentifikator);
     }
 
