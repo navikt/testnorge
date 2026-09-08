@@ -85,6 +85,9 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 .filter(request -> isBlank(request.getFeil()))
                 .flatMap(_ -> identService.getTestIdent(bestilling.getIdent()))
                 .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
+                .flatMap(progress -> progress.isPdl() ?
+                        oppdaterPdlImportStatus(progress) :
+                        Mono.just(progress))
                 .flatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
