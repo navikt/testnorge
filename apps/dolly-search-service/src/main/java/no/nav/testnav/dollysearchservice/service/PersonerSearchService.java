@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.Kategori;
 import no.nav.testnav.dollysearchservice.mapper.MappingContextUtils;
-import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
+import no.nav.testnav.dollysearchservice.utils.OpenSearchBestillingerQueryBuilder;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchResponse;
@@ -73,7 +73,7 @@ public class PersonerSearchService {
 
                     request.setIdenter(identer.isEmpty() ? Set.of(NO_IDENT) : identer);
 
-                    var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+                    var query = OpenSearchBestillingerQueryBuilder.buildSearchQuery(request);
 
                     return pdlPersonQueryService.execQuery(request, query)
                             .map(response -> mapperFacade.map(response, SearchResponse.class));

@@ -29,11 +29,13 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_TESTNORGE_IDENTER;
 import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_REGISTRE;
+import static no.nav.testnav.dollysearchservice.config.CachingConfig.CACHE_TESTNORGE_IDENTER;
 import static no.nav.testnav.dollysearchservice.utils.FagsystemQueryUtils.addIdentQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.regexpQuery;
+import static no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.Kilde.DOLLY;
+import static no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.Kilde.TESTNORGE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -43,17 +45,21 @@ public class BestillingQueryService {
 
     private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
+    private static final String DOLLY_FORMAT = "\\d{2}[0-7]\\d{8}";
     private static final String OPENSEARCH_ERROR_FALLBACK_IDENT = "99999999999";
+    private static final String IDENTER = "identer";
 
     private final OpenSearchClient opensearchClient;
 
     @Value("${open.search.index}")
     private String bestillingIndex;
 
-    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer, #request.orgnr}")
+    @Cacheable(cacheNames = CACHE_REGISTRE, key = "{#request.registreRequest, #request.miljoer, " +
+                                                  "#request.kilde, #request.orgnr}")
     public Mono<Set<String>> execRegisterCacheQuery(SearchRequest request) {
 
         var queryBuilder = getFagsystemAndMiljoerQuery(request);
+        addKildeQuery(queryBuilder, request.getKilde());
 
         return execQuery(queryBuilder);
     }
@@ -88,7 +94,7 @@ public class BestillingQueryService {
 
     private Mono<Set<String>> execTestnorgeQuery(BoolQuery.Builder queryBuilder) {
 
-        queryBuilder.must(q -> q.regexp(regexpQuery("identer", TESTNORGE_FORMAT)));
+        queryBuilder.must(q -> q.regexp(regexpQuery(IDENTER, TESTNORGE_FORMAT)));
 
         return execQuery(queryBuilder)
                 .flatMapMany(Flux::fromIterable)
@@ -178,5 +184,18 @@ public class BestillingQueryService {
         FagsystemQueryUtils.addMiljoerQuery(queryBuilder, request.getMiljoer());
         FagsystemQueryUtils.addOrgnrQuery(queryBuilder, request);
         return queryBuilder;
+    }
+
+
+    private static void addKildeQuery(BoolQuery.Builder queryBuilder, no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.Kilde kilde) {
+
+        if (DOLLY.equals(kilde)) {
+            queryBuilder.must(q ->
+                    q.regexp(regexpQuery(IDENTER, DOLLY_FORMAT)));
+
+        } else if (TESTNORGE.equals(kilde)) {
+            queryBuilder.must(q ->
+                    q.regexp(regexpQuery(IDENTER, TESTNORGE_FORMAT)));
+        }
     }
 }
