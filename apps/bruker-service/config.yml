@@ -26,6 +26,7 @@ spec:
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
+        - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-frontend
         - application: testnav-oversikt-frontend
     outbound:
