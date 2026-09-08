@@ -167,4 +167,30 @@ class DollyBestillingServiceTest {
 
         verifyNoInteractions(identService);
     }
+
+    @Test
+    void shouldPassMissingIdentThroughToIdentServiceWhenIdentIsMissing() {
+
+        var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID)
+                .ident(null)
+                .master(PDL)
+                .build();
+        var bestilling = Bestilling.builder()
+                .id(BESTILLING_ID)
+                .gruppeId(GRUPPE_ID)
+                .build();
+
+        given(bestillingRepository.findById(BESTILLING_ID)).willReturn(Mono.just(bestilling));
+        given(identService.saveIdentTilGruppe(null, GRUPPE_ID, PDL, BESKRIVELSE))
+                .willReturn(Mono.just(Testident.builder().ident(null).gruppeId(GRUPPE_ID).master(PDL).build()));
+
+        // leggIdentTilGruppe has no guard for a missing ident on progress; it is passed
+        // through to identService as-is (null in this case).
+        StepVerifier.create(dollyBestillingService.leggIdentTilGruppe(progress, BESKRIVELSE))
+                .expectNext(progress)
+                .verifyComplete();
+
+        verify(identService).saveIdentTilGruppe(null, GRUPPE_ID, PDL, BESKRIVELSE);
+    }
 }
