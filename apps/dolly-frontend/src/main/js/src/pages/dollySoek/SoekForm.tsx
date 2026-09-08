@@ -131,9 +131,8 @@ export const SoekForm = ({
 		setRequest(updatedRequest)
 	}
 
-	const antallFagsystemer = watch('registreRequest')?.length
-
-	const antallMiljoer = watch('miljoer')?.length
+	const antallFagsystemer = watch('registreRequest')?.length ?? 0
+	const antallMiljoer = watch('miljoer')?.length ?? 0
 
 	const getAntallRequest = (liste: Array<string>) => {
 		let antall = 0

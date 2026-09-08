@@ -39,7 +39,7 @@ export const Fagsystemer = ({ handleChangeList, handleChange }: any) => {
 					placeholder="Velg kilde ..."
 					title="Kilde"
 					options={Options('kilde')}
-					onChange={(val: SyntheticEvent) => {
+					onChange={(val: any) => {
 						handleChange(val?.value || null, 'kilde', `Kilde: ${val?.label}`)
 					}}
 				/>
