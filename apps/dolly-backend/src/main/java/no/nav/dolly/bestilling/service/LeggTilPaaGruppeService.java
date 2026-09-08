@@ -102,7 +102,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                         .zipWith(Mono.just(originator)))
                 .concatMap(tuple -> (tuple.getT1().isPdl() ?
                         oppdaterPdlImportStatus(tuple.getT1()) : Mono.just(tuple.getT1()))
-                        .thenReturn(tuple))
+                        .zipWith(Mono.just(tuple.getT2())))
                 .concatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)

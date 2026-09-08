@@ -95,7 +95,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                 .flatMap(tuple -> (tuple.getT1().isPdl() ?
                         oppdaterPdlImportStatus(tuple.getT1()) :
                         Mono.just(tuple.getT1()))
-                        .thenReturn(tuple))
+                        .zipWith(Mono.just(tuple.getT2())))
                 .flatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
                 .flatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
