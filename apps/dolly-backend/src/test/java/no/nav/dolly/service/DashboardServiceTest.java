@@ -3,20 +3,26 @@ package no.nav.dolly.service;
 import no.nav.dolly.consumer.altinn3.Altinn3TilgangServiceConsumer;
 import no.nav.dolly.consumer.altinn3.dto.Altinn3TilgangDTO;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.config.JsonMapperConfig;
+import no.nav.testnav.libs.reactivecore.config.JacksonAutoConfiguration;
 import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.BestillingProgressDTO;
+import no.nav.dolly.domain.dto.DashboardAdferdDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testident.Master;
+import no.nav.dolly.domain.projection.AdferdFragment;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
 import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
+import no.nav.dolly.domain.resultset.BAFeilkoder;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
@@ -70,7 +76,7 @@ class DashboardServiceTest {
     private BrukerServiceConsumer brukerServiceConsumer;
 
     @Spy
-    private JsonMapper jsonMapper = new JsonMapper();
+    private JsonMapper jsonMapper = new JsonMapperConfig(new JacksonAutoConfiguration().dollyDateTimeModule()).jsonMapper();
 
     @Mock
     private R2dbcEntityTemplate entityTemplate;
@@ -737,7 +743,513 @@ class DashboardServiceTest {
                 .verifyComplete();
     }
 
+    // ── getFeilstatusDetaljert ───────────────────────────────────────────────
+
+    @Test
+    void shouldReturnEmptyFeilstatusDetaljertWhenNoRows() {
+        setupFeilStatusMocks(Flux.empty());
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldKeepIdentitetsfeltInFeilstatusDetaljert() {
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .bestillingId(42L)
+                .aaregStatus("FEIL: noe gikk galt")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> {
+                    assertThat(json.get("ident").asString()).isEqualTo("12345678901");
+                    assertThat(json.get("bestillingId").asLong()).isEqualTo(42L);
+                    assertThat(json.get("aaregStatus").asString()).isEqualTo("FEIL: noe gikk galt");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldOmitStatusesWithoutFeilInFeilstatusDetaljert() {
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .aaregStatus("OK")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> assertThat(json.has("aaregStatus")).isFalse())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldMapMasterToTypeInFeilstatusDetaljert() {
+        var navIdent = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .master(Master.PDLF)
+                .aaregStatus("FEIL")
+                .build();
+        var testnorgeIdent = BestillingProgressDTO.builder()
+                .ident("12345678902")
+                .master(Master.PDL)
+                .aaregStatus("FEIL")
+                .build();
+        setupFeilStatusMocks(Flux.just(navIdent, testnorgeIdent));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> assertThat(json.get("type").asString()).isEqualTo("Nav-ident"))
+                .assertNext(json -> assertThat(json.get("type").asString()).isEqualTo("Testnorge-ident"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldParseEmbeddedJsonInFeilstatusDetaljert() {
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .aaregStatus("{\"melding\":\"feil i arbeidsforhold\"}")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> assertThat(json.get("aaregStatus").get("melding").asString())
+                        .isEqualTo("feil i arbeidsforhold"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldExpandAaregKodeToBeskrivelseInFeilstatusDetaljert() {
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .aaregStatus("FEIL: BA10")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> assertThat(json.get("aaregStatus").asString())
+                        .isEqualTo("FEIL: " + BAFeilkoder.BA10.getBeskrivelse()))
+                .verifyComplete();
+    }
+
+    // ── getAdferd ────────────────────────────────────────────────────────────
+
+    @Test
+    void shouldReturnEmptyAdferdWhenNoFragments() {
+        when(bestillingRepository.findByBestKriterier(INTERVAL_1)).thenReturn(Flux.empty());
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCountFagsystemWithoutDetaljerWhenNoDecodingApplies() {
+        stubAdferd(adferdFragment(DATE_1, "{\"krrstub\":{}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    assertThat(dto.getDato()).isEqualTo(DATE_1);
+                    var entry = kriterium(dto, "Krrstub");
+                    assertThat(entry.getAntall()).isEqualTo(1);
+                    assertThat(entry.getDetaljer()).isNull();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldUseAntallFromFragmentAsWeight() {
+        stubAdferd(adferdFragment(DATE_1, "{\"krrstub\":{}}", 7));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Krrstub").getAntall()).isEqualTo(7))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSumAntallAcrossBestillingerWithSameFagsystem() {
+        stubAdferd(adferdFragment(DATE_1, "{\"krrstub\":{}}", 2),
+                adferdFragment(DATE_1, "{\"krrstub\":{}}", 3));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Krrstub").getAntall()).isEqualTo(5))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreEmptyListFields() {
+        stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[]}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(dto.getKriterier()).isEmpty())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGroupAdferdFragmentsByDateIntoSeparateDtos() {
+        stubAdferd(adferdFragment(DATE_1, "{\"krrstub\":{}}", 1),
+                adferdFragment(DATE_2, "{\"krrstub\":{}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .expectNextCount(2)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSortAdferdByDateAscending() {
+        stubAdferd(adferdFragment(DATE_2, "{\"krrstub\":{}}", 1),
+                adferdFragment(DATE_1, "{\"krrstub\":{}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_1))
+                .assertNext(dto -> assertThat(dto.getDato()).isEqualTo(DATE_2))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeAaregWithAntallArbeidsforhold() {
+        stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[{},{}]}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Aareg").getDetaljer())
+                        .containsEntry("Antall arbeidsforhold", "2"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeAntallForListBasedFagsystem() {
+        stubAdferd(adferdFragment(DATE_1, "{\"dokarkiv\":[{}]}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Dokarkiv").getDetaljer())
+                        .containsEntry("Array/matrise antall", "1"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeNorskBankkonto() {
+        stubAdferd(adferdFragment(DATE_1, "{\"bankkonto\":{\"norskBankkonto\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var detaljer = kriterium(dto, "Bankkonto").getDetaljer();
+                    assertThat(detaljer).containsEntry("NorskBankkonto", "true");
+                    assertThat(detaljer).doesNotContainKey("UtenlandskBankkonto");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeUtenlandskBankkonto() {
+        stubAdferd(adferdFragment(DATE_1, "{\"bankkonto\":{\"utenlandskBankkonto\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var detaljer = kriterium(dto, "Bankkonto").getDetaljer();
+                    assertThat(detaljer).containsEntry("UtenlandskBankkonto", "true");
+                    assertThat(detaljer).doesNotContainKey("NorskBankkonto");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeBothNorskAndUtenlandskBankkonto() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"bankkonto\":{\"norskBankkonto\":{},\"utenlandskBankkonto\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Bankkonto").getDetaljer())
+                        .containsEntry("NorskBankkonto", "true")
+                        .containsEntry("UtenlandskBankkonto", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeArenaBrukertype() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"arenaforvalter\":{\"arenaBrukertype\":\"MED_SERVICEBEHOV\"}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
+                        .containsEntry("ArenaBrukertype", "MED_SERVICEBEHOV"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePensjonAlderspensjon() {
+        stubAdferd(adferdFragment(DATE_1, "{\"pensjonforvalter\":{\"alderspensjon\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
+                        .containsEntry("Alderspensjon", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePdlOpprettNyPersonSyntetisk() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pdldata\":{\"opprettNyPerson\":{\"syntetisk\":true}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "PdlData").getDetaljer())
+                        .containsEntry("Syntetisk", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePdlOpprettNyPersonId2032() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pdldata\":{\"opprettNyPerson\":{\"id2032\":true}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var detaljer = kriterium(dto, "PdlData").getDetaljer();
+                    assertThat(detaljer).containsEntry("Id2032", "true");
+                    assertThat(detaljer).doesNotContainKey("Syntetisk");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePdlAsLeggTilEndreWhenNoOpprettNyPerson() {
+        stubAdferd(adferdFragment(DATE_1, "{\"pdldata\":{\"person\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "PdlData").getDetaljer())
+                        .containsEntry("Legg-til/endre", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePdlPersonOpplysningerWithCount() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pdldata\":{\"person\":{\"navn\":[{},{}]}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "PdlData").getDetaljer())
+                        .containsEntry("Navn", "2"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldKeepFagsystemerWithDifferentDetaljerAsSeparateEntries() {
+        stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[{}]}", 1),
+                adferdFragment(DATE_1, "{\"aareg\":[{},{}]}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(dto.getKriterier())
+                        .filteredOn(entry -> "Aareg".equals(entry.getFagsystem()))
+                        .hasSize(2))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeArenaAapAap115AndDagpenger() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"arenaforvalter\":{\"aap\":[{}],\"aap115\":[{}],\"dagpenger\":[{}]}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
+                        .containsEntry("AAP", "true")
+                        .containsEntry("AAP115", "true")
+                        .containsEntry("Dagpenger", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreEmptyArenaLists() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"arenaforvalter\":{\"arenaBrukertype\":\"MED_SERVICEBEHOV\"}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
+                        .doesNotContainKeys("AAP", "AAP115", "Dagpenger"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodeArenaKvalifiseringsgruppe() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"arenaforvalter\":{\"kvalifiseringsgruppe\":\"IKVAL\"}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
+                        .containsEntry("Kvalifiseringsgruppe", "IKVAL"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePdlFoedtFoer() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pdldata\":{\"opprettNyPerson\":{\"foedtFoer\":\"2000-01-01T00:00:00\"}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var detaljer = kriterium(dto, "PdlData").getDetaljer();
+                    assertThat(detaljer).containsEntry("FødtFør", "true");
+                    assertThat(detaljer).doesNotContainKeys("FødtEtter", "Alder");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePdlAlderAndFoedtEtter() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pdldata\":{\"opprettNyPerson\":{\"alder\":42,\"foedtEtter\":\"1980-01-01T00:00:00\"}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var detaljer = kriterium(dto, "PdlData").getDetaljer();
+                    assertThat(detaljer).containsEntry("Alder", "true");
+                    assertThat(detaljer).containsEntry("FødtEtter", "true");
+                    assertThat(detaljer).doesNotContainKey("FødtFør");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePensjonInntektAndGenerertInntekt() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pensjonforvalter\":{\"inntekt\":{},\"generertInntekt\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
+                        .containsEntry("PoppInntekt", "true")
+                        .containsEntry("PoppSpesifisertInntekt", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePensjonUforetrygdAndAfpOffentlig() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pensjonforvalter\":{\"uforetrygd\":{},\"afpOffentlig\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
+                        .containsEntry("Uforetrygd", "true")
+                        .containsEntry("AfpOffentlig", "true"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDecodePensjonAvtalerAndTjenestepensjonWithCounts() {
+        stubAdferd(adferdFragment(DATE_1,
+                "{\"pensjonforvalter\":{\"pensjonsavtale\":[{},{}],\"tp\":[{}]}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
+                        .containsEntry("Pensjonsavtale", "2")
+                        .containsEntry("Tjenestepensjon", "1"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldIgnoreEmptyPensjonLists() {
+        stubAdferd(adferdFragment(DATE_1, "{\"pensjonforvalter\":{\"alderspensjon\":{}}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
+                        .doesNotContainKeys("Pensjonsavtale", "Tjenestepensjon"))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldKeepOnlyHendelserWithErrorInPdlOrdreStatus() {
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .pdlOrdreStatus(ordreStatusJson("[]"))
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> {
+                    var hendelser = json.get("pdlOrdreStatus").get("hovedperson")
+                            .get("ordrer").get(0).get("hendelser");
+                    assertThat(hendelser.size()).isEqualTo(1);
+                    assertThat(hendelser.get(0).get("id").asInt()).isEqualTo(1);
+                    assertThat(hendelser.get(0).get("error").asString()).isEqualTo("feilet i PDL");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRemoveRelasjonerWithoutErrorInPdlOrdreStatus() {
+        var relasjonUtenFeil = "[{\"ident\":\"12345678902\",\"ordrer\":[{\"ident\":\"12345678902\"," +
+                "\"infoElement\":\"PDL_DOEDSFALL\",\"hendelser\":[{\"id\":9,\"status\":\"OK\"}]}]}]";
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .pdlOrdreStatus(ordreStatusJson(relasjonUtenFeil))
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> assertThat(json.get("pdlOrdreStatus").get("relasjoner").isEmpty())
+                        .isTrue())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldKeepRelasjonerWithErrorInPdlOrdreStatus() {
+        var relasjonMedFeil = "[{\"ident\":\"12345678902\",\"ordrer\":[{\"ident\":\"12345678902\"," +
+                "\"infoElement\":\"PDL_DOEDSFALL\",\"hendelser\":[{\"id\":9,\"status\":\"FEIL\"," +
+                "\"error\":\"relasjon feilet\"}]}]}]";
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .pdlOrdreStatus(ordreStatusJson(relasjonMedFeil))
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> {
+                    var relasjoner = json.get("pdlOrdreStatus").get("relasjoner");
+                    assertThat(relasjoner.size()).isEqualTo(1);
+                    assertThat(relasjoner.get(0).get("ident").asString()).isEqualTo("12345678902");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldKeepStatusAsTextWhenJsonIsInvalid() {
+        var dto = BestillingProgressDTO.builder()
+                .ident("12345678901")
+                .aaregStatus("{feil, men ikke gyldig json")
+                .build();
+        setupFeilStatusMocks(Flux.just(dto));
+
+        StepVerifier.create(dashboardService.getFeilstatusDetaljert(2024, Month.JANUARY, 1))
+                .assertNext(json -> assertThat(json.get("aaregStatus").asString())
+                        .isEqualTo("{feil, men ikke gyldig json"))
+                .verifyComplete();
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
+
+    private static String ordreStatusJson(String relasjoner) {
+        return "{\"hovedperson\":{\"ident\":\"12345678901\",\"ordrer\":[{" +
+                "\"ident\":\"12345678901\",\"infoElement\":\"PDL_BOSTEDADRESSE\",\"hendelser\":[" +
+                "{\"id\":1,\"status\":\"FEIL\",\"error\":\"feilet i PDL\"}," +
+                "{\"id\":2,\"status\":\"OK\"}]}]}," +
+                "\"relasjoner\":" + relasjoner + "}";
+    }
+
+    private void stubAdferd(AdferdFragment... fragments) {
+        when(bestillingRepository.findByBestKriterier(INTERVAL_1)).thenReturn(Flux.just(fragments));
+    }
+
+    private static AdferdFragment adferdFragment(LocalDate dato, String bestkriterier, Integer antall) {
+        return AdferdFragment.builder()
+                .dato(dato)
+                .bestkriterier(bestkriterier)
+                .antall(antall)
+                .build();
+    }
+
+    private static DashboardAdferdDTO.Entry kriterium(DashboardAdferdDTO dto, String fagsystem) {
+        return dto.getKriterier().stream()
+                .filter(entry -> fagsystem.equals(entry.getFagsystem()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Fant ikke fagsystem " + fagsystem +
+                                                      " i " + dto.getKriterier()));
+    }
 
     private static BestillingerFragment fragment(LocalDate dato, Long personer,
                                                   String gjenopprettstatus) {
