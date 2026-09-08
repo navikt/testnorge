@@ -36,7 +36,6 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
-        - application: testnav-bruker-service
         - application: logging
           namespace: nais-system
       external:
@@ -68,10 +67,9 @@ spec:
       - type: POSTGRES_15
         tier: db-custom-1-3840
         name: testnav-tenor-search-service
+        cascadingDelete: true
         databases:
           - name: testnav-tenor-search-service-db
-  envFrom:
-    - secret: user-encryption-prod
   replicas:
     min: 1
     max: 1

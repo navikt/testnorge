@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice;
 
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
-import no.nav.dolly.libs.nais.NaisPkcs8ConversionInitializer;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,9 +18,7 @@ public class TenorSearchServiceApplicationStarter {
 
     static void main(String[] args) {
         new SpringApplicationBuilder(TenorSearchServiceApplicationStarter.class)
-                .initializers(
-                        new NaisEnvironmentApplicationContextInitializer(),
-                        new NaisPkcs8ConversionInitializer())
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
 }
