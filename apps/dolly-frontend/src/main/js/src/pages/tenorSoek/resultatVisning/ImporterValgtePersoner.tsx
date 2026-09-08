@@ -1,39 +1,49 @@
 import { useLocation, useNavigate } from 'react-router'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
-import { Button, Checkbox } from '@navikt/ds-react'
+import { BodyLong, Button, Dialog } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { EnterIcon } from '@navikt/aksel-icons'
-import { top } from '@popperjs/core'
-import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type ImporterValgtePersonerProps = {
 	identer: Array<string>
 	isMultiple: boolean
-	inkluderPartnere: boolean
-	setInkluderPartnere: any
 }
 
-const CheckboxWrapper = styled.div`
-	display: flex;
-	flex-wrap: wrap;
-	align-items: baseline;
-	height: 20px;
-	margin-left: auto;
-	margin-right: 15px;
-`
+const ImporterPartnerDialog = ({ open, setOpen, handleSubmit }) => (
+	<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog.Popup>
+			<Dialog.Header>
+				<Dialog.Title>Inkluder partner</Dialog.Title>
+			</Dialog.Header>
+			<Dialog.Body>
+				<BodyLong>
+					Én eller flere av personene du importerer har en partner. Ønsker du å importere partner(e)
+					også?
+				</BodyLong>
+			</Dialog.Body>
+			<Dialog.Footer>
+				<Dialog.CloseTrigger>
+					<Button variant="secondary" onClick={() => handleSubmit(false)}>
+						Nei, importer kun valgte personer
+					</Button>
+				</Dialog.CloseTrigger>
+				<Dialog.CloseTrigger>
+					<Button type="button" onClick={() => handleSubmit(true)}>
+						Ja, inkluder partner
+					</Button>
+				</Dialog.CloseTrigger>
+			</Dialog.Footer>
+		</Dialog.Popup>
+	</Dialog>
+)
 
-export const ImporterValgtePersoner = ({
-	identer,
-	isMultiple,
-	inkluderPartnere,
-	setInkluderPartnere,
-}: ImporterValgtePersonerProps) => {
+export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePersonerProps) => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { pdlPersoner, loading } = usePdlPersonbolk(identer)
 
+	const [open, setOpen] = useState(false)
 	const [partnere, setPartnere] = useState([]) as any
 
 	const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
@@ -52,7 +62,7 @@ export const ImporterValgtePersoner = ({
 		setPartnere(partnerListe)
 	}, [pdlPersoner])
 
-	const handleSubmit = () => {
+	const handleSubmit = (inkluderPartnere: boolean) => {
 		const valgtePartnere = inkluderPartnere ? partnere : []
 
 		navigate('/importer', {
@@ -70,37 +80,27 @@ export const ImporterValgtePersoner = ({
 		})
 	}
 
+	const handleImport = () => {
+		if (partnere?.length > 0) {
+			setOpen(true)
+		} else handleSubmit(false)
+	}
+
 	return (
 		<>
+			<ImporterPartnerDialog open={open} setOpen={setOpen} handleSubmit={handleSubmit} />
 			{isMultiple ? (
-				<>
-					{/*TODO: Maa vaere med, men hvor???*/}
-					{/*<CheckboxWrapper>*/}
-					{/*	<Checkbox*/}
-					{/*		checked={inkluderPartnere}*/}
-					{/*		size="small"*/}
-					{/*		onChange={(event) => setInkluderPartnere(event.target.checked)}*/}
-					{/*		// disabled={identer?.length < 1}*/}
-					{/*	>*/}
-					{/*		Inkluder evt. partnere*/}
-					{/*	</Checkbox>*/}
-					{/*	<Hjelpetekst placement={top}>*/}
-					{/*		Dersom en eller flere av de valgte personene har en partner, vil du inkludere*/}
-					{/*		partner(e) i importen?*/}
-					{/*	</Hjelpetekst>*/}
-					{/*</CheckboxWrapper>*/}
-					<Button
-						variant="primary"
-						size="small"
-						disabled={identer?.length < 1}
-						loading={loading}
-						onClick={handleSubmit}
-					>
-						{identer?.length === 1
-							? 'Importer 1 valgt person'
-							: `Importer ${identer?.length} valgte personer`}
-					</Button>
-				</>
+				<Button
+					variant="primary"
+					size="small"
+					disabled={identer?.length < 1}
+					loading={loading}
+					onClick={handleImport}
+				>
+					{identer?.length === 1
+						? 'Importer 1 valgt person'
+						: `Importer ${identer?.length} valgte personer`}
+				</Button>
 			) : (
 				<Button
 					data-testid={TestComponentSelectors.BUTTON_IMPORTER_PERSONER}
@@ -108,7 +108,7 @@ export const ImporterValgtePersoner = ({
 					size="xsmall"
 					icon={<EnterIcon aria-hidden />}
 					loading={loading}
-					onClick={handleSubmit}
+					onClick={handleImport}
 					style={{ minWidth: '155px', height: '24px', marginTop: '10px' }}
 				>
 					Importer person

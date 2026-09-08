@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
 import { malTyper } from '@/pages/minSide/maler/MalModal'
 import { SoekNyMalDialog } from '@/components/ui/soekMaler/SoekNyMalDialog'
 
@@ -50,8 +49,6 @@ export const TreffListe = ({
 	personListe,
 	markertePersoner,
 	setMarkertePersoner,
-	inkluderPartnere,
-	setInkluderPartnere,
 	nesteSide,
 	loading,
 	error,
@@ -102,12 +99,7 @@ export const TreffListe = ({
 						</h2>
 						<HStack gap="space-12">
 							<SoekNyMalDialog id={0} malType={malTyper.TENORSOEK} />
-							<ImporterValgtePersoner
-								identer={markertePersoner}
-								isMultiple={true}
-								inkluderPartnere={inkluderPartnere}
-								setInkluderPartnere={setInkluderPartnere}
-							/>
+							<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
 						</HStack>
 					</div>
 				</Box>
@@ -194,8 +186,6 @@ export const TreffListe = ({
 						iBruk={valgtPerson?.iBruk}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
-						inkluderPartnere={inkluderPartnere}
-						setInkluderPartnere={setInkluderPartnere}
 					/>
 				)}
 			</div>

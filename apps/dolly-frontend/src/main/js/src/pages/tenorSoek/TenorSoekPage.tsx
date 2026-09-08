@@ -82,7 +82,6 @@ export default () => {
 		state.seed,
 	)
 	const [markertePersoner, setMarkertePersoner] = useState([])
-	const [inkluderPartnere, setInkluderPartnere] = useState(false)
 
 	const [overTreff, setOverTreff] = useState(false)
 
@@ -363,8 +362,6 @@ export default () => {
 					personListe={state.personListe}
 					markertePersoner={markertePersoner}
 					setMarkertePersoner={setMarkertePersoner}
-					inkluderPartnere={inkluderPartnere}
-					setInkluderPartnere={setInkluderPartnere}
 					nesteSide={state.nesteSide}
 					loading={loading}
 					error={error}
