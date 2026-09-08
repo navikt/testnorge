@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.Kilde;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
-import static no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.*;
 
 @Data
 @Builder

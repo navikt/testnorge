@@ -45,7 +45,7 @@ public class BestillingQueryService {
 
     private static final int QUERY_SIZE = 1000;
     private static final String TESTNORGE_FORMAT = "\\d{2}[8-9]\\d{8}";
-    private static final String DOLLY_FORMAT = "\\d{2}[1-7]\\d{8}";
+    private static final String DOLLY_FORMAT = "\\d{2}[0-7]\\d{8}";
     private static final String OPENSEARCH_ERROR_FALLBACK_IDENT = "99999999999";
     private static final String IDENTER = "identer";
 
