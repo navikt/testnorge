@@ -210,7 +210,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<OversiktFragment> findByAvailIntervals();
 
     @Query("""
-          select b.id as id, b.best_kriterier as bestkriterier, b.sist_oppdatert as dato,
+          select b.id as id, b.best_kriterier as bestkriterier, b.sist_oppdatert::date as dato,
           case
             when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
             when b.opprett_fra_identer is not null then cardinality(string_to_array(b.opprett_fra_identer, ','))

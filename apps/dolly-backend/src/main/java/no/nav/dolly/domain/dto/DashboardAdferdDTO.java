@@ -26,6 +26,6 @@ public class DashboardAdferdDTO {
 
         private String fagsystem;
         private Integer antall;
-        private Map<String,Object> detaljer;
+        private Map<String, String> detaljer;
     }
 }

@@ -559,13 +559,13 @@ public class DashboardService {
 
         var arenadata = bestilling.getArenaforvalter();
         if (nonNull(arenadata)) {
-            if (nonNull(arenadata.getAap())) {
+            if (!arenadata.getAap().isEmpty()) {
                 builder.append(",AAP:true");
             }
-            if (nonNull(arenadata.getAap115())) {
+            if (!arenadata.getAap115().isEmpty()) {
                 builder.append(",AAP115:true");
             }
-            if (nonNull(arenadata.getDagpenger())) {
+            if (!arenadata.getDagpenger().isEmpty()) {
                 builder.append(",Dagpenger:true");
             }
             if (nonNull(arenadata.getArenaBrukertype())) {
@@ -631,7 +631,7 @@ public class DashboardService {
             if (nonNull(pdldata.getOpprettNyPerson().getFoedtEtter())) {
                 builder.append(",FødtEtter:true");
             }
-            if (nonNull(pdldata.getOpprettNyPerson().getAlder())) {
+            if (nonNull(pdldata.getOpprettNyPerson().getFoedtFoer())) {
                 builder.append(",FødtFør:true");
             }
         } else {
