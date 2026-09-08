@@ -132,6 +132,7 @@ export const SoekForm = ({
 	}
 
 	const antallFagsystemer = watch('registreRequest')?.length
+
 	const antallMiljoer = watch('miljoer')?.length
 
 	const getAntallRequest = (liste: Array<string>) => {
