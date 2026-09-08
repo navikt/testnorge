@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
+import no.nav.testnav.libs.dto.dollysearchservice.v1.SearchRequest.Kilde;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +29,8 @@ public class SearchRequest {
 
     private org.opensearch.client.opensearch.core.SearchRequest query;
     private SearchRequest request;
+    private Kilde kilde;
+
     private String index;
 
     private Set<String> mustHaveTags;

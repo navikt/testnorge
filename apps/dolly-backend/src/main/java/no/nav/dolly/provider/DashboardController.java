@@ -2,6 +2,7 @@ package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.dto.DashboardAdferdDTO;
 import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
@@ -85,4 +86,10 @@ public class DashboardController {
         return dashboardService.getDollyTeamsStatus();
     }
 
+    @GetMapping(value = "/brukeradferd")
+    @Operation(description = "Henter hva som bestilles per år og måned")
+    public Flux<DashboardAdferdDTO> getBrukerAdferd(@RequestParam int year, @RequestParam Month month) {
+
+        return dashboardService.getAdferd(year, month);
+    }
 }

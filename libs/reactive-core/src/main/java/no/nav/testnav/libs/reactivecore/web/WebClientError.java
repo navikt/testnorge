@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactivecore.web;
 
 import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.unix.Errors.NativeIoException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.WriteTimeoutException;
 import lombok.Getter;
@@ -35,7 +36,8 @@ public class WebClientError {
     private static final Predicate<Throwable> IS_5XX = throwable -> throwable instanceof WebClientResponseException webClientResponseException &&
             webClientResponseException.getStatusCode().is5xxServerError() ||
             throwable instanceof WebClientRequestException webClientRequestException &&
-                    webClientRequestException.getCause() instanceof SocketException;
+                    (webClientRequestException.getCause() instanceof SocketException ||
+                            webClientRequestException.getCause() instanceof NativeIoException);
 
     /**
      * Returns a {@link Retry} that will retry on the given exception type, for a given number of times, after a given set of seconds.
@@ -67,7 +69,7 @@ public class WebClientError {
      * @return Retry configuration (actually a {@link RetryBackoffSpec}).
      */
     public static Retry any() {
-        return is(throwable -> true);
+        return is(_ -> true);
     }
 
     /**
@@ -86,7 +88,7 @@ public class WebClientError {
      * @return Retry configuration (actually a {@link RetryBackoffSpec}).
      */
     public static Retry is5xxExceptionThen(Throwable throwable) {
-        return ((RetryBackoffSpec) is5xxException()).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> throwable);
+        return ((RetryBackoffSpec) is5xxException()).onRetryExhaustedThrow((_, _) -> throwable);
     }
 
     /**
@@ -154,16 +156,19 @@ public class WebClientError {
                 }
                 case WebClientRequestException e -> {
                     switch (e.getCause()) {
-                        case ConnectTimeoutException ignored -> {
+                        case ConnectTimeoutException _ -> {
                             return MSG_TIMEOUT;
                         }
-                        case ReadTimeoutException ignored -> {
+                        case ReadTimeoutException _ -> {
                             return MSG_TIMEOUT;
                         }
-                        case WriteTimeoutException ignored -> {
+                        case WriteTimeoutException _ -> {
                             return MSG_TIMEOUT;
                         }
-                        case SocketException ignored -> {
+                        case SocketException _ -> {
+                            return MSG_UNSTABLE;
+                        }
+                        case NativeIoException _ -> {
                             return MSG_UNSTABLE;
                         }
                         default -> {
@@ -171,7 +176,7 @@ public class WebClientError {
                         }
                     }
                 }
-                case TimeoutException ignored -> {
+                case TimeoutException _-> {
                     return MSG_TIMEOUT;
                 }
                 default -> {
@@ -185,7 +190,7 @@ public class WebClientError {
                 case WebClientResponseException e -> {
                     return HttpStatus.valueOf(e.getStatusCode().value());
                 }
-                case TimeoutException ignored -> {
+                case TimeoutException _ -> {
                     return HttpStatus.REQUEST_TIMEOUT;
                 }
                 default -> {
