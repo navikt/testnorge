@@ -61,7 +61,7 @@ public class TenorMalExceptionAdvice {
     ExceptionInformation forbidden(ServerWebExchange exchange) {
         return informationForException(
                 HttpStatus.FORBIDDEN,
-                "Noe gikk galt med autensieringen.",
+                "Noe gikk galt med autentiseringen.",
                 exchange);
     }
 
