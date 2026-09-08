@@ -100,7 +100,7 @@ export default () => {
 		setFormRequest(request)
 		localStorage.setItem(tenorSoekLocalStorageKey, JSON.stringify(request))
 	}
-
+	console.log('formRequest: ', formRequest) //TODO - SLETT MEG
 	useEffect(() => {
 		if (response?.data?.data?.personer?.length === 0) {
 			setState({
@@ -358,6 +358,7 @@ export default () => {
 			</div>
 			<div id="treff">
 				<TreffListe
+					formRequest={formRequest}
 					response={response?.data}
 					personListe={state.personListe}
 					markertePersoner={markertePersoner}

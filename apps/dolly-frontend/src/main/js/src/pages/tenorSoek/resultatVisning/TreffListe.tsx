@@ -45,6 +45,7 @@ const getTagTooltip = (relasjon: string): string => {
 }
 
 export const TreffListe = ({
+	formRequest,
 	response,
 	personListe,
 	markertePersoner,
@@ -85,6 +86,7 @@ export const TreffListe = ({
 	}
 
 	const antallTreff = localStorage['antallTreff']
+	const antallSoekekriterier = Object.keys(formRequest)?.length
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -98,7 +100,12 @@ export const TreffListe = ({
 							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
 						<HStack gap="space-12">
-							<SoekNyMalDialog id={0} malType={malTyper.TENORSOEK} />
+							{/*TODO: Fix id*/}
+							<SoekNyMalDialog
+								id={0}
+								malType={malTyper.TENORSOEK}
+								disabled={antallSoekekriterier < 1}
+							/>
 							<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
 						</HStack>
 					</div>
