@@ -4,7 +4,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { usePersonerTyper } from '@/utils/hooks/useDollySearch'
 import { SoekKategori } from '@/components/ui/soekForm/SoekFormWrapper'
 
-export const Fagsystemer = ({ handleChangeList }: any) => {
+export const Fagsystemer = ({ handleChangeList, handleChange }: any) => {
 	const { typer, loading: loadingTyper } = usePersonerTyper()
 
 	return (
@@ -22,7 +22,7 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					}}
 				/>
 			</div>
-			<div className="flexbox--full-width">
+			<div className="flexbox--flex-wrap">
 				<FormSelect
 					name="miljoer"
 					placeholder="Velg miljøer ..."
@@ -32,6 +32,15 @@ export const Fagsystemer = ({ handleChangeList }: any) => {
 					size="large"
 					onChange={(val: SyntheticEvent) => {
 						handleChangeList(val, 'miljoer', 'Miljø')
+					}}
+				/>
+				<FormSelect
+					name="kilde"
+					placeholder="Velg kilde ..."
+					title="Kilde"
+					options={Options('kilde')}
+					onChange={(val: SyntheticEvent) => {
+						handleChange(val?.value || null, 'kilde', `Kilde: ${val?.label}`)
 					}}
 				/>
 			</div>
