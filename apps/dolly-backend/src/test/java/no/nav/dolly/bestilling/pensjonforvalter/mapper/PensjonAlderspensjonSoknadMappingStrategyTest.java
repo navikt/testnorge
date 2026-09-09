@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
+import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
@@ -34,7 +35,8 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
 
     @BeforeEach
     void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(),
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(
+                new CustomConverter[]{new LocalDateCustomMapping()},
                 new PensjonAlderspensjonSoknadMappingStrategy());
     }
 

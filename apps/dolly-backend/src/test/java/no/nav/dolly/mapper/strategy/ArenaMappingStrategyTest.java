@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.arenaforvalter.mapper.ArenaMappingStrategy;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
@@ -37,7 +38,8 @@ class ArenaMappingStrategyTest {
     @BeforeEach
     void setup() {
 
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new ArenaMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new CustomConverter[]
+                {new LocalDateCustomMapping()}, new ArenaMappingStrategy());
     }
 
     @Test

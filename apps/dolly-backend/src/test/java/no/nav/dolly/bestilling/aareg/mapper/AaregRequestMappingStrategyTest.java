@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.aareg.mapper;
 
+import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aareg.AaregClient;
@@ -48,7 +49,9 @@ class AaregRequestMappingStrategyTest {
 
     @BeforeEach
     void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new AaregRequestMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(
+                new CustomConverter[]{new LocalDateCustomMapping()},
+                new AaregRequestMappingStrategy());
     }
 
     @Test
@@ -141,9 +144,9 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getAntallTimerForTimeloennet().get(0).getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getAntallTimerForTimeloennet().get(0).getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getAntallTimerForTimeloennet().get(0).getAntallTimer(), is(equalTo(1457.0)));
+        assertThat(destinasjon.getAntallTimerForTimeloennet().getFirst().getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getAntallTimerForTimeloennet().getFirst().getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getAntallTimerForTimeloennet().getFirst().getAntallTimer(), is(equalTo(1457.0)));
     }
 
     @Test
@@ -163,11 +166,11 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getType(), is(equalTo("permisjonMedForeldrepenger")));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getProsent(), is(equalTo(100.0)));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getPermisjonPermitteringId(), is(equalTo("1")));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getType(), is(equalTo("permisjonMedForeldrepenger")));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getProsent(), is(equalTo(100.0)));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getPermisjonPermitteringId(), is(equalTo("1")));
     }
 
     @Test
@@ -185,10 +188,10 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getProsent(), is(equalTo(75.0)));
-        assertThat(destinasjon.getPermisjonPermitteringer().get(0).getType(), is(equalTo("permittering")));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getProsent(), is(equalTo(75.0)));
+        assertThat(destinasjon.getPermisjonPermitteringer().getFirst().getType(), is(equalTo("permittering")));
     }
 
     @Test
@@ -206,9 +209,9 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getUtenlandsopphold().get(0).getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getUtenlandsopphold().get(0).getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
-        assertThat(destinasjon.getUtenlandsopphold().get(0).getLandkode(), is(equalTo("BRA")));
+        assertThat(destinasjon.getUtenlandsopphold().getFirst().getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getUtenlandsopphold().getFirst().getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getUtenlandsopphold().getFirst().getLandkode(), is(equalTo("BRA")));
     }
 
     @Test
@@ -233,14 +236,14 @@ class AaregRequestMappingStrategyTest {
 
         assertThat(destinasjon.getArbeidsforholdId(), is(equalTo("1")));
         assertThat(destinasjon.getType(), is(equalTo("ordinaertArbeidsforhold")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0), is(instanceOf(OrdinaerArbeidsavtale.class)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getArbeidstidsordning(), is(equalTo("ikkeSkift")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAnsettelsesform(), is(equalTo("fast")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getStillingsprosent(), is(equalTo(100.0)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getYrke(), is(equalTo("2521106")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAntallTimerPrUke(), is(equalTo(37.5)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst(), is(instanceOf(OrdinaerArbeidsavtale.class)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getArbeidstidsordning(), is(equalTo("ikkeSkift")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAnsettelsesform(), is(equalTo("fast")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getStillingsprosent(), is(equalTo(100.0)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getYrke(), is(equalTo("2521106")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAntallTimerPrUke(), is(equalTo(37.5)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
     }
 
     @Test
@@ -263,14 +266,14 @@ class AaregRequestMappingStrategyTest {
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
         assertThat(destinasjon.getType(), is(equalTo("forenkletOppgjoersordning")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0), is(instanceOf(ForenkletOppgjoersordningArbeidsavtale.class)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getArbeidstidsordning(), is(equalTo("ikkeSkift")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAnsettelsesform(), is(equalTo("fast")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getStillingsprosent(), is(equalTo(100.0)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getYrke(), is(equalTo("2521106")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAntallTimerPrUke(), is(equalTo(37.5)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst(), is(instanceOf(ForenkletOppgjoersordningArbeidsavtale.class)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getArbeidstidsordning(), is(equalTo("ikkeSkift")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAnsettelsesform(), is(equalTo("fast")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getStillingsprosent(), is(equalTo(100.0)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getYrke(), is(equalTo("2521106")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAntallTimerPrUke(), is(equalTo(37.5)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
     }
 
     @Test
@@ -293,14 +296,14 @@ class AaregRequestMappingStrategyTest {
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
         assertThat(destinasjon.getType(), is(equalTo("frilanserOppdragstakerHonorarPersonerMm")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0), is(instanceOf(FrilanserArbeidsavtale.class)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getArbeidstidsordning(), is(equalTo("ikkeSkift")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAnsettelsesform(), is(equalTo("fast")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getStillingsprosent(), is(equalTo(100.0)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getYrke(), is(equalTo("2521106")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAntallTimerPrUke(), is(equalTo(37.5)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst(), is(instanceOf(FrilanserArbeidsavtale.class)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getArbeidstidsordning(), is(equalTo("ikkeSkift")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAnsettelsesform(), is(equalTo("fast")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getStillingsprosent(), is(equalTo(100.0)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getYrke(), is(equalTo("2521106")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAntallTimerPrUke(), is(equalTo(37.5)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
     }
 
     @Test
@@ -317,10 +320,10 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getArbeidsavtaler().get(0), is(instanceOf(MaritimArbeidsavtale.class)));
-        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().get(0)).getFartsomraade(), is(equalTo("utenriks")));
-        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().get(0)).getSkipsregister(), is(equalTo("nis")));
-        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().get(0)).getSkipstype(), is(equalTo("turist")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst(), is(instanceOf(MaritimArbeidsavtale.class)));
+        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().getFirst()).getFartsomraade(), is(equalTo("utenriks")));
+        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().getFirst()).getSkipsregister(), is(equalTo("nis")));
+        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().getFirst()).getSkipstype(), is(equalTo("turist")));
     }
 
     @Test
@@ -347,14 +350,14 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getArbeidsavtaler().get(0), is(instanceOf(OrdinaerArbeidsavtale.class)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getArbeidstidsordning(), is(equalTo("ikkeSkift")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAnsettelsesform(), is(equalTo("fast")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getStillingsprosent(), is(equalTo(100.0)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getYrke(), is(equalTo("2521106")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAntallTimerPrUke(), is(equalTo(37.5)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst(), is(instanceOf(OrdinaerArbeidsavtale.class)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getArbeidstidsordning(), is(equalTo("ikkeSkift")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAnsettelsesform(), is(equalTo("fast")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getStillingsprosent(), is(equalTo(100.0)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getYrke(), is(equalTo("2521106")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAntallTimerPrUke(), is(equalTo(37.5)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
         assertThat(destinasjon.getArbeidsavtaler().get(1), is(instanceOf(MaritimArbeidsavtale.class)));
         assertThat(destinasjon.getArbeidsavtaler().get(1).getArbeidstidsordning(), is(equalTo("ikkeSkift")));
         assertThat(destinasjon.getArbeidsavtaler().get(1).getAnsettelsesform(), is(equalTo("fast")));
@@ -391,16 +394,16 @@ class AaregRequestMappingStrategyTest {
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
 
-        assertThat(destinasjon.getArbeidsavtaler().get(0), is(instanceOf(MaritimArbeidsavtale.class)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getArbeidstidsordning(), is(equalTo("ikkeSkift")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAnsettelsesform(), is(equalTo("fast")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getStillingsprosent(), is(equalTo(100.0)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getYrke(), is(equalTo("2521106")));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getAntallTimerPrUke(), is(equalTo(37.5)));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
-        assertThat(destinasjon.getArbeidsavtaler().get(0).getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
-        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().get(0)).getFartsomraade(), is(equalTo("utenriks")));
-        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().get(0)).getSkipsregister(), is(equalTo("nis")));
-        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().get(0)).getSkipstype(), is(equalTo("turist")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst(), is(instanceOf(MaritimArbeidsavtale.class)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getArbeidstidsordning(), is(equalTo("ikkeSkift")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAnsettelsesform(), is(equalTo("fast")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getStillingsprosent(), is(equalTo(100.0)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getYrke(), is(equalTo("2521106")));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getAntallTimerPrUke(), is(equalTo(37.5)));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistLoennsendring(), is(equalTo(LocalDate.of(2022, 5, 1))));
+        assertThat(destinasjon.getArbeidsavtaler().getFirst().getSistStillingsendring(), is(equalTo(LocalDate.of(2012, 1, 1))));
+        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().getFirst()).getFartsomraade(), is(equalTo("utenriks")));
+        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().getFirst()).getSkipsregister(), is(equalTo("nis")));
+        assertThat(((MaritimArbeidsavtale) destinasjon.getArbeidsavtaler().getFirst()).getSkipstype(), is(equalTo("turist")));
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
+import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
@@ -22,8 +23,6 @@ import static org.hamcrest.Matchers.stringContainsInOrder;
 @ExtendWith(MockitoExtension.class)
 class PensjonUforetrygdMappingStrategyTest {
 
-    private static final String IDENT = "ident";
-    private static final String FNR_1 = "12345678901";
     private static final String PERSONDATA = "persondata";
     private static final LocalDate UFORE_TIDSPUNKT = LocalDate.of(2015, 1, 1);
     private static final String ANSATT = "Z991234";
@@ -31,7 +30,8 @@ class PensjonUforetrygdMappingStrategyTest {
 
     @BeforeEach
     void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(),
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(
+                new CustomConverter[]{new LocalDateCustomMapping()},
                 new PensjonUforetrygdMappingStrategy());
     }
 
@@ -69,7 +69,7 @@ class PensjonUforetrygdMappingStrategyTest {
         var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getSaksbehandler(), stringContainsInOrder("Z", "9"));
-        assertThat(resultat.getAttesterer(),  stringContainsInOrder("Z", "9"));
+        assertThat(resultat.getAttesterer(), stringContainsInOrder("Z", "9"));
     }
 
     @Test
@@ -82,7 +82,7 @@ class PensjonUforetrygdMappingStrategyTest {
                 .build(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getSaksbehandler(), is(equalTo(ANSATT)));
-        assertThat(resultat.getAttesterer(),  stringContainsInOrder("Z", "9"));
+        assertThat(resultat.getAttesterer(), stringContainsInOrder("Z", "9"));
     }
 
     private static LocalDate getForrigeMaaned() {
