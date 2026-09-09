@@ -140,6 +140,11 @@ consumers:
     namespace: dolly
     name: testnav-tenor-search-service
     url: http://testnav-tenor-search-service.dolly.svc.cluster.local
+  testnav-template-search-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-template-search-service
+    url: http://testnav-template-search-service.dolly.svc.cluster.local
   testnav-levende-arbeidsforhold-ansettelse:
     cluster: dev-gcp
     namespace: dolly

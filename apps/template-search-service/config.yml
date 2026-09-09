@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-bruker-service
+  name: testnav-template-search-service
   namespace: dolly
   labels:
     team: dolly
@@ -13,25 +13,19 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-      claims:
-        groups:
-          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
   tokenx:
     enabled: true
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-auth-local
-        - application: dolly-backend
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: testnav-template-search-service
-        - application: testnav-tps-messaging-frontend
+        - application: dolly-auth-local
         - application: testnav-oversikt-frontend
     outbound:
       rules:
-        - application: testnav-altinn3-tilgang-proxy
+        - application: testnav-bruker-service
         - application: logging
           namespace: nais-system
   liveness:
@@ -59,8 +53,9 @@ spec:
     sqlInstances:
       - type: POSTGRES_15
         tier: db-custom-1-3840
+        name: testnav-template-search-service
         databases:
-          - name: testnav-bruker-service-db
+          - name: testnav-template-search-service-db
   envFrom:
     - secret: user-encryption-prod
   replicas:
@@ -69,11 +64,11 @@ spec:
   resources:
     requests:
       cpu: 20m
-      memory: 900Mi
+      memory: 800Mi
     limits:
       memory: 2048Mi
+  ingresses:
+    - "https://testnav-template-search-service.intern.dev.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-  ingresses:
-    - "https://testnav-bruker-service.intern.dev.nav.no"
