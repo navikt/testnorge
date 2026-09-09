@@ -1,0 +1,42 @@
+spring:
+  application:
+    version: 1
+    name: testnav-template-search-service
+    description: Tjeneste som lagrer søkemaler for Tenor-søk
+  config:
+    import: "classpath:dolly-application.yml"
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    placeholders:
+      malNameIndexExpression: lower(mal_navn)
+  r2dbc:
+    pool:
+      enabled: true
+      initial-size: 0
+      max-size: 3
+      max-idle-time: 5m
+      max-life-time: 30m
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+server:
+  servlet:
+    encoding:
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
+
+consumers:
+  bruker-service:
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service

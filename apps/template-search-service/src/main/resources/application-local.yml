@@ -1,0 +1,18 @@
+
+JWT_SECRET: dummy
+
+spring:
+  flyway:
+    url: jdbc:h2:mem:tenormal;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE
+    user: sa
+    password:
+    placeholders:
+      malNameIndexExpression: mal_navn
+  r2dbc:
+    url: r2dbc:h2:mem:///tenormal;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE
+    username: sa
+    password:
+
+consumers:
+  bruker-service:
+    url: https://testnav-bruker-service.intern.dev.nav.no
