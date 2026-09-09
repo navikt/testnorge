@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod">
+        <include resource="logback-spring-json.xml"/>
+    </springProfile>
+
+    <springProfile name="local">
+        <include resource="logback-spring-console.xml"/>
+    </springProfile>
+</configuration>
