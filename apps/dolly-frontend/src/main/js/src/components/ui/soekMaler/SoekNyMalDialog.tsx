@@ -3,7 +3,7 @@ import { Button } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
 
-export const SoekNyMalDialog = ({ id, malType, disabled }) => {
+export const SoekNyMalDialog = ({ verdier, malType, disabled }) => {
 	const [open, setOpen] = useState(false)
 
 	return (
@@ -17,7 +17,7 @@ export const SoekNyMalDialog = ({ id, malType, disabled }) => {
 			>
 				Opprett mal fra søk
 			</Button>
-			<MalModal id={id} malType={malType} open={open} setOpen={setOpen} />
+			<MalModal verdier={verdier} malType={malType} open={open} setOpen={setOpen} />
 		</>
 	)
 }

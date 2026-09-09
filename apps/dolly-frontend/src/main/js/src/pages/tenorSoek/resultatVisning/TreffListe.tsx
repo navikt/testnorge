@@ -100,9 +100,8 @@ export const TreffListe = ({
 							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
 						<HStack gap="space-12">
-							{/*TODO: Fix id*/}
 							<SoekNyMalDialog
-								id={0}
+								verdier={formRequest}
 								malType={malTyper.TENORSOEK}
 								disabled={antallSoekekriterier < 1}
 							/>
