@@ -90,7 +90,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public Mono<RsBruker> leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
@@ -100,7 +100,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public Mono<RsBruker> fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
@@ -119,7 +119,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/representererTeam/{teamId}")
     @Operation(description = "Sett aktivt team for innlogget bruker")
     public Mono<RsBruker> setRepresentererTeam(@PathVariable("teamId") Long teamId) {
@@ -129,7 +129,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/representererTeam")
     @Operation(description = "Fjern aktivt team for innlogget bruker")
     public Mono<RsBruker> clearRepresentererTeam() {
