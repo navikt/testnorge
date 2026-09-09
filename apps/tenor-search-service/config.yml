@@ -62,14 +62,6 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  gcp:
-    sqlInstances:
-      - type: POSTGRES_15
-        tier: db-custom-1-3840
-        name: testnav-tenor-search-service
-        cascadingDelete: true
-        databases:
-          - name: testnav-tenor-search-service-db
   replicas:
     min: 1
     max: 1
