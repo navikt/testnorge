@@ -49,9 +49,6 @@ class SigrunStubClientTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private ErrorStatusDecoder errorStatusDecoder;
-
-    @Mock
     private TransactionHelperService transactionHelperService;
 
     @Captor
