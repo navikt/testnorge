@@ -585,6 +585,7 @@ public class BestillingService {
                                     .histark(request2.getHistark())
                                     .inntektsmelding(request2.getInntektsmelding())
                                     .inntektstub(request2.getInntektstub())
+                                    .inntekter(request2.getInntekter())
                                     .instdata(request2.getInstdata())
                                     .instdataKdi(request2.getInstdataKdi())
                                     .kelvinAap(request2.getKelvinAap())
