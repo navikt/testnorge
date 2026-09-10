@@ -121,11 +121,7 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        Flux.merge(sigrunStubConsumer.deleteLignetInntekt(identer)
-                                .filter(SigrunstubResponse::isOK)
-                                .count()
-                                .map(antall -> "lignet inntekt: " + antall),
-                        sigrunStubConsumer.deletePensjonsgivendeInntekt(identer)
+        Flux.merge(sigrunStubConsumer.deletePensjonsgivendeInntekt(identer)
                                 .filter(SigrunstubResponse::isOK)
                                 .count()
                                 .map(antall -> "pensjonsgivende inntekt: " + antall),
