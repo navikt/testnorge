@@ -32,12 +32,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.time.YearMonth;
+import java.time.Month;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -117,11 +118,12 @@ public class BrukerController extends AbstractJwtClaimsExtractor {
         return brukerBestillingerService.getBestillinger();
     }
 
-    @GetMapping("/bestillinger/brukerid/detaljert/{periode}")
-    @Operation(description = "Hent bestillinger for pålogget bruker")
-    public Flux<MinSideBestillingerDTO> getBestillingerDetajertForCurrentBruker(@PathVariable YearMonth periode) {
+    @GetMapping("/bestillinger/brukerid/detaljert")
+    @Operation(description = "Hent detaljerte bestillinger for pålogget bruker")
+    public Flux<MinSideBestillingerDTO> getBestillingerDetajertForCurrentBruker(@RequestParam int year,
+                                                                                @RequestParam Month month) {
 
-        return brukerBestillingerService.getBestillingerDetaljert(periode);
+        return brukerBestillingerService.getBestillingerDetaljert(year, month);
     }
 
     @Transactional

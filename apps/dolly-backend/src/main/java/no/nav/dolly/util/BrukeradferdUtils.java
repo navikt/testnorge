@@ -3,6 +3,8 @@ package no.nav.dolly.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -10,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -19,6 +24,34 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class BrukeradferdUtils {
 
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
+
+    public record AkkumulertKriterium(String fagsystem, Integer antall, Map<String, String> detaljer) {
+    }
+
+    public static <T> List<AkkumulertKriterium> getAkkumulerteKriterier(
+            List<T> kriterier,
+            Function<T, String> bestKriterierExtractor,
+            ToIntFunction<T> antallExtractor,
+            JsonMapper jsonMapper) {
+
+        return kriterier.stream()
+                .map(kriterium -> {
+                    var bestilling = jsonMapper.readValue(bestKriterierExtractor.apply(kriterium), RsDollyBestilling.class);
+                    return getAntallAdferd(bestilling, antallExtractor.applyAsInt(kriterium));
+                })
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
+                .entrySet().stream()
+                .map(entry -> new AkkumulertKriterium(
+                        entry.getKey().split("=")[0],
+                        entry.getValue(),
+                        entry.getKey().split("=").length > 1 ?
+                                Arrays.stream(entry.getKey().split("=")[1].split(","))
+                                        .filter(StringUtils::isNotBlank)
+                                        .collect(Collectors.toMap(s -> s.split(":")[0], s -> s.split(":")[1]))
+                                : null))
+                .toList();
+    }
 
     public static Map<String, Integer> getAntallAdferd(RsDollyBestilling bestilling, Integer antall) {
 

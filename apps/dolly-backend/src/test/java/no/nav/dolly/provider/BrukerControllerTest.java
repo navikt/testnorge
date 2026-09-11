@@ -2,11 +2,11 @@ package no.nav.dolly.provider;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.dto.MinSideBestillingerDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.projection.BestillingBrukerFragment;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
@@ -32,9 +32,9 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -44,7 +44,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
 
 @ExtendWith(MockitoExtension.class)
 class BrukerControllerTest {
@@ -153,35 +152,29 @@ class BrukerControllerTest {
     }
 
     @Test
-    void shouldGetBestillingerForExplicitBrukerId() {
+    void shouldGetBestillingerForCurrentBruker() {
 
-        var bestilling = BestillingBrukerFragment.builder()
-                .brukerId(BRUKERID)
+        var bestilling = MinSideBestillingerDTO.builder()
+                .periode(YearMonth.of(2026, 1))
                 .build();
-        when(brukerBestillingerService.getBestillinger(BRUKERID))
+        when(brukerBestillingerService.getBestillinger())
                 .thenReturn(Flux.just(bestilling));
 
-        StepVerifier.create(controller.getBestillingerForBrukerId(BRUKERID))
+        StepVerifier.create(controller.getBestillingerForCurrentBruker())
                 .expectNext(bestilling)
                 .verifyComplete();
     }
 
     @Test
-    void shouldGetBestillingerForCurrentBruker() {
+    void shouldGetBestillingerDetajertForCurrentBruker() {
 
-        var bestilling = BestillingBrukerFragment.builder()
-                .brukerId(BRUKERID)
+        var bestilling = MinSideBestillingerDTO.builder()
+                .dato(LocalDate.of(2026, 1, 1))
                 .build();
-        var payload = Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString("""
-                        {"oid":"123"}""".getBytes(StandardCharsets.UTF_8));
-        var headers = Map.of(USER_HEADER_JWT, "header." + payload + ".signature");
-
-        when(brukerBestillingerService.getBestillinger(BRUKERID))
+        when(brukerBestillingerService.getBestillingerDetaljert(2026, Month.JANUARY))
                 .thenReturn(Flux.just(bestilling));
 
-        StepVerifier.create(controller.getBestillingerForCurrentBruker(headers))
+        StepVerifier.create(controller.getBestillingerDetajertForCurrentBruker(2026, Month.JANUARY))
                 .expectNext(bestilling)
                 .verifyComplete();
     }

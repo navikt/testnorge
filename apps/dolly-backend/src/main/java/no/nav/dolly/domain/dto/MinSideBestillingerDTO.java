@@ -22,7 +22,7 @@ public class MinSideBestillingerDTO {
     private Integer antallNyePersoner;
 
     private LocalDate dato;
-    private List<DashboardAdferdDTO.Entry> kriterier;
+    private List<Entry> kriterier;
 
     @Data
     @Builder

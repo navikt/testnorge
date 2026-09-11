@@ -24,14 +24,12 @@ import no.nav.dolly.domain.projection.OrganisasjonFragment;
 import no.nav.dolly.domain.projection.OversiktFragment;
 import no.nav.dolly.domain.projection.TeamFragment;
 import no.nav.dolly.domain.resultset.BAFeilkoder;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.util.BrukeradferdUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -45,7 +43,6 @@ import tools.jackson.databind.node.StringNode;
 
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +52,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
 import static java.util.Objects.nonNull;
@@ -437,30 +433,16 @@ public class DashboardService {
                 .flatMap(Flux::collectList)
                 .map(adferd -> DashboardAdferdDTO.builder()
                         .dato(adferd.getFirst().getDato())
-                        .kriterier(getAkkumulerteKriterier(adferd))
+                        .kriterier(BrukeradferdUtils.getAkkumulerteKriterier(adferd,
+                                        AdferdFragment::getBestkriterier, AdferdFragment::getAntall, jsonMapper)
+                                .stream()
+                                .map(kriterium -> DashboardAdferdDTO.Entry.builder()
+                                        .fagsystem(kriterium.fagsystem())
+                                        .antall(kriterium.antall())
+                                        .detaljer(kriterium.detaljer())
+                                        .build())
+                                .toList())
                         .build())
                 .sort(Comparator.comparing(DashboardAdferdDTO::getDato));
-    }
-
-    private List<DashboardAdferdDTO.Entry> getAkkumulerteKriterier(List<AdferdFragment> kriterier) {
-
-        return kriterier.stream()
-                .map(kriterium -> {
-                    var bestilling = jsonMapper.readValue(kriterium.getBestkriterier(), RsDollyBestilling.class);
-                    return BrukeradferdUtils.getAntallAdferd(bestilling, kriterium.getAntall());
-                })
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
-                .entrySet().stream()
-                .map(entry -> DashboardAdferdDTO.Entry.builder()
-                        .fagsystem(entry.getKey().split("=")[0])
-                        .detaljer(entry.getKey().split("=").length > 1 ?
-                                Arrays.stream(entry.getKey().split("=")[1].split(","))
-                                        .filter(StringUtils::isNotBlank)
-                                        .collect(Collectors.toMap(s -> s.split(":")[0], s -> s.split(":")[1]))
-                                : null)
-                        .antall(entry.getValue())
-                        .build())
-                .toList();
     }
 }
