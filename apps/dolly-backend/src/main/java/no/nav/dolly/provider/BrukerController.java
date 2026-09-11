@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.dto.MinSideBestillingerDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
@@ -18,6 +19,7 @@ import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamBrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.service.BrukerBestillingerService;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -31,10 +33,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Month;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -51,13 +55,14 @@ public class BrukerController {
 
     private static final String FAVORITTER = "favoritter";
 
-    private final BrukerService brukerService;
-    private final MapperFacade mapperFacade;
-    private final GetUserInfo getUserInfo;
+    private final BrukerBestillingerService brukerBestillingerService;
     private final BrukerFavoritterRepository brukerFavoritterRepository;
-    private final TeamRepository teamRepository;
-    private final TeamBrukerRepository teamBrukerRepository;
     private final BrukerRepository brukerRepository;
+    private final BrukerService brukerService;
+    private final GetUserInfo getUserInfo;
+    private final MapperFacade mapperFacade;
+    private final TeamBrukerRepository teamBrukerRepository;
+    private final TeamRepository teamRepository;
     private final TeamService teamService;
     private final TestgruppeRepository testgruppeRepository;
 
@@ -87,6 +92,20 @@ public class BrukerController {
 
         return brukerService.fetchBrukere()
                 .map(bruker -> mapperFacade.map(bruker, RsBrukerUtenFavoritter.class));
+    }
+
+    @GetMapping("/bestillinger/brukerid")
+    @Operation(description = "Hent bestillinger for pålogget bruker")
+    public Flux<MinSideBestillingerDTO> getBestillingerForCurrentBruker() {
+        return brukerBestillingerService.getBestillinger();
+    }
+
+    @GetMapping("/bestillinger/brukerid/detaljert")
+    @Operation(description = "Hent detaljerte bestillinger for pålogget bruker")
+    public Flux<MinSideBestillingerDTO> getBestillingerDetajertForCurrentBruker(@RequestParam int year,
+                                                                                @RequestParam Month month) {
+
+        return brukerBestillingerService.getBestillingerDetaljert(year, month);
     }
 
     @Transactional
