@@ -6,13 +6,17 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.projection.BestillingBrukerFragment;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamBrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.service.BrukerBestillingerService;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -21,10 +25,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -34,6 +44,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_HEADER_JWT;
 
 @ExtendWith(MockitoExtension.class)
 class BrukerControllerTest {
@@ -63,6 +74,18 @@ class BrukerControllerTest {
 
     @Mock
     private BrukerFavoritterRepository brukerFavoritterRepository;
+
+    @Mock
+    private BrukerBestillingerService brukerBestillingerService;
+
+    @Mock
+    private TeamBrukerRepository teamBrukerRepository;
+
+    @Mock
+    private TeamRepository teamRepository;
+
+    @Spy
+    private JsonMapper jsonMapper = new JsonMapper();
 
     @InjectMocks
     private BrukerController controller;
@@ -126,6 +149,40 @@ class BrukerControllerTest {
 
         StepVerifier.create(controller.getAllBrukere())
                 .assertNext(bruker -> verify(brukerService).fetchBrukere())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGetBestillingerForExplicitBrukerId() {
+
+        var bestilling = BestillingBrukerFragment.builder()
+                .brukerId(BRUKERID)
+                .build();
+        when(brukerBestillingerService.getBestillinger(BRUKERID))
+                .thenReturn(Flux.just(bestilling));
+
+        StepVerifier.create(controller.getBestillingerForBrukerId(BRUKERID))
+                .expectNext(bestilling)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGetBestillingerForCurrentBruker() {
+
+        var bestilling = BestillingBrukerFragment.builder()
+                .brukerId(BRUKERID)
+                .build();
+        var payload = Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString("""
+                        {"oid":"123"}""".getBytes(StandardCharsets.UTF_8));
+        var headers = Map.of(USER_HEADER_JWT, "header." + payload + ".signature");
+
+        when(brukerBestillingerService.getBestillinger(BRUKERID))
+                .thenReturn(Flux.just(bestilling));
+
+        StepVerifier.create(controller.getBestillingerForCurrentBruker(headers))
+                .expectNext(bestilling)
                 .verifyComplete();
     }
 

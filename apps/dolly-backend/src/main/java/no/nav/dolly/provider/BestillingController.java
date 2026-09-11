@@ -42,7 +42,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Transactional
 @RestController
 @RequestMapping(value = "/api/v1/bestilling", produces = MediaType.APPLICATION_JSON_VALUE)
-public class BestillingController extends AbstractJwtOrgnrExtractor {
+public class BestillingController extends AbstractJwtClaimsExtractor {
 
     private final BestillingService bestillingService;
     private final BestillingEventPublisher bestillingEventPublisher;
