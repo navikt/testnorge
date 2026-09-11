@@ -1,6 +1,7 @@
 package no.nav.dolly.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.dto.MinSideBestillingerDTO;
@@ -36,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Month;
 import java.util.Comparator;
@@ -49,8 +49,9 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
-public class BrukerController extends AbstractJwtClaimsExtractor {
+public class BrukerController {
 
     private static final String FAVORITTER = "favoritter";
 
@@ -64,25 +65,6 @@ public class BrukerController extends AbstractJwtClaimsExtractor {
     private final TeamRepository teamRepository;
     private final TeamService teamService;
     private final TestgruppeRepository testgruppeRepository;
-
-    public BrukerController(JsonMapper jsonMapper, BrukerBestillingerService brukerBestillingerService,
-                            BrukerFavoritterRepository brukerFavoritterRepository, BrukerRepository brukerRepository,
-                            BrukerService brukerService, GetUserInfo getUserInfo, MapperFacade mapperFacade,
-                            TeamBrukerRepository teamBrukerRepository, TeamRepository teamRepository,
-                            TeamService teamService, TestgruppeRepository testgruppeRepository) {
-
-        super(jsonMapper);
-        this.brukerBestillingerService = brukerBestillingerService;
-        this.brukerFavoritterRepository = brukerFavoritterRepository;
-        this.brukerRepository = brukerRepository;
-        this.brukerService = brukerService;
-        this.getUserInfo = getUserInfo;
-        this.mapperFacade = mapperFacade;
-        this.teamBrukerRepository = teamBrukerRepository;
-        this.teamRepository = teamRepository;
-        this.teamService = teamService;
-        this.testgruppeRepository = testgruppeRepository;
-    }
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
