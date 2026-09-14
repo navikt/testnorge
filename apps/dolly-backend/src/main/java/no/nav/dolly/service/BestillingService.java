@@ -282,12 +282,7 @@ public class BestillingService {
                     } else {
                         return Mono.just(bestilling);
                     }
-                })
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                });
     }
 
     @Transactional
@@ -328,12 +323,7 @@ public class BestillingService {
                     } else {
                         return Mono.just(bestilling);
                     }
-                })
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                });
     }
 
     @Transactional
@@ -405,12 +395,7 @@ public class BestillingService {
                     bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
                     return bestilling;
                 })
-                .flatMap(bestillingRepository::save)
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                .flatMap(bestillingRepository::save);
     }
 
     @Transactional
@@ -449,12 +434,7 @@ public class BestillingService {
                     bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
                     return bestilling;
                 })
-                .flatMap(bestillingRepository::save)
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                .flatMap(bestillingRepository::save);
     }
 
     @Transactional
@@ -483,12 +463,7 @@ public class BestillingService {
                                 .flatMap(kriterier -> {
                                     bestilling.setBestKriterier(kriterier);
                                     return bestillingRepository.save(bestilling);
-                                }))
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                                }));
     }
 
     @Transactional
@@ -517,12 +492,7 @@ public class BestillingService {
                                 .flatMap(kriterier -> {
                                     bestilling.setBestKriterier(kriterier);
                                     return bestillingRepository.save(bestilling);
-                                }))
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                                }));
     }
 
     public Mono<Void> slettBestillingerByGruppeId(Long gruppeId) {
