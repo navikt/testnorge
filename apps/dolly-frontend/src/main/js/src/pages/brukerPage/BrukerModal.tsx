@@ -50,24 +50,19 @@ export default () => {
 		setModalHeight(620)
 		BrukerApi.getBruker(org.organisasjonsnummer)
 			.then((response: Bruker) => {
-				if (response !== null) {
-					Logger.trace({
-						event: 'Bruker funnet i bruker-service',
-						message: `Bruker ${response.brukernavn}, ${response.epost}, som representerer org: ${response.organisasjonsnummer} funnet i bruker-service`,
-						uuid: window.uuid,
-					})
-					setBrukerResponse(response)
+				if (!response) {
 					setLoading(false)
-					if (response.epost) {
-						addToSession(org.organisasjonsnummer)
-					}
-				} else {
-					Logger.error({
-						event: 'Ukjent feil ved henting av BankID-bruker fra bruker-service',
-						message: 'Ukjent feil ved henting av BankID-bruker fra bruker-service',
-						uuid: window.uuid,
-					})
-					logoutBruker(LogoutErrorStates.UNKNOWN_ERROR)
+					return
+				}
+				Logger.trace({
+					event: 'Bruker funnet i bruker-service',
+					message: `Bruker ${response.brukernavn}, ${response.epost}, som representerer org: ${response.organisasjonsnummer} funnet i bruker-service`,
+					uuid: window.uuid,
+				})
+				setBrukerResponse(response)
+				setLoading(false)
+				if (response.epost) {
+					addToSession(org.organisasjonsnummer)
 				}
 			})
 			.catch((error: unknown) => {
