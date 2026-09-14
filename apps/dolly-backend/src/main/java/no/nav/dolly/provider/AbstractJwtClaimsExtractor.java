@@ -43,8 +43,9 @@ public abstract class AbstractJwtClaimsExtractor {
         }
 
         var oid = claims.path("oid").asString(null);
-        return StringUtils.isBlank(oid)
-                ? claims.path("pid").asString(null)
+        return StringUtils.isBlank(oid) ?
+                StringUtils.defaultIfBlank(claims.path("pid").asString(null),
+                claims.path(UserConstant.USER_CLAIM_ID).asString(null))
                 : oid;
     }
 
