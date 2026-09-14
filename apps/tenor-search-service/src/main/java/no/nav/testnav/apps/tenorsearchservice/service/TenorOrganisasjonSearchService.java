@@ -56,7 +56,7 @@ public class TenorOrganisasjonSearchService {
 
                 .append(convertBooleanWildcard("revisorer", searchData.getRevisorer()))
                 .append(convertBooleanWildcard("regnskapsfoerere", searchData.getRegnskapsfoerere()))
-                .append(convertBooleanWildcard("dagligLeder", searchData.getDagligLeder()))
+                .append(convertBooleanWildcard("dagligLederFnr", searchData.getDagligLeder()))
                 .append(convertBooleanWildcard("styremedlemmer", searchData.getStyremedlemmer()))
                 .append(convertBooleanWildcard("forretningsfoerer", searchData.getForretningsfoerer()))
                 .append(convertBooleanWildcard("kontaktpersoner", searchData.getKontaktpersoner()))
