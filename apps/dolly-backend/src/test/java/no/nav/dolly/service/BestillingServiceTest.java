@@ -113,7 +113,6 @@ class BestillingServiceTest {
                 .antallIdenter(antallIdenter)
                 .miljoer("a1,b2,c3,d4")
                 .build()));
-        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
 
         StepVerifier.create(bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                         antallIdenter, null, null, null))
@@ -295,7 +294,6 @@ class BestillingServiceTest {
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
         when(bestillingRepository.save(any())).thenReturn(Mono.just(savedBestilling));
-        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());
 
         StepVerifier.create(bestillingService.createBestillingForGjenopprettFraIdent(ident, List.of(miljoe)))
                 .expectNextCount(1)
@@ -327,7 +325,6 @@ class BestillingServiceTest {
         when(identRepository.getBestillingerFromGruppe(gruppeId)).thenReturn(Flux.empty());
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of(miljoe)));
         when(bestillingRepository.save(any())).thenReturn(Mono.just(savedBestilling));
-        when(bestillingProgressRepository.findAllByBestillingId(any())).thenReturn(Flux.empty());
 
         StepVerifier.create(bestillingService.createBestillingForGjenopprettFraGruppe(gruppeId, miljoe))
                 .expectNextCount(1)

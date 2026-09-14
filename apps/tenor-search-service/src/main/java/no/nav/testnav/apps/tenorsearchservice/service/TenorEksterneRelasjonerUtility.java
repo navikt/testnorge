@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest.Rolle.DagligLeder;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanSpecial;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertDatoer;
@@ -187,6 +188,13 @@ public class TenorEksterneRelasjonerUtility {
 
         return (roller.isEmpty()) ? "" : " and tenorRelasjoner.brreg-er-fr:{%s}".formatted(roller.stream()
                 .map(Enum::name)
+                        .map(type -> {
+                            if (DagligLeder.name().equals(type)) {
+                                return type + "Fnr";
+                            } else {
+                                return type;
+                            }
+                        })
                 .map(type -> "%s%s:*".formatted(type.substring(0, 1).toLowerCase(), type.substring(1)))
                 .collect(Collectors.joining(AND)));
     }
