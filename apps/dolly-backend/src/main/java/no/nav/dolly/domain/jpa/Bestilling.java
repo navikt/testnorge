@@ -15,7 +15,11 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -91,6 +95,14 @@ public class Bestilling implements Serializable {
 
     @Transient
     private List<BestillingProgress> progresser;
+
+    public List<BestillingProgress> getProgresser() {
+
+        if (isNull(progresser)) {
+            progresser = new ArrayList<>();
+        }
+        return progresser;
+    }
 
     @Transient
     private String beskrivelse;
