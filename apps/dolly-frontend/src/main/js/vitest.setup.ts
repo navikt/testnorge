@@ -17,7 +17,8 @@ const startWorker = () => {
 
 export const dollyTest = testBase.extend({
 	worker: [
-		async (_context, use) => {
+		async ({ task }, use) => {
+			void task
 			if (isBrowser) {
 				await startWorker()
 			}
