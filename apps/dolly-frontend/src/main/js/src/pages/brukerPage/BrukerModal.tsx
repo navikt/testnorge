@@ -8,52 +8,39 @@ import { NotFoundError } from '@/error'
 import { Navigate } from 'react-router'
 import { Logger } from '@/logger/Logger'
 import logoutBruker from '@/components/utlogging/logoutBruker'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { ErrorModal } from '@/pages/brukerPage/ErrorModal'
-
-const ORG_ERROR = 'organisation_error'
-const UNKNOWN_ERROR = 'unknown_error'
+import { LogoutErrorStates } from '@/components/utlogging/logoutState'
 
 export default () => {
 	const [loading, setLoading] = useState(true)
-	const [brukerResponse, setBrukerResponse] = useState(null as Bruker | null)
-	const [organisasjoner, setOrganisasjoner] = useState([])
-	const [organisasjon, setOrganisasjon] = useState(null)
+	const [brukerResponse, setBrukerResponse] = useState<Bruker | null>(null)
+	const [organisasjoner, setOrganisasjoner] = useState<Organisasjon[]>([])
+	const [organisasjon, setOrganisasjon] = useState<Organisasjon | null>(null)
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
-
-	const [errorModalIsOpen, openErrorModal, closeErrorModal] = useBoolean(false)
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
-				if (response === null || response.data === null || response.data.length === 0) {
+				if (!response?.data?.length) {
 					Logger.error({
-						event: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
-						message: 'Ukjent feil ved henting av organisasjoner for bankid bruker',
+						event: 'Fant ingen organisasjoner for BankID-bruker',
+						message: 'Fant ingen organisasjoner for BankID-bruker',
 						uuid: window.uuid,
 					})
-					openErrorModal()
+					logoutBruker(LogoutErrorStates.ORGANISATION_ERROR)
+					return
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch((_e: NotFoundError) => {
+			.catch(() => {
 				Logger.error({
-					event: 'Fant ingen organisasjoner for bankid bruker',
-					message: 'Fant ingen organisasjoner for bankid bruker',
+					event: 'Klarte ikke å hente organisasjoner for BankID-bruker',
+					message: 'Klarte ikke å hente organisasjoner for BankID-bruker',
 					uuid: window.uuid,
 				})
-				logoutBruker(ORG_ERROR)
-			})
-			.catch((e: Error) => {
-				Logger.error({
-					event: e.name,
-					message: e.message,
-					uuid: window.uuid,
-				})
-				logoutBruker(UNKNOWN_ERROR)
+				logoutBruker(LogoutErrorStates.PERSON_ORG_ERROR)
 			})
 	}, [])
 
@@ -76,23 +63,24 @@ export default () => {
 					}
 				} else {
 					Logger.error({
-						event: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
-						message: 'Ukjent feil ved henting av bankid bruker fra bruker-service',
+						event: 'Ukjent feil ved henting av BankID-bruker fra bruker-service',
+						message: 'Ukjent feil ved henting av BankID-bruker fra bruker-service',
 						uuid: window.uuid,
 					})
-					logoutBruker(UNKNOWN_ERROR)
+					logoutBruker(LogoutErrorStates.UNKNOWN_ERROR)
 				}
 			})
-			.catch((_e: NotFoundError) => {
-				setLoading(false)
-			})
-			.catch((e: Error) => {
+			.catch((error: unknown) => {
+				if (error instanceof NotFoundError) {
+					setLoading(false)
+					return
+				}
 				Logger.error({
-					event: e.name,
-					message: e.message,
+					event: 'Klarte ikke å hente BankID-bruker fra bruker-service',
+					message: 'Klarte ikke å hente BankID-bruker fra bruker-service',
 					uuid: window.uuid,
 				})
-				logoutBruker(UNKNOWN_ERROR)
+				logoutBruker(LogoutErrorStates.UNKNOWN_ERROR)
 			})
 	}
 
@@ -101,11 +89,11 @@ export default () => {
 			.then(() => setSessionUpdated(true))
 			.catch(() => {
 				Logger.error({
-					event: 'Klarte ikke å sette session for bankid bruker',
-					message: 'Klarte ikke å sette session for bankid bruker',
+					event: 'Klarte ikke å sette session for BankID-bruker',
+					message: 'Klarte ikke å sette session for BankID-bruker',
 					uuid: window.uuid,
 				})
-				setSessionUpdated(false)
+				logoutBruker(LogoutErrorStates.SESSION_ERROR)
 			})
 	}
 
@@ -118,11 +106,6 @@ export default () => {
 			<div className="bruker-modal" style={{ height: modalHeight + 'px', display: 'flexbox' }}>
 				<h1>Velkommen til Dolly</h1>
 				{loading && <Loading label="Loading" />}
-				<ErrorModal
-					closeErrorModal={closeErrorModal}
-					errorModalIsOpen={errorModalIsOpen}
-					error={UNKNOWN_ERROR}
-				/>
 				{!organisasjon && !loading && (
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
