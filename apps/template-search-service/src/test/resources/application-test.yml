@@ -1,0 +1,14 @@
+
+JWT_SECRET: dummy
+
+spring:
+  flyway:
+    url: jdbc:h2:mem:tenormaltest;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE
+    user: sa
+    password:
+    placeholders:
+      malNameIndexExpression: mal_navn
+  r2dbc:
+    url: r2dbc:h2:mem:///tenormaltest;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE
+    username: sa
+    password:
