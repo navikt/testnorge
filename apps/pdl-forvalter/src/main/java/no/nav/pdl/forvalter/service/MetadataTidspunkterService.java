@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -130,6 +131,7 @@ public class MetadataTidspunkterService {
                     fixOpphoert(person.getUtflytting());
                     person.getVergemaal()
                             .forEach(MetadataTidspunkterService::fixVersioning);
+                    fixOpphoerstidspunkt(person);
                     return dbPerson;
                 })
                 .flatMap(personRepository::save);
@@ -164,6 +166,55 @@ public class MetadataTidspunkterService {
                 opplysning.getFolkeregistermetadata().setOpphoerstidspunkt(null);
             }
         });
+    }
+
+    private static void fixOpphoerstidspunkt(PersonDTO person) {
+
+        Stream.of(
+                        person.getAdressebeskyttelse(),
+                        person.getBostedsadresse(),
+                        person.getDeltBosted(),
+                        person.getDoedfoedtBarn(),
+                        person.getDoedsfall(),
+                        person.getFalskIdentitet(),
+                        person.getFoedested(),
+                        person.getFoedsel(),
+                        person.getFoedselsdato(),
+                        person.getFolkeregisterPersonstatus(),
+                        person.getForelderBarnRelasjon(),
+                        person.getForeldreansvar(),
+                        person.getFullmakt(),
+                        person.getInnflytting(),
+                        person.getKjoenn(),
+                        person.getKontaktadresse(),
+                        person.getKontaktinformasjonForDoedsbo(),
+                        person.getNavn(),
+                        person.getNavPersonIdentifikator(),
+                        person.getOpphold(),
+                        person.getOppholdsadresse(),
+                        person.getSikkerhetstiltak(),
+                        person.getSivilstand(),
+                        person.getStatsborgerskap(),
+                        person.getTelefonnummer(),
+                        person.getTilrettelagtKommunikasjon(),
+                        person.getUtenlandskIdentifikasjonsnummer(),
+                        person.getUtflytting(),
+                        person.getVergemaal(),
+                        person.getNyident()
+                )
+                .flatMap(List::stream)
+                .forEach(MetadataTidspunkterService::fixOpphoerstidspunkt);
+    }
+
+    private static void fixOpphoerstidspunkt(DbVersjonDTO opplysning) {
+
+        var metadata = opplysning.getFolkeregistermetadata();
+        if (nonNull(metadata)
+            && nonNull(metadata.getOpphoerstidspunkt())
+            && (isNull(metadata.getGyldighetstidspunkt())
+                || !metadata.getOpphoerstidspunkt().isAfter(metadata.getGyldighetstidspunkt()))) {
+            metadata.setOpphoerstidspunkt(null);
+        }
     }
 
     private static LocalDateTime subtractADay(LocalDateTime tidspunkt) {
