@@ -63,7 +63,13 @@ public class UserJwtExchange {
     }
 
     public Mono<String> generateJwtWithAccessToken(String id, String accessToken) {
-        return generateJwt(id, () -> new GetTokenCommand(webClient, accessToken, id).call());
+        return Mono.defer(() -> tokenRequests.computeIfAbsent(id, userId ->
+                new GetTokenCommand(webClient, accessToken, userId)
+                        .call()
+                        .doOnNext(this::validateToken)
+                        .doOnSuccess(_ -> tokenRequests.remove(userId))
+                        .doOnError(_ -> tokenRequests.remove(userId))
+                        .cache()));
     }
 
     private Mono<String> generateJwt(String id, Supplier<Mono<String>> tokenSupplier) {
@@ -85,10 +91,14 @@ public class UserJwtExchange {
     }
 
     private void cacheToken(String id, String token) {
+        validateToken(token);
+        tokenCache.put(id, token);
+    }
+
+    private void validateToken(String token) {
         if (expires(token)) {
             throw new JWTDecodeException("User-Jwt er utløpt eller utløper for snart.");
         }
-        tokenCache.put(id, token);
     }
 
     private boolean expires(String token) {

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -19,9 +20,18 @@ public class TenorMalAccessService {
     private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Flux<TenorPersonMal> getAccessibleMaler(TenorMalOwner currentUser) {
-        if (currentUser.brukertype() == TenorMalBrukerType.AZURE) {
-            return malRepository.findByBrukertype(TenorMalBrukerType.AZURE);
-        }
+
+        return switch (currentUser.brukertype()) {
+            case AZURE -> malRepository.findByBrukertype(TenorMalBrukerType.AZURE);
+            case BANKID -> getAccessibleBankIdMaler(currentUser);
+            case TEAM -> malRepository.findByBrukertypeAndBrukerIdIn(
+                    TenorMalBrukerType.TEAM,
+                    Set.of(currentUser.brukerId()));
+        };
+    }
+
+    private Flux<TenorPersonMal> getAccessibleBankIdMaler(TenorMalOwner currentUser) {
+
         return brukerServiceConsumer.getKollegaerIOrganisasjon(currentUser.brukerId())
                 .map(response -> {
                     var brukerIds = new LinkedHashSet<>(response.brukere());

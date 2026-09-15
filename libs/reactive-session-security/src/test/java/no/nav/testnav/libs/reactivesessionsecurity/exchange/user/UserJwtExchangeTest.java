@@ -31,26 +31,29 @@ class UserJwtExchangeTest {
     private TokenXExchange tokenExchange;
 
     @Test
-    void shouldReuseCachedUserJwt() {
+    void shouldRequestFreshAzureUserJwt() {
         var requestCount = new AtomicInteger();
-        var userJwt = createToken(Duration.ofHours(1));
+        var personalUserJwt = createToken(Duration.ofHours(1), null);
+        var teamUserJwt = createToken(Duration.ofHours(1), "team-bruker-id-42");
         var userJwtExchange = userJwtExchange(request -> {
-            requestCount.incrementAndGet();
-            return response(userJwt);
+            var token = requestCount.getAndIncrement() == 0 ? personalUserJwt : teamUserJwt;
+            return response(token);
         });
 
         StepVerifier.create(userJwtExchange.generateJwtWithAccessToken(USER_ID, ACCESS_TOKEN)
                         .then(userJwtExchange.generateJwtWithAccessToken(USER_ID, ACCESS_TOKEN)))
-                .expectNext(userJwt)
+                .assertNext(token -> assertThat(JWT.decode(token)
+                        .getClaim("representingTeam")
+                        .asString()).isEqualTo("team-bruker-id-42"))
                 .verifyComplete();
 
-        assertThat(requestCount).hasValue(1);
+        assertThat(requestCount).hasValue(2);
     }
 
     @Test
-    void shouldShareConcurrentUserJwtRequest() {
+    void shouldShareConcurrentAzureUserJwtRequest() {
         var requestCount = new AtomicInteger();
-        var userJwt = createToken(Duration.ofHours(1));
+        var userJwt = createToken(Duration.ofHours(1), null);
         var userJwtExchange = userJwtExchange(request -> Mono.defer(() -> {
             requestCount.incrementAndGet();
             return Mono.delay(Duration.ofMillis(25)).then(response(userJwt));
@@ -69,7 +72,7 @@ class UserJwtExchangeTest {
     @Test
     void shouldNotCacheFailedUserJwtRequest() {
         var requestCount = new AtomicInteger();
-        var userJwt = createToken(Duration.ofHours(1));
+        var userJwt = createToken(Duration.ofHours(1), null);
         var userJwtExchange = userJwtExchange(request -> Mono.defer(() ->
                 requestCount.getAndIncrement() == 0
                         ? Mono.error(new IllegalStateException("request failed"))
@@ -97,7 +100,7 @@ class UserJwtExchangeTest {
 
     @Test
     void shouldRejectUserJwtExpiringWithinCacheMargin() {
-        var userJwt = createToken(Duration.ofMinutes(4));
+        var userJwt = createToken(Duration.ofMinutes(4), null);
         var userJwtExchange = userJwtExchange(request -> response(userJwt));
 
         StepVerifier.create(userJwtExchange.generateJwtWithAccessToken(USER_ID, ACCESS_TOKEN))
@@ -123,9 +126,12 @@ class UserJwtExchangeTest {
                 .build());
     }
 
-    private static String createToken(Duration lifetime) {
-        return JWT.create()
-                .withExpiresAt(Instant.now().plus(lifetime))
-                .sign(Algorithm.HMAC256("secret"));
+    private static String createToken(Duration lifetime, String representingTeam) {
+        var builder = JWT.create()
+                .withExpiresAt(Instant.now().plus(lifetime));
+        if (representingTeam != null) {
+            builder.withClaim("representingTeam", representingTeam);
+        }
+        return builder.sign(Algorithm.HMAC256("secret"));
     }
 }

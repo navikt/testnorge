@@ -31,6 +31,7 @@ spec:
         - application: testnav-oversikt-frontend
     outbound:
       rules:
+        - application: dolly-backend
         - application: testnav-altinn3-tilgang-proxy
         - application: logging
           namespace: nais-system

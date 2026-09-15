@@ -91,6 +91,7 @@ class TenorPersonMalRepositoryTest {
         malRepository.save(template("Azure", "azure-id", TenorMalBrukerType.AZURE)).block();
         malRepository.save(template("BankID 1", "bankid-1", TenorMalBrukerType.BANKID)).block();
         malRepository.save(template("BankID 2", "bankid-2", TenorMalBrukerType.BANKID)).block();
+        malRepository.save(template("Team", "team-bruker-id-42", TenorMalBrukerType.TEAM)).block();
 
         StepVerifier.create(malRepository.findByBrukertype(TenorMalBrukerType.AZURE))
                 .assertNext(mal -> assertThat(mal.getBrukerId()).isEqualTo("azure-id"))
@@ -99,6 +100,11 @@ class TenorPersonMalRepositoryTest {
                         TenorMalBrukerType.BANKID,
                         List.of("bankid-1")))
                 .assertNext(mal -> assertThat(mal.getBrukerId()).isEqualTo("bankid-1"))
+                .verifyComplete();
+        StepVerifier.create(malRepository.findByBrukertypeAndBrukerIdIn(
+                        TenorMalBrukerType.TEAM,
+                        List.of("team-bruker-id-42")))
+                .assertNext(mal -> assertThat(mal.getBrukerId()).isEqualTo("team-bruker-id-42"))
                 .verifyComplete();
     }
 

@@ -1,7 +1,9 @@
 package no.nav.testnav.apps.templatesearchservice.service;
 
 import no.nav.testnav.apps.templatesearchservice.domain.TenorMalBrukerType;
+import no.nav.testnav.apps.templatesearchservice.domain.TenorMalOwner;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalValidationException;
+import no.nav.testnav.apps.templatesearchservice.security.GetRepresentingTeam;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.securitycore.domain.Token;
@@ -34,6 +36,9 @@ class CurrentTenorUserServiceTest {
     @Mock
     private GetUserInfo getUserInfo;
 
+    @Mock
+    private GetRepresentingTeam getRepresentingTeam;
+
     private CurrentTenorUserService currentUserService;
 
     @BeforeEach
@@ -41,6 +46,7 @@ class CurrentTenorUserServiceTest {
         currentUserService = new CurrentTenorUserService(
                 getAuthenticatedToken,
                 getUserInfo,
+                getRepresentingTeam,
                 new TenorPersonMalValidationService(JsonMapper.builder().build()));
     }
 
@@ -61,12 +67,38 @@ class CurrentTenorUserServiceTest {
 
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(getRepresentingTeam.call()).thenReturn(Mono.empty());
         StepVerifier.create(currentUserService.getCurrentUser())
                 .assertNext(owner -> {
                     assertThat(owner.brukerId()).isEqualTo(HASHED_BANK_ID);
                     assertThat(owner.brukerId()).isNotEqualTo(token.getUserId());
                     assertThat(owner.brukertype()).isEqualTo(TenorMalBrukerType.BANKID);
                 })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldUseAzureOwnerWithoutTeamClaim() {
+        var token = Token.builder()
+                .clientCredentials(false)
+                .build();
+        var userInfo = new UserInfoExtended(
+                "azure-user-id",
+                null,
+                "issuer",
+                "Azure-bruker",
+                "epost",
+                false,
+                List.of());
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(getRepresentingTeam.call()).thenReturn(Mono.empty());
+
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectNext(new TenorMalOwner(
+                        "azure-user-id",
+                        "Azure-bruker",
+                        TenorMalBrukerType.AZURE))
                 .verifyComplete();
     }
 
@@ -102,6 +134,95 @@ class CurrentTenorUserServiceTest {
 
         StepVerifier.create(currentUserService.getCurrentUser())
                 .expectError(TenorMalValidationException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldUseTeamOwnerFromUserJwtClaim() {
+        var token = Token.builder()
+                .clientCredentials(false)
+                .build();
+        var userInfo = new UserInfoExtended(
+                "azure-user-id",
+                null,
+                "issuer",
+                "Azure-bruker",
+                "epost",
+                false,
+                List.of());
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(getRepresentingTeam.call()).thenReturn(Mono.just("team-bruker-id-42"));
+
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .assertNext(owner -> {
+                    assertThat(owner.brukerId()).isEqualTo("team-bruker-id-42");
+                    assertThat(owner.brukernavn()).isEqualTo("team-bruker-id-42");
+                    assertThat(owner.brukertype()).isEqualTo(TenorMalBrukerType.TEAM);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldResolveDifferentUsersToSameTeamOwner() {
+        var token = Token.builder()
+                .clientCredentials(false)
+                .build();
+        var firstUser = new UserInfoExtended(
+                "azure-user-id-1",
+                null,
+                "issuer",
+                "Første bruker",
+                "epost",
+                false,
+                List.of());
+        var secondUser = new UserInfoExtended(
+                "azure-user-id-2",
+                null,
+                "issuer",
+                "Andre bruker",
+                "epost",
+                false,
+                List.of());
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
+        when(getUserInfo.call())
+                .thenReturn(Mono.just(firstUser))
+                .thenReturn(Mono.just(secondUser));
+        when(getRepresentingTeam.call()).thenReturn(Mono.just("team-bruker-id-42"));
+
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectNext(new TenorMalOwner(
+                        "team-bruker-id-42",
+                        "team-bruker-id-42",
+                        TenorMalBrukerType.TEAM))
+                .verifyComplete();
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectNext(new TenorMalOwner(
+                        "team-bruker-id-42",
+                        "team-bruker-id-42",
+                        TenorMalBrukerType.TEAM))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRejectMalformedTeamClaim() {
+        var token = Token.builder()
+                .clientCredentials(false)
+                .build();
+        var userInfo = new UserInfoExtended(
+                "azure-user-id",
+                null,
+                "issuer",
+                "Azure-bruker",
+                "epost",
+                false,
+                List.of());
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(getRepresentingTeam.call()).thenReturn(Mono.just("41010100044"));
+
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectError(AccessDeniedException.class)
                 .verify();
     }
 }

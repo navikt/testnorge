@@ -22,6 +22,7 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,6 +77,32 @@ class TenorPersonMalServiceTest {
                 .assertNext(result -> {
                     assertThat(result.opprettet()).isTrue();
                     assertThat(result.mal().id()).isEqualTo(42L);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCreateTemplateWithTeamOwner() {
+        var teamOwner = new TenorMalOwner(
+                "team-bruker-id-42",
+                "team-bruker-id-42",
+                TenorMalBrukerType.TEAM);
+        var request = new OpprettTenorPersonMalRequest(
+                "Team-mal",
+                jsonMapper.readTree("{}"));
+        when(currentUserService.getCurrentUser()).thenReturn(Mono.just(teamOwner));
+        when(malRepository.findByBrukerIdAndMalNavnIgnoreCase("team-bruker-id-42", "Team-mal"))
+                .thenReturn(Mono.empty());
+        when(malRepository.save(argThat(mal ->
+                mal.getBrukerId().equals("team-bruker-id-42") &&
+                        mal.getBrukernavn().equals("team-bruker-id-42") &&
+                        mal.getBrukertype() == TenorMalBrukerType.TEAM)))
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
+
+        StepVerifier.create(malService.save(request))
+                .assertNext(result -> {
+                    assertThat(result.mal().malNavn()).isEqualTo("Team-mal");
+                    assertThat(result.opprettet()).isTrue();
                 })
                 .verifyComplete();
     }
@@ -173,6 +200,21 @@ class TenorPersonMalServiceTest {
                 .verifyComplete();
 
         verify(malRepository).deleteByIdAndBrukerId(42L, "azure-id");
+    }
+
+    @Test
+    void shouldScopeDeleteToTeamOwnerFromUserJwtClaim() {
+        var teamOwner = new TenorMalOwner(
+                "team-bruker-id-42",
+                "team-bruker-id-42",
+                TenorMalBrukerType.TEAM);
+        when(currentUserService.getCurrentUser()).thenReturn(Mono.just(teamOwner));
+        when(malRepository.deleteByIdAndBrukerId(42L, "team-bruker-id-42")).thenReturn(Mono.just(1L));
+
+        StepVerifier.create(malService.delete(42L))
+                .verifyComplete();
+
+        verify(malRepository).deleteByIdAndBrukerId(42L, "team-bruker-id-42");
     }
 
     @Test

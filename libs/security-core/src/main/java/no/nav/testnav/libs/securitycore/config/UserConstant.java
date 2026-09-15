@@ -11,4 +11,5 @@ public class UserConstant {
     public static final String USER_CLAIM_USERNAME = "brukernavn";
     public static final String USER_CLAIM_ORG = "org";
     public static final String USER_CLAIM_EMAIL = "epost";
+    public static final String USER_CLAIM_REPRESENTING_TEAM = "representingTeam";
 }

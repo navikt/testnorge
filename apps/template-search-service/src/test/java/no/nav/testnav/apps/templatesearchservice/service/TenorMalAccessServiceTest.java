@@ -88,6 +88,22 @@ class TenorMalAccessServiceTest {
                 org.mockito.ArgumentMatchers.any());
     }
 
+    @Test
+    void shouldLimitTeamUserToExactTeamWithoutCallingBrukerService() {
+        var currentTeam = bruker("team-bruker-id-42", TenorMalBrukerType.TEAM);
+        var teamMal = mal(currentTeam);
+        when(malRepository.findByBrukertypeAndBrukerIdIn(
+                org.mockito.ArgumentMatchers.eq(TenorMalBrukerType.TEAM),
+                argThat(ids -> ids.size() == 1 && ids.contains(currentTeam.brukerId()))))
+                .thenReturn(Flux.just(teamMal));
+
+        StepVerifier.create(accessService.getAccessibleMaler(currentTeam))
+                .expectNext(teamMal)
+                .verifyComplete();
+
+        verify(brukerServiceConsumer, never()).getKollegaerIOrganisasjon(currentTeam.brukerId());
+    }
+
     private static TenorMalOwner bruker(String brukerId, TenorMalBrukerType brukerType) {
         return new TenorMalOwner(brukerId, brukerId, brukerType);
     }

@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
+import no.nav.testnav.apps.brukerservice.consumer.DollyBackendConsumer;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -19,19 +20,25 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_REPRESENTING_TEAM;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Service
 public class JwtService {
 
     private static final Duration TOKEN_LIFETIME = Duration.ofHours(2);
+    private static final Pattern TEAM_BRUKER_ID_PATTERN = Pattern.compile("team-bruker-id-\\d+");
 
     private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final GetAuthenticatedToken getAuthenticatedToken;
     private final GetUserInfo getUserInfo;
     private final CryptographyService cryptographyService;
+    private final DollyBackendConsumer dollyBackendConsumer;
     private final String secretKey;
     private final String issuer;
 
@@ -40,12 +47,14 @@ public class JwtService {
             GetAuthenticatedToken getAuthenticatedToken,
             GetUserInfo getUserInfo,
             CryptographyService cryptographyService,
+            DollyBackendConsumer dollyBackendConsumer,
             @Value("${JWT_SECRET}") String secretKey,
             @Value("${spring.security.oauth2.resourceserver.tokenx.accepted-audience}") String issuer) {
         this.getAuthenticatedUserId = getAuthenticatedUserId;
         this.getAuthenticatedToken = getAuthenticatedToken;
         this.getUserInfo = getUserInfo;
         this.cryptographyService = cryptographyService;
+        this.dollyBackendConsumer = dollyBackendConsumer;
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
@@ -67,7 +76,14 @@ public class JwtService {
                 .then(Mono.defer(getUserInfo::call))
                 .filter(userInfo -> Objects.equals(id, userInfo.id()))
                 .switchIfEmpty(Mono.error(new AccessDeniedException("Azure bruker-ID samsvarer ikke med autentisert bruker.")))
-                .map(userInfo -> encodeJwt(id, userInfo.brukernavn(), NAV_ORGANIZATION_NUMBER));
+                .flatMap(userInfo -> dollyBackendConsumer.getRepresentererTeamBrukerId()
+                        .map(representingTeam -> encodeJwt(
+                                id,
+                                userInfo.brukernavn(),
+                                NAV_ORGANIZATION_NUMBER,
+                                representingTeam))
+                        .switchIfEmpty(Mono.fromSupplier(() ->
+                                encodeJwt(id, userInfo.brukernavn(), NAV_ORGANIZATION_NUMBER, null))));
     }
 
     public Mono<DecodedJWT> verify(String jwt, String id) {
@@ -82,10 +98,10 @@ public class JwtService {
     }
 
     private String encodeJwt(User user) {
-        return encodeJwt(user.getId(), user.getBrukernavn(), user.getOrganisasjonsnummer());
+        return encodeJwt(user.getId(), user.getBrukernavn(), user.getOrganisasjonsnummer(), null);
     }
 
-    private String encodeJwt(String id, String username, String organizationNumber) {
+    private String encodeJwt(String id, String username, String organizationNumber, String representingTeam) {
         if (isBlank(id) || isBlank(username) || isBlank(organizationNumber)) {
             throw new AccessDeniedException("User-Jwt mangler påkrevde claims.");
         }
@@ -95,8 +111,9 @@ public class JwtService {
             throw new AccessDeniedException("User-Jwt kan ikke inneholde personnummer.");
         }
 
+        var normalizedRepresentingTeam = validateRepresentingTeam(representingTeam);
         var issuedAt = Instant.now();
-        return JWT
+        var jwtBuilder = JWT
                 .create()
                 .withIssuer(issuer)
                 .withClaim(UserConstant.USER_CLAIM_ID, id)
@@ -105,8 +122,25 @@ public class JwtService {
                 .withIssuedAt(issuedAt)
                 .withNotBefore(issuedAt)
                 .withJWTId(UUID.randomUUID().toString())
-                .withExpiresAt(issuedAt.plus(TOKEN_LIFETIME))
-                .sign(Algorithm.HMAC256(secretKey));
+                .withExpiresAt(issuedAt.plus(TOKEN_LIFETIME));
+        if (nonNull(normalizedRepresentingTeam)) {
+            jwtBuilder.withClaim(USER_CLAIM_REPRESENTING_TEAM, normalizedRepresentingTeam);
+        }
+        return jwtBuilder.sign(Algorithm.HMAC256(secretKey));
+    }
+
+    private static String validateRepresentingTeam(String representingTeam) {
+
+        var normalizedRepresentingTeam = trimToNull(representingTeam);
+        if (normalizedRepresentingTeam == null) {
+            return null;
+        }
+        if (normalizedRepresentingTeam.length() > 100
+                || !TEAM_BRUKER_ID_PATTERN.matcher(normalizedRepresentingTeam).matches()
+                || containsValidPersonIdentifier(normalizedRepresentingTeam)) {
+            throw new AccessDeniedException("Ugyldig teamkontekst for User-Jwt.");
+        }
+        return normalizedRepresentingTeam;
     }
 
     private static boolean containsValidPersonIdentifier(String value) {

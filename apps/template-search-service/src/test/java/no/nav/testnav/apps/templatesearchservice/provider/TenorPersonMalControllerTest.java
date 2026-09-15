@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -143,4 +144,5 @@ class TenorPersonMalControllerTest {
                 .jsonPath("$.status").isEqualTo(404)
                 .jsonPath("$.path").isEqualTo("/api/v1/tenor/maler/personer/42");
     }
+
 }
