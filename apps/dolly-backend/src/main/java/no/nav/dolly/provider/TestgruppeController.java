@@ -53,7 +53,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 @Slf4j
 @RestController
 @RequestMapping(value = "api/v1/gruppe")
-public class TestgruppeController extends AbstractJwtOrgnrExtractor {
+public class TestgruppeController extends AbstractJwtClaimsExtractor {
 
     private final BestillingService bestillingService;
     private final MapperFacade mapperFacade;

@@ -29,7 +29,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Bestilling> findById(Long id);
 
     @Query("""
-            select b.id, b.best_kriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
+            select b.id, b.best_kriterier as bestkriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
             join bruker br on br.id = b.bruker_id
             where b.opprett_fra_gruppe is null
             and b.gjenopprettet_fra_ident is null
@@ -37,6 +37,45 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             order by b.id desc
             """)
     Flux<BestillingBrukerFragment> findByOrderByIdDesc();
+
+    @Query("""
+           select b.sist_oppdatert::date dato,
+           case
+                  when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
+                  when b.opprett_fra_identer is not null then cardinality(string_to_array(b.opprett_fra_identer, ','))
+                  else b.antall_identer
+           end as antall,
+           case
+                  when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
+                  when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
+                  when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
+                  else 'NYBESTILLING'
+           end as bestillingtype
+           from bestilling b
+           join bruker br on br.id = b.bruker_id
+           where br.bruker_id = :brukerId
+           order by b.id desc
+           """)
+    Flux<BestillingBrukerFragment> findByBrukerIdOrderByIdDesc(String brukerId);
+
+    @Query("""
+           select b.best_kriterier bestkriterier, b.sist_oppdatert::date dato,
+           case
+                  when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
+                  when b.opprett_fra_identer is not null then cardinality(string_to_array(b.opprett_fra_identer, ','))
+                  else b.antall_identer
+           end as antall
+           from bestilling b
+           join bruker br on br.id = b.bruker_id
+           where br.bruker_id = :brukerId
+           and to_char(b.sist_oppdatert, 'YYYY-MM') = :yearMonth
+           and b.opprettet_fra_id is null
+           and b.gjenopprettet_fra_ident is null
+           and b.opprett_fra_gruppe is null
+           and b.best_kriterier is not null
+           order by b.id desc
+           """)
+    Flux<BestillingBrukerFragment> findKriterierByBrukerIdOrderByIdDesc(String brukerId, String yearMonth);
 
     Mono<Void> deleteById(Long id);
 
@@ -221,7 +260,6 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
           and b.opprettet_fra_id is null
           and b.gjenopprettet_fra_ident is null
           and b.opprett_fra_gruppe is null
-          and b.best_kriterier is not null and b.best_kriterier not like '{}'
           """)
     Flux<AdferdFragment> findByBestKriterier(String interval);
 }

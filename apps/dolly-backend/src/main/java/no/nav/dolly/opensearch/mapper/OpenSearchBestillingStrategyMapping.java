@@ -43,7 +43,7 @@ public class OpenSearchBestillingStrategyMapping implements MappingStrategy {
 
                                        if (!bestillingDokument.isIgnore()) {
 
-                                           var dollyBestilling = jsonMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
+                                           var dollyBestilling = jsonMapper.readValue(bestilling.getBestkriterier(), RsDollyBestilling.class);
                                            mapperFacade.map(dollyBestilling, bestillingDokument);
 
                                            bestillingDokument.setMiljoer(isNotBlank(bestilling.getMiljoer()) ?
