@@ -17,7 +17,7 @@
 		"test:playwright-debug": "playwright test --debug",
 		"test:vitest-debug": "vitest",
 		"test:vitest-run": "vitest --browser.headless --run",
-		"test:browser": "vitest --workspace=vitest.config.ts"
+		"test:browser": "vitest --config=vitest.config.ts"
 	},
 	"author": "",
 	"license": "ISC",
@@ -115,7 +115,7 @@
 	},
 	"msw": {
 		"workerDirectory": [
-			"__tests__/mocks"
+			"__tests__/public"
 		]
 	},
 	"engines": {
