@@ -75,6 +75,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))
                 .route(createRoute(consumers.getTestnavTenorSearchService()))
+                .route(createRoute(consumers.getTestnavTemplateSearchService()))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .route(createRoute(consumers.getTestnavYrkesskadeProxy()))

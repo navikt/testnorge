@@ -8,21 +8,25 @@ import {
 } from '@/utils/hooks/useMutate'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Button, Dialog, TextField } from '@navikt/ds-react'
+import { tenorOpprettPersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
 export const malTyper = {
 	ORGANISASJON: 'ORGANISASJON',
 	BESTILLING: 'BESTILLING',
 	PERSON: 'PERSON',
+	DOLLYSOEK: 'DOLLYSOEK',
+	TENORSOEK: 'TENORSOEK',
 }
 
 type MalModalProps = {
-	id: string
+	id?: string
+	verdier?: any
 	malType: string
 	open: boolean
 	setOpen: (open: boolean) => void
 }
 
-export const MalModal = ({ id, malType, open, setOpen }: MalModalProps) => {
+export const MalModal = ({ id, verdier, malType, open, setOpen }: MalModalProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [nyttMalnavn, setMalnavn] = useState('')
 	const matchMutate = useMatchMutate()
@@ -51,6 +55,12 @@ export const MalModal = ({ id, malType, open, setOpen }: MalModalProps) => {
 					.then(setIsLoading(false))
 					.then(setOpen(false))
 				break
+			case malTyper.TENORSOEK:
+				tenorOpprettPersonMal(verdier, nyttMalnavn)
+					// TODO: Re-render dropdown?
+					?.then(setIsLoading(false))
+					.then(setOpen(false))
+				break
 			default:
 				setIsLoading(false)
 				setOpen(false)
@@ -68,6 +78,12 @@ export const MalModal = ({ id, malType, open, setOpen }: MalModalProps) => {
 			break
 		case malTyper.PERSON:
 			topic = 'person'
+			break
+		case malTyper.TENORSOEK:
+			topic = 'søk'
+			break
+		case malTyper.DOLLYSOEK:
+			topic = 'søk'
 			break
 	}
 
