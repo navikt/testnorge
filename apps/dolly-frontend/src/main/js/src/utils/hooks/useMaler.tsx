@@ -15,7 +15,7 @@ type MalResponse = {
 	malbestillinger: [string, Mal[]]
 }
 
-type OversiktResponse = {
+export type OversiktResponse = {
 	brukereMedMaler: Array<{ brukernavn: string; brukerId: string }>
 }
 

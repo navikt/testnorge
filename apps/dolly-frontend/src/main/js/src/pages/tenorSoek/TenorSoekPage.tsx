@@ -12,12 +12,13 @@ import { fixTimezone } from '@/components/ui/form/formUtils'
 import { DollyApi } from '@/service/Api'
 import { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey } from './constants'
 import { getLabel } from '@/components/ui/soekForm/utils'
-import { Box, Button, HelpText, HStack, UNSAFE_Combobox } from '@navikt/ds-react'
+import { Button } from '@navikt/ds-react'
 import {
 	ChevronDownDoubleIcon,
 	ChevronUpDoubleIcon,
 	ExclamationmarkTriangleIcon,
 } from '@navikt/aksel-icons'
+import { SoekMalVelger } from '@/components/ui/soekMaler/SoekMalVelger'
 
 export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
@@ -283,23 +284,6 @@ export default () => {
 		}
 	}
 
-	const malerDummy = [
-		{ value: 1, label: 'Mal med litt av hvert' },
-		{ value: 2, label: 'Mal med ditten og datten' },
-		{ value: 3, label: 'Mal med bare tull' },
-	]
-
-	const malerInfotekst = `Om du ofte gjør samme søk kan det være lurt å lage maler av disse søkene. For å lage en mal fyller du først ut søkeskjemaet med ønskede verdier, for så å trykke på knappen "Opprett mal for søk" som ligger under søkeskjemaet.`
-
-	const malerLabel = (
-		<HStack gap="space-8">
-			<label>Velg mal for søk</label>
-			<HelpText title="Informasjon om maler for søk">
-				{`Her kan du velge en mal for søket ditt. ${malerInfotekst}`}
-			</HelpText>
-		</HStack>
-	)
-
 	return (
 		<Suspense fallback={<Loading label="Laster søkeside ..." panel />}>
 			<div id="soek">
@@ -313,25 +297,7 @@ export default () => {
 				{/*	handleChange={handleChange}*/}
 				{/*	handleChangeList={handleChangeList}*/}
 				{/*/>*/}
-				<Box
-					background="accent-moderate"
-					borderColor="accent"
-					borderWidth="1"
-					padding="space-12"
-					borderRadius="4"
-					style={{ marginBottom: '12px' }}
-				>
-					<UNSAFE_Combobox
-						label={malerLabel}
-						options={malerDummy}
-						readOnly={malerDummy?.length < 1}
-						description={
-							malerDummy?.length < 1
-								? `Du har foreløpig ingen maler for søk. ${malerInfotekst}`
-								: undefined
-						}
-					/>
-				</Box>
+				<SoekMalVelger />
 				<div className="flexbox--flex-wrap">
 					<NavigateButton
 						variant={loading || ingenTreff ? 'primary-neutral' : 'primary'}

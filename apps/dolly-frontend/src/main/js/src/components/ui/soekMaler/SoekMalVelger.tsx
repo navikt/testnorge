@@ -1,0 +1,72 @@
+import { Box, HelpText, HStack, UNSAFE_Combobox as Combobox } from '@navikt/ds-react'
+import React, { useState } from 'react'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useSoekMalerBruker, useSoekMalerOversikt } from '@/utils/hooks/useTemplateSearch'
+import { getBrukerOptions } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
+
+export function getSoekMalOptions(maler: any) {
+	if (!Array.isArray(maler) || maler.length < 1) return []
+	return maler.map((mal) => ({
+		value: String(mal.id),
+		label: mal.malNavn,
+		soekKriterier: mal.soekKriterier,
+	}))
+}
+
+export const SoekMalVelger = ({}) => {
+	const { currentBruker } = useCurrentBruker()
+	const [valgtBruker, setValgtBruker] = useState(
+		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
+	)
+
+	const { brukere, loading: loadingBrukere, error: errorBrukere } = useSoekMalerOversikt()
+
+	const { maler, loading: loadingMaler, error: errorMaler } = useSoekMalerBruker(valgtBruker)
+
+	const malerInfotekst = `Om du ofte gjør samme søk kan det være lurt å lage maler av disse søkene. For å lage en mal fyller du først ut søkeskjemaet med ønskede verdier, for så å trykke på knappen "Opprett mal fra søk" som ligger under søkeskjemaet.`
+
+	const malerLabel = (
+		<HStack gap="space-8">
+			<label>Velg mal for søk</label>
+			<HelpText title="Informasjon om maler for søk">
+				{!loadingMaler && (!maler || maler?.length < 1)
+					? `Du har foreløpig ingen maler for søk. ${malerInfotekst}`
+					: `Her kan du velge en mal for søket ditt. ${malerInfotekst}`}
+			</HelpText>
+		</HStack>
+	)
+
+	const malOptions = getSoekMalOptions(maler)
+	const brukerOptions = getBrukerOptions(brukere) ?? []
+	const valgtBrukerOption = brukerOptions?.filter((option) => option.value === valgtBruker) ?? []
+
+	return (
+		<Box
+			background="accent-moderate"
+			borderColor="accent"
+			borderWidth="1"
+			padding="space-12"
+			borderRadius="4"
+			style={{ marginBottom: '12px' }}
+		>
+			<HStack gap="space-16" wrap={false} width="100%">
+				<Box flexGrow="2" flexBasis="0">
+					<Combobox
+						label="Bruker/team"
+						options={brukerOptions}
+						selectedOptions={valgtBrukerOption}
+						onToggleSelected={(bruker) => {
+							setValgtBruker(bruker ?? '')
+							// 	TODO: set valgt mal til null?
+						}}
+						isLoading={loadingBrukere}
+					/>
+				</Box>
+				{/*TODO: Handlechange maler*/}
+				<Box flexGrow="3" flexBasis="0">
+					<Combobox label={malerLabel} options={malOptions} isLoading={loadingMaler} />
+				</Box>
+			</HStack>
+		</Box>
+	)
+}
