@@ -525,7 +525,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArenaData ||
 		loadingApData ||
 		loadingSkattekort ||
-		loadingKdiData
+		loadingKdiData ||
+		loadingKelvinAapBehandlingStatus ||
+		loadingOppfoelgingsvedtak14aData
 
 	return (
 		<ErrorBoundary>
@@ -564,6 +566,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 								}
 								if (kdiData) {
 									personData.instdataKdi = kdiData
+								}
+								if (kelvinAapData) {
+									personData.kelvinAap = kelvinAapData
+								}
+								if (oppfoelgingsvedtak14aData) {
+									personData.oppfoelgingsvedtak14a = oppfoelgingsvedtak14aData
 								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
