@@ -28,6 +28,7 @@ export enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
 	BEHANDLINGSTEMA = 'Behandlingstema',
+	ARKIVTEMAER = 'Arkivtemaer',
 }
 
 type DokumentProps = {
@@ -236,7 +237,7 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 				<FormSelect
 					name={`${path}.tema`}
 					label="Tema"
-					kodeverk={Kodeverk.TEMA}
+					kodeverk={Kodeverk.ARKIVTEMAER}
 					size="xlarge"
 					isClearable={false}
 				/>
