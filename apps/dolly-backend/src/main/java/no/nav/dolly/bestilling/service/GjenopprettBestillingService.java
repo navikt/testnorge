@@ -100,6 +100,9 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         return Flux.from(bestillingService.isStoppet(bestilling.getId()))
                 .takeWhile(BooleanUtils::isFalse)
                 .concatMap(_ -> opprettProgress(bestilling, master, ident))
+                .flatMap(progress -> progress.isPdl() ?
+                        oppdaterPdlImportStatus(progress) :
+                        Mono.just(progress))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
@@ -111,6 +114,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                         .doOnNext(progress1 -> log.info("Status på progress {}", progress1))
                                         .filter(BestillingProgress::isPdlSync)
                                         .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
-                                            tuple.getT2(), false))));
+                                                tuple.getT2(), false))));
     }
 }

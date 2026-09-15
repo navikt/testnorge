@@ -1,32 +1,63 @@
 .login-container {
   position: relative;
-  flex: 1;
   display: flex;
+  align-items: flex-start;
   justify-content: center;
-  height: calc(~"100vh - 71px");
-  width: 100vw;
+  min-height: calc(~"100vh - var(--ax-space-72)");
+  width: 100%;
+  padding-inline: var(--ax-space-16);
 }
 
 .login-modal {
-  width: 850px;
-  height: 330px;
+  width: min(100%, 53.125rem);
+  min-height: 20.625rem;
   text-align: center;
-  background-color: white;
-  box-shadow: 4px 4px 6px grey;
-  margin-top: 5vw;
-  padding: 50px;
+  background: var(--ax-bg-raised);
+  border: 1px solid var(--ax-border-neutral-subtle);
+  border-radius: var(--ax-radius-16);
+  box-shadow: var(--ax-shadow-dialog);
+  margin-top: clamp(var(--ax-space-24), 5vw, var(--ax-space-64));
+  padding: var(--ax-space-32);
+
   h1 {
-    font-size: 4em;
     margin: 0;
-    padding-bottom: 20px;
+    padding-bottom: var(--ax-space-20);
+  }
+
+  p {
+    margin: 0 0 var(--ax-space-12);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--ax-space-12);
+    flex-wrap: wrap;
+    margin-top: var(--ax-space-24);
   }
 
   &_button-nav {
-    margin: 10px;
+    margin: 0;
   }
+
   &_button-bankid {
-    margin: 10px;
-    padding-right: 50px;
-    padding-left: 50px;
+    margin: 0;
+    min-inline-size: 13rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .login-modal {
+    padding: var(--ax-space-24);
+
+    &__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &_button-bankid,
+    &_button-nav {
+      width: 100%;
+    }
   }
 }

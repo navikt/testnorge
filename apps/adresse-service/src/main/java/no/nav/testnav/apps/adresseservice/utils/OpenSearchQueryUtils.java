@@ -6,6 +6,8 @@ import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
 import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+
 @UtilityClass
 public class OpenSearchQueryUtils {
 
@@ -14,7 +16,7 @@ public class OpenSearchQueryUtils {
         return QueryBuilders.match()
                 .field(field)
                 .query(FieldValue.of(value))
-                .fuzziness("AUTO")
+                .fuzziness(isNumeric(value) ? "0" : "AUTO")
                 .build();
     }
 

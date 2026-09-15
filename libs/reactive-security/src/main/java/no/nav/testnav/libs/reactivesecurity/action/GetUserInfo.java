@@ -22,6 +22,7 @@ import java.util.concurrent.Callable;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_EMAIL;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_ID;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_ORG;
@@ -54,7 +55,7 @@ public class GetUserInfo extends JwtResolver implements Callable<Mono<UserInfoEx
                     if (((String) auth.getT2().get(JwtClaimNames.ISS)).contains("microsoftonline")) {
                         return new UserInfoExtended(
                                 (String) auth.getT2().get("oid"),
-                                "889640782",
+                                NAV_ORGANIZATION_NUMBER,
                                 (String) auth.getT2().get(JwtClaimNames.ISS),
                                 nonNull(auth.getT2().get("name")) ?
                                         (String) auth.getT2().get("name") :

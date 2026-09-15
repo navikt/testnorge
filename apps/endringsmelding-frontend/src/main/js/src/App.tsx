@@ -1,15 +1,13 @@
 import React from 'react';
-
-import { Header, ProfilLoader } from '@navikt/dolly-komponenter';
 import { BrowserRouter as Router, Route, Routes } from 'react-router';
-import ProfilService from './service/ProfilService';
 import '@navikt/ds-css';
+import { AppHeader } from '@/components/header/AppHeader';
 import { EndringsmeldingPage } from '@/pages/endringsmelding-page/EndringsmeldingPage';
 import { LoginPage } from '@/pages/login-page/LoginPage';
 
 const App = () => (
   <Router>
-    <Header title="Endringsmeldinger" profile={<ProfilLoader {...ProfilService} />} />
+    <AppHeader />
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="*" element={<EndringsmeldingPage />} />

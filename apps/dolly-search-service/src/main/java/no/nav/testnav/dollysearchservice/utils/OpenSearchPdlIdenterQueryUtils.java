@@ -32,6 +32,7 @@ public class OpenSearchPdlIdenterQueryUtils {
 
     private static final String PERSON_FORNAVN = "hentPerson.navn.fornavn";
     private static final String PERSON_ETTERNAVN = "hentPerson.navn.etternavn";
+    private static final String IDENT= "ident";
     private static final String IDENTIFIKASJONSNUMMER = "identifikasjonsnummer";
 
     public static FunctionScoreQuery.Builder buildTestnorgeIdentSearchQuery(IdentSearch search) {
@@ -109,7 +110,7 @@ public class OpenSearchPdlIdenterQueryUtils {
 
         if (nonNull(identer) && !identer.isEmpty()) {
             queryBuilder
-                    .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, "ident", identer)));
+                    .must(q -> q.nested(nestedTermsQuery(HENT_IDENTER, IDENT, identer)));
         }
     }
 

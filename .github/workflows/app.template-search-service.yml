@@ -1,0 +1,23 @@
+name: template-search-service
+
+on:
+  push:
+    paths:
+      - .github/workflows/app.template-search-service.yml
+      - apps/template-search-service/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/testing/**
+      - plugins/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/template-search-service"
+      deploy-tag: "#deploy-template-search-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

@@ -9,12 +9,14 @@ import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.consumer.teamkatalog.TeamkatalogConsumer;
 import no.nav.dolly.consumer.teamkatalog.dto.TeamkatalogDTO;
 import no.nav.dolly.domain.dto.BestillingProgressDTO;
+import no.nav.dolly.domain.dto.DashboardAdferdDTO;
 import no.nav.dolly.domain.dto.DashboardBestillingerDTO;
 import no.nav.dolly.domain.dto.DashboardDollyTeamsDTO;
 import no.nav.dolly.domain.dto.DashboardOrganisasjonerDTO;
 import no.nav.dolly.domain.dto.DashboardOversiktDTO;
 import no.nav.dolly.domain.dto.DashboardTeamsDTO;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.projection.AdferdFragment;
 import no.nav.dolly.domain.projection.BestillingerFragment;
 import no.nav.dolly.domain.projection.DollyTeam2Fragment;
 import no.nav.dolly.domain.projection.DollyTeamFragment;
@@ -26,6 +28,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.util.BrukeradferdUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
@@ -45,14 +48,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.toIntExact;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -63,6 +66,7 @@ public class DashboardService {
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
     private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident");
     private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
+    private static final String INTERVAL = "%4d-%02d";
 
     private final Altinn3TilgangServiceConsumer altinn3TilgangServiceConsumer;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -76,7 +80,7 @@ public class DashboardService {
 
     public Flux<DashboardBestillingerDTO> getBestillingerStatus(int year, Month month) {
 
-        var interval = "%4d-%02d".formatted(year, month.getValue());
+        var interval = INTERVAL.formatted(year, month.getValue());
         return bestillingRepository.findBestillingerOrderBySistOppdatert(interval)
                 .groupBy(BestillingerFragment::getDato)
                 .flatMap(Flux::collectList)
@@ -105,7 +109,7 @@ public class DashboardService {
                 .distinct()
                 .buffer(500)
                 .flatMap(teamkatalogConsumer::getTeamForEpost, 3)
-                .collect(Collectors.toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
+                .collect(toMap(TeamkatalogDTO::getEmail, TeamkatalogDTO::getTeamNavn))
                 .flatMapMany(teams -> bestillingRepository.findBestillingerForTeamsOrderBySistOppdatert()
                         .groupBy(TeamFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -129,9 +133,9 @@ public class DashboardService {
     public Flux<DashboardOrganisasjonerDTO> getOrganisasjonerStatus() {
 
         return Mono.zip(altinn3TilgangServiceConsumer.getOrganisasjoner()
-                                .collect(Collectors.toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
+                                .collect(toMap(Altinn3TilgangDTO::getOrganisasjonsnummer, value -> value)),
                         brukerServiceConsumer.getAlleBrukere()
-                                .collect(Collectors.toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
+                                .collect(toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer)))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForOrganisasjonerOrderBySistOppdatert()
                         .groupBy(OrganisasjonFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -154,7 +158,7 @@ public class DashboardService {
     public Flux<DashboardDollyTeamsDTO> getDollyTeamsStatus() {
 
         return teamRepository.findAllTeamBrukere()
-                .collect(Collectors.toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
+                .collect(toMap(DollyTeam2Fragment::getBrukerid, DollyTeam2Fragment::getAntall))
                 .flatMapMany(oppslag -> bestillingRepository.findBestillingerForDollyTeamsOrderBySistOppdatert()
                         .groupBy(DollyTeamFragment::getInterval)
                         .flatMap(Flux::collectList)
@@ -177,7 +181,7 @@ public class DashboardService {
 
     public Flux<JsonNode> getFeilstatusSummert(int year, Month month) {
 
-        var filter = "%4d-%02d".formatted(year, month.getValue());
+        var filter = INTERVAL.formatted(year, month.getValue());
         return buildFeilWhereFragment()
                 .map(feilFilter -> "select b.sist_oppdatert::date bestilling_dato, bp.* " +
                                    "from bestilling b " +
@@ -272,7 +276,7 @@ public class DashboardService {
         var grouped = new HashMap<String, Set<String>>();
         fragments.forEach(fragment -> {
             var orgNummer = brukerToOrgnummer.get(fragment.getBrukerid());
-            if (Objects.nonNull(orgNummer)) {
+            if (nonNull(orgNummer)) {
                 grouped.computeIfAbsent(orgNummer, _ -> new HashSet<>()).add(fragment.getBrukerid());
             }
         });
@@ -323,7 +327,7 @@ public class DashboardService {
             });
         });
         var summert = resultat.entrySet().stream()
-                .collect(Collectors.toMap(entry -> {
+                .collect(toMap(entry -> {
                             var key = entry.getKey();
                             if (key.contains("Status")) {
                                 return key.replace("Status", "Feil");
@@ -419,5 +423,26 @@ public class DashboardService {
                                 .build())
                         .toList())
                 .build();
+    }
+
+    public Flux<DashboardAdferdDTO> getAdferd(int year, Month month) {
+
+        var interval = INTERVAL.formatted(year, month.getValue());
+        return bestillingRepository.findByBestKriterier(interval)
+                .groupBy(AdferdFragment::getDato)
+                .flatMap(Flux::collectList)
+                .map(adferd -> DashboardAdferdDTO.builder()
+                        .dato(adferd.getFirst().getDato())
+                        .kriterier(BrukeradferdUtils.getAkkumulerteKriterier(adferd,
+                                        AdferdFragment::getBestkriterier, AdferdFragment::getAntall, jsonMapper)
+                                .stream()
+                                .map(kriterium -> DashboardAdferdDTO.Entry.builder()
+                                        .fagsystem(kriterium.fagsystem())
+                                        .antall(kriterium.antall())
+                                        .detaljer(kriterium.detaljer())
+                                        .build())
+                                .toList())
+                        .build())
+                .sort(Comparator.comparing(DashboardAdferdDTO::getDato));
     }
 }

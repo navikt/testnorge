@@ -17,6 +17,7 @@ import java.util.List;
 public interface TestgruppeRepository extends ReactiveSortingRepository<Testgruppe, Long> {
 
     Flux<Testgruppe> findByOpprettetAvIdOrderByIdDesc(Long brukerId, Pageable pageable);
+
     Mono<Long> countByOpprettetAvId(Long brukerId);
 
     Flux<Testgruppe> findByOrderByIdDesc(Pageable pageable);
@@ -57,32 +58,27 @@ public interface TestgruppeRepository extends ReactiveSortingRepository<Testgrup
     Mono<Testgruppe> save(Testgruppe testgruppe);
 
     @Query("""
-            select g.id as id, g.navn as navn
-            from Gruppe g
-            where length(:id) > 0
-            and cast(g.id as VARCHAR) ilike :id
-            fetch first 10 rows only
-            """)
-    Flux<GruppeFragment> findByIdContaining(@Param("id") String id);
-
-    @Query("""
-            select g.id as id, g.navn as navn
-            from Gruppe g
-            where length(:gruppenavn) > 0
-            and g.navn ilike :gruppenavn
-            fetch first 10 rows only
-            """)
-    Flux<GruppeFragment> findByNavnContaining(@Param("gruppenavn") String gruppenavn);
-
-    @Query("""
-            select g.id as id, g.navn as navn
-            from Gruppe g
-            where cast(g.id as varchar) ilike :id
-            and g.navn ilike :gruppenavn
-            fetch first 10 rows only
-            """)
-    Flux<GruppeFragment> findByIdContainingAndNavnContaining(
-            @Param("id") String id,
-            @Param("gruppenavn") String gruppenavn
-    );
+        select g.id as id, g.navn as navn
+        from Gruppe g
+        join Bruker b on b.id = g.opprettet_av
+        where (
+            coalesce(cardinality(:brukerIds), 0) = 0
+            or cast(b.bruker_id as text) = any(:brukerIds)
+        )
+        and (
+            :id is null
+            or length(:id) = 0
+            or cast(g.id as varchar) ilike concat('%', :id, '%')
+        )
+        and (
+            :gruppenavn is null
+            or length(:gruppenavn) = 0
+            or g.navn ilike concat('%', :gruppenavn, '%')
+        )
+        order by g.id
+        fetch first 10 rows only
+        """)
+    Flux<GruppeFragment> findByIdAndNavnAndBrukere(@Param("id") String id,
+                                                   @Param("gruppenavn") String gruppenavn,
+                                                   @Param("brukerIds") String[] brukerIds);
 }

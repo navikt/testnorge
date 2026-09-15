@@ -8,16 +8,29 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.web.server.WebSession;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.OcidLogoutUriResolver;
 
 public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
+
+    private static final String DEFAULT_LOGOUT_STATE = "logout";
+    private static final Set<String> VALID_LOGOUT_STATES = Set.of(
+            DEFAULT_LOGOUT_STATE,
+            "organisation_error",
+            "unknown_error",
+            "miljoe_error",
+            "person_org_error",
+            "azure_error",
+            "session_error"
+    );
 
     private final Map<String, OcidLogoutUriResolver> resolvers = new HashMap<>();
 
@@ -36,7 +49,7 @@ public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
                     .ofNullable(resolvers.get(registrationId))
                     .map(resolver -> resolver.generateUrl((DefaultOidcUser) authentication.getPrincipal(), logOutState))
                     .orElse(Mono.empty())
-                    .switchIfEmpty(Mono.just(URI.create("/login?state=" + logOutState)))
+                    .switchIfEmpty(Mono.just(buildLoginUri(logOutState)))
                     .doOnNext(uri -> response.getHeaders().setLocation(uri))
                     .then(exchange
                             .getExchange()
@@ -44,7 +57,7 @@ public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
                             .flatMap(WebSession::invalidate)
                     );
         }
-        response.getHeaders().setLocation(URI.create("/login?state=logout"));
+        response.getHeaders().setLocation(buildLoginUri(DEFAULT_LOGOUT_STATE));
         return exchange
                 .getExchange()
                 .getSession()
@@ -53,13 +66,26 @@ public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
 
     private String getLogoutState(WebFilterExchange exchange, String registrationId) {
         var request = exchange.getExchange().getRequest();
-        var state = request.getQueryParams().get("state");
-        if (state != null && !state.isEmpty()) {
-            var stateValue = state.get(0);
-            if (registrationId.equals("aad") && stateValue.equals("organisation_error")) stateValue = "unknown_error";
-            return stateValue;
+        return normalizeLogoutState(request.getQueryParams().getFirst("state"), registrationId);
+    }
+
+    static String normalizeLogoutState(String state, String registrationId) {
+        if (state == null || !VALID_LOGOUT_STATES.contains(state)) {
+            return DEFAULT_LOGOUT_STATE;
         }
-        return "logout";
+        if ("aad".equals(registrationId) && "organisation_error".equals(state)) {
+            return "unknown_error";
+        }
+        return state;
+    }
+
+    static URI buildLoginUri(String logoutState) {
+        return UriComponentsBuilder
+                .fromPath("/login")
+                .queryParam("state", logoutState)
+                .build()
+                .encode()
+                .toUri();
     }
 
     public void applyOn(String authorizedClientRegistrationId, OcidLogoutUriResolver resolver) {

@@ -140,7 +140,7 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 						Importer personer
 					</NavButton>
 					<div style={{ flexGrow: '2' }}></div>
-					{!bankIdBruker && <Navigering />}
+					<Navigering />
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<GruppeToggle

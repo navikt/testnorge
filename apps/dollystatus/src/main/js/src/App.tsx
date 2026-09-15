@@ -1,7 +1,3 @@
-import React from 'react'
-// @ts-ignore
-import ApplicationService from '@/services/ApplicationService'
-
 import { BrowserRouter, Route, Routes } from 'react-router'
 import StatusPage from '@/pages/StatusPage'
 

@@ -5,19 +5,24 @@ import Search from '@/pages/UserPage/Search'
 import BrukerService from '@/services/BrukerService'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
-import { Knapp } from '@navikt/dolly-komponenter'
+import { Button } from '@navikt/ds-react'
 // @ts-ignore
 
 const AccessTokenTextArea = styled.textarea`
 	width: 100%;
-	min-height: 80px;
+	min-height: 5rem;
 	text-align: left;
 	resize: none;
-	background: white;
+	padding: var(--ax-space-12);
+	border: 1px solid var(--ax-border-neutral-subtle);
+	border-radius: var(--ax-radius-8);
+	background: var(--ax-bg-input);
+	color: var(--ax-text-neutral);
+	opacity: 1;
 `
 
-const CopyTokenKnapp = styled(Knapp)`
-	margin: 10px 5px;
+const CopyTokenButton = styled(Button)`
+	align-self: flex-start;
 `
 
 const LoginBox = () => {
@@ -28,9 +33,9 @@ const LoginBox = () => {
 			header="Login"
 			onRender={({ onSubmit, value, loading }) => (
 				<>
-					<AccessTokenTextArea disabled={true} value={value} />
-					<CopyToClipboard text={value}>
-						<CopyTokenKnapp>Copy</CopyTokenKnapp>
+					<AccessTokenTextArea disabled={true} value={value ?? ''} />
+					<CopyToClipboard text={value ?? ''}>
+						<CopyTokenButton disabled={!value}>Copy</CopyTokenButton>
 					</CopyToClipboard>
 					<Search
 						onBlur={(event) => setId(event.target.value)}

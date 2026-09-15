@@ -20,4 +20,12 @@ public class TilgangService {
                 .collectList()
                 .map(TilgangDTO::new);
     }
+
+    public Mono<TilgangDTO> getBrukereIOrganisasjon(String orgnr) {
+
+        return userRepository.findBrukereIOrganisasjon(orgnr)
+                .mapNotNull(UserEntity::getId)
+                .collectList()
+                .map(TilgangDTO::new);
+    }
 }

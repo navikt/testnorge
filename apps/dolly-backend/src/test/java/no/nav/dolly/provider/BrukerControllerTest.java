@@ -2,6 +2,7 @@ package no.nav.dolly.provider;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.dto.MinSideBestillingerDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Team;
@@ -12,7 +13,10 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamWithBrukere;
 import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamBrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.service.BrukerBestillingerService;
 import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.service.TeamService;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
@@ -21,10 +25,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -63,6 +73,18 @@ class BrukerControllerTest {
 
     @Mock
     private BrukerFavoritterRepository brukerFavoritterRepository;
+
+    @Mock
+    private BrukerBestillingerService brukerBestillingerService;
+
+    @Mock
+    private TeamBrukerRepository teamBrukerRepository;
+
+    @Mock
+    private TeamRepository teamRepository;
+
+    @Spy
+    private JsonMapper jsonMapper = new JsonMapper();
 
     @InjectMocks
     private BrukerController controller;
@@ -125,7 +147,35 @@ class BrukerControllerTest {
                 .thenReturn(RsBrukerUtenFavoritter.builder().build());
 
         StepVerifier.create(controller.getAllBrukere())
-                .assertNext(bruker -> verify(brukerService).fetchBrukere())
+                .assertNext(_ -> verify(brukerService).fetchBrukere())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGetBestillingerForCurrentBruker() {
+
+        var bestilling = MinSideBestillingerDTO.builder()
+                .periode(YearMonth.of(2026, 1))
+                .build();
+        when(brukerBestillingerService.getBestillinger())
+                .thenReturn(Flux.just(bestilling));
+
+        StepVerifier.create(controller.getBestillingerForCurrentBruker())
+                .expectNext(bestilling)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGetBestillingerDetaljertForCurrentBruker() {
+
+        var bestilling = MinSideBestillingerDTO.builder()
+                .dato(LocalDate.of(2026, 1, 1))
+                .build();
+        when(brukerBestillingerService.getBestillingerDetaljert(2026, Month.JANUARY))
+                .thenReturn(Flux.just(bestilling));
+
+        StepVerifier.create(controller.getBestillingerDetaljertForCurrentBruker(2026, Month.JANUARY))
+                .expectNext(bestilling)
                 .verifyComplete();
     }
 
@@ -145,7 +195,7 @@ class BrukerControllerTest {
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.fjernFavoritt(req))
-                .assertNext(resultat -> verify(brukerService).fjernFavoritt(anyLong()))
+                .assertNext(_ -> verify(brukerService).fjernFavoritt(anyLong()))
                 .verifyComplete();
     }
 
@@ -165,7 +215,7 @@ class BrukerControllerTest {
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.leggTilFavoritt(req))
-                .assertNext(resultat -> verify(brukerService).leggTilFavoritt(anyLong()))
+                .assertNext(_ -> verify(brukerService).leggTilFavoritt(anyLong()))
                 .verifyComplete();
     }
 

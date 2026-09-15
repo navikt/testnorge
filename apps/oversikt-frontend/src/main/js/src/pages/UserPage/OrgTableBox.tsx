@@ -1,10 +1,10 @@
 import { Box } from '@/components/Box'
 import React from 'react'
-import { LoadableComponent } from '@navikt/dolly-komponenter'
 import OrganisasjonService from '@/services/OrganisasjonService'
 import styled from 'styled-components'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
+import { AsyncContent } from '@/components/AsyncContent'
 // @ts-ignore
 
 const Bold = styled.span`
@@ -15,7 +15,7 @@ const OrgTableBox = () => (
 	<Box
 		header="Organisasjonstilgang"
 		onRender={() => (
-			<LoadableComponent
+			<AsyncContent
 				onFetch={OrganisasjonService.getOrganisasjoner}
 				render={(list) => (
 					<table>

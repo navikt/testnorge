@@ -2,12 +2,6 @@ import { expect, test } from '#/globalSetup'
 import { personOrgTilgangMock } from '#/mocks/BasicMocks'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
-const mockOrganisasjon = {
-	navn: 'Test Organisasjon',
-	organisasjonsnummer: '123456789',
-	organisasjonform: 'AS',
-}
-
 const mockBankidBruker = {
 	brukernavn: 'bankid-user',
 	brukertype: 'BANKID',
@@ -31,14 +25,6 @@ test.beforeEach(async ({ page }) => {
 		})
 	})
 
-	await page.route('**/person-org-tilgang-api/api/v1/organisasjoner', async (route) => {
-		await route.fulfill({
-			status: 200,
-			contentType: 'application/json',
-			body: JSON.stringify([mockOrganisasjon]),
-		})
-	})
-
 	await page.route('**/altinn/organisasjoner', async (route) => {
 		await route.fulfill({
 			status: 200,
@@ -57,17 +43,14 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('should handle new user login flow through BrukerModal', async ({ page }) => {
-	await page.route(
-		`**/testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${mockOrganisasjon.organisasjonsnummer}`,
-		async (route) => {
+	await page.route('**/testnav-bruker-service/api/v2/brukere*', async (route) => {
+		if (route.request().method() === 'GET') {
 			await route.fulfill({
 				status: 404,
+				contentType: 'application/json',
+				body: JSON.stringify([]),
 			})
-		},
-	)
-
-	await page.route('**/testnav-bruker-service/api/v2/brukere', async (route) => {
-		if (route.request().method() === 'POST') {
+		} else if (route.request().method() === 'POST') {
 			const body = route.request().postDataJSON()
 			await route.fulfill({
 				status: 200,
@@ -100,22 +83,17 @@ test('should handle existing user without email', async ({ page }) => {
 	const mockExistingUserWithoutEmail = {
 		brukernavn: 'existing user',
 		epost: null,
-		organisasjonsnummer: mockOrganisasjon.organisasjonsnummer,
+		organisasjonsnummer: personOrgTilgangMock[0].organisasjonsnummer,
 	}
 
-	await page.route(
-		`**/testnav-bruker-service/api/v2/brukere?organisasjonsnummer=12345678`,
-		async (route) => {
+	await page.route('**/testnav-bruker-service/api/v2/brukere*', async (route) => {
+		if (route.request().method() === 'GET') {
 			await route.fulfill({
 				status: 200,
 				contentType: 'application/json',
 				body: JSON.stringify([mockExistingUserWithoutEmail]),
 			})
-		},
-	)
-
-	await page.route('**/testnav-bruker-service/api/v2/brukere', async (route) => {
-		if (route.request().method() === 'PUT') {
+		} else if (route.request().method() === 'PUT') {
 			const body = route.request().postDataJSON()
 			await route.fulfill({
 				status: 200,
@@ -152,31 +130,14 @@ test('should handle new BankID user flow', async ({ page }) => {
 	const brukernavn = 'testbruker123'
 	const epost = 'test@test.com'
 
-	await page.route('**/api/v1/organisasjoner', async (route) => {
-		await route.fulfill({
-			status: 200,
-			contentType: 'application/json',
-			body: JSON.stringify([
-				{
-					navn: 'Test Organisasjon',
-					organisasjonsnummer: orgNummer,
-					organisasjonsform: 'AS',
-				},
-			]),
-		})
-	})
-
-	await page.route(
-		`**/testnav-bruker-service/api/v2/brukere?organisasjonsnummer=${orgNummer}`,
-		async (route) => {
+	await page.route('**/testnav-bruker-service/api/v2/brukere*', async (route) => {
+		if (route.request().method() === 'GET') {
 			await route.fulfill({
 				status: 404,
+				contentType: 'application/json',
+				body: JSON.stringify([]),
 			})
-		},
-	)
-
-	await page.route('**/testnav-bruker-service/api/v2/brukere', async (route) => {
-		if (route.request().method() === 'POST') {
+		} else if (route.request().method() === 'POST') {
 			const body = route.request().postDataJSON()
 			expect(body.brukernavn).toBe(brukernavn)
 			expect(body.epost).toBe(epost)
@@ -189,16 +150,6 @@ test('should handle new BankID user flow', async ({ page }) => {
 					epost: epost,
 				}),
 			})
-		} else {
-			await route.continue()
-		}
-	})
-
-	await page.route('**/session/organisasjon', async (route) => {
-		if (route.request().method() === 'POST') {
-			const body = route.request().postDataJSON()
-			expect(body.organisasjonsnummer).toBe(orgNummer)
-			await route.fulfill({ status: 200 })
 		} else {
 			await route.continue()
 		}

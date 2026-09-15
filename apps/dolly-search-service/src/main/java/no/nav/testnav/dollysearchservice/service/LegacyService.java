@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
+import no.nav.testnav.dollysearchservice.utils.OpenSearchBestillingerQueryBuilder;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
@@ -32,7 +32,7 @@ public class LegacyService {
                 .mustNotHaveTags(Set.of("DOLLY", "ARENASYNT"))
                 .build();
 
-        var query = OpenSearchQueryBuilder.buildSearchQuery(personRequest);
+        var query = OpenSearchBestillingerQueryBuilder.buildSearchQuery(personRequest);
 
         return pdlPersonQueryService.execQuery(personRequest, query)
                 .map(SearchInternalResponse::getPersoner)

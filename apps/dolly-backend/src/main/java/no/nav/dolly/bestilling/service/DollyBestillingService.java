@@ -50,7 +50,6 @@ import java.util.stream.Stream;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -125,7 +124,7 @@ public class DollyBestillingService {
 
         return register ->
                 !fase1Klienter().apply(register) &&
-                        !fase2Klienter().apply(register);
+                !fase2Klienter().apply(register);
     }
 
     private List<GjenopprettSteg> remainingFaser() {
@@ -215,17 +214,13 @@ public class DollyBestillingService {
                 .then(Mono.just(progress));
     }
 
-    protected Mono<Testident> leggIdentTilGruppe(BestillingProgress progress, String beskrivelse) {
-
-        return leggIdentTilGruppe(null, progress, beskrivelse);
-    }
-
-    protected Mono<Testident> leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
+    protected Mono<BestillingProgress> leggIdentTilGruppe(BestillingProgress progress, String beskrivelse) {
 
         return bestillingRepository.findById(progress.getBestillingId())
-                .flatMap(bestilling -> identService.saveIdentTilGruppe(isNotBlank(ident) ? ident : progress.getIdent(),
+                .flatMap(bestilling -> identService.saveIdentTilGruppe(progress.getIdent(),
                                 bestilling.getGruppeId(), progress.getMaster(), beskrivelse)
-                        .doOnNext(testident -> log.info("Ident {} lagt til gruppe {}", testident.getIdent(), bestilling.getGruppeId())));
+                        .doOnNext(testident -> log.info("Ident {} lagt til gruppe {}", testident.getIdent(), bestilling.getGruppeId())))
+                .thenReturn(progress);
     }
 
     protected Mono<DollyPerson> opprettDollyPerson(BestillingProgress progress, Bruker bruker) {
@@ -237,7 +232,7 @@ public class DollyBestillingService {
                         .master(progress.getMaster())
                         .tags(Stream.concat(testgruppe.getTags().stream(),
                                         Stream.of(Tags.DOLLY)
-                                                .filter(_ -> progress.getMaster() == PDL))
+                                                .filter(_ -> progress.isPdl()))
                                 .toList())
                         .bruker(bruker)
                         .build()));
@@ -253,9 +248,9 @@ public class DollyBestillingService {
     protected Mono<Void> saveBestillingToOpenSearchServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
 
         if (isBlank(bestilling.getFeil()) &&
-                isNull(bestilling.getOpprettetFraId()) &&
-                isBlank(bestilling.getGjenopprettetFraIdent()) &&
-                isNull(bestilling.getOpprettetFraGruppeId())) {
+            isNull(bestilling.getOpprettetFraId()) &&
+            isBlank(bestilling.getGjenopprettetFraIdent()) &&
+            isNull(bestilling.getOpprettetFraGruppeId())) {
 
             var request = mapperFacade.map(bestillingRequest, BestillingDokument.class);
             request.setId(bestilling.getId());
@@ -302,10 +297,10 @@ public class DollyBestillingService {
 
             progress.setPdlForvalterStatus("Info: Oppdatering av person startet ...");
             return endrePerson(() -> pdlDataConsumer.oppdaterPdl(originator.getIdent(),
-                                    PersonUpdateRequestDTO.builder()
-                                            .person(originator.getPdlBestilling().getPerson())
-                                            .build()), progress)
-                            .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
+                    PersonUpdateRequestDTO.builder()
+                            .person(originator.getPdlBestilling().getPerson())
+                            .build()), progress)
+                    .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
 
         } else {
             return Mono.just(progress);
@@ -315,16 +310,13 @@ public class DollyBestillingService {
     protected Mono<BestillingProgress> sendOrdrePerson(BestillingProgress bestillingProgress) {
 
         return Mono.just(bestillingProgress)
-                .flatMap(progress -> progress.getMaster() == PDL ?
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK") :
-                        Mono.just(progress))
                 .flatMap(progress -> isNotBlank(progress.getIdent()) ?
                         transactionHelperService.persister(progress, BestillingProgress::setIdent, progress.getIdent()) :
                         Mono.just(progress))
                 .flatMap(progress -> {
 
                     if ("OK".equals(progress.getPdlForvalterStatus()) ||
-                            isBlank(progress.getPdlForvalterStatus()) && isNotBlank(progress.getIdent())) {
+                        isBlank(progress.getPdlForvalterStatus()) && isNotBlank(progress.getIdent())) {
 
                         return transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
                                         "Info: Ordre til PDL startet ...")
@@ -361,7 +353,6 @@ public class DollyBestillingService {
                         .build());
     }
 
-
     protected Mono<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 
         return transactionHelperService.persister(progress, BestillingProgress::setIdent, dollyPerson.getIdent())
@@ -371,5 +362,10 @@ public class DollyBestillingService {
                         .then(bestillingProgressRepository.swapIdent(gammelIdent, dollyPerson.getIdent()))
                         .then(bestillingService.swapIdent(gammelIdent, dollyPerson.getIdent())))
                 .thenReturn(dollyPerson.getIdent());
+    }
+
+    protected Mono<BestillingProgress> oppdaterPdlImportStatus(BestillingProgress progress) {
+
+        return transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
     }
 }

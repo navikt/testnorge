@@ -5,7 +5,7 @@ import '@navikt/ds-css';
 import App from './App';
 
 async function main() {
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     const { worker } = await import('../__tests__/mocks/browser');
     await worker.start({
       onUnhandledRequest: 'bypass',
@@ -15,7 +15,13 @@ async function main() {
 }
 
 main().then(() => {
-  const root = createRoot(document.getElementById('root'));
+  const rootElement = document.getElementById('root');
+
+  if (!rootElement) {
+    throw new Error('Fant ikke root-elementet');
+  }
+
+  const root = createRoot(rootElement);
 
   root.render(
     <React.StrictMode>

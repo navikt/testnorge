@@ -246,7 +246,7 @@ public class PdlOrdreService {
                         getHistoriskePersoner(sorterteOpprettinger)
                                 .flatMap(historiske -> Flux.fromIterable(sorterteOpprettinger)
                                         .filter(OpprettRequest::isNotTestnorgeIdent)
-                                        .filter(oppretting -> historiske.stream()
+                                        .filter(oppretting -> oppretting.isNpidIdent() || historiske.stream()
                                                 .noneMatch(historisk -> historisk.equals(oppretting.getPerson())))
                                         .flatMap(this::personOpprett)
                                         .collectList()),

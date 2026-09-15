@@ -15,7 +15,11 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -92,6 +96,14 @@ public class Bestilling implements Serializable {
     @Transient
     private List<BestillingProgress> progresser;
 
+    public List<BestillingProgress> getProgresser() {
+
+        if (isNull(progresser)) {
+            progresser = new ArrayList<>();
+        }
+        return progresser;
+    }
+
     @Transient
     private String beskrivelse;
 
@@ -119,7 +131,7 @@ public class Bestilling implements Serializable {
                 .append(ident, that.ident)
                 .append(opprettetFraGruppeId, that.opprettetFraGruppeId)
                 .append(gjenopprettetFraIdent, that.gjenopprettetFraIdent)
-                .append(bruker, that.bruker)
+                .append(brukerId, that.brukerId)
                 .append(pdlImport, that.pdlImport)
                 .append(kildeMiljoe, that.kildeMiljoe)
                 .append(navSyntetiskIdent, that.navSyntetiskIdent)
@@ -145,7 +157,7 @@ public class Bestilling implements Serializable {
                 .append(ident)
                 .append(opprettetFraGruppeId)
                 .append(gjenopprettetFraIdent)
-                .append(bruker)
+                .append(brukerId)
                 .append(pdlImport)
                 .append(kildeMiljoe)
                 .append(navSyntetiskIdent)
@@ -171,7 +183,7 @@ public class Bestilling implements Serializable {
                 ", ident='" + ident + '\'' +
                 ", opprettetFraGruppeId=" + opprettetFraGruppeId +
                 ", gjenopprettetFraIdent='" + gjenopprettetFraIdent + '\'' +
-                ", bruker=" + bruker +
+                ", brukerId=" + brukerId +
                 ", pdlImport='" + pdlImport + '\'' +
                 ", kildeMiljoe='" + kildeMiljoe + '\'' +
                 ", navSyntetiskIdent=" + navSyntetiskIdent +

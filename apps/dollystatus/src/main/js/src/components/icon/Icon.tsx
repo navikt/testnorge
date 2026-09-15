@@ -14,32 +14,46 @@ export const icons = {
 	'report-problem-circle': ReportProblemCircle,
 	'report-problem-triangle': ProblemTriangle,
 	arbeid: Wrench,
+} as const
+
+type IconKind = keyof typeof icons
+
+type IconProps = {
+	kind?: IconKind
+	title?: string
+	size?: number
+	style?: React.CSSProperties
+	className?: string
 }
 
 const px = (v: number) => `${v}px`
 
 const Icon = ({
-	kind = null,
+	kind,
 	title = undefined,
 	size = 24,
 	style = undefined,
 	className = undefined,
-}) => {
-	// @ts-ignore
-	if (!icons?.[kind]) {
+}: IconProps) => {
+	if (!kind) {
 		return null
 	}
 
+	const src = icons[kind]
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
+	const isDecorative = !title
 
 	return (
-		// @ts-ignore
-		<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} role={'img'}>
-			<img
-				src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
-				alt="fallback"
-			/>
+		<SVG
+			src={src}
+			className={cssClass}
+			style={styleObj}
+			title={title}
+			role={isDecorative ? undefined : 'img'}
+			aria-hidden={isDecorative}
+		>
+			<img src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg" alt="" />
 		</SVG>
 	)
 }

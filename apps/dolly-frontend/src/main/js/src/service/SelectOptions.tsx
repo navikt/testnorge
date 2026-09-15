@@ -915,6 +915,11 @@ const selectOptions = {
 		{ value: 'q2', label: 'Q2' },
 		{ value: 'q4', label: 'Q4' },
 	],
+
+	kilde: [
+		{ value: 'DOLLY', label: 'Dolly' },
+		{ value: 'TESTNORGE', label: 'Test-Norge' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId: keyof typeof selectOptions) =>

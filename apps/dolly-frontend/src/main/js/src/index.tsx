@@ -8,7 +8,7 @@ import { RootComponent } from '@/RootComponent'
 import { runningE2ETest } from '@/service/services/Request'
 
 async function enableMocking() {
-	if (process.env.NODE_ENV !== 'test' || runningE2ETest()) {
+	if (import.meta.env.MODE !== 'test' || runningE2ETest()) {
 		return
 	}
 
@@ -18,7 +18,12 @@ async function enableMocking() {
 }
 
 enableMocking().then(() => {
-	const root = ReactDOM.createRoot(document.getElementById('root'))
+	const rootElement = document.getElementById('root')
+	if (!rootElement) {
+		throw new Error('Fant ikke rot-elementet for Dolly')
+	}
+
+	const root = ReactDOM.createRoot(rootElement)
 
 	root.render(
 		<React.StrictMode>
