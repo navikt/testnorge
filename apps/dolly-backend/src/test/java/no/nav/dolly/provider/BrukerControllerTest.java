@@ -147,7 +147,7 @@ class BrukerControllerTest {
                 .thenReturn(RsBrukerUtenFavoritter.builder().build());
 
         StepVerifier.create(controller.getAllBrukere())
-                .assertNext(bruker -> verify(brukerService).fetchBrukere())
+                .assertNext(_ -> verify(brukerService).fetchBrukere())
                 .verifyComplete();
     }
 
@@ -166,7 +166,7 @@ class BrukerControllerTest {
     }
 
     @Test
-    void shouldGetBestillingerDetajertForCurrentBruker() {
+    void shouldGetBestillingerDetaljertForCurrentBruker() {
 
         var bestilling = MinSideBestillingerDTO.builder()
                 .dato(LocalDate.of(2026, 1, 1))
@@ -174,7 +174,7 @@ class BrukerControllerTest {
         when(brukerBestillingerService.getBestillingerDetaljert(2026, Month.JANUARY))
                 .thenReturn(Flux.just(bestilling));
 
-        StepVerifier.create(controller.getBestillingerDetajertForCurrentBruker(2026, Month.JANUARY))
+        StepVerifier.create(controller.getBestillingerDetaljertForCurrentBruker(2026, Month.JANUARY))
                 .expectNext(bestilling)
                 .verifyComplete();
     }
@@ -195,7 +195,7 @@ class BrukerControllerTest {
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.fjernFavoritt(req))
-                .assertNext(resultat -> verify(brukerService).fjernFavoritt(anyLong()))
+                .assertNext(_ -> verify(brukerService).fjernFavoritt(anyLong()))
                 .verifyComplete();
     }
 
@@ -215,7 +215,7 @@ class BrukerControllerTest {
         when(getUserInfo.call()).thenReturn(Mono.just(userInfoExtended));
 
         StepVerifier.create(controller.leggTilFavoritt(req))
-                .assertNext(resultat -> verify(brukerService).leggTilFavoritt(anyLong()))
+                .assertNext(_ -> verify(brukerService).leggTilFavoritt(anyLong()))
                 .verifyComplete();
     }
 

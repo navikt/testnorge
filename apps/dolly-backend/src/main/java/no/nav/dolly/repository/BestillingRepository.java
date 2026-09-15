@@ -29,7 +29,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Mono<Bestilling> findById(Long id);
 
     @Query("""
-            select b.id, b.best_kriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
+            select b.id, b.best_kriterier as bestkriterier, b.miljoer, br.brukertype, br.bruker_id from bestilling b
             join bruker br on br.id = b.bruker_id
             where b.opprett_fra_gruppe is null
             and b.gjenopprettet_fra_ident is null
@@ -72,6 +72,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
            and b.opprettet_fra_id is null
            and b.gjenopprettet_fra_ident is null
            and b.opprett_fra_gruppe is null
+           and b.best_kriterier is not null
            order by b.id desc
            """)
     Flux<BestillingBrukerFragment> findKriterierByBrukerIdOrderByIdDesc(String brukerId, String yearMonth);

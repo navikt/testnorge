@@ -102,8 +102,8 @@ public class BrukerController {
 
     @GetMapping("/bestillinger/brukerid/detaljert")
     @Operation(description = "Hent detaljerte bestillinger for pålogget bruker")
-    public Flux<MinSideBestillingerDTO> getBestillingerDetajertForCurrentBruker(@RequestParam int year,
-                                                                                @RequestParam Month month) {
+    public Flux<MinSideBestillingerDTO> getBestillingerDetaljertForCurrentBruker(@RequestParam int year,
+                                                                                 @RequestParam Month month) {
 
         return brukerBestillingerService.getBestillingerDetaljert(year, month);
     }

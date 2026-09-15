@@ -37,8 +37,11 @@ public class BrukeradferdUtils {
 
         return kriterier.stream()
                 .map(kriterium -> {
-                    var bestilling = jsonMapper.readValue(bestKriterierExtractor.apply(kriterium), RsDollyBestilling.class);
-                    return getAntallAdferd(bestilling, antallExtractor.applyAsInt(kriterium));
+                    var bestKriterier = bestKriterierExtractor.apply(kriterium);
+                    var antall = antallExtractor.applyAsInt(kriterium);
+                    return StringUtils.isBlank(bestKriterier)
+                            ? Map.of(NO_DATA, antall)
+                            : getAntallAdferd(jsonMapper.readValue(bestKriterier, RsDollyBestilling.class), antall);
                 })
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
