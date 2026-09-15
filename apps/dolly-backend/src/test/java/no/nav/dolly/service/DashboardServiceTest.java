@@ -876,11 +876,16 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldIgnoreEmptyListFields() {
+    void shouldUseIngenDataForEmptyListFields() {
         stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[]}", 1));
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
-                .assertNext(dto -> assertThat(dto.getKriterier()).isEmpty())
+                .assertNext(dto -> {
+                    assertThat(dto.getKriterier()).hasSize(1);
+                    assertThat(dto.getKriterier().getFirst().getFagsystem()).isEqualTo("Ingen data");
+                    assertThat(dto.getKriterier().getFirst().getAntall()).isEqualTo(1);
+                    assertThat(dto.getKriterier().getFirst().getDetaljer()).isNull();
+                })
                 .verifyComplete();
     }
 

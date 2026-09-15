@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @UtilityClass
 public class BrukeradferdUtils {
 
+    private static final String NO_DATA = "Ingen data";
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
 
     public record AkkumulertKriterium(String fagsystem, Integer antall, Map<String, String> detaljer) {
@@ -76,6 +77,9 @@ public class BrukeradferdUtils {
                         throw new RuntimeException(e);
                     }
                 });
+        if (adferd.isEmpty()) {
+            adferd.put(NO_DATA, antall);
+        }
         return adferd;
     }
 
@@ -86,7 +90,7 @@ public class BrukeradferdUtils {
             case "Pensjonforvalter" -> decodePensjon(bestilling);
             case "Arenaforvalter" -> decodeArena(bestilling);
             case "Aareg" -> decodeAareg(bestilling);
-            case "Fullmakt", "Instdata", "SigrunstubPensjonsgivende",
+            case "Fullmakt", "Instdata", "Inntekter", "SigrunstubPensjonsgivende",
                  "SigrunstubSummertSkattegrunnlag", "Dokarkiv",
                  "Yrkesskader","EtterlatteYtelser" -> decodeAntall(bestilling, system);
             case "Bankkonto" -> decodeBankkonto(bestilling);

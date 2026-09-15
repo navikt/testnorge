@@ -18,7 +18,7 @@ import java.util.Map;
 public class BestillingBrukerFragment {
 
     private Long id;
-    private String bestKriterier;
+    private String bestkriterier;
     private String miljoer;
     private Bruker.Brukertype brukertype;
     private String brukerId;

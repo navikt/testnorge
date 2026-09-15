@@ -59,7 +59,7 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
     Flux<BestillingBrukerFragment> findByBrukerIdOrderByIdDesc(String brukerId);
 
     @Query("""
-           select b.best_kriterier best_kriterier, b.sist_oppdatert::date dato,
+           select b.best_kriterier bestkriterier, b.sist_oppdatert::date dato,
            case
                   when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
                   when b.opprett_fra_identer is not null then cardinality(string_to_array(b.opprett_fra_identer, ','))
@@ -72,7 +72,6 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
            and b.opprettet_fra_id is null
            and b.gjenopprettet_fra_ident is null
            and b.opprett_fra_gruppe is null
-           and b.best_kriterier is not null and b.best_kriterier not like '{}'
            order by b.id desc
            """)
     Flux<BestillingBrukerFragment> findKriterierByBrukerIdOrderByIdDesc(String brukerId, String yearMonth);
@@ -260,7 +259,6 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
           and b.opprettet_fra_id is null
           and b.gjenopprettet_fra_ident is null
           and b.opprett_fra_gruppe is null
-          and b.best_kriterier is not null and b.best_kriterier not like '{}'
           """)
     Flux<AdferdFragment> findByBestKriterier(String interval);
 }
