@@ -46,6 +46,47 @@ class WebClientErrorTest {
     }
 
     @Test
+    void shouldRetryAfterOneFiveAndTenSeconds() {
+        var attempts = new AtomicInteger();
+        var throwable = WebClientResponseException.create(500, "Internal Server Error", null, null, null);
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() ->
+                                attempts.incrementAndGet() < 4 ? Flux.error(throwable) : Flux.just("ok"))
+                        .retryWhen(WebClientError.is5xxException()))
+                .expectSubscription()
+                .then(() -> assertThat(attempts.get()).isEqualTo(1))
+                .expectNoEvent(Duration.ofMillis(999))
+                .thenAwait(Duration.ofMillis(1))
+                .then(() -> assertThat(attempts.get()).isEqualTo(2))
+                .expectNoEvent(Duration.ofMillis(4_999))
+                .thenAwait(Duration.ofMillis(1))
+                .then(() -> assertThat(attempts.get()).isEqualTo(3))
+                .expectNoEvent(Duration.ofMillis(9_999))
+                .thenAwait(Duration.ofMillis(1))
+                .expectNext("ok")
+                .verifyComplete();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
+    void shouldRetryAtMostThreeTimes() {
+        var attempts = new AtomicInteger();
+        var throwable = WebClientResponseException.create(500, "Internal Server Error", null, null, null);
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            attempts.incrementAndGet();
+                            return Flux.error(throwable);
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(16))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(throwable))
+                .verify();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
     void shouldNotRetryOnUnknownRequestExceptionCause() {
         assertThatDoesNotRetry(requestException(new RuntimeException("noe annet gikk galt")));
     }
