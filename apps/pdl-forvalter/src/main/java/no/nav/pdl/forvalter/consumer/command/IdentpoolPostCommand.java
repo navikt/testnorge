@@ -46,9 +46,8 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                         .map(ident -> IdentDTO.builder()
                                 .ident(ident)
                                 .build())
-                        .map(IdentDTO.class::cast)
                         .toList()))
-                .retryWhen(WebClientError.is5xxExceptionThen(new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException exception) {
