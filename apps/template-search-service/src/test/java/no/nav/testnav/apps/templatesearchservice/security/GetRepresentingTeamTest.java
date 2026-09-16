@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -93,7 +94,7 @@ class GetRepresentingTeamTest {
                 .withClaim(UserConstant.USER_CLAIM_ORG, UserConstant.NAV_ORGANIZATION_NUMBER)
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(issuedAt.plusSeconds(3600));
-        if (representingTeam != null) {
+        if (nonNull(representingTeam)) {
             builder.withClaim(UserConstant.USER_CLAIM_REPRESENTING_TEAM, representingTeam);
         }
         return builder.sign(Algorithm.HMAC256(SECRET));

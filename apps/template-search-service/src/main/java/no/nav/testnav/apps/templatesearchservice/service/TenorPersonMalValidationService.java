@@ -14,6 +14,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -58,7 +59,7 @@ public class TenorPersonMalValidationService {
     }
 
     private String validateSoekKriterier(JsonNode soekKriterier) {
-        if (soekKriterier == null || !soekKriterier.isObject()) {
+        if (isNull(soekKriterier) || !soekKriterier.isObject()) {
             throw new TenorMalValidationException("Søkekriterier må være et JSON-objekt.");
         }
 
@@ -91,7 +92,7 @@ public class TenorPersonMalValidationService {
     }
 
     private static boolean containsPersonidentifikator(String value) {
-        if (value == null || value.length() < IDENT_LENGTH) {
+        if (isNull(value) || value.length() < IDENT_LENGTH) {
             return false;
         }
         for (var index = 0; index <= value.length() - IDENT_LENGTH; index++) {

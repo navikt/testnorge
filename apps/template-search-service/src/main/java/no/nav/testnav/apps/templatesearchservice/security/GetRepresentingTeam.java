@@ -17,6 +17,8 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_ID;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_REPRESENTING_TEAM;
 
@@ -45,7 +47,7 @@ public class GetRepresentingTeam implements Callable<Mono<String>> {
                                 .map(JwtAuthenticationToken::getTokenAttributes))
                 .flatMap(auth -> {
                     var token = auth.getT1();
-                    if (token == null || token.isBlank()) {
+                    if (isNull(token) || token.isBlank()) {
                         return Mono.empty();
                     }
 
@@ -53,7 +55,7 @@ public class GetRepresentingTeam implements Callable<Mono<String>> {
                             .build()
                             .verify(token);
                     var issuer = (String) auth.getT2().get(JwtClaimNames.ISS);
-                    if (issuer != null
+                    if (nonNull(issuer)
                             && issuer.contains("microsoftonline")
                             && !Objects.equals(auth.getT2().get("oid"), jwt.getClaim(USER_CLAIM_ID).asString())) {
                         return Mono.error(new AccessDeniedException(

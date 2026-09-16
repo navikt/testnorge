@@ -167,6 +167,22 @@ class JwtServiceTest {
     }
 
     @Test
+    void shouldIssueAzureUserJwtWithNamespacedDevTeam() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
+                .clientCredentials(false)
+                .build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
+                .thenReturn(Mono.just("dolly-backend-dev:team-bruker-id-42"));
+
+        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
+                .assertNext(token -> assertThat(JWT.decode(token)
+                        .getClaim(USER_CLAIM_REPRESENTING_TEAM)
+                        .asString()).isEqualTo("dolly-backend-dev:team-bruker-id-42"))
+                .verifyComplete();
+    }
+
+    @Test
     void shouldOmitRepresentingTeamClaimWhenNoTeamIsActive() {
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
                 .clientCredentials(false)

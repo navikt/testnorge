@@ -17,6 +17,7 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties dollyBackend;
+    private ServerProperties dollyBackendDev;
     private ServerProperties testnavAltinn3TilgangService;
 
 }

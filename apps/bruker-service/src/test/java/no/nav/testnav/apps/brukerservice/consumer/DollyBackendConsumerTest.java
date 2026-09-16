@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.brukerservice.consumer;
 
 import no.nav.testnav.apps.brukerservice.config.Consumers;
+import no.nav.testnav.apps.brukerservice.security.GetAuthenticatedClientName;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -22,6 +23,7 @@ import reactor.test.StepVerifier;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,9 @@ class DollyBackendConsumerTest {
     @Mock
     private TokenExchange tokenExchange;
 
+    @Mock
+    private GetAuthenticatedClientName getAuthenticatedClientName;
+
     @Test
     void shouldReturnRepresentingTeamFromAuthenticatedDollyUser() {
         var request = new AtomicReference<ClientRequest>();
@@ -42,7 +47,7 @@ class DollyBackendConsumerTest {
                     "brukerId": "team-bruker-id-42"
                   }
                 }
-                """);
+                """, "dolly-frontend");
 
         StepVerifier.create(consumer.getRepresentererTeamBrukerId())
                 .expectNext("team-bruker-id-42")
@@ -53,12 +58,30 @@ class DollyBackendConsumerTest {
     }
 
     @Test
+    void shouldUseNamespacedDevTeamForLocalDollyClient() {
+        var request = new AtomicReference<ClientRequest>();
+        var consumer = createConsumer(request, """
+                {
+                  "representererTeam": {
+                    "brukerId": "team-bruker-id-42"
+                  }
+                }
+                """, "team-dolly-local");
+
+        StepVerifier.create(consumer.getRepresentererTeamBrukerId())
+                .expectNext("dolly-backend-dev:team-bruker-id-42")
+                .verifyComplete();
+
+        assertThat(request.get().url().getHost()).isEqualTo("dolly-backend-dev");
+    }
+
+    @Test
     void shouldReturnEmptyWhenUserDoesNotRepresentTeam() {
         var consumer = createConsumer(new AtomicReference<>(), """
                 {
                   "representererTeam": null
                 }
-                """);
+                """, "dolly-frontend");
 
         StepVerifier.create(consumer.getRepresentererTeamBrukerId())
                 .verifyComplete();
@@ -72,7 +95,7 @@ class DollyBackendConsumerTest {
                     "brukerId": " "
                   }
                 }
-                """);
+                """, "dolly-frontend");
 
         StepVerifier.create(consumer.getRepresentererTeamBrukerId())
                 .expectError(AccessDeniedException.class)
@@ -81,15 +104,23 @@ class DollyBackendConsumerTest {
 
     private DollyBackendConsumer createConsumer(
             AtomicReference<ClientRequest> request,
-            String responseBody
+            String responseBody,
+            String clientName
     ) {
         var serviceProperties = ServerProperties.of(
                 "dev-gcp",
                 "dolly",
                 "dolly-backend",
                 "http://dolly-backend");
+        var devServiceProperties = ServerProperties.of(
+                "dev-gcp",
+                "dolly",
+                "dolly-backend-dev",
+                "http://dolly-backend-dev");
         when(consumers.getDollyBackend()).thenReturn(serviceProperties);
-        when(tokenExchange.exchange(serviceProperties))
+        when(consumers.getDollyBackendDev()).thenReturn(devServiceProperties);
+        when(getAuthenticatedClientName.call()).thenReturn(Mono.just(clientName));
+        when(tokenExchange.exchange(any(ServerProperties.class)))
                 .thenReturn(Mono.just(new AccessToken("obo-token")));
 
         ExchangeFunction exchangeFunction = clientRequest -> {
@@ -103,6 +134,6 @@ class DollyBackendConsumerTest {
         var webClient = WebClient.builder()
                 .exchangeFunction(exchangeFunction)
                 .build();
-        return new DollyBackendConsumer(consumers, tokenExchange, webClient);
+        return new DollyBackendConsumer(consumers, tokenExchange, getAuthenticatedClientName, webClient);
     }
 }
