@@ -12,12 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
 
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -30,6 +32,12 @@ import static io.micrometer.common.util.StringUtils.isNotBlank;
 @UtilityClass
 @Slf4j
 public class WebClientError {
+
+    private static final List<Duration> RETRY_DELAYS = List.of(
+            Duration.ofSeconds(1),
+            Duration.ofSeconds(5),
+            Duration.ofSeconds(10)
+    );
 
     private static final String DUAL_PARMS = "{} {}";
 
@@ -73,22 +81,28 @@ public class WebClientError {
     }
 
     /**
-     * Convenience method for retrying on 5xx exceptions. Similar to {@link #any()}.
+     * Returns a retry configuration for 5xx responses and retryable connection failures.
+     * Retries at most three times, with delays of 1, 5, and 10 seconds, and propagates the
+     * original failure when all retries are exhausted.
      *
-     * @return Retry configuration (actually a {@link RetryBackoffSpec}).
+     * @return Retry configuration with fixed, sequential retry delays.
      */
     public static Retry is5xxException() {
-        return is(IS_5XX);
-    }
+        return Retry.from(retrySignals ->
+                retrySignals.concatMap(retrySignal -> {
+                    var failure = retrySignal.failure();
 
-    /**
-     * Convenience method for retrying on 5xx exceptions, then throwing a given exception. Similar to {@link #is5xxException()}.
-     *
-     * @param throwable A {@link Throwable} to throw after retries are exhausted.
-     * @return Retry configuration (actually a {@link RetryBackoffSpec}).
-     */
-    public static Retry is5xxExceptionThen(Throwable throwable) {
-        return ((RetryBackoffSpec) is5xxException()).onRetryExhaustedThrow((_, _) -> throwable);
+                    if (!IS_5XX.test(failure)) {
+                        return Mono.error(failure);
+                    }
+
+                    var retryNumber = retrySignal.totalRetries();
+                    if (retryNumber >= RETRY_DELAYS.size()) {
+                        return Mono.error(failure);
+                    }
+
+                    return Mono.delay(RETRY_DELAYS.get((int) retryNumber));
+                }));
     }
 
     /**

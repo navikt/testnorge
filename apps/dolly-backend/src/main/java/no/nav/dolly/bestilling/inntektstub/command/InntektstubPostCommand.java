@@ -6,14 +6,10 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static java.time.Duration.ofSeconds;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,11 +32,7 @@ public class InntektstubPostCommand implements Callable<Flux<Inntektsinformasjon
                 .bodyValue(inntektsinformasjon)
                 .retrieve()
                 .bodyToFlux(Inntektsinformasjon.class)
-                .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
-                        .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
-                                responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((_, lastSignal) ->
-                                new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     log.error("Lagring av Instdata feilet: {}", description.getMessage(), throwable);

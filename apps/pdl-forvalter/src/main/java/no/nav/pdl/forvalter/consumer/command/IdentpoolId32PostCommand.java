@@ -44,7 +44,7 @@ public class IdentpoolId32PostCommand implements Callable<Mono<IdentDTO>> {
                     ident.setIdent(ident.getPersonidentifikator());
                     return ident;
                 })
-                .retryWhen(WebClientError.is5xxExceptionThen(new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException exception) {
