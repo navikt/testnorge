@@ -62,7 +62,7 @@ export const SoekMalVelger = ({}) => {
 						isLoading={loadingBrukere}
 					/>
 				</Box>
-				{/*TODO: Handlechange maler*/}
+				{/*TODO: Handle change maler*/}
 				<Box flexGrow="3" flexBasis="0">
 					<Combobox label={malerLabel} options={malOptions} isLoading={loadingMaler} />
 				</Box>
