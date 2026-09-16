@@ -19,6 +19,7 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-auth-local
         - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: dolly-backend-dev

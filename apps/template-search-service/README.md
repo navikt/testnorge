@@ -7,6 +7,8 @@ Malene er eid av innlogget bruker:
 * Brukere som representerer et team, bruker teamets felles maler. Bare det aktive teamets maler er tilgjengelige.
 
 Fødselsnummer og d-nummer kan ikke lagres i maler, og valideres bort både i nøkler og verdier.
+Malnavn tillater tegnsetting, inkludert komma og utropstegn. Navnet må inneholde tekst og kan være opptil 100 tegn.
+Mellomrom før og etter navnet fjernes. Kontrolltegn inne i navnet, som linjeskift og tabulator, avvises.
 
 ## Miljøer og teameierskap
 
@@ -29,6 +31,9 @@ Frontendansvarlig kobler dev og lokal kjøring til `https://testnav-template-sea
 med Azure-scope `api://dev-gcp.dolly.testnav-template-search-service-dev/.default`.
 Non-dev bruker `https://testnav-template-search-service.intern.dev.nav.no` og tilsvarende scope uten `-dev`.
 API-stiene er uendret. Frontend må også ha nødvendige outbound-regler.
+
+Begge instansene tillater `testnav-oversikt-frontend` som caller. Oversikt finner appene gjennom inbound-reglene i manifestene på GitHub.
+Regelendringer må deployes før den nye tilgangen kan brukes. App-listen kan være cachet i ti minutter.
 
 ## Database og drift
 

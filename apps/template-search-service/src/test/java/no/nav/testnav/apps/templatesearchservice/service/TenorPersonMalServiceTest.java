@@ -10,6 +10,8 @@ import no.nav.testnav.apps.templatesearchservice.repository.TenorPersonMalReposi
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -59,13 +61,14 @@ class TenorPersonMalServiceTest {
                 TenorMalBrukerType.AZURE);
     }
 
-    @Test
-    void shouldCreateTemplateWithAuthenticatedOwner() {
+    @ParameterizedTest
+    @ValueSource(strings = {"Min mal", "Min mal, med tegn!"})
+    void shouldCreateTemplateWithAuthenticatedOwner(String malNavn) {
         var request = new OpprettTenorPersonMalRequest(
-                "  Min mal  ",
+                "  " + malNavn + "  ",
                 jsonMapper.readTree("{}"));
         when(currentUserService.getCurrentUser()).thenReturn(Mono.just(currentUser));
-        when(malRepository.findByBrukerIdAndMalNavnIgnoreCase("azure-id", "Min mal"))
+        when(malRepository.findByBrukerIdAndMalNavnIgnoreCase("azure-id", malNavn))
                 .thenReturn(Mono.empty());
         when(malRepository.save(any())).thenAnswer(invocation -> {
             var mal = invocation.getArgument(0, TenorPersonMal.class);
@@ -77,6 +80,7 @@ class TenorPersonMalServiceTest {
                 .assertNext(result -> {
                     assertThat(result.opprettet()).isTrue();
                     assertThat(result.mal().id()).isEqualTo(42L);
+                    assertThat(result.mal().malNavn()).isEqualTo(malNavn);
                 })
                 .verifyComplete();
     }
@@ -227,15 +231,16 @@ class TenorPersonMalServiceTest {
                 .verify();
     }
 
-    @Test
-    void shouldRenameOwnedTemplate() {
+    @ParameterizedTest
+    @ValueSource(strings = {"Nytt navn", "Nytt navn, med tegn!"})
+    void shouldRenameOwnedTemplate(String malNavn) {
         var mal = template(42L, currentUser);
         when(currentUserService.getCurrentUser()).thenReturn(Mono.just(currentUser));
         when(malRepository.findByIdAndBrukerId(42L, "azure-id")).thenReturn(Mono.just(mal));
         when(malRepository.save(mal)).thenReturn(Mono.just(mal));
 
-        StepVerifier.create(malService.updateMalNavn(42L, "Nytt navn"))
-                .assertNext(response -> assertThat(response.malNavn()).isEqualTo("Nytt navn"))
+        StepVerifier.create(malService.updateMalNavn(42L, malNavn))
+                .assertNext(response -> assertThat(response.malNavn()).isEqualTo(malNavn))
                 .verifyComplete();
 
         assertThat(mal.getBrukernavn()).isEqualTo("Testbruker");

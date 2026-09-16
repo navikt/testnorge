@@ -12,7 +12,6 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -23,8 +22,6 @@ public class TenorPersonMalValidationService {
 
     private static final int MAX_PAYLOAD_BYTES = 256 * 1024;
     private static final int IDENT_LENGTH = 11;
-    private static final Pattern MAL_NAVN_PATTERN =
-            Pattern.compile("^[A-Za-zÆØÅæøå0-9 ()-]+$");
 
     private final JsonMapper jsonMapper;
 
@@ -44,9 +41,8 @@ public class TenorPersonMalValidationService {
         if (trimmedMalNavn.length() > 100) {
             throw new TenorMalValidationException("Malnavn kan ikke være lengre enn 100 tegn.");
         }
-        if (!MAL_NAVN_PATTERN.matcher(trimmedMalNavn).matches()) {
-            throw new TenorMalValidationException(
-                    "Malnavn kan bare inneholde bokstaver, tall, mellomrom, bindestrek og parenteser.");
+        if (trimmedMalNavn.codePoints().anyMatch(Character::isISOControl)) {
+            throw new TenorMalValidationException("Malnavn kan ikke inneholde kontrolltegn.");
         }
         validateNoPersonidentifikator(trimmedMalNavn);
         return trimmedMalNavn;
