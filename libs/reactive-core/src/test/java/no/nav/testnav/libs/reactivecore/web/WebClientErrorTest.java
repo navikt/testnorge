@@ -87,6 +87,65 @@ class WebClientErrorTest {
     }
 
     @Test
+    void shouldPropagateOriginalSocketExceptionAfterThreeRetries() {
+        var attempts = new AtomicInteger();
+        var throwable = requestException(new SocketException("Connection reset"));
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            attempts.incrementAndGet();
+                            return Flux.error(throwable);
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(16))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(throwable))
+                .verify();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
+    void shouldStopRetryingWhenAFollowingFailureIsNotRetryable() {
+        var attempts = new AtomicInteger();
+        var serverError = WebClientResponseException.create(503, "Service Unavailable", null, null, null);
+        var clientError = WebClientResponseException.create(400, "Bad Request", null, null, null);
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            var attempt = attempts.incrementAndGet();
+                            return Flux.error(attempt == 1 ? serverError : clientError);
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(1))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(clientError))
+                .verify();
+
+        assertThat(attempts.get()).isEqualTo(2);
+    }
+
+    @Test
+    void shouldRetryDifferent5xxResponsesWithinTheSameSequence() {
+        var attempts = new AtomicInteger();
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            var attempt = attempts.incrementAndGet();
+                            return switch (attempt) {
+                                case 1 -> Flux.error(WebClientResponseException.create(
+                                        500, "Internal Server Error", null, null, null));
+                                case 2 -> Flux.error(WebClientResponseException.create(
+                                        502, "Bad Gateway", null, null, null));
+                                case 3 -> Flux.error(WebClientResponseException.create(
+                                        503, "Service Unavailable", null, null, null));
+                                default -> Flux.just("ok");
+                            };
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(16))
+                .expectNext("ok")
+                .verifyComplete();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
     void shouldNotRetryOnUnknownRequestExceptionCause() {
         assertThatDoesNotRetry(requestException(new RuntimeException("noe annet gikk galt")));
     }
