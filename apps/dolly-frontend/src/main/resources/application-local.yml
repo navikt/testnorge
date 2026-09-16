@@ -80,7 +80,8 @@ consumers:
   testnav-tenor-search-service:
     url: https://testnav-tenor-search-service.intern.dev.nav.no
   testnav-template-search-service:
-    url: https://testnav-template-search-service.intern.dev.nav.no
+    name: testnav-template-search-service-dev
+    url: https://testnav-template-search-service-dev.intern.dev.nav.no
   testnav-levende-arbeidsforhold-ansettelse:
     url: https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no
   testnav-levende-arbeidsforhold-scheduler:
