@@ -225,4 +225,30 @@ class CurrentTenorUserServiceTest {
                 .expectError(AccessDeniedException.class)
                 .verify();
     }
+
+    @Test
+    void shouldUseNamespacedDevTeamOwnerFromUserJwtClaim() {
+        var token = Token.builder()
+                .clientCredentials(false)
+                .build();
+        var userInfo = new UserInfoExtended(
+                "azure-user-id",
+                null,
+                "issuer",
+                "Azure-bruker",
+                "epost",
+                false,
+                List.of());
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
+        when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
+        when(getRepresentingTeam.call())
+                .thenReturn(Mono.just("dolly-backend-dev:team-bruker-id-42"));
+
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectNext(new TenorMalOwner(
+                        "dolly-backend-dev:team-bruker-id-42",
+                        "dolly-backend-dev:team-bruker-id-42",
+                        TenorMalBrukerType.TEAM))
+                .verifyComplete();
+    }
 }

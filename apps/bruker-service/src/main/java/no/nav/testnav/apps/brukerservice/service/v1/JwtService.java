@@ -22,8 +22,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.TEAM_BRUKER_ID_DEV_PREFIX;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_REPRESENTING_TEAM;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
@@ -32,7 +34,8 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
 public class JwtService {
 
     private static final Duration TOKEN_LIFETIME = Duration.ofHours(2);
-    private static final Pattern TEAM_BRUKER_ID_PATTERN = Pattern.compile("team-bruker-id-\\d+");
+    private static final Pattern TEAM_BRUKER_ID_PATTERN =
+            Pattern.compile("(?:" + Pattern.quote(TEAM_BRUKER_ID_DEV_PREFIX) + ")?team-bruker-id-\\d+");
 
     private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final GetAuthenticatedToken getAuthenticatedToken;
@@ -132,7 +135,7 @@ public class JwtService {
     private static String validateRepresentingTeam(String representingTeam) {
 
         var normalizedRepresentingTeam = trimToNull(representingTeam);
-        if (normalizedRepresentingTeam == null) {
+        if (isNull(normalizedRepresentingTeam)) {
             return null;
         }
         if (normalizedRepresentingTeam.length() > 100

@@ -15,12 +15,14 @@ import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.testnav.libs.securitycore.config.UserConstant.TEAM_BRUKER_ID_DEV_PREFIX;
 
 @Service
 @RequiredArgsConstructor
 public class CurrentTenorUserService {
 
-    private static final Pattern TEAM_BRUKER_ID_PATTERN = Pattern.compile("team-bruker-id-\\d+");
+    private static final Pattern TEAM_BRUKER_ID_PATTERN =
+            Pattern.compile("(?:" + Pattern.quote(TEAM_BRUKER_ID_DEV_PREFIX) + ")?team-bruker-id-\\d+");
 
     private final GetAuthenticatedToken getAuthenticatedToken;
     private final GetUserInfo getUserInfo;
