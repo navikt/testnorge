@@ -1,9 +1,10 @@
 package no.nav.testnav.apps.templatesearchservice.service;
 
+import no.nav.testnav.apps.templatesearchservice.consumers.DollyBackendConsumer;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorMalBrukerType;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorMalOwner;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalValidationException;
-import no.nav.testnav.apps.templatesearchservice.security.GetRepresentingTeam;
+import no.nav.testnav.apps.templatesearchservice.exception.DollyBackendUnavailableException;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
 import no.nav.testnav.libs.securitycore.domain.Token;
@@ -23,6 +24,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +39,7 @@ class CurrentTenorUserServiceTest {
     private GetUserInfo getUserInfo;
 
     @Mock
-    private GetRepresentingTeam getRepresentingTeam;
+    private DollyBackendConsumer dollyBackendConsumer;
 
     private CurrentTenorUserService currentUserService;
 
@@ -46,7 +48,7 @@ class CurrentTenorUserServiceTest {
         currentUserService = new CurrentTenorUserService(
                 getAuthenticatedToken,
                 getUserInfo,
-                getRepresentingTeam,
+                dollyBackendConsumer,
                 new TenorPersonMalValidationService(JsonMapper.builder().build()));
     }
 
@@ -67,7 +69,6 @@ class CurrentTenorUserServiceTest {
 
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
-        when(getRepresentingTeam.call()).thenReturn(Mono.empty());
         StepVerifier.create(currentUserService.getCurrentUser())
                 .assertNext(owner -> {
                     assertThat(owner.brukerId()).isEqualTo(HASHED_BANK_ID);
@@ -75,10 +76,12 @@ class CurrentTenorUserServiceTest {
                     assertThat(owner.brukertype()).isEqualTo(TenorMalBrukerType.BANKID);
                 })
                 .verifyComplete();
+
+        verifyNoInteractions(dollyBackendConsumer);
     }
 
     @Test
-    void shouldUseAzureOwnerWithoutTeamClaim() {
+    void shouldUseAzureOwnerWhenNoTeamIsActiveInDolly() {
         var token = Token.builder()
                 .clientCredentials(false)
                 .build();
@@ -92,7 +95,7 @@ class CurrentTenorUserServiceTest {
                 List.of());
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
-        when(getRepresentingTeam.call()).thenReturn(Mono.empty());
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.empty());
 
         StepVerifier.create(currentUserService.getCurrentUser())
                 .expectNext(new TenorMalOwner(
@@ -138,7 +141,7 @@ class CurrentTenorUserServiceTest {
     }
 
     @Test
-    void shouldUseTeamOwnerFromUserJwtClaim() {
+    void shouldUseTeamOwnerFromDolly() {
         var token = Token.builder()
                 .clientCredentials(false)
                 .build();
@@ -152,7 +155,7 @@ class CurrentTenorUserServiceTest {
                 List.of());
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
-        when(getRepresentingTeam.call()).thenReturn(Mono.just("team-bruker-id-42"));
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.just("team-bruker-id-42"));
 
         StepVerifier.create(currentUserService.getCurrentUser())
                 .assertNext(owner -> {
@@ -188,7 +191,7 @@ class CurrentTenorUserServiceTest {
         when(getUserInfo.call())
                 .thenReturn(Mono.just(firstUser))
                 .thenReturn(Mono.just(secondUser));
-        when(getRepresentingTeam.call()).thenReturn(Mono.just("team-bruker-id-42"));
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.just("team-bruker-id-42"));
 
         StepVerifier.create(currentUserService.getCurrentUser())
                 .expectNext(new TenorMalOwner(
@@ -205,7 +208,7 @@ class CurrentTenorUserServiceTest {
     }
 
     @Test
-    void shouldRejectMalformedTeamClaim() {
+    void shouldRejectMalformedTeamFromDolly() {
         var token = Token.builder()
                 .clientCredentials(false)
                 .build();
@@ -219,7 +222,7 @@ class CurrentTenorUserServiceTest {
                 List.of());
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
-        when(getRepresentingTeam.call()).thenReturn(Mono.just("41010100044"));
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.just("41010100044"));
 
         StepVerifier.create(currentUserService.getCurrentUser())
                 .expectError(AccessDeniedException.class)
@@ -227,7 +230,7 @@ class CurrentTenorUserServiceTest {
     }
 
     @Test
-    void shouldUseNamespacedDevTeamOwnerFromUserJwtClaim() {
+    void shouldRejectNamespacedTeamFromDolly() {
         var token = Token.builder()
                 .clientCredentials(false)
                 .build();
@@ -241,14 +244,61 @@ class CurrentTenorUserServiceTest {
                 List.of());
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
         when(getUserInfo.call()).thenReturn(Mono.just(userInfo));
-        when(getRepresentingTeam.call())
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
                 .thenReturn(Mono.just("dolly-backend-dev:team-bruker-id-42"));
 
         StepVerifier.create(currentUserService.getCurrentUser())
+                .expectError(AccessDeniedException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldNotFallBackToAzureOwnerWhenDollyIsUnavailable() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
+                .clientCredentials(false)
+                .build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo()));
+        var failure = new DollyBackendUnavailableException("Dolly utilgjengelig", new IllegalStateException());
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.error(failure));
+
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectErrorMatches(error -> error == failure)
+                .verify();
+    }
+
+    @Test
+    void shouldResolveCurrentTeamOnEachRequest() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
+                .clientCredentials(false)
+                .build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo()));
+        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
+                .thenReturn(Mono.just("team-bruker-id-42"))
+                .thenReturn(Mono.empty())
+                .thenReturn(Mono.just("team-bruker-id-43"));
+
+        StepVerifier.create(currentUserService.getCurrentUser())
                 .expectNext(new TenorMalOwner(
-                        "dolly-backend-dev:team-bruker-id-42",
-                        "dolly-backend-dev:team-bruker-id-42",
+                        "team-bruker-id-42",
+                        "team-bruker-id-42",
                         TenorMalBrukerType.TEAM))
                 .verifyComplete();
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectNext(new TenorMalOwner(
+                        "azure-user-id",
+                        "Azure-bruker",
+                        TenorMalBrukerType.AZURE))
+                .verifyComplete();
+        StepVerifier.create(currentUserService.getCurrentUser())
+                .expectNext(new TenorMalOwner(
+                        "team-bruker-id-43",
+                        "team-bruker-id-43",
+                        TenorMalBrukerType.TEAM))
+                .verifyComplete();
+    }
+
+    private static UserInfoExtended azureUserInfo() {
+        return new UserInfoExtended(
+                "azure-user-id", null, "issuer", "Azure-bruker", "epost", false, List.of());
     }
 }

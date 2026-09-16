@@ -15,7 +15,6 @@ dependencies {
     implementation "no.nav.testnav.libs:security-core"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation "com.auth0:java-jwt:$versions.jwt"
     implementation "org.springframework.boot:spring-boot-flyway"
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"

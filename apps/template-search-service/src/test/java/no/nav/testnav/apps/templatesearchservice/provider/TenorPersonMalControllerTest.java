@@ -5,6 +5,7 @@ import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalBrukerResp
 import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalOversiktResponse;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalResponse;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalNotFoundException;
+import no.nav.testnav.apps.templatesearchservice.exception.DollyBackendUnavailableException;
 import no.nav.testnav.apps.templatesearchservice.service.TenorPersonMalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -143,6 +144,25 @@ class TenorPersonMalControllerTest {
                 .jsonPath("$.message").isEqualTo("Malen ble ikke funnet.")
                 .jsonPath("$.status").isEqualTo(404)
                 .jsonPath("$.path").isEqualTo("/api/v1/tenor/maler/personer/42");
+    }
+
+    @Test
+    void shouldReturnServiceUnavailableWhenTeamCannotBeResolved() {
+        when(malService.save(any()))
+                .thenReturn(Mono.error(new DollyBackendUnavailableException(
+                        "Intern detalj.", new IllegalStateException("Intern årsak."))));
+
+        webTestClient.post()
+                .uri("/api/v1/tenor/maler/personer")
+                .contentType(APPLICATION_JSON)
+                .bodyValue("""
+                        {"malNavn":"Min mal","soekKriterier":{}}
+                        """)
+                .exchange()
+                .expectStatus().isEqualTo(503)
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("Aktivt team kunne ikke hentes. Prøv igjen senere.")
+                .jsonPath("$.status").isEqualTo(503);
     }
 
 }

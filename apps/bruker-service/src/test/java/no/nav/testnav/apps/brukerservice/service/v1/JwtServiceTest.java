@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.brukerservice.service.v1;
 
 import com.auth0.jwt.JWT;
-import no.nav.testnav.apps.brukerservice.consumer.DollyBackendConsumer;
+import com.auth0.jwt.algorithms.Algorithm;
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
 import no.nav.testnav.apps.brukerservice.repository.UserEntity;
@@ -21,12 +21,12 @@ import org.springframework.security.access.AccessDeniedException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static no.nav.testnav.libs.securitycore.config.UserConstant.NAV_ORGANIZATION_NUMBER;
-import static no.nav.testnav.libs.securitycore.config.UserConstant.USER_CLAIM_REPRESENTING_TEAM;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +49,6 @@ class JwtServiceTest {
     @Mock
     private CryptographyService cryptographyService;
 
-    @Mock
-    private DollyBackendConsumer dollyBackendConsumer;
-
     private JwtService jwtService;
 
     @BeforeEach
@@ -61,7 +58,6 @@ class JwtServiceTest {
                 getAuthenticatedToken,
                 getUserInfo,
                 cryptographyService,
-                dollyBackendConsumer,
                 "secret",
                 "issuer");
     }
@@ -78,19 +74,29 @@ class JwtServiceTest {
 
         StepVerifier.create(jwtService.getToken(new User(entity)))
                 .assertNext(token -> {
-                    var decodedJwt = JWT.decode(token);
+                    var decodedJwt = JWT.require(Algorithm.HMAC256("secret"))
+                            .withIssuer("issuer")
+                            .build()
+                            .verify(token);
                     var id = decodedJwt.getClaim(UserConstant.USER_CLAIM_ID).asString();
                     var username = decodedJwt.getClaim(UserConstant.USER_CLAIM_USERNAME).asString();
                     var organizationNumber = decodedJwt.getClaim(UserConstant.USER_CLAIM_ORG).asString();
 
                     assertThat(id).isEqualTo(HASHED_USER_ID).isNotEqualTo(BANKID_USER_ID);
+                    assertThat(username).isEqualTo("brukernavn");
+                    assertThat(organizationNumber).isEqualTo(NAV_ORGANIZATION_NUMBER);
+                    assertThat(decodedJwt.getClaims()).doesNotContainKey("representingTeam");
+                    assertThat(decodedJwt.getNotBeforeAsInstant()).isEqualTo(decodedJwt.getIssuedAtAsInstant());
+                    assertThat(Duration.between(decodedJwt.getIssuedAtAsInstant(), decodedJwt.getExpiresAtAsInstant()))
+                            .isEqualTo(Duration.ofHours(2));
+                    assertThat(decodedJwt.getId()).isNotBlank();
                     assertThat(IdentValidCheck.isIdentValid(Set.of(id))).isEmpty();
                     assertThat(IdentValidCheck.isIdentValid(Set.of(username))).isEmpty();
                     assertThat(IdentValidCheck.isIdentValid(Set.of(organizationNumber))).isEmpty();
                 })
                 .verifyComplete();
 
-        verifyNoInteractions(dollyBackendConsumer);
+        verifyNoInteractions(getAuthenticatedToken, getUserInfo);
     }
 
     @Test
@@ -137,94 +143,26 @@ class JwtServiceTest {
                 .clientCredentials(false)
                 .build()));
         when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.empty());
 
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
                 .assertNext(token -> {
-                    var decodedJwt = JWT.decode(token);
+                    var decodedJwt = JWT.require(Algorithm.HMAC256("secret"))
+                            .withIssuer("issuer")
+                            .build()
+                            .verify(token);
 
                     assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_ID).asString()).isEqualTo(AZURE_USER_ID);
                     assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_USERNAME).asString()).isEqualTo("Azure User");
                     assertThat(decodedJwt.getClaim(UserConstant.USER_CLAIM_ORG).asString()).isEqualTo(NAV_ORGANIZATION_NUMBER);
+                    assertThat(decodedJwt.getClaims()).doesNotContainKey("representingTeam");
+                    assertThat(decodedJwt.getNotBeforeAsInstant()).isEqualTo(decodedJwt.getIssuedAtAsInstant());
+                    assertThat(Duration.between(decodedJwt.getIssuedAtAsInstant(), decodedJwt.getExpiresAtAsInstant()))
+                            .isEqualTo(Duration.ofHours(2));
+                    assertThat(decodedJwt.getId()).isNotBlank();
                 })
                 .verifyComplete();
-    }
 
-    @Test
-    void shouldIssueAzureUserJwtWithRepresentingTeam() {
-        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
-                .clientCredentials(false)
-                .build()));
-        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
-                .thenReturn(Mono.just(" team-bruker-id-42 "));
-
-        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
-                .assertNext(token -> assertThat(JWT.decode(token)
-                        .getClaim(USER_CLAIM_REPRESENTING_TEAM)
-                        .asString()).isEqualTo("team-bruker-id-42"))
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldIssueAzureUserJwtWithNamespacedDevTeam() {
-        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
-                .clientCredentials(false)
-                .build()));
-        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
-                .thenReturn(Mono.just("dolly-backend-dev:team-bruker-id-42"));
-
-        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
-                .assertNext(token -> assertThat(JWT.decode(token)
-                        .getClaim(USER_CLAIM_REPRESENTING_TEAM)
-                        .asString()).isEqualTo("dolly-backend-dev:team-bruker-id-42"))
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldOmitRepresentingTeamClaimWhenNoTeamIsActive() {
-        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
-                .clientCredentials(false)
-                .build()));
-        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.empty());
-
-        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
-                .assertNext(token -> assertThat(JWT.decode(token)
-                        .getClaim(USER_CLAIM_REPRESENTING_TEAM)
-                        .isMissing()).isTrue())
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldPropagateDollyFailureInsteadOfIssuingPersonalAzureToken() {
-        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
-                .clientCredentials(false)
-                .build()));
-        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
-                .thenReturn(Mono.error(new IllegalStateException("Dolly unavailable")));
-
-        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
-                .expectErrorMatches(error ->
-                        error instanceof IllegalStateException &&
-                                error.getMessage().equals("Dolly unavailable"))
-                .verify();
-    }
-
-    @Test
-    void shouldRejectMalformedRepresentingTeam() {
-        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder()
-                .clientCredentials(false)
-                .build()));
-        when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("Azure User")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId())
-                .thenReturn(Mono.just("another-azure-user-id"));
-
-        StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
-                .expectError(AccessDeniedException.class)
-                .verify();
+        verifyNoInteractions(getAuthenticatedUserId, cryptographyService);
     }
 
     @Test
@@ -236,6 +174,8 @@ class JwtServiceTest {
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
                 .expectError(AccessDeniedException.class)
                 .verify();
+
+        verifyNoInteractions(getUserInfo);
     }
 
     @Test
@@ -245,6 +185,8 @@ class JwtServiceTest {
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
                 .expectError(AccessDeniedException.class)
                 .verify();
+
+        verifyNoInteractions(getUserInfo);
     }
 
     @Test
@@ -277,7 +219,6 @@ class JwtServiceTest {
                 .clientCredentials(false)
                 .build()));
         when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo(" ")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.empty());
 
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
                 .expectError(AccessDeniedException.class)
@@ -298,7 +239,6 @@ class JwtServiceTest {
                 "user@nav.no",
                 false,
                 List.of())));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.empty());
 
         StepVerifier.create(jwtService.getAzureToken(personIdentifier))
                 .expectErrorMatches(error ->
@@ -313,7 +253,6 @@ class JwtServiceTest {
                 .clientCredentials(false)
                 .build()));
         when(getUserInfo.call()).thenReturn(Mono.just(azureUserInfo("User 41010100044")));
-        when(dollyBackendConsumer.getRepresentererTeamBrukerId()).thenReturn(Mono.empty());
 
         StepVerifier.create(jwtService.getAzureToken(AZURE_USER_ID))
                 .expectErrorMatches(error ->

@@ -2,6 +2,7 @@ package no.nav.testnav.apps.templatesearchservice.provider;
 
 import lombok.Builder;
 import no.nav.testnav.apps.templatesearchservice.exception.BrukerServiceUnavailableException;
+import no.nav.testnav.apps.templatesearchservice.exception.DollyBackendUnavailableException;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalConflictException;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalNotFoundException;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalValidationException;
@@ -71,6 +72,15 @@ public class TenorMalExceptionAdvice {
         return informationForException(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Tilgjengelige malbrukere kunne ikke hentes.",
+                exchange);
+    }
+
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler(DollyBackendUnavailableException.class)
+    ExceptionInformation dollyUnavailable(ServerWebExchange exchange) {
+        return informationForException(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "Aktivt team kunne ikke hentes. Prøv igjen senere.",
                 exchange);
     }
 
