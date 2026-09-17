@@ -10,6 +10,8 @@ import no.nav.testnav.apps.templatesearchservice.repository.TenorPersonMalReposi
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
@@ -39,16 +42,18 @@ class TenorMalAccessServiceTest {
         accessService = new TenorMalAccessService(malRepository, brukerServiceConsumer);
     }
 
-    @Test
-    void shouldGetAzureUsersWithoutCallingBrukerService() {
-        var currentUser = bruker("azure-1", TenorMalBrukerType.AZURE);
+    @ParameterizedTest
+    @EnumSource(value = TenorMalBrukerType.class, names = {"AZURE", "TEAM"})
+    void shouldGetAllAzureAndTeamTemplatesWithoutCallingBrukerService(TenorMalBrukerType brukertype) {
+        var currentUser = bruker("current-owner", brukertype);
         var otherUser = bruker("azure-2", TenorMalBrukerType.AZURE);
         var otherUserMal = mal(otherUser);
-        when(malRepository.findByBrukertype(TenorMalBrukerType.AZURE))
-                .thenReturn(Flux.just(otherUserMal));
+        var otherTeamMal = mal(bruker("team-bruker-id-42", TenorMalBrukerType.TEAM));
+        when(malRepository.findByBrukertypeIn(Set.of(TenorMalBrukerType.AZURE, TenorMalBrukerType.TEAM)))
+                .thenReturn(Flux.just(otherUserMal, otherTeamMal));
 
         StepVerifier.create(accessService.getAccessibleMaler(currentUser))
-                .expectNext(otherUserMal)
+                .expectNext(otherUserMal, otherTeamMal)
                 .verifyComplete();
 
         verify(brukerServiceConsumer, never()).getKollegaerIOrganisasjon(currentUser.brukerId());
@@ -86,22 +91,6 @@ class TenorMalAccessServiceTest {
         verify(malRepository, never()).findByBrukertypeAndBrukerIdIn(
                 org.mockito.ArgumentMatchers.any(),
                 org.mockito.ArgumentMatchers.any());
-    }
-
-    @Test
-    void shouldLimitTeamUserToExactTeamWithoutCallingBrukerService() {
-        var currentTeam = bruker("team-bruker-id-42", TenorMalBrukerType.TEAM);
-        var teamMal = mal(currentTeam);
-        when(malRepository.findByBrukertypeAndBrukerIdIn(
-                org.mockito.ArgumentMatchers.eq(TenorMalBrukerType.TEAM),
-                argThat(ids -> ids.size() == 1 && ids.contains(currentTeam.brukerId()))))
-                .thenReturn(Flux.just(teamMal));
-
-        StepVerifier.create(accessService.getAccessibleMaler(currentTeam))
-                .expectNext(teamMal)
-                .verifyComplete();
-
-        verify(brukerServiceConsumer, never()).getKollegaerIOrganisasjon(currentTeam.brukerId());
     }
 
     private static TenorMalOwner bruker(String brukerId, TenorMalBrukerType brukerType) {

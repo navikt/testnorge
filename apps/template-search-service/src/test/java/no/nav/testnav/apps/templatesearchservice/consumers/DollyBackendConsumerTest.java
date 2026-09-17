@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.templatesearchservice.consumers;
 
 import no.nav.testnav.apps.templatesearchservice.config.Consumers;
+import no.nav.testnav.apps.templatesearchservice.consumers.dto.DollyTeamDTO;
 import no.nav.testnav.apps.templatesearchservice.exception.DollyBackendUnavailableException;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -21,6 +22,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,6 +135,117 @@ class DollyBackendConsumerTest {
         var consumer = consumer(properties, request, HttpStatus.OK, "{}");
 
         StepVerifier.create(consumer.getRepresentererTeamBrukerId())
+                .expectError(DollyBackendUnavailableException.class)
+                .verify();
+
+        assertThat(request.get()).isNull();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"dolly-backend", "dolly-backend-dev"})
+    void shouldFetchTeamNamesByUserIdFromConfiguredBackend(String backend) {
+        var properties = properties(backend);
+        var request = new AtomicReference<ClientRequest>();
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.just(new AccessToken("obo-token")));
+        var consumer = consumer(properties, request, HttpStatus.OK, """
+                [
+                  {
+                    "id": 7,
+                    "brukerId": "team-bruker-id-42",
+                    "navn": "Team Alfa",
+                    "beskrivelse": "Testteam",
+                    "brukere": [{"brukernavn": "Teammedlem"}]
+                  },
+                  {
+                    "id": 9,
+                    "brukerId": "team-bruker-id-81",
+                    "navn": "Team Beta"
+                  }
+                ]
+                """);
+
+        StepVerifier.create(consumer.getTeams())
+                .expectNext(List.of(
+                        new DollyTeamDTO("team-bruker-id-42", "Team Alfa"),
+                        new DollyTeamDTO("team-bruker-id-81", "Team Beta")))
+                .verifyComplete();
+
+        assertThat(request.get().url().getHost()).isEqualTo(backend);
+        assertThat(request.get().url().getPath()).isEqualTo("/api/v1/team");
+        assertThat(request.get().headers().getFirst(HttpHeaders.AUTHORIZATION)).isEqualTo("Bearer obo-token");
+        verify(tokenExchange).exchange(properties);
+    }
+
+    @Test
+    void shouldReturnEmptyTeamCatalog() {
+        var properties = properties("dolly-backend");
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.just(new AccessToken("obo-token")));
+        var consumer = consumer(properties, new AtomicReference<>(), HttpStatus.OK, "[]");
+
+        StepVerifier.create(consumer.getTeams())
+                .expectNext(List.of())
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {403, 404, 503})
+    void shouldPropagateTeamCatalogHttpFailure(int status) {
+        var properties = properties("dolly-backend");
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.just(new AccessToken("obo-token")));
+        var consumer = consumer(properties, new AtomicReference<>(), HttpStatus.valueOf(status), "");
+
+        StepVerifier.create(consumer.getTeams())
+                .expectError(DollyBackendUnavailableException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateMalformedTeamCatalog() {
+        var properties = properties("dolly-backend");
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.just(new AccessToken("obo-token")));
+        var consumer = consumer(properties, new AtomicReference<>(), HttpStatus.OK, "not-json");
+
+        StepVerifier.create(consumer.getTeams())
+                .expectError(DollyBackendUnavailableException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldTimeOutTeamCatalogRequest() {
+        var properties = properties("dolly-backend");
+        when(consumers.getDollyBackend()).thenReturn(properties);
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.just(new AccessToken("obo-token")));
+        var webClient = WebClient.builder().exchangeFunction(_ -> Mono.never()).build();
+        var consumer = new DollyBackendConsumer(consumers, tokenExchange, webClient);
+
+        StepVerifier.withVirtualTime(consumer::getTeams)
+                .thenAwait(Duration.ofSeconds(11))
+                .expectError(DollyBackendUnavailableException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldRejectMissingTeamCatalogTokenWithoutCallingDolly() {
+        var properties = properties("dolly-backend");
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.empty());
+        var request = new AtomicReference<ClientRequest>();
+        var consumer = consumer(properties, request, HttpStatus.OK, "[]");
+
+        StepVerifier.create(consumer.getTeams())
+                .expectError(DollyBackendUnavailableException.class)
+                .verify();
+
+        assertThat(request.get()).isNull();
+    }
+
+    @Test
+    void shouldPropagateTeamCatalogTokenExchangeFailureWithoutCallingDolly() {
+        var properties = properties("dolly-backend");
+        when(tokenExchange.exchange(properties)).thenReturn(Mono.error(new IllegalStateException("Token exchange")));
+        var request = new AtomicReference<ClientRequest>();
+        var consumer = consumer(properties, request, HttpStatus.OK, "[]");
+
+        StepVerifier.create(consumer.getTeams())
                 .expectError(DollyBackendUnavailableException.class)
                 .verify();
 
