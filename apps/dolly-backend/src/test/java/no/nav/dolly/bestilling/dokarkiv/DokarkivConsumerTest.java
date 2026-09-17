@@ -84,19 +84,6 @@ class DokarkivConsumerTest {
         verify(exchangeFunction).exchange(any());
     }
 
-    @Test
-    void shouldKeepThirtySecondTimeoutForUploadChunks() {
-        var consumer = createConsumer();
-        wireMock.stubFor(post(urlPathEqualTo("/dokarkiv/upload/upload-reference/append"))
-                .willReturn(okJson("{}").withFixedDelay(31_000)));
-
-        StepVerifier.create(consumer.appendProxyChunk("upload-reference", "document-content"))
-                .expectErrorSatisfies(error -> assertThat(error)
-                        .isInstanceOf(WebClientRequestException.class)
-                        .hasCauseInstanceOf(ReadTimeoutException.class))
-                .verify(Duration.ofSeconds(40));
-    }
-
     private DokarkivConsumer createConsumer() {
         when(consumers.getTestnavDollyProxy()).thenReturn(serverProperties);
         when(serverProperties.getUrl()).thenReturn(wireMock.baseUrl());

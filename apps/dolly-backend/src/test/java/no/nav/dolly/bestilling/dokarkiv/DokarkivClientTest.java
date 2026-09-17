@@ -136,7 +136,7 @@ class DokarkivClientTest {
         when(dokarkivConsumer.postDokarkiv("q2", request)).thenReturn(Mono.never());
 
         StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
-                .thenAwait(Duration.ofSeconds(599))
+                .thenAwait(Duration.ofSeconds(239))
                 .expectNoEvent(Duration.ofMillis(999))
                 .thenAwait(Duration.ofMillis(1))
                 .assertNext(result -> assertThat(result.getDokarkivStatus())

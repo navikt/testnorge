@@ -30,10 +30,11 @@ Frontend laster opp dokumentene i deler til backend. Backend sender deretter sto
 `testnav-dolly-proxy`, som setter sammen journalposten og sender den til Dokarkiv.
 `testnav-joark-dokument-service` brukes til uthenting og er ikke med i innsendingen.
 
-`DokarkivClient.OPERATION_TIMEOUT` er 10 minutter og gjelder behandling av Dokarkiv-bestillingen, inkludert
+`DokarkivClient.OPERATION_TIMEOUT` er 4 minutter og gjelder behandling av Dokarkiv-bestillingen, inkludert
 opplasting til proxy. Den generelle grensen på 30 sekunder er for kort her for filer på 20+ mb.
 
 `DokarkivPostCommand.RESPONSE_TIMEOUT` er 4 minutter og gjelder venting på journalpostsvaret fra proxy.
+Opplastingstiden inngår i operasjonsgrensen, så journalpostkallet kan avbrytes før det har ventet i fire minutter.
 Initiering og opplasting av hver del beholder HTTP-klientens grense på 30 sekunder.
 Journalpostkallet har kortere tidsgrense enn proxy- og Dokarkiv-ingressenes nåværende grense på 300 sekunder.
 Andre fagsystemer beholder sine tidsgrenser.

@@ -53,7 +53,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DokarkivClient implements ClientRegister {
 
     private static final int CHUNK_SIZE = 500_000;
-    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(10);
+    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(4);
 
     private final DokarkivConsumer dokarkivConsumer;
     private final DokumentService dokumentService;
