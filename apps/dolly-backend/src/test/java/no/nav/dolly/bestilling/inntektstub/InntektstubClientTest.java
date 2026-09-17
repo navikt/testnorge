@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -30,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,7 +66,7 @@ class InntektstubClientTest {
                 .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.OK).build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
-                .assertNext(status -> {
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
@@ -89,7 +91,7 @@ class InntektstubClientTest {
                         .message("Blah").build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
-                .assertNext(status -> {
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
@@ -134,7 +136,7 @@ class InntektstubClientTest {
                         .build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
-                .assertNext(status -> {
+                .assertNext(_ -> {
                     verify(inntektstubConsumer).getInntekter(anyString());
                     verify(inntektstubConsumer).postInntekter(any());
                     verify(transactionHelperService, times(2)).persister(any(), any(),
@@ -165,7 +167,7 @@ class InntektstubClientTest {
                         .build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
-                .assertNext(status -> {
+                .assertNext(_ -> {
                     verify(inntektstubConsumer).getInntekter(anyString());
                     verify(inntektstubConsumer).postInntekter(any());
                     verify(transactionHelperService, times(2)).persister(any(), any(),
@@ -174,6 +176,42 @@ class InntektstubClientTest {
                     assertThat(statusCaptor.getAllValues().getLast(), equalTo("Feil= Feil ved lagring"));
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldFailGjenopprettWhenGetInntekterThrowsInternalServerError() {
+
+        val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
+        val bestilling = new RsDollyUtvidetBestilling();
+        val internalServerError = WebClientResponseException.create(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                null,
+                null,
+                null);
+        bestilling.setInntektstub(buildInntektsinformasjon());
+
+        when(transactionHelperService.persister(any(), any(), anyString()))
+                .thenReturn(Mono.just(new BestillingProgress()));
+        when(mapperFacade.map(any(InntektMultiplierWrapper.class), eq(InntektsinformasjonWrapper.class), any()))
+                .thenReturn(new InntektsinformasjonWrapper());
+        when(inntektstubConsumer.getInntekter(DOLLY_IDENT))
+                .thenReturn(Flux.error(internalServerError));
+
+        StepVerifier.create(inntektstubClient.gjenopprett(
+                        bestilling, dollyPerson, new BestillingProgress(), true))
+                .expectErrorSatisfies(error -> {
+                    org.assertj.core.api.Assertions.assertThat(error).isSameAs(internalServerError);
+                    org.assertj.core.api.Assertions.assertThat(
+                                    ((WebClientResponseException) error).getStatusCode())
+                            .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+                })
+                .verify();
+
+        verify(inntektstubConsumer).getInntekter(DOLLY_IDENT);
+        verify(inntektstubConsumer, never()).postInntekter(any());
+        verify(transactionHelperService, times(1)).persister(any(), any(),
+                eq("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
     }
 
     private static InntektMultiplierWrapper buildInntektsinformasjon() {

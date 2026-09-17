@@ -31,7 +31,6 @@ public class DokarkivProxyUploadAppendCommand implements Callable<Mono<Void>> {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(_ -> Mono.empty());
+                .retryWhen(WebClientError.is5xxException());
     }
 }
