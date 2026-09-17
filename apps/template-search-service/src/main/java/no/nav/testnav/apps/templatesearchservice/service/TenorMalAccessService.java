@@ -22,11 +22,9 @@ public class TenorMalAccessService {
     public Flux<TenorPersonMal> getAccessibleMaler(TenorMalOwner currentUser) {
 
         return switch (currentUser.brukertype()) {
-            case AZURE -> malRepository.findByBrukertype(TenorMalBrukerType.AZURE);
+            case AZURE, TEAM -> malRepository.findByBrukertypeIn(
+                    Set.of(TenorMalBrukerType.AZURE, TenorMalBrukerType.TEAM));
             case BANKID -> getAccessibleBankIdMaler(currentUser);
-            case TEAM -> malRepository.findByBrukertypeAndBrukerIdIn(
-                    TenorMalBrukerType.TEAM,
-                    Set.of(currentUser.brukerId()));
         };
     }
 

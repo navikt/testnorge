@@ -77,6 +77,28 @@ class CurrentTenorUserServiceTest {
                 })
                 .verifyComplete();
 
+        StepVerifier.create(currentUserService.getAuthenticatedUser())
+                .assertNext(owner -> {
+                    assertThat(owner.brukerId()).isEqualTo(HASHED_BANK_ID);
+                    assertThat(owner.brukertype()).isEqualTo(TenorMalBrukerType.BANKID);
+                })
+                .verifyComplete();
+
+        verifyNoInteractions(dollyBackendConsumer);
+    }
+
+    @Test
+    void shouldResolveAuthenticatedAzureUserWithoutLookingUpActiveTeam() {
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(
+                Token.builder().clientCredentials(false).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(new UserInfoExtended(
+                "azure-user-id", null, "issuer", "Azure-bruker", "epost", false, List.of())));
+
+        StepVerifier.create(currentUserService.getAuthenticatedUser())
+                .expectNext(new TenorMalOwner(
+                        "azure-user-id", "Azure-bruker", TenorMalBrukerType.AZURE))
+                .verifyComplete();
+
         verifyNoInteractions(dollyBackendConsumer);
     }
 
@@ -113,6 +135,10 @@ class CurrentTenorUserServiceTest {
         when(getAuthenticatedToken.call()).thenReturn(Mono.just(token));
 
         StepVerifier.create(currentUserService.getCurrentUser())
+                .expectError(AccessDeniedException.class)
+                .verify();
+
+        StepVerifier.create(currentUserService.getAuthenticatedUser())
                 .expectError(AccessDeniedException.class)
                 .verify();
 

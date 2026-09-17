@@ -2,9 +2,12 @@ package no.nav.testnav.apps.templatesearchservice.repository;
 
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.apps.templatesearchservice.consumers.DollyBackendConsumer;
+import no.nav.testnav.apps.templatesearchservice.consumers.dto.DollyTeamDTO;
 import no.nav.testnav.apps.templatesearchservice.domain.OpprettTenorPersonMalRequest;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorMalBrukerType;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMal;
+import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalBrukerResponse;
+import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalResponse;
 import no.nav.testnav.apps.templatesearchservice.exception.DollyBackendUnavailableException;
 import no.nav.testnav.apps.templatesearchservice.service.TenorPersonMalService;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
@@ -33,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
@@ -124,8 +129,12 @@ class TenorPersonMalRepositoryTest {
         malRepository.save(template("BankID 2", "bankid-2", TenorMalBrukerType.BANKID)).block();
         malRepository.save(template("Team", "team-bruker-id-42", TenorMalBrukerType.TEAM)).block();
 
-        StepVerifier.create(malRepository.findByBrukertype(TenorMalBrukerType.AZURE))
-                .assertNext(mal -> assertThat(mal.getBrukerId()).isEqualTo("azure-id"))
+        StepVerifier.create(malRepository.findByBrukertypeIn(
+                        List.of(TenorMalBrukerType.AZURE, TenorMalBrukerType.TEAM))
+                        .collectList())
+                .assertNext(maler -> assertThat(maler)
+                        .extracting(TenorPersonMal::getBrukerId)
+                        .containsExactlyInAnyOrder("azure-id", "team-bruker-id-42"))
                 .verifyComplete();
         StepVerifier.create(malRepository.findByBrukertypeAndBrukerIdIn(
                         TenorMalBrukerType.BANKID,
@@ -159,6 +168,50 @@ class TenorPersonMalRepositoryTest {
         StepVerifier.create(malRepository.count())
                 .expectNext(1L)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldReadAzureAndTeamTemplatesWithCurrentNamesWithoutChangingStoredOwners() {
+        var firstTeam = template("Team 1", "team-bruker-id-42", TenorMalBrukerType.TEAM);
+        firstTeam.setBrukernavn(firstTeam.getBrukerId());
+        var secondTeam = template("Team 2", "team-bruker-id-81", TenorMalBrukerType.TEAM);
+        secondTeam.setBrukernavn(secondTeam.getBrukerId());
+        malRepository.save(template("Azure", "other-azure-user", TenorMalBrukerType.AZURE)).block();
+        var savedFirstTeam = malRepository.save(firstTeam).block();
+        malRepository.save(secondTeam).block();
+        malRepository.save(template("BankID", "bankid-owner", TenorMalBrukerType.BANKID)).block();
+
+        when(getAuthenticatedToken.call()).thenReturn(Mono.just(Token.builder().clientCredentials(false).build()));
+        when(getUserInfo.call()).thenReturn(Mono.just(azureUser("azure-user")));
+        when(dollyBackendConsumer.getTeams()).thenReturn(Mono.just(List.of(
+                new DollyTeamDTO(firstTeam.getBrukerId(), "Alfa"),
+                new DollyTeamDTO(secondTeam.getBrukerId(), "Beta"))));
+
+        StepVerifier.create(malService.getMaler("ALLE").collectList())
+                .assertNext(maler -> assertThat(maler)
+                        .extracting(TenorPersonMalResponse::malNavn)
+                        .containsExactly("Azure", "Team 1", "Team 2"))
+                .verifyComplete();
+        StepVerifier.create(malService.getMaler(firstTeam.getBrukerId()))
+                .assertNext(mal -> assertThat(mal.id()).isEqualTo(savedFirstTeam.getId()))
+                .verifyComplete();
+        StepVerifier.create(malService.getMalOversikt())
+                .assertNext(response -> assertThat(response.brukereMedMaler()).containsExactly(
+                        new TenorPersonMalBrukerResponse("ALLE", "ALLE"),
+                        new TenorPersonMalBrukerResponse(firstTeam.getBrukerId(), "Alfa"),
+                        new TenorPersonMalBrukerResponse(secondTeam.getBrukerId(), "Beta"),
+                        new TenorPersonMalBrukerResponse("other-azure-user", "Testbruker")))
+                .verifyComplete();
+        StepVerifier.create(malRepository.findByBrukertypeIn(List.of(TenorMalBrukerType.TEAM)))
+                .assertNext(mal -> assertThat(mal.getBrukernavn()).isEqualTo(mal.getBrukerId()))
+                .assertNext(mal -> assertThat(mal.getBrukernavn()).isEqualTo(mal.getBrukerId()))
+                .verifyComplete();
+        StepVerifier.create(malRepository.count())
+                .expectNext(4L)
+                .verifyComplete();
+
+        verify(dollyBackendConsumer).getTeams();
+        verify(dollyBackendConsumer, never()).getRepresentererTeamBrukerId();
     }
 
     @Test

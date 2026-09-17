@@ -27,19 +27,24 @@ public class CurrentTenorUserService {
     private final TenorPersonMalValidationService validationService;
 
     public Mono<TenorMalOwner> getCurrentUser() {
+        return getAuthenticatedUser()
+                .flatMap(user -> {
+                    if (user.brukertype() == TenorMalBrukerType.BANKID) {
+                        return Mono.just(user);
+                    }
+                    return dollyBackendConsumer.getRepresentererTeamBrukerId()
+                            .map(this::toTeamOwner)
+                            .defaultIfEmpty(user);
+                });
+    }
+
+    public Mono<TenorMalOwner> getAuthenticatedUser() {
         return getAuthenticatedToken.call()
                 .filter(token -> !token.isClientCredentials())
                 .flatMap(_ -> getUserInfo.call())
                 .switchIfEmpty(Mono.error(new AccessDeniedException("Autentisert bruker mangler.")))
                 .map(this::validateUserInfo)
-                .flatMap(userInfo -> {
-                    if (userInfo.isBankId()) {
-                        return Mono.just(toOwner(userInfo));
-                    }
-                    return dollyBackendConsumer.getRepresentererTeamBrukerId()
-                            .map(this::toTeamOwner)
-                            .switchIfEmpty(Mono.fromSupplier(() -> toOwner(userInfo)));
-                });
+                .map(this::toOwner);
     }
 
     private UserInfoExtended validateUserInfo(UserInfoExtended userInfo) {

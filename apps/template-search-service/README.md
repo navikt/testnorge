@@ -1,10 +1,10 @@
 # Template Search Service
 Tjeneste som lagrer og henter søkemaler (maler) for Tenor-søk.
 
-Malene er eid av innlogget bruker:
-* Azure-brukere ser alle Azure-maler.
+Tilgang og eierskap:
+* Azure-brukere, også de som representerer et team, ser alle Azure- og teammaler.
 * BankID-brukere ser kun maler som eies av brukere i samme organisasjon, slått opp via `testnav-bruker-service`.
-* Brukere som representerer et team, bruker teamets felles maler. Bare det aktive teamets maler er tilgjengelige.
+* Maler lagres på personlig bruker eller representert team. Navneendring og sletting krever samme eierskap.
 
 Fødselsnummer og d-nummer kan ikke lagres i maler, og valideres bort både i nøkler og verdier.
 Malnavn tillater tegnsetting, inkludert komma og utropstegn. Navnet må inneholde tekst og kan være opptil 100 tegn.
@@ -21,9 +21,18 @@ Instansene har hver sin PostgreSQL-instans. Teamets bruker-ID lagres uten miljø
 Dev får en ny, tom database. Non-dev gjenbruker den eksisterende PostgreSQL-instansen, men Flyway sletter de gamle dev-testmalene én gang før den tas i bruk som non-dev.
 Malene flyttes ikke automatisk mellom brukere, team eller miljøer.
 
-For Azure-brukere slår tjenesten opp `/api/v1/bruker/current` med OBO-token mot sin konfigurerte Dolly-backend.
+Ved lagring, navneendring og sletting for Azure-brukere slår tjenesten opp `/api/v1/bruker/current` med OBO-token mot sin konfigurerte Dolly-backend.
 Den bruker teamets `brukerId` når et team er aktivt, ellers den autentiserte Azure-brukerens ID.
-Oppslaget gjøres på nytt for hver maloperasjon. Feil i oppslaget gir feilrespons, ikke personlig eierskap som reservevalg.
+Oppslaget gjøres på nytt for hver skriveoperasjon. Feil i oppslaget gir feilrespons, ikke personlig eierskap som reservevalg.
+Lesing bruker den autentiserte brukeren uten å slå opp aktivt team. `ALLE` viser alle Azure- og teammaler, mens en angitt `brukerId` filtrerer på den valgte eieren.
+
+For team lagres den stabile teamidentiteten, ikke teamnavnet.
+Når `/oversikt` inneholder teammaler, hentes teamnavn med ett `GET /api/v1/team` mot riktig Dolly-backend for hver forespørsel.
+Teamets `brukerId` brukes som koblingsnøkkel, ikke den numeriske team-ID-en.
+Navnet returneres i `brukernavn`, mens `brukerId` beholdes uendret. Teamnavn caches ikke og skrives ikke tilbake til databasen.
+Manglende navn, feil i oppslaget eller navn med personidentifikator gir visningsnavnet «Ukjent team» og en loggadvarsel uten persondata. Malene vises fortsatt.
+Selve malresponsen beholder dagens felt; visningsnavnene ligger i eieroversikten.
+
 BankID bruker fortsatt signert `User-Jwt` og organisasjonsoppslag i bruker-service, uten å kontakte Dolly-backend.
 Dev har ikke TokenX-konfigurasjon eller BankID-verifikasjonsnøkkel. Ingen instans leser teamtilstand fra `User-Jwt`.
 
@@ -74,7 +83,7 @@ Backendendringene kan derfor deployes samtidig, uten midlertidige tilgangsregler
 1. Godkjenn engangsryddingen. Stans mallagring og vent til pågående kall er ferdige før deployment, slik at gamle dev-kall ikke skriver nye data etter tømmingen.
 2. Deploy bruker-service, begge template-instansene og tilgangsreglene i begge Dolly-backendene. Frontendansvarlig kobler dev og lokal kjøring til dev-instansen.
 3. Hold mallagring stanset til gamle template-pods er avsluttet, alle deployments er ferdige, Flyway-migreringen er fullført og frontend-rutingen er oppdatert. Mellomversjoner kan gi feil maleier. Første opprettelse av dev-databasen kan ta flere minutter.
-4. Kontroller at begge miljøer starter uten maler. Kontroller deretter at to brukere på samme team deler maler, at teambytte endrer maleier, og at samme team-ID i de to miljøene ikke deler data. Kontroller også personlig Azure-eierskap og BankID i non-dev.
+4. Kontroller at begge miljøer starter uten maler. Kontroller deretter at Azure-brukere ser både personlige maler og teammaler, at teambytte endrer maleier ved lagring, og at samme team-ID i de to miljøene ikke deler data. Kontroller også eierkontroll ved endring og sletting, oppdatert teamnavn etter navneendring i Dolly og BankID i non-dev.
 
 Ved rollback må bruker-service, template-service og tilgangsreglene tilbakeføres til versjoner som hører sammen.
 Koordiner også eventuell tilbakeføring av frontend-rutingen, og vent med mallagring til tilbakeføringen er ferdig.
