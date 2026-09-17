@@ -30,7 +30,8 @@ public class HendelseIdService {
         return bestillingProgressRepository.findHendelseIdFragmentByIdent(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException("Ident %s ikke funnet".formatted(ident))))
                 .next()
-                .flatMap(fragment -> isNotBlank(fragment.getPdlOrdreStatus()) ?
+                .flatMap(fragment -> isNotBlank(fragment.getPdlOrdreStatus()) &&
+                                     fragment.getPdlOrdreStatus().startsWith("{") ?
                         Mono.just(fragment) :
                         Mono.error(new NotFoundException("HendelseId for ident %s ikke funnet".formatted(ident))))
                 .map(HendelseIdFragment::getPdlOrdreStatus)
