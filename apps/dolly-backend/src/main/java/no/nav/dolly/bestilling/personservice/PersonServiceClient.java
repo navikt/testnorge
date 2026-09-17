@@ -50,7 +50,7 @@ public class PersonServiceClient {
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
     private static final String HENDELSER = "hendelser";
 
-    private static final int TIMEOUT = 1000;
+    private static final int TIMEOUT = 500;
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
