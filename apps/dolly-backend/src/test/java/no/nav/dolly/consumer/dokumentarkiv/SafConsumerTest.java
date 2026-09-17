@@ -40,14 +40,14 @@ class SafConsumerTest {
     private TokenExchange tokenExchange;
 
     @Test
-    void shouldReadExistingFortyMiBDocumentWithoutReturningBufferError() {
+    void shouldReadExistingHundredMiBDocumentWithoutReturningBufferError() {
         var jsonMapper = new JsonMapper();
         var sharedWebClient = new WebClientLogger().webClientBuilder(jsonMapper).build();
         when(consumers.getTestnavDollyProxy()).thenReturn(serverProperties);
         when(serverProperties.getUrl()).thenReturn(wireMock.baseUrl());
         when(tokenExchange.exchange(serverProperties)).thenReturn(Mono.just(new AccessToken("test-token")));
         var safConsumer = new SafConsumer(consumers, tokenExchange, jsonMapper, sharedWebClient);
-        var document = " ".repeat(40 * 1024 * 1024);
+        var document = " ".repeat(100 * 1024 * 1024);
         wireMock.stubFor(get(urlEqualTo("/saf/q2/rest/hentdokument/journalpost/dokument/ARKIV"))
                 .willReturn(aResponse().withHeader("Content-Type", "application/pdf").withBody(document)));
 

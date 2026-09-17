@@ -58,8 +58,8 @@ class SafConsumerTest {
     }
 
     @Test
-    void shouldReadFortyMiBPdfDespiteInheritedThirtyTwoMiBCodecLimit() {
-        var document = new byte[40 * 1024 * 1024];
+    void shouldReadHundredMiBPdfDespiteInheritedThirtyTwoMiBCodecLimit() {
+        var document = new byte[100 * 1024 * 1024];
         Arrays.fill(document, (byte) ' ');
         wireMock.stubFor(get(urlEqualTo(DOCUMENT_PATH))
                 .willReturn(aResponse().withHeader("Content-Type", "application/pdf").withBody(document)));
@@ -71,10 +71,10 @@ class SafConsumerTest {
     }
 
     @Test
-    void shouldRejectPdfLargerThanFiftyMiB() {
+    void shouldRejectPdfLargerThanHundredMiB() {
         wireMock.stubFor(get(urlEqualTo(DOCUMENT_PATH))
                 .willReturn(aResponse().withHeader("Content-Type", "application/pdf")
-                        .withBody(new byte[51 * 1024 * 1024])));
+                        .withBody(new byte[100 * 1024 * 1024 + 1])));
         when(tokenExchange.exchange(serverProperties)).thenReturn(Mono.just(new AccessToken("test-token")));
 
         assertThatThrownBy(() -> safConsumer.getPDF("journalpost", "dokument", "q2").block(Duration.ofSeconds(30)))
