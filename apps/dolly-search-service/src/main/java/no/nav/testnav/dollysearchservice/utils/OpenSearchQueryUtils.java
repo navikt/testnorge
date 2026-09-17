@@ -154,6 +154,17 @@ public class OpenSearchQueryUtils {
                 .must(q -> q.exists(existQuery(field)));
     }
 
+    public static BoolQuery.Builder shouldExistQuery(BoolQuery.Builder queryBuilder, String ... field) {
+
+        var boolQuery = QueryBuilders.bool();
+        for (var f : field) {
+            boolQuery.should(q -> q.exists(existQuery(f)));
+        }
+
+        queryBuilder.must(q -> q.bool(boolQuery.build()));
+        return queryBuilder;
+    }
+
     public static BoolQuery.Builder mustMatchQuery(BoolQuery.Builder queryBuilder, String field, Object value) {
 
         return queryBuilder

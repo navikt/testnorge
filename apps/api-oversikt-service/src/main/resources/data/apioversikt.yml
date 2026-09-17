@@ -65,7 +65,7 @@ system:
     kubernetes-name: inntektstub
     cluster: dev-fss
     read:
-      url: https://inntektstub.intern.dev.nav.no/swagger-ui.html
+      url: https://inntektstub.intern.dev.nav.no/swagger-ui/index.html?urls.primaryName=api+v2
   - register: inst
     namespace: team-rocket
     kubernetes-name: opphold-testdata

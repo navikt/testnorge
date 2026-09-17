@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.inntektsmelding.mapper;
 
+import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilUtsettelseType;
@@ -148,7 +149,9 @@ class InntektsmeldingMappingStrategyTest {
 
     @BeforeEach
     void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new InntektsmeldingMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(
+                new CustomConverter[]{new LocalDateCustomMapping()},
+                new InntektsmeldingMappingStrategy());
     }
 
     @Test

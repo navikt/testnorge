@@ -19,6 +19,7 @@ import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
@@ -75,6 +76,8 @@ public class BestillingDokument implements Persistable<Long> {
     private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     
     private InntektMultiplierWrapper inntektstub;
+
+    private List<RsInntekter> inntekter;
     
     private Arenadata arenaforvalter;
     

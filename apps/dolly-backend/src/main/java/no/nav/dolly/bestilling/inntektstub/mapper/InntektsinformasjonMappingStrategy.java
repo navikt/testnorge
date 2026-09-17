@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Forskuddst
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Fradrag;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -28,6 +30,60 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
+
+        factory.classMap(RsInntekter.class, InntektsinformasjonWrapper.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsInntekter inntektsinformasjon, InntektsinformasjonWrapper inntektsinformasjonWrapper, MappingContext context) {
+
+                        var yearMonth =
+                                new AtomicReference<>(LocalDate.parse(inntektsinformasjon.getStartAarMaaned() + "-01"));
+
+                        IntStream.range(0, isNull(inntektsinformasjon.getAntallMaaneder()) ||
+                                           inntektsinformasjon.getAntallMaaneder() <= 0 ? 1 : inntektsinformasjon.getAntallMaaneder())
+                                .forEach(_ -> {
+
+                                    inntektsinformasjon.getInntektsliste()
+                                            .forEach(inntekt ->
+                                                    inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
+                                                                                   inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                                            inntekt.getTilleggsinformasjon()));
+
+                                    var inntektsinfo = mapperFacade.map(
+                                            inntektsinformasjon, Inntektsinformasjon.class);
+
+                                    inntektsinfo.setAarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT));
+                                    inntektsinfo.setNorskIdent((String) context.getProperty("ident"));
+                                    if (nonNull(inntektsinformasjon.getRapporteringsdato())) {
+                                        inntektsinfo.setRapporteringsdato(
+                                                inntektsinformasjon.getRapporteringsdato().atOffset(ZoneOffset.UTC));
+                                    }
+
+                                    inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinfo);
+
+                                    var versjon = new AtomicInteger(0);
+                                    inntektsinformasjon.getHistorikk().forEach(historikk ->
+
+                                            inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
+                                                    .norskIdent((String) context.getProperty("ident"))
+                                                    .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
+                                                    .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
+                                                    .virksomhet(inntektsinformasjon.getVirksomhet())
+                                                    .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
+                                                    .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
+                                                    .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
+                                                    .versjon(versjon.addAndGet(1))
+                                                    .rapporteringsdato(nonNull(historikk.getRapporteringsdato()) ?
+                                                            historikk.getRapporteringsdato().atOffset(ZoneOffset.UTC) : null)
+                                                    .build())
+                                    );
+
+                                    yearMonth.updateAndGet(ym -> ym.plusMonths(1));
+                                });
+                    }
+                })
+                .register();
+
         factory.classMap(InntektMultiplierWrapper.class, InntektsinformasjonWrapper.class)
                 .customize(new CustomMapper<>() {
                     @Override

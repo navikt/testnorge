@@ -13,15 +13,18 @@ public class MapperTestUtils {
         return createMapperFacadeForMappingStrategy(null, strategies);
     }
 
-    public static MapperFacade createMapperFacadeForMappingStrategy(CustomConverter<Object, Object> converter, MappingStrategy... strategies) {
-        DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+    public static MapperFacade createMapperFacadeForMappingStrategy(CustomConverter<Object, Object>[] converters, MappingStrategy... strategies) {
 
-        for (MappingStrategy strategy : strategies) {
+        var mapperFactory = new DefaultMapperFactory.Builder().build();
+
+        for (var strategy : strategies) {
             strategy.register(mapperFactory);
         }
 
-        if (nonNull(converter)) {
-            mapperFactory.getConverterFactory().registerConverter(converter);
+        if (nonNull(converters)) {
+            for (var converter : converters) {
+                    mapperFactory.getConverterFactory().registerConverter(converter);
+            }
         }
         return mapperFactory.getMapperFacade();
     }

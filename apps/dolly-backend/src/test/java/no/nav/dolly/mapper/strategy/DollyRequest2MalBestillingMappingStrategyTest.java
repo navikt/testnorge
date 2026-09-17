@@ -37,6 +37,7 @@ import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
 import no.nav.dolly.domain.resultset.inntektstub.Inntekt.InntektType;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -45,6 +46,7 @@ import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData.AfpOffentlig;
@@ -249,6 +251,65 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                         .kategori(InstdataKategori.A)
                         .startdato(LocalDate.of(2025, 1, 1).atStartOfDay())
                         .build()));
+    }
+
+    @Test
+    void shouldAccumulateInntekter() {
+
+        var target = mapperFacade.map(buildInntekter("2023-01", "123456789"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildInntekter("2025-01", "987654321"), target);
+
+        assertThat(target.getInntekter(), hasItems(
+                RsInntekter.builder()
+                        .startAarMaaned("2023-01")
+                        .virksomhet("123456789")
+                        .build(),
+                RsInntekter.builder()
+                        .startAarMaaned("2025-01")
+                        .virksomhet("987654321")
+                        .build()));
+    }
+
+    @Test
+    void shouldCopyOppfoelgingsvedtak14a() {
+
+        var target = mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .oppfoelgingsvedtak14a(RsOppfoelgingsvedtak14aDTO.builder()
+                        .innsatsgruppe(RsOppfoelgingsvedtak14aDTO.Innsatsgruppe.GODE_MULIGHETER)
+                        .hovedmal(RsOppfoelgingsvedtak14aDTO.Hovedmal.SKAFFE_ARBEID)
+                        .begrunnelse("Begrunnelse")
+                        .build())
+                .build(), RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getOppfoelgingsvedtak14a().getInnsatsgruppe(), is(equalTo(RsOppfoelgingsvedtak14aDTO.Innsatsgruppe.GODE_MULIGHETER)));
+        assertThat(target.getOppfoelgingsvedtak14a().getHovedmal(), is(equalTo(RsOppfoelgingsvedtak14aDTO.Hovedmal.SKAFFE_ARBEID)));
+        assertThat(target.getOppfoelgingsvedtak14a().getBegrunnelse(), is(equalTo("Begrunnelse")));
+    }
+
+    @Test
+    void shouldAccumulateJobboenskerLists() {
+
+        var target = mapperFacade.map(buildJobboensker("Java"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildJobboensker("Python"), target);
+
+        var jobboensker = target.getArbeidsplassenCV().getJobboensker();
+        assertThat(jobboensker.getActive(), is(equalTo(true)));
+        assertThat(jobboensker.getStartOption(), is(equalTo(ArbeidsplassenCVDTO.StartOption.LEDIG_NAA)));
+        assertThat(jobboensker.getOccupations(), hasItems(
+                ArbeidsplassenCVDTO.Occupation.builder().title("Java").build(),
+                ArbeidsplassenCVDTO.Occupation.builder().title("Python").build()));
+        assertThat(jobboensker.getOccupationDrafts(), hasItems(
+                ArbeidsplassenCVDTO.OccupationDraft.builder().title("Java").build(),
+                ArbeidsplassenCVDTO.OccupationDraft.builder().title("Python").build()));
+        assertThat(jobboensker.getLocations(), hasItems(
+                ArbeidsplassenCVDTO.Location.builder().location("Java").build(),
+                ArbeidsplassenCVDTO.Location.builder().location("Python").build()));
+        assertThat(jobboensker.getOccupationTypes(), hasItems(
+                ArbeidsplassenCVDTO.OccupationType.FAST, ArbeidsplassenCVDTO.OccupationType.VIKARIAT));
+        assertThat(jobboensker.getWorkLoadTypes(), hasItems(
+                ArbeidsplassenCVDTO.Omfang.HELTID, ArbeidsplassenCVDTO.Omfang.DELTID));
+        assertThat(jobboensker.getWorkScheduleTypes(), hasItems(
+                ArbeidsplassenCVDTO.Arbeidstid.DAGTID, ArbeidsplassenCVDTO.Arbeidstid.KVELD));
     }
 
     @Test
@@ -1030,6 +1091,46 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         assertThat(target.getPdldata().getPerson().getNavn().size(), is(2));
         assertThat(target.getPdldata().getPerson().getStatsborgerskap().size(), is(1));
         assertThat(target.getPdldata().getPerson().getBostedsadresse().size(), is(1));
+    }
+
+    private static RsDollyUtvidetBestilling buildInntekter(String startAarMaaned, String virksomhet) {
+
+        return RsDollyUtvidetBestilling.builder()
+                .inntekter(List.of(RsInntekter.builder()
+                        .startAarMaaned(startAarMaaned)
+                        .virksomhet(virksomhet)
+                        .build()))
+                .build();
+    }
+
+    private static RsDollyUtvidetBestilling buildJobboensker(String tittel) {
+
+        return RsDollyUtvidetBestilling.builder()
+                .arbeidsplassenCV(ArbeidsplassenCVDTO.builder()
+                        .jobboensker(ArbeidsplassenCVDTO.Jobboensker.builder()
+                                .active(true)
+                                .startOption(ArbeidsplassenCVDTO.StartOption.LEDIG_NAA)
+                                .occupations(List.of(ArbeidsplassenCVDTO.Occupation.builder()
+                                        .title(tittel)
+                                        .build()))
+                                .occupationDrafts(List.of(ArbeidsplassenCVDTO.OccupationDraft.builder()
+                                        .title(tittel)
+                                        .build()))
+                                .locations(List.of(ArbeidsplassenCVDTO.Location.builder()
+                                        .location(tittel)
+                                        .build()))
+                                .occupationTypes("Java".equals(tittel) ?
+                                        List.of(ArbeidsplassenCVDTO.OccupationType.FAST) :
+                                        List.of(ArbeidsplassenCVDTO.OccupationType.VIKARIAT))
+                                .workLoadTypes("Java".equals(tittel) ?
+                                        List.of(ArbeidsplassenCVDTO.Omfang.HELTID) :
+                                        List.of(ArbeidsplassenCVDTO.Omfang.DELTID))
+                                .workScheduleTypes("Java".equals(tittel) ?
+                                        List.of(ArbeidsplassenCVDTO.Arbeidstid.DAGTID) :
+                                        List.of(ArbeidsplassenCVDTO.Arbeidstid.KVELD))
+                                .build())
+                        .build())
+                .build();
     }
 
     private static RsDollyUtvidetBestilling buildInntektstub(Double beloep, InntektType inntektstype, String beskrivelse) {
