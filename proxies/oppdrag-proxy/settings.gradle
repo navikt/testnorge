@@ -1,0 +1,20 @@
+plugins {
+    id "com.gradle.develocity" version "3.17.4"
+}
+
+rootProject.name = "oppdrag-proxy"
+
+includeBuild "../../plugins/java"
+
+includeBuild "../../libs/reactive-core"
+includeBuild "../../libs/reactive-proxy"
+includeBuild "../../libs/reactive-security"
+includeBuild "../../libs/security-core"
+includeBuild "../../libs/vault"
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+    }
+}
