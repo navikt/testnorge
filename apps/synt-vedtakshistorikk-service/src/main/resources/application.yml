@@ -19,7 +19,7 @@ management:
 
 consumers:
   synt-vedtakshistorikk:
-    url: http://synthdata-arena-vedtakshistorikk.dolly.svc.cluster.local
+    url: https://synthdata-arena-vedtakshistorikk.intern.dev.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-vedtakshistorikk
