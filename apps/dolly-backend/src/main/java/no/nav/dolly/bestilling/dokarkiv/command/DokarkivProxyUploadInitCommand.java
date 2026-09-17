@@ -18,7 +18,6 @@ public class DokarkivProxyUploadInitCommand implements Callable<Mono<String>> {
     private final String token;
 
     @Override
-    @SuppressWarnings("unchecked")
     public Mono<String> call() {
 
         return webClient
@@ -32,5 +31,4 @@ public class DokarkivProxyUploadInitCommand implements Callable<Mono<String>> {
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }
-
 }
