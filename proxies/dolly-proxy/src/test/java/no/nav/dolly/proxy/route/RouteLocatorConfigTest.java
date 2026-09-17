@@ -30,8 +30,11 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -335,11 +338,15 @@ class RouteLocatorConfigTest {
     }
 
     @Test
-    void shouldForwardFortyMiBDocumentFromUploadReference() {
+    void shouldForwardFortyMiBDocumentsToQ1AndQ2Concurrently() throws Exception {
         var content = Base64.getEncoder().encodeToString(new byte[40 * 1024 * 1024]);
-        var uploadId = uploadService.initUpload();
-        for (int offset = 0; offset < content.length(); offset += 500_000) {
-            uploadService.appendChunk(uploadId, content.substring(offset, Math.min(offset + 500_000, content.length())));
+        var uploadIds = new HashMap<String, String>();
+        for (var environment : List.of("q1", "q2")) {
+            var uploadId = uploadService.initUpload();
+            uploadIds.put(environment, uploadId);
+            for (int offset = 0; offset < content.length(); offset += 500_000) {
+                uploadService.appendChunk(uploadId, content.substring(offset, Math.min(offset + 500_000, content.length())));
+            }
         }
         var servedPath = "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=false";
         wireMockServer.stubFor(post(urlEqualTo(servedPath))
@@ -347,23 +354,29 @@ class RouteLocatorConfigTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"journalpostId\":\"journalpost\"}")));
 
-        webClient.post()
-                .uri("/dokarkiv/api/q2/v1/journalpost?forsoekFerdigstill=false")
-                .bodyValue(Map.of("dokumenter", List.of(Map.of("dokumentvarianter",
-                        List.of(Map.of("filtype", "PDF", "variantformat", "ARKIV", "uploadReferanse", uploadId))))))
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.journalpostId").isEqualTo("journalpost");
+        try (var executor = Executors.newFixedThreadPool(2)) {
+            var requests = uploadIds.entrySet().stream()
+                    .map(entry -> CompletableFuture.runAsync(() -> webClient.post()
+                            .uri("/dokarkiv/api/" + entry.getKey() + "/v1/journalpost?forsoekFerdigstill=false")
+                            .bodyValue(Map.of("dokumenter", List.of(Map.of("dokumentvarianter",
+                                    List.of(Map.of("filtype", "PDF", "variantformat", "ARKIV", "uploadReferanse", entry.getValue()))))))
+                            .exchange()
+                            .expectStatus().isOk()
+                            .expectBody()
+                            .jsonPath("$.journalpostId").isEqualTo("journalpost"), executor))
+                    .toArray(CompletableFuture[]::new);
+            CompletableFuture.allOf(requests).get(30, TimeUnit.SECONDS);
+        }
 
-        wireMockServer.verify(1, postRequestedFor(urlEqualTo(servedPath)));
-        var forwardedBody = wireMockServer.getAllServeEvents().stream()
+        wireMockServer.verify(2, postRequestedFor(urlEqualTo(servedPath)));
+        wireMockServer.getAllServeEvents().stream()
                 .filter(event -> event.getRequest().getUrl().equals(servedPath))
-                .findFirst().orElseThrow()
-                .getRequest().getBodyAsString();
-        assertThat(forwardedBody.length()).isGreaterThan(50 * 1024 * 1024);
-        assertThat(forwardedBody.contains("\"fysiskDokument\":\"" + content + "\"")).isTrue();
-        assertThat(forwardedBody.contains("uploadReferanse")).isFalse();
+                .forEach(event -> {
+                    var forwardedBody = event.getRequest().getBodyAsString();
+                    assertThat(forwardedBody.length()).isGreaterThan(50 * 1024 * 1024);
+                    assertThat(forwardedBody.contains("\"fysiskDokument\":\"" + content + "\"")).isTrue();
+                    assertThat(forwardedBody.contains("uploadReferanse")).isFalse();
+                });
     }
 
     @ParameterizedTest

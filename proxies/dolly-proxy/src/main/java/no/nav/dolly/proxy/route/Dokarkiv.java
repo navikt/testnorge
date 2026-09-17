@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -48,7 +49,7 @@ public class Dokarkiv {
                 .filters(f -> f
                         .stripPrefix(1)
                         .rewritePath("/api/%s/(?<segment>.*)".formatted(env.code), "/rest/journalpostapi/${segment}")
-                        .modifyRequestBody(String.class, String.class, (exchange, body) -> resolveUploadReferences(body))
+                        .modifyRequestBody(String.class, byte[].class, (exchange, body) -> resolveUploadReferences(body))
                         .setResponseHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
                 .uri(url);
@@ -56,9 +57,9 @@ public class Dokarkiv {
     }
 
     @SuppressWarnings("unchecked")
-    private Mono<String> resolveUploadReferences(String body) {
+    private Mono<byte[]> resolveUploadReferences(String body) {
         if (isBlank(body)) {
-            return Mono.justOrEmpty(body);
+            return Mono.justOrEmpty(body).map(value -> value.getBytes(UTF_8));
         }
         try {
             var request = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
@@ -80,7 +81,7 @@ public class Dokarkiv {
                     }
                 }
                 if (resolved) {
-                    return Mono.just(objectMapper.writeValueAsString(request));
+                    return Mono.just(objectMapper.writeValueAsBytes(request));
                 }
             }
         } catch (JsonProcessingException e) {
@@ -90,7 +91,7 @@ public class Dokarkiv {
                     org.springframework.http.HttpStatus.BAD_REQUEST,
                     "Feilet ved resolving av uploadReferanse: " + e.getMessage()));
         }
-        return Mono.just(body);
+        return Mono.just(body.getBytes(UTF_8));
     }
 
     @RequiredArgsConstructor
