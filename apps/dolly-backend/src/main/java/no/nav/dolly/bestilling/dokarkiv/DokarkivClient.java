@@ -10,7 +10,6 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.bestilling.dokarkiv.dto.TransaksjonIdDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.consumer.dokumentarkiv.SafConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -54,8 +53,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DokarkivClient implements ClientRegister {
 
     private static final int CHUNK_SIZE = 500_000;
+    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(10);
 
-    private final ApplicationConfig applicationConfig;
     private final DokarkivConsumer dokarkivConsumer;
     private final DokumentService dokumentService;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -93,7 +92,7 @@ public class DokarkivClient implements ClientRegister {
                                                         Mono.just(miljoe + ":OK")
                                                 )
                                         )
-                                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                        .timeout(OPERATION_TIMEOUT)
                                         .onErrorResume(error -> getErrors(error, miljoer))
                                 ))
                         .collect(Collectors.joining(","))
@@ -136,6 +135,9 @@ public class DokarkivClient implements ClientRegister {
     }
 
     private Flux<String> getErrors(Throwable error, List<String> miljoer) {
+
+        log.error("Dokarkiv-operasjonen feilet for miljøer {}: feiltype={}, tidsgrense={}",
+                miljoer, error.getClass().getSimpleName(), OPERATION_TIMEOUT);
 
         return Flux.fromIterable(miljoer)
                 .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientError.describe(error).getMessage())));
@@ -282,7 +284,11 @@ public class DokarkivClient implements ClientRegister {
                     log.info("Dokarkiv proxy upload {}: {} chunks for {} tegn", uploadId, chunks.size(), content.length());
                     return Flux.fromIterable(chunks)
                             .concatMap(chunk -> dokarkivConsumer.appendProxyChunk(uploadId, chunk))
-                            .then(Mono.just(uploadId));
+                            .then(Mono.just(uploadId))
+                            .doOnSuccess(_ -> log.info("Dokarkiv proxy-opplasting fullført: {} deler, {} tegn",
+                                    chunks.size(), content.length()))
+                            .doOnCancel(() -> log.warn("Dokarkiv proxy-opplasting avbrutt: {} deler, {} tegn",
+                                    chunks.size(), content.length()));
                 });
     }
 }

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.proxy.service.DokarkivUploadService;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
@@ -27,7 +28,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -39,6 +43,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -66,6 +71,8 @@ class RouteLocatorConfigTest {
     private TokenXService tokenXService;
     @Autowired
     private WebTestClient webClient;
+    @Autowired
+    private DokarkivUploadService uploadService;
 
     @BeforeEach
     void setup() {
@@ -325,6 +332,38 @@ class RouteLocatorConfigTest {
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 
+    }
+
+    @Test
+    void shouldForwardFortyMiBDocumentFromUploadReference() {
+        var content = Base64.getEncoder().encodeToString(new byte[40 * 1024 * 1024]);
+        var uploadId = uploadService.initUpload();
+        for (int offset = 0; offset < content.length(); offset += 500_000) {
+            uploadService.appendChunk(uploadId, content.substring(offset, Math.min(offset + 500_000, content.length())));
+        }
+        var servedPath = "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=false";
+        wireMockServer.stubFor(post(urlEqualTo(servedPath))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"journalpostId\":\"journalpost\"}")));
+
+        webClient.post()
+                .uri("/dokarkiv/api/q2/v1/journalpost?forsoekFerdigstill=false")
+                .bodyValue(Map.of("dokumenter", List.of(Map.of("dokumentvarianter",
+                        List.of(Map.of("filtype", "PDF", "variantformat", "ARKIV", "uploadReferanse", uploadId))))))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.journalpostId").isEqualTo("journalpost");
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo(servedPath)));
+        var forwardedBody = wireMockServer.getAllServeEvents().stream()
+                .filter(event -> event.getRequest().getUrl().equals(servedPath))
+                .findFirst().orElseThrow()
+                .getRequest().getBodyAsString();
+        assertThat(forwardedBody.length()).isGreaterThan(50 * 1024 * 1024);
+        assertThat(forwardedBody.contains("\"fysiskDokument\":\"" + content + "\"")).isTrue();
+        assertThat(forwardedBody.contains("uploadReferanse")).isFalse();
     }
 
     @ParameterizedTest
@@ -1013,4 +1052,3 @@ class RouteLocatorConfigTest {
     }
 
 }
-

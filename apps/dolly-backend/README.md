@@ -23,3 +23,17 @@ av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 Evt midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
 
 >nais opensearch credentials bestillinger --team dolly --environment dev --permission ADMIN --ttl 14d 
+
+## Tidsgrenser ved dokumentinnsending
+
+Frontend laster opp dokumentene i deler til backend. Backend sender deretter store dokumenter i deler til
+`testnav-dolly-proxy`, som setter sammen journalposten og sender den til Dokarkiv.
+`testnav-joark-dokument-service` brukes til uthenting og er ikke med i innsendingen.
+
+`DokarkivClient.OPERATION_TIMEOUT` er 10 minutter og gjelder behandling av Dokarkiv-bestillingen, inkludert
+opplasting til proxy. Den generelle grensen på 30 sekunder er for kort her for filer på 20+ mb.
+
+`DokarkivPostCommand.RESPONSE_TIMEOUT` er 4 minutter og gjelder venting på journalpostsvaret fra proxy.
+Initiering og opplasting av hver del beholder HTTP-klientens grense på 30 sekunder.
+Journalpostkallet har kortere tidsgrense enn proxy- og Dokarkiv-ingressenes nåværende grense på 300 sekunder.
+Andre fagsystemer beholder sine tidsgrenser.

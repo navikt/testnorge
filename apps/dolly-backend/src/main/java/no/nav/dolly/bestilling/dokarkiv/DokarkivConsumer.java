@@ -53,8 +53,8 @@ public class DokarkivConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "dokarkiv-opprett"})
     public Mono<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
-        log.info("Dokarkiv sender melding for ident {} miljoe {} request {}",
-                dokarkivRequest.getBruker().getId(), environment, dokarkivRequest);
+        log.info("Dokarkiv sender journalpost til miljø {} med {} dokumenter",
+                environment, dokarkivRequest.getDokumenter().size());
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DokarkivPostCommand(webClient, environment, dokarkivRequest,
