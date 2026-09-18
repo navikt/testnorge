@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetMiljoeCommand;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivPostCommand;
@@ -23,9 +22,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
-@Slf4j
 @Service
 public class DokarkivConsumer extends ConsumerStatus {
 
@@ -44,7 +41,7 @@ public class DokarkivConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .responseTimeout(Duration.ofSeconds(REQUEST_DURATION))))
+                        .responseTimeout(Duration.ofMinutes(1))))
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
@@ -52,9 +49,6 @@ public class DokarkivConsumer extends ConsumerStatus {
 
     @Timed(name = "providers", tags = {"operation", "dokarkiv-opprett"})
     public Mono<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
-
-        log.info("Dokarkiv sender journalpost til miljø {} med {} dokumenter",
-                environment, dokarkivRequest.getDokumenter().size());
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DokarkivPostCommand(webClient, environment, dokarkivRequest,

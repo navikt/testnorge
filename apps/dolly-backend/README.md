@@ -26,15 +26,16 @@ Evt midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
 
 ## Tidsgrenser ved dokumentinnsending
 
-Frontend laster opp dokumentene i deler til backend. Backend sender deretter store dokumenter i deler til
+Frontend laster opp dokumentene i deler på inntil 4 MiB Base64 til backend. Backend sender deretter store dokumenter i deler til
 `testnav-dolly-proxy`, som setter sammen journalposten og sender den til Dokarkiv.
 `testnav-joark-dokument-service` brukes til uthenting og er ikke med i innsendingen.
 
-`DokarkivClient.OPERATION_TIMEOUT` er 4 minutter og gjelder behandling av Dokarkiv-bestillingen, inkludert
-opplasting til proxy. Den generelle grensen på 30 sekunder er for kort her for filer på 20+ mb.
+`DokarkivClient.OPERATION_TIMEOUT` er 1 minutt og begrenser ventetiden frem til neste ferdige miljøstatus.
+Denne ventetiden inkluderer opplasting til proxy og journalpostkallet. Fristen starter på nytt når en miljøstatus
+kommer, så den er ikke en absolutt totalfrist for bestillinger med flere miljøer.
 
-`DokarkivPostCommand.RESPONSE_TIMEOUT` er 4 minutter og gjelder venting på journalpostsvaret fra proxy.
-Opplastingstiden inngår i operasjonsgrensen, så journalpostkallet kan avbrytes før det har ventet i fire minutter.
-Initiering og opplasting av hver del beholder HTTP-klientens grense på 30 sekunder.
-Journalpostkallet har kortere tidsgrense enn proxy- og Dokarkiv-ingressenes nåværende grense på 300 sekunder.
+`DokarkivConsumer` har en HTTP-svartidsgrense på ett minutt for alle Dokarkiv-kall.
+Den begrenser ventetiden mellom lesinger av HTTP-responsen, ikke samlet kjøretid.
+`DokarkivPostCommand` har ingen egen timeout.
+Proxy- og Dokarkiv-ingressenes nåværende tidsgrense er 300 sekunder.
 Andre fagsystemer beholder sine tidsgrenser.

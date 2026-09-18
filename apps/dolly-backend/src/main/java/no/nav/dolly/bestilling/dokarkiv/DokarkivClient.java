@@ -53,7 +53,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DokarkivClient implements ClientRegister {
 
     private static final int CHUNK_SIZE = 500_000;
-    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(4);
+    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(1);
 
     private final DokarkivConsumer dokarkivConsumer;
     private final DokumentService dokumentService;
@@ -284,11 +284,7 @@ public class DokarkivClient implements ClientRegister {
                     log.info("Dokarkiv proxy upload {}: {} chunks for {} tegn", uploadId, chunks.size(), content.length());
                     return Flux.fromIterable(chunks)
                             .concatMap(chunk -> dokarkivConsumer.appendProxyChunk(uploadId, chunk))
-                            .then(Mono.just(uploadId))
-                            .doOnSuccess(_ -> log.info("Dokarkiv proxy-opplasting fullført: {} deler, {} tegn",
-                                    chunks.size(), content.length()))
-                            .doOnCancel(() -> log.warn("Dokarkiv proxy-opplasting avbrutt: {} deler, {} tegn",
-                                    chunks.size(), content.length()));
+                            .then(Mono.just(uploadId));
                 });
     }
 }
