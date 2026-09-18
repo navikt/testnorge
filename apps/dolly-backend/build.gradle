@@ -10,7 +10,6 @@ sonarqube {
 }
 
 test {
-    maxHeapSize = "1g"
     jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
 }
 
