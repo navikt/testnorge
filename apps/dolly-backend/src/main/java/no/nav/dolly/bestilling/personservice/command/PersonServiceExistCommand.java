@@ -7,7 +7,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -36,33 +35,20 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .toEntity(Boolean.class)
-                .doOnSuccess(response -> log.info("PersonServiceExistCommand: Mottok respons for ident {}: status={}, body={}", 
-                        ident, response.getStatusCode(), response.getBody()))
                 .map(resultat -> PersonServiceResponse.builder()
                         .ident(ident)
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .exists(resultat.getBody())
                         .build())
                 .retryWhen(WebClientError.is5xxException())
-                .doOnError(throwable -> log.error("PersonServiceExistCommand: Feil for ident {}: exceptionType={}, message={}", 
-                        ident, throwable.getClass().getName(), throwable.getMessage(), throwable))
+                .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> {
-                    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-                    String feilmelding = "%s: %s".formatted(throwable.getClass().getSimpleName(), throwable.getMessage());
-                    
-                    if (throwable instanceof WebClientResponseException wcre) {
-                        status = HttpStatus.valueOf(wcre.getStatusCode().value());
-                        feilmelding = wcre.getResponseBodyAsString();
-                    }
-                    
-                    log.error("PersonServiceExistCommand: Returnerer feilrespons for ident {}: status={}, feilmelding={}", 
-                            ident, status, feilmelding);
-                    
+                    var feilmelding = WebClientError.describe(throwable);
                     return Mono.just(PersonServiceResponse.builder()
                             .exists(false)
                             .ident(ident)
-                            .status(status)
-                            .feilmelding(feilmelding)
+                            .status(feilmelding.getStatus())
+                            .feilmelding(feilmelding.getMessage())
                             .build());
                 });
     }
