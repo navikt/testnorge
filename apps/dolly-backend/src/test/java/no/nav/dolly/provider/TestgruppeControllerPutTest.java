@@ -3,7 +3,6 @@ package no.nav.dolly.provider;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.service.BrukerService;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ class TestgruppeControllerPutTest extends AbstractControllerTest {
                 .isNotFound()
                 .expectBody()
                 .jsonPath("$.message")
-                .value(CoreMatchers.containsString("Gruppe med id " + id + " ble ikke funnet."));
+                .isEqualTo("Gruppe med id " + id + " ble ikke funnet.");
     }
 
     @Test
@@ -74,7 +73,7 @@ class TestgruppeControllerPutTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
-                .expectStatus()                .isOk()
+                .expectStatus().isOk()
                 .expectBody(RsTestgruppeMedBestillingId.class)
                 .value(response -> {
                     assertThat(response.getId()).isEqualTo(testgruppe.getId());

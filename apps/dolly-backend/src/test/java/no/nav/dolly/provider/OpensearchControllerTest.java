@@ -1,5 +1,6 @@
 package no.nav.dolly.provider;
 
+import no.nav.dolly.config.SecurityTestConfig;
 import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
@@ -28,7 +29,7 @@ import java.util.List;
 
 
 @DollySpringBootTest
-@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
+@Import({SecurityTestConfig.class, TestDatabaseConfig.class, TestOpenSearchConfig.class})
 class OpensearchControllerTest {
 
     private static final String BASE_URL = "/api/v1/opensearch";

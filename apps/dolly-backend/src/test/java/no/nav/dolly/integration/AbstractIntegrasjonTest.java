@@ -1,5 +1,6 @@
 package no.nav.dolly.integration;
 
+import no.nav.dolly.config.SecurityTestConfig;
 import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -30,7 +31,7 @@ import static java.time.LocalDateTime.now;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.TEAM;
 
 @DollySpringBootTest
-@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
+@Import({SecurityTestConfig.class, TestDatabaseConfig.class, TestOpenSearchConfig.class})
 public abstract class AbstractIntegrasjonTest {
 
     @Autowired

@@ -7,7 +7,6 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.BrukerService;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -171,7 +170,7 @@ class MalBestillingControllerTest extends AbstractControllerTest {
                 .expectStatus()
                 .isOk()
                 .expectBody()
-                .jsonPath("$").value(Matchers.hasSize(0));
+                .jsonPath("$").isEmpty();
     }
 
     Mono<BestillingMal> saveDummyBestillingMal(Bruker bruker) {

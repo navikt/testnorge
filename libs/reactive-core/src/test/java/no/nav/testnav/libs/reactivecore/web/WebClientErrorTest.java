@@ -1,5 +1,7 @@
 package no.nav.testnav.libs.reactivecore.web;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WebClientErrorTest {
 
     private static final URI URI_NOWHERE = URI.create("https://nowhere.net");
+
+    private static String originalRetryDelayFactor;
+
+    @BeforeAll
+    static void pinRetryDelayFactor() {
+        originalRetryDelayFactor = System.setProperty(WebClientError.RETRY_DELAY_FACTOR_PROPERTY, "1");
+    }
+
+    @AfterAll
+    static void restoreRetryDelayFactor() {
+        if (originalRetryDelayFactor == null) {
+            System.clearProperty(WebClientError.RETRY_DELAY_FACTOR_PROPERTY);
+        } else {
+            System.setProperty(WebClientError.RETRY_DELAY_FACTOR_PROPERTY, originalRetryDelayFactor);
+        }
+    }
 
     @Test
     void shouldRetryOn5xxResponse() {
