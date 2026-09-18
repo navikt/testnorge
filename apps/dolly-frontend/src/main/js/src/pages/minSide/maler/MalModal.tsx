@@ -4,6 +4,7 @@ import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	REGEX_BACKEND_ORGANISASJONER,
+	REGEX_TEMPLATE_SEARCH_MALER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -57,9 +58,9 @@ export const MalModal = ({ id, verdier, malType, open, setOpen }: MalModalProps)
 				break
 			case malTyper.TENORSOEK:
 				tenorOpprettPersonMal(verdier, nyttMalnavn)
-					// TODO: Re-render dropdown?
-					?.then(setIsLoading(false))
-					.then(setOpen(false))
+					?.then(() => matchMutate(REGEX_TEMPLATE_SEARCH_MALER))
+					.then(() => setIsLoading(false))
+					.then(() => setOpen(false))
 				break
 			default:
 				setIsLoading(false)
