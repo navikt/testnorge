@@ -12,7 +12,7 @@ spring:
     max-in-memory-size: 50MB
   http:
     codecs:
-      max-in-memory-size: 50MB
+      max-in-memory-size: 100MB
   data:
     redis:
       host: ${VALKEY_HOST_SESSION}
