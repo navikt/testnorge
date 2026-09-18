@@ -17,7 +17,7 @@ public class DollyVersionsPlugin implements Plugin<Project> {
 
         public String springBoot = "4.1.1";
         public String springSession = "4.0.2";
-        public String springCloud = "2025.1.1";
+        public String springCloud = "2025.1.3";
 
         public String gcpSecretManager = "8.0.2";
         public String gcpStorage = "2.44.0";
