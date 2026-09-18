@@ -46,6 +46,7 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getThrowableList;
 
 @Slf4j
 @Service
@@ -136,8 +137,10 @@ public class DokarkivClient implements ClientRegister {
 
     private Flux<String> getErrors(Throwable error, List<String> miljoer) {
 
-        log.error("Dokarkiv-operasjonen feilet for miljøer {}: feiltype={}, tidsgrense={}",
-                miljoer, error.getClass().getSimpleName(), OPERATION_TIMEOUT);
+        log.error("Dokarkiv-operasjonen feilet for miljøer {}: feiltype={}, årsakstyper={}, konfigurertTidsgrense={}",
+                miljoer, error.getClass().getSimpleName(),
+                getThrowableList(error).stream().map(cause -> cause.getClass().getSimpleName()).toList(),
+                OPERATION_TIMEOUT);
 
         return Flux.fromIterable(miljoer)
                 .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientError.describe(error).getMessage())));

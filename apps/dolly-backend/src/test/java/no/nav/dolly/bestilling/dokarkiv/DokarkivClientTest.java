@@ -1,5 +1,9 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
@@ -22,6 +26,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -129,6 +134,35 @@ class DokarkivClientTest {
         assertThat(variant.getFysiskDokument()).isNull();
         assertThat(variant.getUploadReferanse()).isEqualTo("upload-reference");
         verify(dokarkivConsumer).postDokarkiv("q2", request);
+    }
+
+    @Test
+    void shouldLogUnderlyingCauseTypesWithoutLoggingDocumentContent() {
+        var error = new IllegalStateException("sensitive-document-content", new OutOfMemoryError("Java heap space"));
+        when(dokarkivConsumer.postDokarkiv("q2", request)).thenReturn(Mono.error(error));
+        var logger = (Logger) LoggerFactory.getLogger(DokarkivClient.class);
+        var originalLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(Level.ERROR);
+
+        try {
+            StepVerifier.create(dokarkivClient.gjenopprett(bestilling, person, progress, true))
+                    .expectNext(progress)
+                    .verifyComplete();
+
+            assertThat(appender.list).singleElement().satisfies(event -> {
+                assertThat(event.getFormattedMessage())
+                        .contains("årsakstyper=[IllegalStateException, OutOfMemoryError]")
+                        .doesNotContain("sensitive-document-content", "Java heap space");
+                assertThat(event.getThrowableProxy()).isNull();
+            });
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(originalLevel);
+            appender.stop();
+        }
     }
 
     @Test
