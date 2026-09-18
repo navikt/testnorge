@@ -1,15 +1,11 @@
 package no.nav.dolly.provider;
 
-import no.nav.dolly.config.SecurityTestConfig;
-import no.nav.dolly.config.TestDatabaseConfig;
-import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
@@ -18,19 +14,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 
-@DollySpringBootTest
-@Import({SecurityTestConfig.class, TestDatabaseConfig.class, TestOpenSearchConfig.class})
-class OpensearchControllerTest {
+class OpensearchControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/api/v1/opensearch";
     private static final String IDENT1 = "11111111111";
@@ -83,14 +74,6 @@ class OpensearchControllerTest {
                                 .build()))
                         .identer(List.of(IDENT4, IDENT5))
                         .build());
-    }
-
-    @DynamicPropertySource
-    static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.r2dbc.url", () -> "r2dbc:postgresql://localhost:" + TestDatabaseConfig.POSTGRES.getMappedPort(5432) + "/test");
-        registry.add("spring.r2dbc.username", TestDatabaseConfig.POSTGRES::getUsername);
-        registry.add("spring.r2dbc.password", TestDatabaseConfig.POSTGRES::getPassword);
-        registry.add("spring.flyway.enabled", () -> "false");
     }
 
     @BeforeEach
