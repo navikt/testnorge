@@ -39,3 +39,15 @@ Den begrenser ventetiden mellom lesinger av HTTP-responsen, ikke samlet kjøreti
 `DokarkivPostCommand` har ingen egen timeout.
 Proxy- og Dokarkiv-ingressenes nåværende tidsgrense er 300 sekunder.
 Andre fagsystemer beholder sine tidsgrenser.
+
+## Minne ved dokumentinnsending
+
+Backend lager én dokumentdel om gangen ved opplasting til proxy og venter på svar før neste del.
+Den oppretter ikke en liste med kopier av alle dokumentdelene.
+
+`-XX:MaxRAMPercentage=60.0` gir JVM-en omtrent 1,2 GiB heap med pod-grensen på 2 GiB i test.
+Resten av pod-minnet er tilgjengelig for blant annet nettverksbuffere, tråder og JVM-metadata.
+`-XX:+ExitOnOutOfMemoryError` avslutter JVM-en ved minnefeil, slik at Kubernetes starter containeren på nytt.
+Pågående opplastinger som bare ligger i minnet, må da startes på nytt.
+
+Gradle-testprosessen har en heap-grense på 1 GiB for å kunne kjøre hele testsuiten med de store dokumenttestene.

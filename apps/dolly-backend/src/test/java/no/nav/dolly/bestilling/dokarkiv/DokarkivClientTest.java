@@ -34,6 +34,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -42,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -91,7 +94,6 @@ class DokarkivClientTest {
                         .build())
                 .build()));
         when(dokumentService.getDokumenterByBestilling(1L)).thenReturn(Flux.empty());
-        when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenReturn(request);
         when(transactionHelperService.persister(any(), any(), any(), anyString())).thenAnswer(invocation -> {
             BiConsumer<BestillingProgress, String> setter = invocation.getArgument(2);
             setter.accept(progress, invocation.getArgument(3));
@@ -101,6 +103,7 @@ class DokarkivClientTest {
 
     @Test
     void shouldUploadFortyMiBDocumentAndWaitBeyondOneMinute() {
+        when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenReturn(request);
         var content = Base64.getEncoder().encodeToString(new byte[40 * 1024 * 1024]);
         var variant = DokarkivRequest.DokumentVariant.builder().fysiskDokument(content).build();
         request.setDokumenter(List.of(DokarkivRequest.Dokument.builder()
@@ -137,7 +140,97 @@ class DokarkivClientTest {
     }
 
     @Test
+    void shouldUploadEightyMiBDocumentToBothEnvironmentsWithSequentialChunks() {
+        var encodedLength = 4 * Math.ceilDiv(80 * 1024 * 1024, 3);
+        var content = "A".repeat(encodedLength - 1) + "=";
+        var receivedLengths = new HashMap<String, Integer>();
+        var chunkCounts = new HashMap<String, Integer>();
+        var activeUploads = new HashSet<String>();
+        var submittedEnvironments = new HashSet<String>();
+        bestilling.setEnvironments(Set.of("q1", "q2"));
+        when(dokarkivConsumer.getEnvironments()).thenReturn(Mono.just(List.of("q1", "q2")));
+        when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenAnswer(_ -> {
+            var environmentRequest = new DokarkivRequest();
+            environmentRequest.setDokumenter(List.of(DokarkivRequest.Dokument.builder()
+                    .dokumentvarianter(List.of(DokarkivRequest.DokumentVariant.builder()
+                            .fysiskDokument(content)
+                            .build()))
+                    .build()));
+            return environmentRequest;
+        });
+        when(dokarkivConsumer.initProxyUpload())
+                .thenReturn(Mono.just("upload-1"))
+                .thenReturn(Mono.just("upload-2"));
+        when(dokarkivConsumer.appendProxyChunk(anyString(), anyString())).thenAnswer(invocation -> {
+            String uploadId = invocation.getArgument(0);
+            String chunk = invocation.getArgument(1);
+            var receivedLength = receivedLengths.getOrDefault(uploadId, 0);
+            assertThat(activeUploads.add(uploadId)).isTrue();
+            assertThat(chunk.length()).isEqualTo(Math.min(500_000, encodedLength - receivedLength));
+            assertThat(content.regionMatches(receivedLength, chunk, 0, chunk.length())).isTrue();
+            receivedLengths.put(uploadId, receivedLength + chunk.length());
+            chunkCounts.merge(uploadId, 1, Integer::sum);
+            clearInvocations(dokarkivConsumer);
+            return Mono.delay(Duration.ofMillis(1))
+                    .doOnNext(_ -> activeUploads.remove(uploadId))
+                    .then();
+        });
+        when(dokarkivConsumer.postDokarkiv(anyString(), any(DokarkivRequest.class))).thenAnswer(invocation -> {
+            String environment = invocation.getArgument(0);
+            DokarkivRequest environmentRequest = invocation.getArgument(1);
+            var variant = environmentRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst();
+            assertThat(variant.getFysiskDokument()).isNull();
+            assertThat(receivedLengths.get(variant.getUploadReferanse())).isEqualTo(encodedLength);
+            assertThat(activeUploads).doesNotContain(variant.getUploadReferanse());
+            submittedEnvironments.add(environment);
+            return Mono.just(DokarkivResponse.builder()
+                    .miljoe(environment)
+                    .journalpostId("journalpost-" + environment)
+                    .dokumenter(List.of(DokarkivResponse.DokumentInfo.builder()
+                            .dokumentInfoId("dokument")
+                            .build()))
+                    .build());
+        });
+        when(jsonMapper.writeValueAsString(any())).thenReturn("[]");
+        when(transaksjonMappingService.save(any())).thenReturn(Mono.empty());
+
+        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
+                .thenAwait(Duration.ofSeconds(1))
+                .assertNext(result -> assertThat(result.getDokarkivStatus()).contains("q1:OK", "q2:OK"))
+                .verifyComplete();
+
+        assertThat(receivedLengths).hasSize(2).allSatisfy((_, length) -> assertThat(length).isEqualTo(encodedLength));
+        assertThat(chunkCounts).hasSize(2).allSatisfy((_, count) -> assertThat(count).isEqualTo(224));
+        assertThat(submittedEnvironments).containsExactlyInAnyOrder("q1", "q2");
+        assertThat(activeUploads).isEmpty();
+    }
+
+    @Test
+    void shouldStopAppendingWhenUploadTimesOut() {
+        when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenReturn(request);
+        var content = "A".repeat(1_000_004);
+        var variant = DokarkivRequest.DokumentVariant.builder().fysiskDokument(content).build();
+        request.setDokumenter(List.of(DokarkivRequest.Dokument.builder()
+                .dokumentvarianter(List.of(variant))
+                .build()));
+        when(dokarkivConsumer.initProxyUpload()).thenReturn(Mono.just("upload-reference"));
+        when(dokarkivConsumer.appendProxyChunk(eq("upload-reference"), anyString())).thenReturn(Mono.never());
+
+        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
+                .thenAwait(Duration.ofMinutes(2))
+                .assertNext(result -> assertThat(result.getDokarkivStatus())
+                        .isEqualTo("q2:Mottaker svarer ikke; eller har for lang svartid."))
+                .verifyComplete();
+
+        verify(dokarkivConsumer).appendProxyChunk("upload-reference", content.substring(0, 500_000));
+        verify(dokarkivConsumer, never()).postDokarkiv(anyString(), any(DokarkivRequest.class));
+        assertThat(variant.getUploadReferanse()).isNull();
+        assertThat(variant.getFysiskDokument()).isSameAs(content);
+    }
+
+    @Test
     void shouldLogUnderlyingCauseTypesWithoutLoggingDocumentContent() {
+        when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenReturn(request);
         var error = new IllegalStateException("sensitive-document-content", new OutOfMemoryError("Java heap space"));
         when(dokarkivConsumer.postDokarkiv("q2", request)).thenReturn(Mono.error(error));
         var logger = (Logger) LoggerFactory.getLogger(DokarkivClient.class);
@@ -167,6 +260,7 @@ class DokarkivClientTest {
 
     @Test
     void shouldStopWhenDokarkivOperationExceedsItsTimeBudget() {
+        when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenReturn(request);
         when(dokarkivConsumer.postDokarkiv("q2", request)).thenReturn(Mono.never());
 
         StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
