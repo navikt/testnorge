@@ -11,6 +11,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTo
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,14 +20,23 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.cloud.gateway.handler.FilteringWebHandler;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
+import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
@@ -36,8 +46,12 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.CRC32;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.absent;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
@@ -46,9 +60,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @DollySpringBootTest
 @AutoConfigureWebTestClient(timeout = "30000")
@@ -62,7 +79,7 @@ class RouteLocatorConfigTest {
     @RegisterExtension
     static WireMockExtension wireMockServer = WireMockExtension
             .newInstance()
-            .options(wireMockConfig().dynamicPort())
+            .options(wireMockConfig().dynamicPort().stubRequestLoggingDisabled(true))
             .build();
     @MockitoBean
     private TokenExchange tokenExchange;
@@ -76,6 +93,8 @@ class RouteLocatorConfigTest {
     private WebTestClient webClient;
     @Autowired
     private DokarkivUploadService uploadService;
+    @Autowired
+    private RouteLocator routeLocator;
 
     @BeforeEach
     void setup() {
@@ -337,9 +356,9 @@ class RouteLocatorConfigTest {
 
     }
 
-    @Test
-    void shouldForwardFortyMiBDocumentsToQ1AndQ2Concurrently() throws Exception {
-        var content = Base64.getEncoder().encodeToString(new byte[40 * 1024 * 1024]);
+    @RepeatedTest(3)
+    void shouldForwardEightyMiBDocumentsToQ1AndQ2Concurrently() throws Exception {
+        var content = Base64.getEncoder().encodeToString(new byte[80 * 1024 * 1024]);
         var uploadIds = new HashMap<String, String>();
         for (var environment : List.of("q1", "q2")) {
             var uploadId = uploadService.initUpload();
@@ -373,10 +392,110 @@ class RouteLocatorConfigTest {
                 .filter(event -> event.getRequest().getUrl().equals(servedPath))
                 .forEach(event -> {
                     var forwardedBody = event.getRequest().getBodyAsString();
-                    assertThat(forwardedBody.length()).isGreaterThan(50 * 1024 * 1024);
-                    assertThat(forwardedBody.contains("\"fysiskDokument\":\"" + content + "\"")).isTrue();
+                    var contentPrefix = "\"fysiskDokument\":\"";
+                    var contentStart = forwardedBody.indexOf(contentPrefix) + contentPrefix.length();
+                    assertThat(contentStart).isGreaterThanOrEqualTo(contentPrefix.length());
+                    assertThat(forwardedBody.regionMatches(contentStart, content, 0, content.length())).isTrue();
+                    assertThat(forwardedBody.charAt(contentStart + content.length())).isEqualTo('"');
                     assertThat(forwardedBody.contains("uploadReferanse")).isFalse();
                 });
+    }
+
+    @Test
+    void shouldWriteEightyMiBDocumentsToQ1AndQ2InBoundedBuffers() {
+        var encodedLength = 4 * Math.ceilDiv(80 * 1024 * 1024, 3);
+        var prefix = "{\"dokumenter\":[{\"dokumentvarianter\":[{\"filtype\":\"PDF\",\"variantformat\":\"ARKIV\",\"fysiskDokument\":\"";
+        var suffix = "\"}]}]}";
+        var expectedChecksum = new CRC32();
+        expectedChecksum.update(prefix.getBytes(UTF_8));
+        var uploadIds = Map.of("q1", uploadService.initUpload(), "q2", uploadService.initUpload());
+        var fullChunk = "A".repeat(500_000);
+        for (int offset = 0; offset < encodedLength; offset += fullChunk.length()) {
+            var remaining = encodedLength - offset;
+            var chunk = remaining > fullChunk.length() ? fullChunk : "A".repeat(remaining - 1) + "=";
+            expectedChecksum.update(chunk.getBytes(UTF_8));
+            uploadIds.values().forEach(uploadId -> uploadService.appendChunk(uploadId, chunk));
+        }
+        expectedChecksum.update(suffix.getBytes(UTF_8));
+        var expectedLength = prefix.length() + encodedLength + suffix.length();
+
+        Flux.fromIterable(uploadIds.entrySet())
+                .flatMap(entry -> routeLocator.getRoutes()
+                        .filter(route -> route.getId().equals("dokarkiv-" + entry.getKey()))
+                        .single()
+                        .flatMap(route -> {
+                            var requestBody = "{\"dokumenter\":[{\"dokumentvarianter\":[{\"filtype\":\"PDF\",\"variantformat\":\"ARKIV\",\"uploadReferanse\":\""
+                                    + entry.getValue() + "\"}]}]}";
+                            var exchange = MockServerWebExchange.from(MockServerHttpRequest
+                                    .post("/dokarkiv/api/" + entry.getKey() + "/v1/journalpost?forsoekFerdigstill=false")
+                                    .contentType(APPLICATION_JSON)
+                                    .body(requestBody));
+                            exchange.getAttributes().put(GATEWAY_ROUTE_ATTR, route);
+                            var handler = new FilteringWebHandler(List.of((forwardedExchange, chain) ->
+                                    assertForwardedDocument(forwardedExchange, expectedLength, expectedChecksum.getValue())), false);
+                            return handler.handle(exchange).subscribeOn(Schedulers.parallel());
+                        }))
+                .then()
+                .block(Duration.ofSeconds(30));
+    }
+
+    private Mono<Void> assertForwardedDocument(ServerWebExchange exchange, int expectedLength, long expectedChecksum) {
+        var request = exchange.getRequest();
+        assertThat(request.getURI().getPath()).isEqualTo("/rest/journalpostapi/v1/journalpost");
+        assertThat(request.getURI().getQuery()).isEqualTo("forsoekFerdigstill=false");
+        assertThat(request.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON);
+        assertThat(request.getHeaders().getContentLength()).isEqualTo(expectedLength);
+        assertThat(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).isEqualTo("Bearer " + TOKEN);
+        var checksum = new CRC32();
+        var receivedLength = new AtomicInteger();
+        var largestBuffer = new AtomicInteger();
+        return request.getBody()
+                .limitRate(1)
+                .doOnNext(buffer -> {
+                    try (var byteBuffers = buffer.readableByteBuffers()) {
+                        receivedLength.addAndGet(buffer.readableByteCount());
+                        largestBuffer.accumulateAndGet(buffer.readableByteCount(), Math::max);
+                        byteBuffers.forEachRemaining(checksum::update);
+                    } finally {
+                        DataBufferUtils.release(buffer);
+                    }
+                })
+                .then(Mono.fromRunnable(() -> {
+                    assertThat(receivedLength.get()).isEqualTo(expectedLength);
+                    assertThat(checksum.getValue()).isEqualTo(expectedChecksum);
+                    assertThat(largestBuffer.get()).isBetween(1, 64 * 1024);
+                }));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  ", "{\"tittel\":\"En journalpost\"}"})
+    void shouldForwardDokarkivRequestsWithoutUploadReferences(String body) {
+        var servedPath = "/rest/journalpostapi/v1/journalpost";
+        wireMockServer.stubFor(post(urlEqualTo(servedPath))
+                .willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("{}")));
+
+        webClient.post()
+                .uri("/dokarkiv/api/q1/v1/journalpost")
+                .contentType(APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isOk();
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo(servedPath))
+                .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/json"))
+                .withRequestBody(body.isEmpty() ? absent() : equalTo(body)));
+    }
+
+    @Test
+    void shouldRejectUnknownDokarkivUploadReference() {
+        webClient.post()
+                .uri("/dokarkiv/api/q1/v1/journalpost")
+                .bodyValue(Map.of("dokumenter", List.of(Map.of("dokumentvarianter",
+                        List.of(Map.of("uploadReferanse", "unknown-upload"))))))
+                .exchange()
+                .expectStatus().isBadRequest();
+
+        wireMockServer.verify(0, postRequestedFor(urlEqualTo("/rest/journalpostapi/v1/journalpost")));
     }
 
     @ParameterizedTest

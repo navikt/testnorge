@@ -11,6 +11,8 @@ import no.nav.dolly.proxy.service.DokarkivUploadService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -49,7 +51,9 @@ public class Dokarkiv {
                 .filters(f -> f
                         .stripPrefix(1)
                         .rewritePath("/api/%s/(?<segment>.*)".formatted(env.code), "/rest/journalpostapi/${segment}")
-                        .modifyRequestBody(String.class, byte[].class, (exchange, body) -> resolveUploadReferences(body))
+                        .modifyRequestBody(String.class, Resource.class, (exchange, body) -> resolveUploadReferences(body)
+                                .defaultIfEmpty(new byte[0])
+                                .map(ByteArrayResource::new))
                         .setResponseHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
                 .uri(url);
