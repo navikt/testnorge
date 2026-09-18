@@ -41,7 +41,7 @@ public class DokarkivConsumer extends ConsumerStatus {
         this.webClient = webClient
                 .mutate()
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .responseTimeout(Duration.ofMinutes(1))))
+                        .responseTimeout(Duration.ofMinutes(2))))
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();

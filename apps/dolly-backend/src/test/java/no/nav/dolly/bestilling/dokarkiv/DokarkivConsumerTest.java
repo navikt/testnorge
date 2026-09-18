@@ -51,11 +51,11 @@ class DokarkivConsumerTest {
     private TokenExchange tokenExchange;
 
     @Test
-    void shouldAcceptJournalpostResponseAfterThirtySeconds() {
+    void shouldAcceptJournalpostResponseAfterOneMinute() {
         var consumer = createConsumer();
         wireMock.stubFor(post(urlPathEqualTo("/dokarkiv/api/q2/v1/journalpost"))
                 .willReturn(okJson("{\"journalpostId\":\"journalpost\",\"journalpostferdigstilt\":false}")
-                        .withFixedDelay(31_000)));
+                        .withFixedDelay(61_000)));
 
         StepVerifier.create(consumer.postDokarkiv("q2", new DokarkivRequest()))
                 .assertNext(response -> {
@@ -64,7 +64,7 @@ class DokarkivConsumerTest {
                     assertThat(response.getMiljoe()).isEqualTo("q2");
                 })
                 .expectComplete()
-                .verify(Duration.ofSeconds(40));
+                .verify(Duration.ofSeconds(75));
     }
 
     @Test

@@ -54,7 +54,7 @@ import static org.apache.commons.lang3.exception.ExceptionUtils.getThrowableList
 public class DokarkivClient implements ClientRegister {
 
     private static final int CHUNK_SIZE = 500_000;
-    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(1);
+    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(2);
 
     private final DokarkivConsumer dokarkivConsumer;
     private final DokumentService dokumentService;

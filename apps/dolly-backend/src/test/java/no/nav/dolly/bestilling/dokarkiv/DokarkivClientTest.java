@@ -100,7 +100,7 @@ class DokarkivClientTest {
     }
 
     @Test
-    void shouldUploadFortyMiBDocumentAndWaitBeyondThirtySeconds() {
+    void shouldUploadFortyMiBDocumentAndWaitBeyondOneMinute() {
         var content = Base64.getEncoder().encodeToString(new byte[40 * 1024 * 1024]);
         var variant = DokarkivRequest.DokumentVariant.builder().fysiskDokument(content).build();
         request.setDokumenter(List.of(DokarkivRequest.Dokument.builder()
@@ -111,7 +111,7 @@ class DokarkivClientTest {
         when(dokarkivConsumer.appendProxyChunk(eq("upload-reference"), anyString()))
                 .thenAnswer(_ -> Mono.delay(Duration.ofMillis(100)).then());
         when(dokarkivConsumer.postDokarkiv("q2", request)).thenAnswer(_ ->
-                Mono.delay(Duration.ofSeconds(35)).thenReturn(DokarkivResponse.builder()
+                Mono.delay(Duration.ofSeconds(65)).thenReturn(DokarkivResponse.builder()
                         .miljoe("q2")
                         .journalpostId("journalpost")
                         .dokumenter(List.of(DokarkivResponse.DokumentInfo.builder()
@@ -122,7 +122,7 @@ class DokarkivClientTest {
         when(transaksjonMappingService.save(any())).thenReturn(Mono.empty());
 
         StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
-                .thenAwait(Duration.ofSeconds(47))
+                .thenAwait(Duration.ofSeconds(77))
                 .assertNext(result -> assertThat(result.getDokarkivStatus()).isEqualTo("q2:OK"))
                 .verifyComplete();
 
@@ -170,7 +170,7 @@ class DokarkivClientTest {
         when(dokarkivConsumer.postDokarkiv("q2", request)).thenReturn(Mono.never());
 
         StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
-                .thenAwait(Duration.ofSeconds(59))
+                .thenAwait(Duration.ofSeconds(119))
                 .expectNoEvent(Duration.ofMillis(999))
                 .thenAwait(Duration.ofMillis(1))
                 .assertNext(result -> assertThat(result.getDokarkivStatus())
