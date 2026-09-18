@@ -15,9 +15,9 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String navAltinnInntektsmelding = "1.2019.08.16-13.46-35cbdfd492d4";
         public String navFellesregister = "2020.08.27-09.53-183ead3d81eb";
 
-        public String springBoot = "4.0.5";
-        public String springSession = "4.0.2";
-        public String springCloud = "2025.1.1";
+        public String springBoot = "4.1.1";
+        public String springSessionBom = "4.1.1";
+        public String springCloud = "2025.1.3";
 
         public String gcpSecretManager = "8.0.2";
         public String gcpStorage = "2.44.0";
@@ -38,7 +38,7 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String javaxAnnotation = "1.3.2";
         public String jaxb = "4.0.5";
         public String jaxws = "4.0.3";
-        public String junit = "5.12.2";
+        public String junit = "6.1.3";
         public String json = "20250517";
         public String jweaver = "1.9.22.1";
         public String jwt = "4.5.0";

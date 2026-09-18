@@ -14,6 +14,8 @@ final class MockitoAgentSupport {
     private static final String MOCKITO_GROUP = "org.mockito";
     private static final String MOCKITO_CORE = "mockito-core";
     private static final String TEST_RUNTIME_CLASSPATH = "testRuntimeClasspath";
+    private static final String RETRY_DELAY_FACTOR_PROPERTY = "webclient.retry.delay.factor";
+    private static final String RETRY_DELAY_FACTOR = "0.001";
 
     private MockitoAgentSupport() {
     }
@@ -25,6 +27,7 @@ final class MockitoAgentSupport {
                 .configureEach(test -> {
                     test.useJUnitPlatform();
                     test.jvmArgs("--add-opens", JAVA_BASE_OPEN);
+                    test.systemProperty(RETRY_DELAY_FACTOR_PROPERTY, RETRY_DELAY_FACTOR);
                     test.getJvmArgumentProviders().add(() -> findMockitoAgent(project)
                             .map(MockitoAgentSupport::toJavaAgentArgument)
                             .map(List::of)

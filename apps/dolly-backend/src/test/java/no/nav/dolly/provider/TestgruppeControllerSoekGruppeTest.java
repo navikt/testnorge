@@ -1,15 +1,12 @@
 package no.nav.dolly.provider;
 
-import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
 import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.projection.GruppeFragment;
-import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -26,12 +23,6 @@ class TestgruppeControllerSoekGruppeTest extends AbstractControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @MockitoBean
-    private BrukerService brukerService;
-
-    @MockitoBean
-    private BrukerServiceConsumer brukerServiceConsumer;
 
     private Bruker bruker;
 
