@@ -16,7 +16,7 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String navFellesregister = "2020.08.27-09.53-183ead3d81eb";
 
         public String springBoot = "4.1.1";
-        public String springSession = "4.0.2";
+        public String springSessionBom = "4.1.1";
         public String springCloud = "2025.1.3";
 
         public String gcpSecretManager = "8.0.2";
