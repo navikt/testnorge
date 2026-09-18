@@ -18,6 +18,7 @@ import {
 	ChevronUpDoubleIcon,
 	ExclamationmarkTriangleIcon,
 } from '@navikt/aksel-icons'
+import { SoekMalVelger } from '@/components/ui/soekMaler/SoekMalVelger'
 
 export { tenorSoekLocalStorageKey, tenorSoekStateLocalStorageKey }
 
@@ -82,7 +83,6 @@ export default () => {
 		state.seed,
 	)
 	const [markertePersoner, setMarkertePersoner] = useState([])
-	const [inkluderPartnere, setInkluderPartnere] = useState(false)
 
 	const [overTreff, setOverTreff] = useState(false)
 
@@ -101,7 +101,7 @@ export default () => {
 		setFormRequest(request)
 		localStorage.setItem(tenorSoekLocalStorageKey, JSON.stringify(request))
 	}
-
+	console.log('formRequest: ', formRequest) //TODO - SLETT MEG
 	useEffect(() => {
 		if (response?.data?.data?.personer?.length === 0) {
 			setState({
@@ -290,12 +290,14 @@ export default () => {
 				<div className="flexbox--align-center--justify-start">
 					<Title title="Søk etter personer i Tenor (Test-Norge)" />
 				</div>
-				<SisteSoek
-					type={soekType.tenor}
-					formValues={formMethods.watch()}
-					handleChange={handleChange}
-					handleChangeList={handleChangeList}
-				/>
+				{/*TODO: Erstatter SisteSoek med mal-velger, skjules i en overgangsfase i tilfelle brukerne klager, så den evt. kan gjeninnfoeres.*/}
+				{/*<SisteSoek*/}
+				{/*	type={soekType.tenor}*/}
+				{/*	formValues={formMethods.watch()}*/}
+				{/*	handleChange={handleChange}*/}
+				{/*	handleChangeList={handleChangeList}*/}
+				{/*/>*/}
+				<SoekMalVelger />
 				<div className="flexbox--flex-wrap">
 					<NavigateButton
 						variant={loading || ingenTreff ? 'primary-neutral' : 'primary'}
@@ -322,12 +324,11 @@ export default () => {
 			</div>
 			<div id="treff">
 				<TreffListe
+					formRequest={formRequest}
 					response={response?.data}
 					personListe={state.personListe}
 					markertePersoner={markertePersoner}
 					setMarkertePersoner={setMarkertePersoner}
-					inkluderPartnere={inkluderPartnere}
-					setInkluderPartnere={setInkluderPartnere}
 					nesteSide={state.nesteSide}
 					loading={loading}
 					error={error}
