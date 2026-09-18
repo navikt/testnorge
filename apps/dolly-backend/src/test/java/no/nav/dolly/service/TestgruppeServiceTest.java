@@ -34,6 +34,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -142,6 +144,52 @@ class TestgruppeServiceTest {
         StepVerifier.create(testgruppeService.fetchTestgruppeById(GROUP_ID))
                 .assertNext(gruppe -> assertThat(gruppe, is(testgruppe)))
                 .verifyComplete();
+    }
+
+    @Test
+    void fetchPaginertTestgruppeById_filtrererUgyldigeBrukerIder() {
+
+        var bruker = Bruker.builder()
+                .id(123L)
+                .brukerId(BRUKERID)
+                .brukertype(Bruker.Brukertype.BANKID)
+                .build();
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", " ", BRUKERID, BRUKERID))
+                        .build()));
+        when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(
+                List.of(BRUKERID), Pageable.unpaged())).thenReturn(Flux.empty());
+
+        StepVerifier.create(testgruppeService.fetchPaginertTestgruppeById(GROUP_ID, 0, 10, null, null))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(testgruppeRepository).findByOpprettetAv_BrukerIdIn(
+                List.of(BRUKERID), Pageable.unpaged());
+    }
+
+    @Test
+    void fetchPaginertTestgruppeById_unngaarRepositorykallNaarBrukerlistenErTom() {
+
+        var bruker = Bruker.builder()
+                .id(123L)
+                .brukerId(BRUKERID)
+                .brukertype(Bruker.Brukertype.BANKID)
+                .build();
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", " "))
+                        .build()));
+
+        StepVerifier.create(testgruppeService.fetchPaginertTestgruppeById(GROUP_ID, 0, 10, null, null))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(testgruppeRepository, never())
+                .findByOpprettetAv_BrukerIdIn(any(), any());
     }
 
     @Test
