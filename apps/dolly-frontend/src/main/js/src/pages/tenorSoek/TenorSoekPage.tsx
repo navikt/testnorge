@@ -101,7 +101,15 @@ export default () => {
 		setFormRequest(request)
 		localStorage.setItem(tenorSoekLocalStorageKey, JSON.stringify(request))
 	}
-	console.log('formRequest: ', formRequest) //TODO - SLETT MEG
+
+	const velgSoekMal = (soekKriterier: any) => {
+		const request = soekKriterier ?? {}
+		formMethods.reset(request)
+		setRequest(request)
+		setMarkertePersoner([])
+		mutate()
+	}
+
 	useEffect(() => {
 		if (response?.data?.data?.personer?.length === 0) {
 			setState({
@@ -297,7 +305,7 @@ export default () => {
 				{/*	handleChange={handleChange}*/}
 				{/*	handleChangeList={handleChangeList}*/}
 				{/*/>*/}
-				<SoekMalVelger />
+				<SoekMalVelger velgMal={velgSoekMal} />
 				<div className="flexbox--flex-wrap">
 					<NavigateButton
 						variant={loading || ingenTreff ? 'primary-neutral' : 'primary'}

@@ -13,7 +13,7 @@ export function getSoekMalOptions(maler: any) {
 	}))
 }
 
-export const SoekMalVelger = ({}) => {
+export const SoekMalVelger = ({ velgMal }) => {
 	const { currentBruker } = useCurrentBruker()
 	const [valgtBruker, setValgtBruker] = useState(
 		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,
@@ -40,6 +40,8 @@ export const SoekMalVelger = ({}) => {
 	const brukerOptions = getBrukerOptions(brukere) ?? []
 	const valgtBrukerOption = brukerOptions?.filter((option) => option.value === valgtBruker) ?? []
 
+	// console.log('malOptions: ', malOptions) //TODO - SLETT MEG
+
 	return (
 		<Box
 			background="accent-moderate"
@@ -64,7 +66,17 @@ export const SoekMalVelger = ({}) => {
 				</Box>
 				{/*TODO: Handle change maler*/}
 				<Box flexGrow="3" flexBasis="0">
-					<Combobox label={malerLabel} options={malOptions} isLoading={loadingMaler} />
+					<Combobox
+						label={malerLabel}
+						options={malOptions}
+						isLoading={loadingMaler}
+						onToggleSelected={(mal, isSelected) => {
+							const soekKriterier = isSelected
+								? malOptions?.find((m) => m.value === mal)?.soekKriterier
+								: {}
+							velgMal(soekKriterier ?? {})
+						}}
+					/>
 				</Box>
 			</HStack>
 		</Box>
