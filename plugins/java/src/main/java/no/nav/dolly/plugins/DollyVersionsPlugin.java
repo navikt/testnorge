@@ -27,10 +27,10 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String apachePoi = "5.5.1";
         public String assertj = "3.27.7";
         public String avroSerializer = "7.9.5";
-        public String bouncyCastle = "1.83";
+        public String bouncyCastle = "1.86";
         public String expressly = "5.0.0";
         public String guava = "33.7.1-jre";
-        public String grpc = "1.76.0";
+        public String grpc = "1.84.0";
         public String jakartaActivation = "2.1.4";
         public String jakartaValidation = "3.1.1";
         public String jakartaXmlBindApi = "4.0.5";
@@ -43,12 +43,12 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String logback = "8.1";
         public String mq = "4.0.5";
         public String okhttp = "4.12.0";
-        public String onnxruntime = "1.22.0";
-        public String opensearchClient = "3.9.0";
+        public String onnxruntime = "1.30.0";
+        public String opensearchClient = "3.10.0";
         public String orika = "1.5.4";
-        public String reactorTest = "3.8.4";
-        public String springdoc = "3.0.3";
-        public String swagger = "2.2.40";
+        public String reactorTest = "3.8.7";
+        public String springdoc = "3.1.1";
+        public String swagger = "2.2.55";
         public String testcontainers = "1.21.4";
     }
 }
