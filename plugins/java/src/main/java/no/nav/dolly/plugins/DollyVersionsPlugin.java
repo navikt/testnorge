@@ -37,9 +37,9 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String jaxb = "4.0.9";
         public String jaxws = "4.0.5";
         public String junit = "6.1.3";
-        public String json = "20250517";
-        public String jweaver = "1.9.22.1";
-        public String jwt = "4.5.0";
+        public String json = "20260814";
+        public String jweaver = "1.9.25.1";
+        public String jwt = "4.6.1";
         public String logback = "8.1";
         public String mq = "4.0.5";
         public String okhttp = "4.12.0";
