@@ -9,6 +9,7 @@ export type Mal = {
 	id: number
 	malBestilling?: any
 	bestilling?: any
+	soekKriterier?: any
 }
 
 type MalResponse = {

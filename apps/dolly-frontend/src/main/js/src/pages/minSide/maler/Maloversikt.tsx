@@ -8,9 +8,16 @@ import {
 import { Tabs } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Buildings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
+import { Buildings3Icon, MagnifyingGlassIcon, PersonGroupIcon } from '@navikt/aksel-icons'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
+import { useSoekMalerBruker } from '@/utils/hooks/useTemplateSearch'
+
+export enum MalType {
+	PERSON = 'person',
+	ORGANISASJON = 'organisasjon',
+	TENORSOEK = 'tenorsoek',
+}
 
 export default ({ brukerId }: { brukerId: string }) => {
 	const [searchText, setSearchText] = useState('')
@@ -19,18 +26,26 @@ export default ({ brukerId }: { brukerId: string }) => {
 	const shortcutKey = useSearchHotkey(searchInputRef)
 
 	const { maler: egneMaler, loading, mutate } = useMalbestillingBruker(brukerId)
+
 	const {
 		maler: egneOrgMaler,
 		loading: orgLoading,
 		mutate: orgMutate,
 	} = useDollyOrganisasjonMalerBrukerOgMalnavn(brukerId)
 
-	if (loading || orgLoading) {
+	const {
+		maler: egneTenorsoekMaler,
+		loading: tenorsoekLoading,
+		mutate: tenorsoekMutate,
+	} = useSoekMalerBruker(brukerId)
+
+	if (loading || orgLoading || tenorsoekLoading) {
 		return <Loading label="Loading" />
 	}
 
 	const antallEgneMaler = egneMaler?.length
 	const antallEgneOrgMaler = egneOrgMaler?.length
+	const antallEgneTenorsoekMaler = egneTenorsoekMaler?.length
 
 	return (
 		<div className="maloversikt">
@@ -50,44 +65,66 @@ export default ({ brukerId }: { brukerId: string }) => {
 					som en mal på siste side av bestillingsveilederen.
 				</StyledAlert>
 			) : (
-				<Tabs defaultValue={'personer'}>
+				<Tabs defaultValue={MalType.PERSON}>
 					<Tabs.List>
 						<Tabs.Tab
 							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_PERSONER_MALER}
-							value={'personer'}
+							value={MalType.PERSON}
 							label={'Personer'}
-							icon={<PersonGroupIcon />}
+							icon={<PersonGroupIcon aria-hidden />}
 						/>
 						<Tabs.Tab
 							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_ORGANISASJON_MALER}
-							value={'organisasjoner'}
+							value={MalType.ORGANISASJON}
 							label={'Organisasjoner'}
-							icon={<Buildings3Icon />}
+							icon={<Buildings3Icon aria-hidden />}
+						/>
+						<Tabs.Tab
+							value={MalType.TENORSOEK}
+							label={'Tenor-søk'}
+							icon={<MagnifyingGlassIcon aria-hidden />}
 						/>
 					</Tabs.List>
-					<Tabs.Panel value={'personer'}>
+					<Tabs.Panel value={MalType.PERSON}>
 						<MalPanel
 							antallEgneMaler={antallEgneMaler}
 							malListe={egneMaler}
 							searchText={searchText}
-							type={'person'}
+							type={MalType.PERSON}
 							mutate={() => {
 								mutate()
 								orgMutate()
+								tenorsoekMutate()
 							}}
 							underRedigering={underRedigering}
 							setUnderRedigering={setUnderRedigering}
 						/>
 					</Tabs.Panel>
-					<Tabs.Panel value={'organisasjoner'}>
+					<Tabs.Panel value={MalType.ORGANISASJON}>
 						<MalPanel
 							antallEgneMaler={antallEgneOrgMaler}
 							malListe={egneOrgMaler}
 							searchText={searchText}
-							type={'organisasjon'}
+							type={MalType.ORGANISASJON}
 							mutate={() => {
 								mutate()
 								orgMutate()
+								tenorsoekMutate()
+							}}
+							underRedigering={underRedigering}
+							setUnderRedigering={setUnderRedigering}
+						/>
+					</Tabs.Panel>
+					<Tabs.Panel value={MalType.TENORSOEK}>
+						<MalPanel
+							antallEgneMaler={antallEgneTenorsoekMaler}
+							malListe={egneTenorsoekMaler}
+							searchText={searchText}
+							type={MalType.TENORSOEK}
+							mutate={() => {
+								mutate()
+								orgMutate()
+								tenorsoekMutate()
 							}}
 							underRedigering={underRedigering}
 							setUnderRedigering={setUnderRedigering}
