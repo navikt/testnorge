@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -141,14 +142,24 @@ public class IdentService {
                 .flatMap(testidenter -> {
                     var identer = testidenter.stream()
                             .map(Testident::getIdent)
+                            .filter(StringUtils::isNotBlank)
+                            .distinct()
                             .toList();
 
-                    return bestillingProgressRepository.findByIdentIn(identer)
+                    var progresserForIdenter = identer.isEmpty()
+                            ? Flux.<BestillingProgress>empty()
+                            : bestillingProgressRepository.findByIdentIn(identer);
+
+                    return progresserForIdenter
                             .collectList()
                             .flatMap(progresser -> Flux.fromIterable(progresser)
+                                    .filter(bestillingProgress -> Objects.nonNull(bestillingProgress.getBestillingId()))
                                     .map(BestillingProgress::getBestillingId)
+                                    .distinct()
                                     .collectList()
-                                    .flatMap(bestillingIds -> bestillingRepository.findByIdIn(bestillingIds)
+                                    .flatMap(bestillingIds -> (bestillingIds.isEmpty()
+                                            ? Flux.<Bestilling>empty()
+                                            : bestillingRepository.findByIdIn(bestillingIds))
                                             .collectList()
                                             .zipWith(Mono.just(progresser))))
                             .flatMap(tuple ->
@@ -156,13 +167,13 @@ public class IdentService {
                                             .collectMap(Bestilling::getId, bestilling -> bestilling)
                                             .zipWith(Flux.fromIterable(tuple.getT2())
                                                     .reduce(new HashMap<String, List<BestillingProgress>>(), (map, bestillingProgress) -> {
-                                                        map.computeIfAbsent(bestillingProgress.getIdent(), k -> new ArrayList<>())
+                                                        map.computeIfAbsent(bestillingProgress.getIdent(), _ -> new ArrayList<>())
                                                                 .add(bestillingProgress);
                                                         return map;
                                                     }))
                                             .zipWith(Flux.fromIterable(tuple.getT2())
                                                     .reduce(new HashMap<Long, List<BestillingProgress>>(), (map, bestillingProgress) -> {
-                                                        map.computeIfAbsent(bestillingProgress.getBestillingId(), k -> new ArrayList<>())
+                                                        map.computeIfAbsent(bestillingProgress.getBestillingId(), _ -> new ArrayList<>())
                                                                 .add(bestillingProgress);
                                                         return map;
                                                     })))

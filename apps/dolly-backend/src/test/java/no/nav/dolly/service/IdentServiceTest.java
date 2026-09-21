@@ -2,7 +2,10 @@ package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.dto.TestidentDTO;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.junit.jupiter.api.Test;
@@ -10,10 +13,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +38,12 @@ class IdentServiceTest {
 
     @Mock
     private TransaksjonMappingRepository transaksjonMappingRepository;
+
+    @Mock
+    private BestillingProgressRepository bestillingProgressRepository;
+
+    @Mock
+    private BestillingRepository bestillingRepository;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -78,5 +94,33 @@ class IdentServiceTest {
                 .verifyComplete();
 
         verify(identRepository).deleteTestidentByIdent(any());
+    }
+
+    @Test
+    void getTestidenterFromGruppePaginert_filtrererUgyldigeIdenterOgBestillingIder() {
+
+        var testidentUtenIdent = Testident.builder().id(1L).build();
+        var testident = Testident.builder().id(2L).ident(STANDARD_IDENTER_1).build();
+        var progressUtenBestilling = BestillingProgress.builder()
+                .ident(STANDARD_IDENTER_1)
+                .build();
+        when(identRepository.findByGruppeId(eq(GRUPPE_ID), any(Pageable.class)))
+                .thenReturn(Flux.fromIterable(Arrays.asList(testidentUtenIdent, testident)));
+        when(bestillingProgressRepository.findByIdentIn(List.of(STANDARD_IDENTER_1)))
+                .thenReturn(Flux.just(progressUtenBestilling));
+        when(identRepository.countByGruppeId(GRUPPE_ID)).thenReturn(Mono.just(2));
+
+        StepVerifier.create(identService.getTestidenterFromGruppePaginert(
+                        GRUPPE_ID, 0, 10, null, null))
+                .assertNext(page -> {
+                    org.assertj.core.api.Assertions.assertThat(page.getContent())
+                            .containsExactly(testidentUtenIdent, testident);
+                    org.assertj.core.api.Assertions.assertThat(testident.getBestillingProgress())
+                            .containsExactly(progressUtenBestilling);
+                })
+                .verifyComplete();
+
+        verify(bestillingProgressRepository).findByIdentIn(List.of(STANDARD_IDENTER_1));
+        verify(bestillingRepository, never()).findByIdIn(any());
     }
 }
