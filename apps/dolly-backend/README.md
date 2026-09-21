@@ -23,3 +23,31 @@ av Dolly, bestillingskriterier, hvem som har sendt de inn og status på disse.
 Evt midlertidig påloggingssinfo for OpenSearch i lokal kjøring:
 
 >nais opensearch credentials bestillinger --team dolly --environment dev --permission ADMIN --ttl 14d 
+
+## Tidsgrenser ved dokumentinnsending
+
+Frontend laster opp dokumentene i deler på inntil 4 MiB Base64 til backend. Backend sender deretter store dokumenter i deler til
+`testnav-dolly-proxy`, som setter sammen journalposten og sender den til Dokarkiv.
+`testnav-joark-dokument-service` brukes til uthenting og er ikke med i innsendingen.
+
+`DokarkivClient.OPERATION_TIMEOUT` er 2 minutter og begrenser ventetiden frem til neste ferdige miljøstatus.
+Denne ventetiden inkluderer opplasting til proxy og journalpostkallet. Fristen starter på nytt når en miljøstatus
+kommer, så den er ikke en absolutt totalfrist for bestillinger med flere miljøer.
+
+`DokarkivConsumer` har en HTTP-svartidsgrense på to minutter for alle Dokarkiv-kall.
+Den begrenser ventetiden mellom lesinger av HTTP-responsen, ikke samlet kjøretid.
+`DokarkivPostCommand` har ingen egen timeout.
+Proxy- og Dokarkiv-ingressenes nåværende tidsgrense er 300 sekunder.
+Andre fagsystemer beholder sine tidsgrenser.
+
+## Minne ved dokumentinnsending
+
+Backend lager én dokumentdel om gangen ved opplasting til proxy og venter på svar før neste del.
+Den oppretter ikke en liste med kopier av alle dokumentdelene.
+
+`-XX:MaxRAMPercentage=60.0` gir JVM-en omtrent 1,2 GiB heap med pod-grensen på 2 GiB i test.
+Resten av pod-minnet er tilgjengelig for blant annet nettverksbuffere, tråder og JVM-metadata.
+`-XX:+ExitOnOutOfMemoryError` avslutter JVM-en ved minnefeil, slik at Kubernetes starter containeren på nytt.
+Pågående opplastinger som bare ligger i minnet, må da startes på nytt.
+
+Gradle-testprosessen har en heap-grense på 1 GiB for å kunne kjøre hele testsuiten med de store dokumenttestene.

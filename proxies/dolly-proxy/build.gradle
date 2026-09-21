@@ -23,3 +23,7 @@ dependencies {
     
     testImplementation "org.springframework.boot:spring-boot-webflux-test"
 }
+
+test {
+    maxHeapSize = "1g"
+}
