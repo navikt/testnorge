@@ -27,7 +27,6 @@ public class DokarkivProxyUploadInitCommand implements Callable<Mono<String>> {
                 .retrieve()
                 .bodyToMono(Map.class)
                 .map(response -> (String) response.get("uploadId"))
-                .doOnNext(uploadId -> log.info("Dokarkiv proxy upload init: {}", uploadId))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException());
     }

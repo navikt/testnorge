@@ -192,12 +192,14 @@ type Config = {
 	method: Method
 	headers?: Record<string, string>
 	redirect?: 'follow' | 'manual'
+	retry?: boolean
 }
 
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
 			if (
+				config.retry !== false &&
 				!response?.ok &&
 				response?.status !== 404 &&
 				response?.status !== 400 &&
@@ -255,6 +257,7 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 		url,
 		{
 			method: config.method,
+			retry: config.retry,
 			headers: { ...config.headers, 'Content-Type': 'application/json' },
 		},
 		body,
@@ -267,16 +270,23 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 		})
 
 export const initDocumentUpload = (): Promise<string> =>
-	_fetch('/dolly-backend/api/v1/dokument/upload/init', { method: 'POST' }).then((response) =>
-		response.text(),
-	)
+	_fetch('/dolly-backend/api/v1/dokument/upload/init', { method: 'POST' }).then((response) => {
+		if (!response.ok) {
+			throw new Error(`Kunne ikke starte dokumentopplasting (HTTP ${response.status})`)
+		}
+		return response.text()
+	})
 
 export const appendDocumentChunk = (uploadId: string, data: string): Promise<void> =>
-	fetchJson(
+	_fetch(
 		`/dolly-backend/api/v1/dokument/upload/${uploadId}/append`,
-		{ method: 'POST' },
+		{ method: 'POST', headers: { 'Content-Type': 'application/json' }, retry: false },
 		{ data },
-	)
+	).then((response) => {
+		if (!response.ok) {
+			throw new Error(`Kunne ikke laste opp dokumentdelen (HTTP ${response.status})`)
+		}
+	})
 
 export default {
 	fetch: _fetch,
