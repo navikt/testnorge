@@ -31,11 +31,11 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String expressly = "5.0.0";
         public String guava = "33.7.1-jre";
         public String grpc = "1.76.0";
-        public String jakartaActivation = "2.1.3";
-        public String jakartaValidation = "3.1.0";
-        public String jakartaXmlBindApi = "4.0.2";
-        public String jaxb = "4.0.5";
-        public String jaxws = "4.0.3";
+        public String jakartaActivation = "2.1.4";
+        public String jakartaValidation = "3.1.1";
+        public String jakartaXmlBindApi = "4.0.5";
+        public String jaxb = "4.0.9";
+        public String jaxws = "4.0.5";
         public String junit = "6.1.3";
         public String json = "20250517";
         public String jweaver = "1.9.22.1";
