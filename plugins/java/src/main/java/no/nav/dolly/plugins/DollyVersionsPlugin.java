@@ -22,13 +22,14 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String gcpSecretManager = "8.2.1";
         public String gcpStorage = "2.73.0";
 
-        public String apacheAvro = "1.12.1";
-        public String apacheKafka = "4.1.1";
+        public String apacheAvro = "1.12.2";
+        public String apacheKafka = "4.3.1";
         public String apachePoi = "5.5.1";
         public String assertj = "3.27.7";
         public String avroSerializer = "7.9.5";
         public String bouncyCastle = "1.83";
         public String expressly = "5.0.0";
+        public String guava = "33.7.1-jre";
         public String grpc = "1.76.0";
         public String jakartaActivation = "2.1.3";
         public String jakartaValidation = "3.1.0";
