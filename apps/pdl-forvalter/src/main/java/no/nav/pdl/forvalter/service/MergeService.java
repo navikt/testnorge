@@ -32,16 +32,12 @@ public class MergeService {
 
     private static Object getValue(Object target, String fieldName) {
 
-        if (isNull(target)) {
-            return null;
-        }
-
         try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.get(target);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            log.warn("Feilet å lese felt {}, fra {}", fieldName, target.getClass().getSimpleName(), e);
+            var getterName = format("get%s%s", fieldName.substring(0, 1).toUpperCase(), fieldName.substring(1));
+            return target.getClass().getMethod(getterName).invoke(target);
+
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            log.error("Feilet å lese verdi fra {}, felt {}", target, fieldName, e);
             return null;
         }
     }
