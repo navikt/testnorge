@@ -2,6 +2,8 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.DeleteMonthDTO;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
@@ -25,6 +27,7 @@ import static java.util.Objects.nonNull;
 public class InntektService {
 
     private final BestillingRepository bestillingRepository;
+    private final InntektstubConsumer inntektstubConsumer;
     private final JsonMapper jsonMapper;
     private final MapperFacade mapperFacade;
 
@@ -52,6 +55,10 @@ public class InntektService {
 
                             return bestillingRepository.save(bestilling);
                         }))
+                .then(inntektstubConsumer.slettSpesifikkMaaned(DeleteMonthDTO.builder()
+                        .norskIdent(ident)
+                        .aarMaaned(periode.format(YEAR_MONTH_FORMAT))
+                        .build()))
                 .then();
     }
 

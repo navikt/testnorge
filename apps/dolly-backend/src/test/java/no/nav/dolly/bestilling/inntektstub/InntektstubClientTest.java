@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.inntektstub;
 import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.inntektstub.domain.CheckImportResponse;
+import no.nav.dolly.bestilling.inntektstub.domain.ResponseDTO;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntekt;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
@@ -65,7 +65,7 @@ class InntektstubClientTest {
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.OK).build()));
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.OK).build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
                 .assertNext(_ -> {
@@ -88,8 +88,8 @@ class InntektstubClientTest {
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.OK).build()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.OK).build()))
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .message("Blah").build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
@@ -110,7 +110,7 @@ class InntektstubClientTest {
         val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
 
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.NOT_FOUND).build()));
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.NOT_FOUND).build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
                 .expectNextCount(0)

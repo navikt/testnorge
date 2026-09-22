@@ -1,5 +1,6 @@
 package no.nav.dolly.service;
 
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -41,14 +42,19 @@ class InntektServiceTest {
     @Mock
     private BestillingRepository bestillingRepository;
 
+    @Mock
+    private InntektstubConsumer inntektstubConsumer;
+
     private JsonMapper jsonMapper;
     private InntektService inntektService;
 
     @BeforeEach
     void setUp() {
         jsonMapper = new JsonMapper();
+        when(inntektstubConsumer.slettSpesifikkMaaned(any())).thenReturn(Mono.empty());
         inntektService = new InntektService(
                 bestillingRepository,
+                inntektstubConsumer,
                 jsonMapper,
                 MapperTestUtils.createMapperFacadeForMappingStrategy());
     }

@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubCheckImportCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
+import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteMonthCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
-import no.nav.dolly.bestilling.inntektstub.domain.CheckImportResponse;
+import no.nav.dolly.bestilling.inntektstub.domain.DeleteMonthDTO;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.ResponseDTO;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -82,12 +84,22 @@ public class InntektstubConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inntk_import"})
-    public Mono<CheckImportResponse> sjekkImporterInntekt(String ident, Boolean isCheck) {
+    public Mono<ResponseDTO> sjekkImporterInntekt(String ident, Boolean isCheck) {
 
         log.info("Import av inntekt for {}", ident);
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InntektstubCheckImportCommand(webClient, isCheck, ident, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inntk_deleteMaanedInntekt"})
+    public Mono<ResponseDTO> slettSpesifikkMaaned(DeleteMonthDTO slettMaaned) {
+
+        log.info("Delete av inntektsmåned for {} {}", slettMaaned.getNorskIdent(), slettMaaned.getAarMaaned());
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new InntektstubDeleteMonthCommand(webClient,
+                        slettMaaned, token.getTokenValue()).call());
     }
 
     @Override
