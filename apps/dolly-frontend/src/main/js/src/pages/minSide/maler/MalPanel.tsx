@@ -62,14 +62,14 @@ export const MalPanel = ({
 
 	const maler = malerFiltrert(malListe, searchText)
 
-	const DataCells = ({ id, malNavn, bestilling }) => (
+	const DataCells = ({ id, malNavn }) => (
 		<>
 			<Table.DataCell scope="row" width={'75%'}>
 				{erUnderRedigering(id) ? (
 					<EndreMalnavn
 						malNavn={malNavn}
 						id={id}
-						bestilling={bestilling}
+						type={type}
 						avsluttRedigering={(id: number) => {
 							avsluttRedigering(id)
 							mutate()
@@ -176,7 +176,7 @@ export const MalPanel = ({
 												</>
 											}
 										>
-											<DataCells id={id} bestilling={bestillingBasedOnMal} malNavn={malNavn} />
+											<DataCells id={id} malNavn={malNavn} />
 										</Table.ExpandableRow>
 									)
 								})}

@@ -12,16 +12,19 @@ export const tenorOpprettPersonMal = (verdier: any, malNavn: string) => {
 	})
 }
 
-export const tenorSlettPersonMal = (id: string) => {
-	return Request.delete(`${tenorSearchUrl}/maler/personer/${id}`)
-		.then((response) => {
-			if (!response.ok) {
-				throw new Error(response.statusText)
-			}
-			return response
-		})
-		.catch((error) => {
-			console.error(error)
-			throw error
-		})
+export const tenorSlettPersonMal = async (id: string) => {
+	try {
+		const response = await Request.delete(`${tenorSearchUrl}/maler/personer/${id}`)
+		if (!response.ok) {
+			throw new Error(response.statusText)
+		}
+		return response
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
+}
+
+export const tenorEndrePersonMal = (id: string, malNavn: string) => {
+	return Request.patch(`${tenorSearchUrl}/maler/personer/${id}`, { malNavn: malNavn })
 }
