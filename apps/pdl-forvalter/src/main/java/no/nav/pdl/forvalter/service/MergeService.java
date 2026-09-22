@@ -30,16 +30,14 @@ public class MergeService {
 
     private final MapperFacade mapperFacade;
 
-    private static Object getValue(Object object, String field) {
+    private static Object getValue(Object target, String fieldName) {
 
-        Method method = null;
         try {
-            method = object.getClass().getMethod(
-                    format("get%s%s", field.substring(0, 1).toUpperCase(), field.substring(1)), null);
-            return method.invoke(object, null);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            var getterName = format("get%s%s", fieldName.substring(0, 1).toUpperCase(), fieldName.substring(1));
+            return target.getClass().getMethod(getterName).invoke(target);
 
-            log.error("Feilet å lese verdi fra {}, felt {}", object, nonNull(method) ? method.getName() : null, e);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            log.error("Feilet å lese verdi fra {}, felt {}", target, fieldName, e);
             return null;
         }
     }
