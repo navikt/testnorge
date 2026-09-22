@@ -11,3 +11,17 @@ export const tenorOpprettPersonMal = (verdier: any, malNavn: string) => {
 		soekKriterier: verdier,
 	})
 }
+
+export const tenorSlettPersonMal = (id: string) => {
+	return Request.delete(`${tenorSearchUrl}/${id}`)
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error(response.statusText)
+			}
+			return response
+		})
+		.catch((error) => {
+			console.error(error)
+			throw error
+		})
+}

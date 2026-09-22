@@ -97,7 +97,7 @@ export const MalPanel = ({
 				)}
 			</Table.DataCell>
 			<Table.DataCell width={'10%'}>
-				<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
+				<SlettMal id={id} type={type} mutate={mutate} />
 			</Table.DataCell>
 		</>
 	)

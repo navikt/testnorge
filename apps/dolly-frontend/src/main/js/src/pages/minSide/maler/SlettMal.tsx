@@ -7,14 +7,23 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
 import useBoolean from '@/utils/hooks/useBoolean'
+import { MalType } from '@/pages/minSide/maler/Maloversikt'
+import { tenorSlettPersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
-export const SlettMal = ({ id, organisasjon, mutate }) => {
+export const SlettMal = ({ id, type, mutate }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
-	const slettMal = (malId: number, erOrganisasjon: boolean) => {
-		erOrganisasjon
-			? DollyApi.slettMalOrganisasjon(malId).then(() => mutate())
-			: DollyApi.slettMal(malId).then(() => mutate())
+	const slettMal = () => {
+		switch (type) {
+			case MalType.ORGANISASJON:
+				return DollyApi.slettMalOrganisasjon(id).then(() => mutate())
+			case MalType.PERSON:
+				return DollyApi.slettMal(id).then(() => mutate())
+			case MalType.TENORSOEK:
+				return tenorSlettPersonMal(id).then(() => mutate())
+			default:
+				return null
+		}
 	}
 
 	return (
@@ -41,7 +50,7 @@ export const SlettMal = ({ id, organisasjon, mutate }) => {
 							data-testid={TestComponentSelectors.BUTTON_MALER_SLETT_BEKREFT}
 							onClick={() => {
 								closeModal()
-								slettMal(id, organisasjon)
+								slettMal()
 							}}
 							variant={'primary'}
 						>
