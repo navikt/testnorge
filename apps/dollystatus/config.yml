@@ -11,14 +11,33 @@ spec:
       value: prod
   image: "{{image}}"
   port: 8080
+  azure:
+    sidecar:
+      enabled: true
+      autoLogin: true
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
   accessPolicy:
     outbound:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: testnav-arbeidssoekerregisteret-proxy
+        - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-nom-proxy
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-pdl-forvalter
         - application: testnav-budpro-service
+        - application: testnav-tps-messaging-service
         - application: logging
           namespace: nais-system
+      external:
+        - host: login.microsoftonline.com
+        - host: slack.com
+        - host: testnav-dolly-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/health/liveness
     initialDelay: 20
@@ -49,5 +68,7 @@ spec:
       memory: 256Mi
     limits:
       memory: 2048Mi
+  envFrom:
+    - secret: dollystatus-slack-secret
   ingresses:
     - "https://dollystatus.intern.dev.nav.no"

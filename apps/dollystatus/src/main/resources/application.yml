@@ -1,6 +1,184 @@
 spring:
+  application:
+    name: testnav-dollystatus
   config:
     import: "classpath:dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+  reactor:
+    context-propagation: auto
+
+consumers:
+  testnav-pdl-forvalter:
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-pdl-forvalter
+  testnav-pdl-proxy:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
+  testnav-dolly-backend:
+    url: http://dolly-backend.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: dolly-backend
+  testnav-dolly-proxy:
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-dolly-proxy
+  testnav-arbeidssoekerregisteret-proxy:
+    url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-arbeidssoekerregisteret-proxy
+  testnav-arbeidsplassencv-proxy:
+    url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-arbeidsplassencv-proxy
+  testnav-nom-proxy:
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-nom-proxy
+  testnav-organisasjon-forvalter:
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-forvalter
+  testnav-tps-messaging-service:
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tps-messaging-service
+
+functional-test:
+  pdl:
+    ident: "03458537037"
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  pensjon:
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+    tp:
+      enabled: true
+    popp:
+      enabled: true
+    afp-offentlig:
+      enabled: true
+    pensjonsavtale:
+      enabled: true
+  arbeidssoekerregisteret:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  instdata:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  kdi:
+    enabled: true
+  tags:
+    enabled: true
+  tps-messaging-egenansatt:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  arena:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  kontoregister:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  krr:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  nom:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  skattekort:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  brregstub:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  inntektstub:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  skjermingsregister:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  udi:
+    enabled: true
+    request-timeout: 30s
+    poll-interval: 2s
+    poll-timeout: 2m
+  sigrun:
+    technical-only: true
+    request-timeout: 30s
+  arbeidsplassen-cv:
+    technical-only: true
+  medl:
+    technical-only: true
+  oppfoelgingsvedtak-14a:
+    technical-only: true
+  sykemelding:
+    technical-only: true
+  fullmakt:
+    technical-only: true
+  aareg:
+    technical-only: true
+  dokarkiv:
+    technical-only: true
+  inntektsmelding:
+    technical-only: true
+  kelvin-aap:
+    technical-only: true
+  pensjon-oevrige:
+    technical-only: true
+  tps-messaging-bankkonto:
+    technical-only: true
+  yrkesskade:
+    technical-only: true
+  organisasjon-forvalter:
+    technical-only: true
+  technical-status:
+    request-timeout: 30s
+
+slack:
+  enabled: ${DOLLYSTATUS_SLACK_ENABLED:false}
+  token: ${SLACK_TOKEN:}
+  channel: ${SLACK_CHANNEL:}
+  base-url: https://slack.com
+  status-page-url: https://dollystatus.intern.dev.nav.no/
 
 logging:
   level:

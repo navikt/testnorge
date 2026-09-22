@@ -61,6 +61,7 @@ spec:
       rules:
         - application: dolly-auth-local
         - application: testnav-oversikt-frontend
+        - application: testnav-dollystatus
         - application: dolly-backend
         - application: dolly-frontend
         - application: dolly-idporten
