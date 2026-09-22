@@ -44,7 +44,7 @@ app:
     dokarkiv: https://dokarkiv-%s.intern.dev.nav.no # Note replacement pattern.
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
     fullmakt: http://repr-fullmakt.repr.svc.nais.local
-    henvendelse: https://sf-henvendelse-api-proxy.dev.intern.nav.no/api
+    henvendelse: sf-henvendelse.intern.dev.nav.no
     histark: https://histarkimport.dev.intern.nav.no
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local
