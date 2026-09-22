@@ -24,6 +24,7 @@ class Targets {
     String dokarkiv;
     String ereg;
     String fullmakt;
+    String henvendelse;
     String histark;
     String inntektstub;
     String inst;

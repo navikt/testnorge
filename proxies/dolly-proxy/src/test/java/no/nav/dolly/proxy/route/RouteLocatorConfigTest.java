@@ -122,6 +122,7 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.dokarkiv", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
         registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.henvendelse", () -> wireMockServer.baseUrl());
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
@@ -329,6 +330,30 @@ class RouteLocatorConfigTest {
 
     }
 
+    @Test
+    void shouldRouteHenvendelse() {
+
+        var downstreamPath = "/some/henvendelse/path";
+        var responseBody = "Success from mocked henvendelse";
+
+        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/plain")
+                        .withBody(responseBody)));
+
+        webClient
+                .get()
+                .uri("/henvendelse" + downstreamPath)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain")
+                .expectBody(String.class).isEqualTo(responseBody);
+
+        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"q1", "q2", "q4"})
     void testDokarkiv(String env) {
@@ -431,7 +456,7 @@ class RouteLocatorConfigTest {
                                     .contentType(APPLICATION_JSON)
                                     .body(requestBody));
                             exchange.getAttributes().put(GATEWAY_ROUTE_ATTR, route);
-                            var handler = new FilteringWebHandler(List.of((forwardedExchange, chain) ->
+                            var handler = new FilteringWebHandler(List.of((forwardedExchange, _) ->
                                     assertForwardedDocument(forwardedExchange, expectedLength, expectedChecksum.getValue())), false);
                             return handler.handle(exchange).subscribeOn(Schedulers.parallel());
                         }))
