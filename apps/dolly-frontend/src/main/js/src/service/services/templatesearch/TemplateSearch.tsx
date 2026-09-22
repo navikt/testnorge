@@ -13,7 +13,7 @@ export const tenorOpprettPersonMal = (verdier: any, malNavn: string) => {
 }
 
 export const tenorSlettPersonMal = (id: string) => {
-	return Request.delete(`${tenorSearchUrl}/${id}`)
+	return Request.delete(`${tenorSearchUrl}/maler/personer/${id}`)
 		.then((response) => {
 			if (!response.ok) {
 				throw new Error(response.statusText)
