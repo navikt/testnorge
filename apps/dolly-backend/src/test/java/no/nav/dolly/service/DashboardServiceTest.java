@@ -1001,6 +1001,21 @@ class DashboardServiceTest {
     }
 
     @Test
+    void shouldAggregateCategoricalDetailsAcrossWeightedRows() {
+        stubAdferd(
+                adferdFragment(DATE_1, "{\"pdldata\":{\"opprettNyPerson\":{\"syntetisk\":true}}}", 2),
+                adferdFragment(DATE_1, "{\"pdldata\":{\"opprettNyPerson\":{\"syntetisk\":true}}}", 3));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var pdlData = kriterium(dto, "PdlData");
+                    assertThat(pdlData.getAntall()).isEqualTo(5);
+                    assertThat(pdlData.getDetaljer()).containsEntry("Syntetisk-true", 5);
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldDecodePdlOpprettNyPersonId2032() {
         stubAdferd(adferdFragment(DATE_1,
                 "{\"pdldata\":{\"opprettNyPerson\":{\"id2032\":true}}}", 1));
@@ -1041,15 +1056,14 @@ class DashboardServiceTest {
                 adferdFragment(DATE_1, "{\"aareg\":[{},{}]}", 1));
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
-                .assertNext(dto -> {
+                .assertNext(dto ->
                     assertThat(dto.getKriterier())
                             .filteredOn(entry -> "Aareg".equals(entry.getFagsystem()))
                             .singleElement()
                             .satisfies(entry -> {
                                 assertThat(entry.getAntall()).isEqualTo(2);
                                 assertThat(entry.getDetaljer()).containsEntry("Antall arbeidsforhold", 3);
-                            });
-                })
+                            }))
                 .verifyComplete();
     }
 
