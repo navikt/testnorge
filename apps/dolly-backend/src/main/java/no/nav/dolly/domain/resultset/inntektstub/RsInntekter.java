@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +20,16 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsInntekter {
 
-    @Schema(description = "Liste av år-måneder som inntektsinformasjon er gyldig for",
-            example = "[\"2022-01\", \"2022-02\", \"2022-03\"]",
-            type = "List<String>")
-    private List<YearMonth> perioder;
+    @Schema(description = "Første år-måned for for denne inntektsinformasjon",
+            example = "yyyy-MM",
+            type = "String",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    private String startAarMaaned;
+
+    @Schema(type = "Integer",
+            description = "Antall måneder som denne inntektsinformasjon er gyldig for",
+            example = "36")
+    private Integer antallMaaneder;
 
     @Schema(description = "Organisasjonsnummer/norskIdent",
             requiredMode = Schema.RequiredMode.REQUIRED)

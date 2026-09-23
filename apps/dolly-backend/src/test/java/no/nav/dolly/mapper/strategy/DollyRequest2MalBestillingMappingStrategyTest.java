@@ -88,7 +88,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -262,11 +261,11 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         assertThat(target.getInntekter(), hasItems(
                 RsInntekter.builder()
-                        .perioder(List.of(YearMonth.of(2023, 1)))
+                        .startAarMaaned("2023-01")
                         .virksomhet("123456789")
                         .build(),
                 RsInntekter.builder()
-                        .perioder(List.of(YearMonth.of(2025, 1)))
+                        .startAarMaaned("2025-01")
                         .virksomhet("987654321")
                         .build()));
     }
@@ -1098,7 +1097,7 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         return RsDollyUtvidetBestilling.builder()
                 .inntekter(List.of(RsInntekter.builder()
-                        .perioder(List.of(YearMonth.parse(startAarMaaned)))
+                        .startAarMaaned(startAarMaaned)
                         .virksomhet(virksomhet)
                         .build()))
                 .build();

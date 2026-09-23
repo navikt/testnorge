@@ -69,11 +69,8 @@ class InntektServiceTest {
         assertThat(oppdatert.getInntekter())
                 .singleElement()
                 .satisfies(inntekt -> {
-                    assertThat(inntekt.getPerioder()).containsExactly(
-                            YearMonth.of(2025, 2),
-                            YearMonth.of(2025, 3),
-                            YearMonth.of(2025, 4),
-                            YearMonth.of(2025, 5));
+                    assertThat(inntekt.getStartAarMaaned()).isEqualTo("2025-02");
+                    assertThat(inntekt.getAntallMaaneder()).isEqualTo(4);
                     assertThat(inntekt.getVirksomhet()).isEqualTo(VIRKSOMHET);
                 });
     }
@@ -87,12 +84,10 @@ class InntektServiceTest {
 
         assertThat(oppdatert.getInntekter())
                 .singleElement()
-                .satisfies(inntekt ->
-                    assertThat(inntekt.getPerioder()).containsExactly(
-                            YearMonth.of(2025, 1),
-                            YearMonth.of(2025, 2),
-                            YearMonth.of(2025, 3),
-                            YearMonth.of(2025, 4)));
+                .satisfies(inntekt -> {
+                    assertThat(inntekt.getStartAarMaaned()).isEqualTo("2025-01");
+                    assertThat(inntekt.getAntallMaaneder()).isEqualTo(4);
+                });
     }
 
     @Test
@@ -113,10 +108,10 @@ class InntektServiceTest {
                 YearMonth.of(2025, 3));
 
         assertThat(oppdatert.getInntekter())
-                .extracting(RsInntekter::getPerioder)
+                .extracting(RsInntekter::getStartAarMaaned, RsInntekter::getAntallMaaneder)
                 .containsExactly(
-                        List.of(YearMonth.of(2025, 1), YearMonth.of(2025, 2)),
-                        List.of(YearMonth.of(2025, 4), YearMonth.of(2025, 5)));
+                        tuple("2025-01", 2),
+                        tuple("2025-04", 2));
     }
 
     @Test
@@ -242,17 +237,11 @@ class InntektServiceTest {
 
         return RsDollyBestilling.builder()
                 .inntekter(List.of(RsInntekter.builder()
-                        .perioder(perioder(startAarMaaned, antallMaaneder))
+                        .startAarMaaned(startAarMaaned)
+                        .antallMaaneder(antallMaaneder)
                         .virksomhet(VIRKSOMHET)
                         .build()))
                 .build();
-    }
-
-    private static List<YearMonth> perioder(String startAarMaaned, Integer antallMaaneder) {
-        var antall = antallMaaneder == null || antallMaaneder <= 0 ? 1 : antallMaaneder;
-        return java.util.stream.IntStream.range(0, antall)
-                .mapToObj(i -> YearMonth.parse(startAarMaaned).plusMonths(i))
-                .toList();
     }
 
     private static RsDollyBestilling bestillingMedInntektstub(String sisteAarMaaned, Integer antallMaaneder) {

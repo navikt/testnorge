@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -288,9 +287,8 @@ class InntektsinformasjonMappingStrategyTest {
     private RsInntekter prepRsInntekter(int antallMaaneder, List<RsInntekter.Historikk> historikk) {
 
         return RsInntekter.builder()
-                .perioder(java.util.stream.IntStream.range(0, antallMaaneder)
-                        .mapToObj(i -> YearMonth.of(AAR_MAANED.getYear(), AAR_MAANED.getMonth()).plusMonths(i))
-                        .toList())
+                .startAarMaaned(AAR_MAANED_STR)
+                .antallMaaneder(antallMaaneder)
                 .virksomhet(ORG_NR)
                 .opplysningspliktig(ORG_NR)
                 .rapporteringsdato(RAPPORTERINGSDATO)

@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
-import java.time.YearMonth;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -187,8 +186,9 @@ class InntektstubClientTest {
         val statusCaptor = ArgumentCaptor.forClass(String.class);
         val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
-        bestilling        .setInntekter(List.of(RsInntekter.builder()
-            .perioder(List.of(YearMonth.of(2025, 12)))
+        bestilling.setInntekter(List.of(RsInntekter.builder()
+                .startAarMaaned("2025-12")
+                .antallMaaneder(1)
                 .build()));
 
         when(transactionHelperService.persister(any(), any(), anyString()))
@@ -222,8 +222,9 @@ class InntektstubClientTest {
         val statusCaptor = ArgumentCaptor.forClass(String.class);
         val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
-        bestilling        .setInntekter(List.of(RsInntekter.builder()
-            .perioder(List.of(YearMonth.of(2025, 12)))
+        bestilling.setInntekter(List.of(RsInntekter.builder()
+                .startAarMaaned("2025-12")
+                .antallMaaneder(1)
                 .build()));
 
         when(transactionHelperService.persister(any(), any(), anyString()))
@@ -258,8 +259,9 @@ class InntektstubClientTest {
 
         val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
-        bestilling        .setInntekter(List.of(RsInntekter.builder()
-            .perioder(List.of(YearMonth.of(2025, 12)))
+        bestilling.setInntekter(List.of(RsInntekter.builder()
+                .startAarMaaned("2025-12")
+                .antallMaaneder(1)
                 .build()));
 
         val eksisterendeInntekt = Inntekt.builder().beloep(1000d).build();
