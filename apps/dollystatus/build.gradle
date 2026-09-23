@@ -15,6 +15,9 @@ sonarqube {
 }
 
 dependencies {
+    developmentOnly "io.netty:netty-resolver-dns-native-macos::osx-aarch_64"
+    developmentOnly "io.netty:netty-resolver-dns-native-macos::osx-x86_64"
+
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-security"
@@ -22,6 +25,7 @@ dependencies {
     implementation "no.nav.testnav.libs:slack"
     implementation "no.nav.testnav.libs:testing"
 
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
 
