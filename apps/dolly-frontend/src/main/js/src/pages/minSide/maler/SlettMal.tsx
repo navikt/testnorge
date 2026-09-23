@@ -6,7 +6,13 @@ import { DollyApi } from '@/service/Api'
 import { MalType } from '@/pages/minSide/maler/Maloversikt'
 import { tenorSlettPersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
-export const SlettMal = ({ id, type, mutate }) => {
+interface SlettMalProps {
+	id: number
+	type: string
+	mutate: () => void
+}
+
+export const SlettMal = ({ id, type, mutate }: SlettMalProps) => {
 	const slettMal = () => {
 		switch (type) {
 			case MalType.ORGANISASJON:

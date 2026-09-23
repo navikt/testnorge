@@ -3,7 +3,13 @@ import { Button } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
 
-export const SoekNyMalDialog = ({ verdier, malType, disabled }) => {
+interface SoekNyMalDialogProps {
+	verdier: Record<string, unknown>
+	malType: string
+	disabled: boolean
+}
+
+export const SoekNyMalDialog = ({ verdier, malType, disabled }: SoekNyMalDialogProps) => {
 	const [open, setOpen] = useState(false)
 
 	return (

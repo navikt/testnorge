@@ -26,6 +26,12 @@ type Props = {
 	setUnderRedigering: any
 }
 
+type MalVisningProps = {
+	bestillingData: any
+	bestillingBasedOnMal: any
+	soekKriterier: Record<string, unknown>
+}
+
 export const MalPanel = ({
 	antallEgneMaler,
 	malListe,
@@ -62,7 +68,7 @@ export const MalPanel = ({
 
 	const maler = malerFiltrert(malListe, searchText)
 
-	const DataCells = ({ id, malNavn }) => (
+	const DataCells = ({ id, malNavn }: { id: number; malNavn: string }) => (
 		<>
 			<Table.DataCell scope="row" width={'75%'}>
 				{erUnderRedigering(id) ? (
@@ -102,7 +108,7 @@ export const MalPanel = ({
 		</>
 	)
 
-	const MalVisning = ({ bestillingData, bestillingBasedOnMal, soekKriterier }) => {
+	const MalVisning = ({ bestillingData, bestillingBasedOnMal, soekKriterier }: MalVisningProps) => {
 		switch (type) {
 			case MalType.ORGANISASJON:
 				return <BestillingsdataOrganisasjon bestilling={bestillingData.organisasjon} />

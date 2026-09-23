@@ -3,8 +3,15 @@ import React, { useState } from 'react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useSoekMalerBruker, useSoekMalerOversikt } from '@/utils/hooks/useTemplateSearch'
 import { getBrukerOptions } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
+import { Mal } from '@/utils/hooks/useMaler'
 
-export function getSoekMalOptions(maler: any) {
+interface SoekMalOption {
+	value: string
+	label: string
+	soekKriterier: Record<string, unknown>
+}
+
+export function getSoekMalOptions(maler: Mal[] | undefined): SoekMalOption[] {
 	if (!Array.isArray(maler) || maler.length < 1) return []
 	return maler.map((mal) => ({
 		value: String(mal.id),
@@ -13,7 +20,11 @@ export function getSoekMalOptions(maler: any) {
 	}))
 }
 
-export const SoekMalVelger = ({ velgMal }) => {
+interface SoekMalVelgerProps {
+	velgMal: (soekKriterier: Record<string, unknown>) => void
+}
+
+export const SoekMalVelger = ({ velgMal }: SoekMalVelgerProps) => {
 	const { currentBruker } = useCurrentBruker()
 	const [valgtBruker, setValgtBruker] = useState(
 		currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId,

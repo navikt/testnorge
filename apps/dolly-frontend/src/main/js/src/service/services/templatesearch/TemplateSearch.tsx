@@ -12,7 +12,7 @@ export const tenorOpprettPersonMal = (verdier: any, malNavn: string) => {
 	})
 }
 
-export const tenorSlettPersonMal = async (id: string) => {
+export const tenorSlettPersonMal = async (id: number) => {
 	try {
 		const response = await Request.delete(`${tenorSearchUrl}/maler/personer/${id}`)
 		if (!response.ok) {
@@ -25,6 +25,6 @@ export const tenorSlettPersonMal = async (id: string) => {
 	}
 }
 
-export const tenorEndrePersonMal = (id: string, malNavn: string) => {
+export const tenorEndrePersonMal = (id: number, malNavn: string) => {
 	return Request.patch(`${tenorSearchUrl}/maler/personer/${id}`, { malNavn: malNavn })
 }

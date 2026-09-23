@@ -6,7 +6,14 @@ import { Button, TextField } from '@navikt/ds-react'
 import { MalType } from '@/pages/minSide/maler/Maloversikt'
 import { tenorEndrePersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
-export const EndreMalnavn = ({ malNavn, id, type, avsluttRedigering }) => {
+interface EndreMalnavnProps {
+	malNavn: string
+	id: number
+	type: string
+	avsluttRedigering: (id: number) => void
+}
+
+export const EndreMalnavn = ({ malNavn, id, type, avsluttRedigering }: EndreMalnavnProps) => {
 	const [nyttMalnavn, setNyttMalnavn] = useState(malNavn)
 
 	const lagreEndring = () => {
