@@ -31,7 +31,7 @@ public class MiljoerGetCommand implements Callable<Mono<List<String>>> {
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
                 .doOnError(WebClientError.logTo(log))
-                .cache(Duration.ofHours(8));
+                .cache(Duration.ofHours(8))
+                .onErrorResume(_ -> Mono.just(List.of("q1", "q2", "q4")));
     }
-
 }

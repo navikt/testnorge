@@ -15,10 +15,6 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
-  dolly-backend:
-    url: https://dolly-backend.intern.dev.nav.no
-    name: dolly-backend
-    cluster: dev-gcp
   testnav-altinn3-tilgang-service:
     url: https://testnav-altinn3-tilgang-service.intern.dev.nav.no
     name: testnav-altinn3-tilgang-service

@@ -10,7 +10,6 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.bestilling.dokarkiv.dto.TransaksjonIdDTO;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.consumer.dokumentarkiv.SafConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -47,6 +46,7 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getThrowableList;
 
 @Slf4j
 @Service
@@ -54,8 +54,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DokarkivClient implements ClientRegister {
 
     private static final int CHUNK_SIZE = 500_000;
+    private static final Duration OPERATION_TIMEOUT = Duration.ofMinutes(2);
 
-    private final ApplicationConfig applicationConfig;
     private final DokarkivConsumer dokarkivConsumer;
     private final DokumentService dokumentService;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -93,7 +93,7 @@ public class DokarkivClient implements ClientRegister {
                                                         Mono.just(miljoe + ":OK")
                                                 )
                                         )
-                                        .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
+                                        .timeout(OPERATION_TIMEOUT)
                                         .onErrorResume(error -> getErrors(error, miljoer))
                                 ))
                         .collect(Collectors.joining(","))
@@ -113,15 +113,12 @@ public class DokarkivClient implements ClientRegister {
         }
 
         return transaksjonMappingService.getTransaksjonMapping(DOKARKIV.name(), ident, bestillingId)
-                .doOnNext(transaksjonMapping -> log.info("Eksisterende transaksjonmapping {}", transaksjonMapping))
                 .filter(transaksjonMapping -> transaksjonMapping.getMiljoe().equals(miljoe))
                 .mapNotNull(transaksjon -> fromJson(transaksjon.getTransaksjonId()))
-                .doOnNext(transaksjon -> log.info("Verdi fra transaksjonmapping {}", transaksjon))
                 .flatMap(transaksjoner -> Flux.fromIterable(transaksjoner)
                         .flatMap(transaksjon -> safConsumer.getDokument(miljoe, transaksjon.getJournalpostId(),
                                 transaksjon.getDokumentInfoId(), "ARKIV")))
                 .map(status -> isBlank(status.getFeilmelding()) && isNotBlank(status.getDokument()))
-                .doOnNext(status -> log.info("Dokument eksisterer {}", status))
                 .reduce(true, (a, b) -> a && b)
                 .flatMap(status -> {
                     if (isFalse(status)) {
@@ -131,11 +128,15 @@ public class DokarkivClient implements ClientRegister {
                     return Mono.just(status);
                 })
                 .map(BooleanUtils::isFalse)
-                .doOnNext(ok -> log.info("Opprett dokument {}", ok))
                 .defaultIfEmpty(true);
     }
 
     private Flux<String> getErrors(Throwable error, List<String> miljoer) {
+
+        log.error("Dokarkiv-operasjonen feilet for miljøer {}: feiltype={}, årsakstyper={}, konfigurertTidsgrense={}",
+                miljoer, error.getClass().getSimpleName(),
+                getThrowableList(error).stream().map(cause -> cause.getClass().getSimpleName()).toList(),
+                OPERATION_TIMEOUT);
 
         return Flux.fromIterable(miljoer)
                 .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(WebClientError.describe(error).getMessage())));
@@ -157,8 +158,6 @@ public class DokarkivClient implements ClientRegister {
     }
 
     private Mono<String> getStatus(String ident, Long bestillingId, List<DokarkivResponse> response) {
-
-        log.info("Dokarkiv response {} for ident {}", response, ident);
 
         if (isNull(response)) {
             return Mono.just("UKJENT:Intet svar");
@@ -204,8 +203,6 @@ public class DokarkivClient implements ClientRegister {
     }
 
     private Mono<TransaksjonMapping> saveTransaksjonId(List<DokarkivResponse> response, String ident, Long bestillingId, String miljoe) {
-
-        log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
 
         return transaksjonMappingService.save(
                 TransaksjonMapping.builder()
@@ -260,8 +257,6 @@ public class DokarkivClient implements ClientRegister {
             return Mono.just(request);
         }
 
-        log.info("Laster opp {} store dokumentvarianter til proxy", largeVariants.size());
-
         return Flux.fromIterable(largeVariants)
                 .flatMap(variant -> uploadSingleDocumentToProxy(variant.getFysiskDokument())
                         .doOnNext(uploadId -> {
@@ -275,13 +270,13 @@ public class DokarkivClient implements ClientRegister {
 
         return dokarkivConsumer.initProxyUpload()
                 .flatMap(uploadId -> {
-                    var chunks = new ArrayList<String>();
-                    for (int i = 0; i < content.length(); i += CHUNK_SIZE) {
-                        chunks.add(content.substring(i, Math.min(i + CHUNK_SIZE, content.length())));
-                    }
-                    log.info("Dokarkiv proxy upload {}: {} chunks for {} tegn", uploadId, chunks.size(), content.length());
-                    return Flux.fromIterable(chunks)
-                            .concatMap(chunk -> dokarkivConsumer.appendProxyChunk(uploadId, chunk))
+                    var chunkCount = Math.ceilDiv(content.length(), CHUNK_SIZE);
+                    return Flux.range(0, chunkCount)
+                            .concatMap(chunkIndex -> {
+                                var start = chunkIndex * CHUNK_SIZE;
+                                var end = start + Math.min(CHUNK_SIZE, content.length() - start);
+                                return dokarkivConsumer.appendProxyChunk(uploadId, content.substring(start, end));
+                            })
                             .then(Mono.just(uploadId));
                 });
     }

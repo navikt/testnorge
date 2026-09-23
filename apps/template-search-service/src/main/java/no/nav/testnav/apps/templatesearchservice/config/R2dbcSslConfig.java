@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.function.Function;
 
-@Profile("prod")
+@Profile({"prod", "dev"})
 @Configuration
 public class R2dbcSslConfig {
 

@@ -1,13 +1,16 @@
 package no.nav.dolly.bestilling.inntektstub.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
+@Slf4j
 @RequiredArgsConstructor
 public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>> {
 
@@ -30,6 +33,11 @@ public class InntektstubGetCommand implements Callable<Flux<Inntektsinformasjon>
                         .build())
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
-                .bodyToFlux(Inntektsinformasjon.class);
+                .bodyToFlux(Inntektsinformasjon.class)
+                .onErrorResume(throwable -> {
+                    var description = WebClientError.describe(throwable);
+                    log.error("Henting av data fra Inntektstub feilet: {}", description.getMessage(), throwable);
+                    return Inntektsinformasjon.of(description);
+                });
     }
 }
