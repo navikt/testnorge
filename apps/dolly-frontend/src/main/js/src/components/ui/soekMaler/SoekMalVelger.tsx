@@ -1,4 +1,4 @@
-import { Box, HelpText, HStack, UNSAFE_Combobox as Combobox } from '@navikt/ds-react'
+import { Box, HelpText, HStack, InlineMessage, UNSAFE_Combobox as Combobox } from '@navikt/ds-react'
 import React, { useState } from 'react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useSoekMalerBruker, useSoekMalerOversikt } from '@/utils/hooks/useTemplateSearch'
@@ -40,8 +40,6 @@ export const SoekMalVelger = ({ velgMal }) => {
 	const brukerOptions = getBrukerOptions(brukere) ?? []
 	const valgtBrukerOption = brukerOptions?.filter((option) => option.value === valgtBruker) ?? []
 
-	// console.log('malOptions: ', malOptions) //TODO - SLETT MEG
-
 	return (
 		<Box
 			background="accent-moderate"
@@ -59,7 +57,6 @@ export const SoekMalVelger = ({ velgMal }) => {
 						selectedOptions={valgtBrukerOption}
 						onToggleSelected={(bruker) => {
 							setValgtBruker(bruker ?? '')
-							// 	TODO: set valgt mal til null?
 						}}
 						isLoading={loadingBrukere}
 					/>
@@ -78,6 +75,18 @@ export const SoekMalVelger = ({ velgMal }) => {
 					/>
 				</Box>
 			</HStack>
+			{errorBrukere && !loadingBrukere && (
+				<InlineMessage
+					status="error"
+					style={{ marginTop: '10px' }}
+				>{`Feil ved henting av brukere: ${errorBrukere}`}</InlineMessage>
+			)}
+			{errorMaler && !loadingMaler && !loadingBrukere && (
+				<InlineMessage
+					status="error"
+					style={{ marginTop: '10px' }}
+				>{`Feil ved henting av maler: ${errorMaler}`}</InlineMessage>
+			)}
 		</Box>
 	)
 }

@@ -298,7 +298,7 @@ export default () => {
 				<div className="flexbox--align-center--justify-start">
 					<Title title="Søk etter personer i Tenor (Test-Norge)" />
 				</div>
-				{/*TODO: Erstatter SisteSoek med mal-velger, skjules i en overgangsfase i tilfelle brukerne klager, så den evt. kan gjeninnfoeres.*/}
+				{/*Erstatter SisteSoek med mal-velger, skjules i en overgangsfase i tilfelle brukerne klager, så den evt. kan gjeninnfoeres.*/}
 				{/*<SisteSoek*/}
 				{/*	type={soekType.tenor}*/}
 				{/*	formValues={formMethods.watch()}*/}
