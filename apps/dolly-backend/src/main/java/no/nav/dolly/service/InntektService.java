@@ -39,9 +39,7 @@ public class InntektService {
                 .flatMap(bestilling -> Mono.just(jsonMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class))
                         .filter(dollyBestilling -> !dollyBestilling.getInntekter().isEmpty() &&
                                                    dollyBestilling.getInntekter().stream()
-                                                           .anyMatch(inntekt -> IntStream.range(0, normaliserAntallMaaneder(inntekt.getAntallMaaneder()))
-                                                                   .mapToObj(i -> YearMonth.parse(inntekt.getStartAarMaaned(), YEAR_MONTH_FORMAT).plusMonths(i))
-                                                                   .anyMatch(periode::equals)) ||
+                                                           .anyMatch(inntekt -> inntekt.getPerioder().contains(periode)) ||
 
                                                    nonNull(dollyBestilling.getInntektstub()) &&
                                                    !dollyBestilling.getInntektstub().getInntektsinformasjon().isEmpty() &&
@@ -85,34 +83,34 @@ public class InntektService {
             RsInntekter inntekt,
             YearMonth periode) {
 
-        var start = YearMonth.parse(inntekt.getStartAarMaaned(), YEAR_MONTH_FORMAT);
-        var antallMaaneder = normaliserAntallMaaneder(inntekt.getAntallMaaneder());
-        var slutt = start.plusMonths(antallMaaneder - 1L);
-
-        if (periode.isBefore(start) || periode.isAfter(slutt)) {
+        if (!inntekt.getPerioder().contains(periode)) {
             return List.of(inntekt);
         }
 
-        var perioder = new ArrayList<RsInntekter>();
+        var perioder = inntekt.getPerioder().stream()
+                .filter(currentPeriod -> !currentPeriod.equals(periode))
+                .sorted()
+                .toList();
+        var resultat = new ArrayList<RsInntekter>();
+        var sammenhengendePerioder = new ArrayList<YearMonth>();
 
-        var antallFoer = Math.toIntExact(ChronoUnit.MONTHS.between(start, periode));
-        if (antallFoer > 0) {
-            perioder.add(kopier(inntekt, start, antallFoer));
+        for (var currentPeriod : perioder) {
+            if (!sammenhengendePerioder.isEmpty() &&
+                    !currentPeriod.equals(sammenhengendePerioder.getLast().plusMonths(1))) {
+                resultat.add(kopier(inntekt, sammenhengendePerioder));
+                sammenhengendePerioder = new ArrayList<>();
+            }
+            sammenhengendePerioder.add(currentPeriod);
         }
-
-        var antallEtter = Math.toIntExact(ChronoUnit.MONTHS.between(periode, slutt));
-        if (antallEtter > 0) {
-            perioder.add(kopier(inntekt, periode.plusMonths(1), antallEtter));
+        if (!sammenhengendePerioder.isEmpty()) {
+            resultat.add(kopier(inntekt, sammenhengendePerioder));
         }
-
-        return perioder;
+        return resultat;
     }
 
-    private RsInntekter kopier(RsInntekter inntekt, YearMonth start, int antallFoer) {
-
+    private RsInntekter kopier(RsInntekter inntekt, List<YearMonth> perioder) {
         var kopi = mapperFacade.map(inntekt, RsInntekter.class);
-        kopi.setStartAarMaaned(start.format(YEAR_MONTH_FORMAT));
-        kopi.setAntallMaaneder(antallFoer);
+        kopi.setPerioder(perioder);
         return kopi;
     }
 
@@ -154,4 +152,5 @@ public class InntektService {
     private int normaliserAntallMaaneder(Integer antallMaaneder) {
         return isNull(antallMaaneder) || antallMaaneder <= 0 ? 1 : antallMaaneder;
     }
+
 }
