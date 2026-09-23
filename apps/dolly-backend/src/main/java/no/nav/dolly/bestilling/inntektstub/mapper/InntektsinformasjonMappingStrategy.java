@@ -18,7 +18,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -36,12 +35,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsInntekter inntektsinformasjon, InntektsinformasjonWrapper inntektsinformasjonWrapper, MappingContext context) {
 
-                        var yearMonth =
-                                new AtomicReference<>(LocalDate.parse(inntektsinformasjon.getStartAarMaaned() + "-01"));
-
-                        IntStream.range(0, isNull(inntektsinformasjon.getAntallMaaneder()) ||
-                                           inntektsinformasjon.getAntallMaaneder() <= 0 ? 1 : inntektsinformasjon.getAntallMaaneder())
-                                .forEach(_ -> {
+                        inntektsinformasjon.getPerioder().forEach(yearMonth -> {
 
                                     inntektsinformasjon.getInntektsliste()
                                             .forEach(inntekt ->
@@ -52,7 +46,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                     var inntektsinfo = mapperFacade.map(
                                             inntektsinformasjon, Inntektsinformasjon.class);
 
-                                    inntektsinfo.setAarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT));
+                                    inntektsinfo.setAarMaaned(yearMonth.format(YEAR_MONTH_FORMAT));
                                     inntektsinfo.setNorskIdent((String) context.getProperty("ident"));
                                     if (nonNull(inntektsinformasjon.getRapporteringsdato())) {
                                         inntektsinfo.setRapporteringsdato(
@@ -66,7 +60,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
                                             inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
                                                     .norskIdent((String) context.getProperty("ident"))
-                                                    .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
+                                                    .aarMaaned(yearMonth.format(YEAR_MONTH_FORMAT))
                                                     .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
                                                     .virksomhet(inntektsinformasjon.getVirksomhet())
                                                     .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
@@ -78,7 +72,6 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                                     .build())
                                     );
 
-                                    yearMonth.updateAndGet(ym -> ym.plusMonths(1));
                                 });
                     }
                 })
