@@ -10,10 +10,12 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Fradrag;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,42 +39,44 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
                         inntektsinformasjon.getPerioder().forEach(yearMonth -> {
 
-                                    inntektsinformasjon.getInntektsliste()
-                                            .forEach(inntekt ->
-                                                    inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
-                                                                                   inntekt.getTilleggsinformasjon().isEmpty() ? null :
-                                                            inntekt.getTilleggsinformasjon()));
+                            inntektsinformasjon.getInntektsliste()
+                                    .forEach(inntekt ->
+                                            inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
+                                                                           inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                                    inntekt.getTilleggsinformasjon()));
 
-                                    var inntektsinfo = mapperFacade.map(
-                                            inntektsinformasjon, Inntektsinformasjon.class);
+                            var context2 = MappingContextUtils.getMappingContext();
+                            context2.setProperty("periode", yearMonth);
+                            var inntektsinfo = mapperFacade.map(
+                                    inntektsinformasjon, Inntektsinformasjon.class, context2);
 
-                                    inntektsinfo.setAarMaaned(yearMonth.format(YEAR_MONTH_FORMAT));
-                                    inntektsinfo.setNorskIdent((String) context.getProperty("ident"));
-                                    if (nonNull(inntektsinformasjon.getRapporteringsdato())) {
-                                        inntektsinfo.setRapporteringsdato(
-                                                inntektsinformasjon.getRapporteringsdato().atOffset(ZoneOffset.UTC));
-                                    }
+                            inntektsinfo.setAarMaaned(yearMonth.format(YEAR_MONTH_FORMAT));
+                            inntektsinfo.setNorskIdent((String) context.getProperty("ident"));
+                            if (nonNull(inntektsinformasjon.getRapporteringsdato())) {
+                                inntektsinfo.setRapporteringsdato(
+                                        inntektsinformasjon.getRapporteringsdato().atOffset(ZoneOffset.UTC));
+                            }
 
-                                    inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinfo);
+                            inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinfo);
 
-                                    var versjon = new AtomicInteger(0);
-                                    inntektsinformasjon.getHistorikk().forEach(historikk ->
+                            var versjon = new AtomicInteger(0);
+                            inntektsinformasjon.getHistorikk().forEach(historikk ->
 
-                                            inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
-                                                    .norskIdent((String) context.getProperty("ident"))
-                                                    .aarMaaned(yearMonth.format(YEAR_MONTH_FORMAT))
-                                                    .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
-                                                    .virksomhet(inntektsinformasjon.getVirksomhet())
-                                                    .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
-                                                    .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
-                                                    .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
-                                                    .versjon(versjon.addAndGet(1))
-                                                    .rapporteringsdato(nonNull(historikk.getRapporteringsdato()) ?
-                                                            historikk.getRapporteringsdato().atOffset(ZoneOffset.UTC) : null)
-                                                    .build())
-                                    );
+                                    inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
+                                            .norskIdent((String) context.getProperty("ident"))
+                                            .aarMaaned(yearMonth.format(YEAR_MONTH_FORMAT))
+                                            .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
+                                            .virksomhet(inntektsinformasjon.getVirksomhet())
+                                            .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
+                                            .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
+                                            .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
+                                            .versjon(versjon.addAndGet(1))
+                                            .rapporteringsdato(nonNull(historikk.getRapporteringsdato()) ?
+                                                    historikk.getRapporteringsdato().atOffset(ZoneOffset.UTC) : null)
+                                            .build())
+                            );
 
-                                });
+                        });
                     }
                 })
                 .register();
@@ -93,7 +97,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                     inntektsinformasjon.getInntektsliste()
                                             .forEach(inntekt ->
                                                     inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
-                                                            inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                                                                   inntekt.getTilleggsinformasjon().isEmpty() ? null :
                                                             inntekt.getTilleggsinformasjon()));
                                     do {
                                         Inntektsinformasjon inntektsinformasjon1 = mapperFacade.map(
@@ -132,5 +136,27 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+
+        factory.classMap(Inntekt.class, Inntekt.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(Inntekt kilde, Inntekt destinasjon, MappingContext context) {
+                        var periode = (YearMonth) context.getProperty("periode");
+                        if (nonNull(periode)) {
+                            destinasjon.setStartOpptjeningsperiode(
+                                    periode.atDay(isNull(kilde.getStartOpptjeningsperiode()) ? 1 :
+                                            getGyldigDagIMaaned(periode, kilde.getStartOpptjeningsperiode())));
+                            destinasjon.setSluttOpptjeningsperiode(periode.atDay(isNull(kilde.getSluttOpptjeningsperiode()) ? periode.atEndOfMonth().getDayOfMonth() :
+                                    getGyldigDagIMaaned(periode, kilde.getSluttOpptjeningsperiode())));
+                        }
+                    }
+                })
+                .byDefault()
+                .register();
+    }
+
+    private static int getGyldigDagIMaaned(YearMonth periode, LocalDate opptjeningDato) {
+
+        return Math.min(opptjeningDato.getDayOfMonth(), periode.atEndOfMonth().getDayOfMonth());
     }
 }
