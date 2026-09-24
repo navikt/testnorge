@@ -33,6 +33,72 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('StatusPage', () => {
+	it('should sort functional checks before technical checks and blocked systems alphabetically within each group', async () => {
+		const statuses: FagsystemStatus[] = [
+			{ ...status, systemId: 'blocked-b', displayName: 'Blokkert B', state: 'BLOCKED' },
+			{
+				...status,
+				systemId: 'technical-b',
+				displayName: 'Teknisk B',
+				state: 'TECHNICAL_ONLY',
+				technicalStatus: { state: 'UP', checkedAt: null },
+			},
+			{ ...status, systemId: 'functional-b', displayName: 'Funksjonell B', state: 'OK' },
+			{ ...status, systemId: 'blocked-a', displayName: 'Blokkert A', state: 'BLOCKED' },
+			{ ...status, systemId: 'functional-a', displayName: 'Funksjonell A', state: 'VERIFY_FAILED' },
+			{
+				...status,
+				systemId: 'technical-a',
+				displayName: 'Teknisk A',
+				state: 'TECHNICAL_ONLY',
+				technicalStatus: { state: 'DOWN', checkedAt: null },
+			},
+		]
+		server.use(
+			http.get('/api/v1/fagsystem-statuser', () => HttpResponse.json(statuses)),
+			http.post('/api/v1/testkjoringer', () => new HttpResponse(null, { status: 404 })),
+		)
+
+		render(<StatusPage />)
+
+		const headings = await screen.findAllByRole('heading', { level: 2 })
+		expect(headings.map((heading) => heading.textContent)).toEqual([
+			'Funksjonell A',
+			'Funksjonell B',
+			'Teknisk A',
+			'Teknisk B',
+			'Blokkert A',
+			'Blokkert B',
+		])
+	})
+
+	it.each(['NOT_RUN', 'VERIFY', 'OK', 'CREATE_FAILED'] as const)(
+		'should keep a system with a blocked environment last when its other environment is %s',
+		async (state) => {
+			server.use(
+				http.get('/api/v1/fagsystem-statuser', () =>
+					HttpResponse.json([
+						{ ...status, state },
+						{ ...status, environment: 'Q2', state: 'BLOCKED' },
+						{ ...status, systemId: 'pdl', displayName: 'PDL', state: 'OK' },
+						{
+							...status,
+							systemId: 'sigrun',
+							displayName: 'Sigrun',
+							state: 'TECHNICAL_ONLY',
+						},
+					]),
+				),
+				http.post('/api/v1/testkjoringer', () => new HttpResponse(null, { status: 404 })),
+			)
+
+			render(<StatusPage />)
+
+			const headings = await screen.findAllByRole('heading', { level: 2 })
+			expect(headings.map((heading) => heading.textContent)).toEqual(['PDL', 'Sigrun', 'Arena'])
+		},
+	)
+
 	it('should show loading and start expired tests when the page opens', async () => {
 		let starts = 0
 		server.use(

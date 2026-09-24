@@ -5,6 +5,16 @@ import statusApi, { FagsystemStatus } from '@/services/statusApi'
 
 const POLLING_INTERVAL_MILLISECONDS = 2_000
 
+const sortPriority = (statuses: FagsystemStatus[]) => {
+	if (statuses.some((status) => status.state === 'BLOCKED')) {
+		return 2
+	}
+	if (statuses.every((status) => status.state === 'TECHNICAL_ONLY')) {
+		return 1
+	}
+	return 0
+}
+
 export const useFagsystemStatuses = () => {
 	const [statuses, setStatuses] = useState<FagsystemStatus[]>([])
 	const [initialLoading, setInitialLoading] = useState(true)
@@ -99,7 +109,11 @@ export const useFagsystemStatuses = () => {
 					groups[status.systemId] = [...(groups[status.systemId] ?? []), status]
 					return groups
 				}, {}),
-			).sort((left, right) => left[0].displayName.localeCompare(right[0].displayName, 'nb')),
+			).sort(
+				(left, right) =>
+					sortPriority(left) - sortPriority(right) ||
+					left[0].displayName.localeCompare(right[0].displayName, 'nb'),
+			),
 		[statuses],
 	)
 
