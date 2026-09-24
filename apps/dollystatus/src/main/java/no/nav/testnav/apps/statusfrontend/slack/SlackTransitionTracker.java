@@ -26,24 +26,29 @@ public class SlackTransitionTracker {
         if (currentState.get() == HealthState.RED && previousState != HealthState.RED) {
             return Optional.of(SlackTransition.RED);
         }
-        if (currentState.get() == HealthState.GREEN && previousState == HealthState.RED) {
-            return Optional.of(SlackTransition.RECOVERED);
-        }
         return Optional.empty();
     }
 
+    static boolean isSuccessful(FunctionalTestStatus status) {
+        return status.state() == FunctionalTestState.OK
+                || (status.state() == FunctionalTestState.TECHNICAL_ONLY
+                && status.technicalStatus().state() == TechnicalStatusState.UP);
+    }
+
     private Optional<HealthState> healthState(FunctionalTestStatus status) {
-        if (status.state() == FunctionalTestState.OK) {
+        if (isSuccessful(status)) {
             return Optional.of(HealthState.GREEN);
         }
         if (status.state() == FunctionalTestState.TECHNICAL_ONLY) {
-            return Optional.of(status.technicalStatus().state() == TechnicalStatusState.UP
-                    ? HealthState.GREEN
-                    : HealthState.RED);
+            return status.technicalStatus().state() == TechnicalStatusState.DOWN
+                    ? Optional.of(HealthState.RED)
+                    : Optional.empty();
         }
-        return status.state().isTerminal()
-                ? Optional.of(HealthState.RED)
-                : Optional.empty();
+        return switch (status.state()) {
+            case PREFLIGHT_FAILED, CREATE_FAILED, VERIFY_FAILED, VERIFY_TIMEOUT, CLEANUP_FAILED ->
+                    Optional.of(HealthState.RED);
+            default -> Optional.empty();
+        };
     }
 
     private enum HealthState {
@@ -52,7 +57,6 @@ public class SlackTransitionTracker {
     }
 
     public enum SlackTransition {
-        RED,
-        RECOVERED
+        RED
     }
 }

@@ -1,5 +1,9 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
@@ -14,9 +18,10 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunReference;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatusDescriptor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.Exceptions;
@@ -37,39 +42,59 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.after;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 class FunctionalTestCoordinatorTest {
 
     private static final Instant STARTED_AT = Instant.parse("2026-09-21T10:00:00Z");
 
     @Test
-    @ExtendWith(OutputCaptureExtension.class)
-    void shouldLogCreateAndCleanupFailuresWithoutSensitiveDetails(CapturedOutput output) {
-        var definition = new PhasedDefinition();
-        var coordinator = coordinator(definition);
-        var runReference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
-        assertThat(runReference).isNotNull();
-        var sensitiveDetails = "03458537037 bearer-token raw-response";
+    void shouldLogCreateAndCleanupFailuresWithoutSensitiveDetails() {
+        var logger = (Logger) LoggerFactory.getLogger(FunctionalTestCoordinator.class);
+        var originalLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(Level.WARN);
 
-        definition.preflightResult.tryEmitValue(new TestValue());
-        definition.createResult.tryEmitError(WebClientResponseException.create(
-                400, sensitiveDetails, HttpHeaders.EMPTY, sensitiveDetails.getBytes(UTF_8), UTF_8));
-        definition.cleanupResult.tryEmitError(Exceptions.retryExhausted(
-                sensitiveDetails,
-                WebClientResponseException.create(
-                        403, sensitiveDetails, HttpHeaders.EMPTY, sensitiveDetails.getBytes(UTF_8), UTF_8)));
-        var completed = awaitCompleted(coordinator, runReference);
+        try {
+            var definition = new PhasedDefinition();
+            var coordinator = coordinator(definition);
+            var runReference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+            assertThat(runReference).isNotNull();
+            var sensitiveDetails = "03458537037 bearer-token raw-response";
 
-        assertThat(completed.results()).singleElement()
-                .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.CLEANUP_FAILED));
-        assertThat(output.getAll())
-                .contains(
-                        "runId=" + runReference.runId().value(),
-                        "fase=CREATE",
-                        "fase=CLEANUP",
-                        "httpStatus=400",
-                        "httpStatus=403")
-                .doesNotContain("03458537037", "bearer-token", "raw-response");
+            definition.preflightResult.tryEmitValue(new TestValue());
+            definition.createResult.tryEmitError(WebClientResponseException.create(
+                    400, sensitiveDetails, HttpHeaders.EMPTY, sensitiveDetails.getBytes(UTF_8), UTF_8));
+            definition.cleanupResult.tryEmitError(Exceptions.retryExhausted(
+                    sensitiveDetails,
+                    WebClientResponseException.create(
+                            403, sensitiveDetails, HttpHeaders.EMPTY, sensitiveDetails.getBytes(UTF_8), UTF_8)));
+            var completed = awaitCompleted(coordinator, runReference);
+
+            assertThat(completed.results()).singleElement()
+                    .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.CLEANUP_FAILED));
+            assertThat(appender.list).hasSize(2)
+                    .allSatisfy(event -> {
+                        assertThat(event.getFormattedMessage())
+                                .contains("runId=" + runReference.runId().value())
+                                .doesNotContain("03458537037", "bearer-token", "raw-response");
+                        assertThat(event.getThrowableProxy()).isNull();
+                    });
+            assertThat(appender.list.get(0).getFormattedMessage())
+                    .contains("fase=CREATE", "httpStatus=400");
+            assertThat(appender.list.get(1).getFormattedMessage())
+                    .contains("fase=CLEANUP", "httpStatus=403");
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(originalLevel);
+            appender.stop();
+        }
     }
 
     @Test
@@ -265,11 +290,13 @@ class FunctionalTestCoordinatorTest {
         var pdlLifecycle = new RecordingPdlLifecycle(events, false);
         var definition = new RequiresPdlDefinition(events, false, Set.of(FunctionalTestEnvironment.Q1));
         var clock = new MutableClock(STARTED_AT);
+        var listener = mock(FunctionalTestResultListener.class);
         var coordinator = new FunctionalTestCoordinator(
                 new FunctionalTestRegistry(List.of(definition)),
                 new FunctionalTestCache(clock),
                 clock,
-                List.of(pdlLifecycle));
+                List.of(pdlLifecycle),
+                List.of(listener));
 
         var runReference = coordinator.startSystem(new SystemId("arena")).block(Duration.ofSeconds(1));
 
@@ -280,6 +307,7 @@ class FunctionalTestCoordinatorTest {
                 .startsWith("pdl-preflight", "pdl-create")
                 .containsSubsequence("pdl-verify-Q1", "definition-preflight-Q1")
                 .endsWith("pdl-cleanup");
+        verify(listener, after(100).never()).onFullRunCompleted(any());
     }
 
     @Test
@@ -292,11 +320,13 @@ class FunctionalTestCoordinatorTest {
                         new OrderedDefinition(events, "pensjon-tp")),
                 List.of(new OrderedTechnicalStatus(events, "tags")));
         var clock = new MutableClock(STARTED_AT);
+        var listener = mock(FunctionalTestResultListener.class);
         var coordinator = new FunctionalTestCoordinator(
                 registry,
                 new FunctionalTestCache(clock),
                 clock,
-                List.of(pdlLifecycle));
+                List.of(pdlLifecycle),
+                List.of(listener));
 
         var runReference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
 
@@ -309,6 +339,77 @@ class FunctionalTestCoordinatorTest {
                         "arena",
                         "pdl-cleanup");
         assertThat(events.getLast()).isEqualTo("pdl-cleanup");
+        var completedRunCaptor = ArgumentCaptor.forClass(FunctionalTestRunStatus.class);
+        verify(listener, timeout(1000)).onFullRunCompleted(completedRunCaptor.capture());
+        assertThat(completedRunCaptor.getValue().state()).isEqualTo(FunctionalTestRunState.COMPLETED);
+        assertThat(completedRunCaptor.getValue().results())
+                .hasSize(5)
+                .allSatisfy(status -> assertThat(status.state())
+                        .isIn(FunctionalTestState.OK, FunctionalTestState.TECHNICAL_ONLY));
+    }
+
+    @Test
+    void shouldNotNotifyFullRunWhenSomeChecksAreCached() {
+        var definition = new CountingDefinition();
+        var technicalCheck = new TechnicalStatusDefinition() {
+            @Override
+            public TechnicalStatusDescriptor descriptor() {
+                return new TechnicalStatusDescriptor(
+                        new SystemId("aareg"),
+                        new DisplayName("AAREG"),
+                        Set.of(FunctionalTestEnvironment.GLOBAL));
+            }
+
+            @Override
+            public Mono<Void> check(FunctionalTestContext context) {
+                return Mono.empty();
+            }
+        };
+        var clock = new MutableClock(STARTED_AT);
+        var listener = mock(FunctionalTestResultListener.class);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(definition), List.of(technicalCheck)),
+                new FunctionalTestCache(clock),
+                clock,
+                List.of(),
+                List.of(listener));
+
+        var manualRun = coordinator.startSystem(new SystemId("arena")).block(Duration.ofSeconds(1));
+        assertThat(manualRun).isNotNull();
+        awaitCompleted(coordinator, manualRun);
+        verify(listener, after(100).never()).onFullRunCompleted(any());
+        var partialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(partialRun).isNotNull();
+        var completed = awaitCompleted(coordinator, partialRun);
+
+        assertThat(completed.results()).singleElement()
+                .satisfies(status -> assertThat(status.systemId()).isEqualTo(new SystemId("aareg")));
+        verify(listener, after(100).never()).onFullRunCompleted(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldBlockTechnicalCheckWhenPdlIsMissingOrFailed(boolean configuredPdl) {
+        var events = new CopyOnWriteArrayList<String>();
+        var clock = new MutableClock(STARTED_AT);
+        List<PdlTestLifecycle<?, ?>> lifecycles = configuredPdl
+                ? List.of(new RecordingPdlLifecycle(events, true))
+                : List.of();
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(), List.of(new OrderedTechnicalStatus(events, "tags"))),
+                new FunctionalTestCache(clock),
+                clock,
+                lifecycles);
+
+        var runReference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(runReference).isNotNull();
+        var completed = awaitCompleted(coordinator, runReference);
+
+        assertThat(events).doesNotContain("tags");
+        assertThat(completed.results())
+                .filteredOn(status -> status.systemId().equals(new SystemId("tags")))
+                .singleElement()
+                .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.BLOCKED));
     }
 
     private static FunctionalTestCoordinator coordinator(FunctionalTestDefinition<?, ?, ?> definition) {

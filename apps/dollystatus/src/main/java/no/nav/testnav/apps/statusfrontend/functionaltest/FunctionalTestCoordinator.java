@@ -132,7 +132,7 @@ public class FunctionalTestCoordinator {
                 if (registrations.isEmpty() && technicalRegistrations.isEmpty() && pdlLifecycle.isEmpty()) {
                     throw new FunctionalTestNotFoundException();
                 }
-                return launch(registrations, technicalRegistrations, pdlLifecycle, contextView);
+                return launch(registrations, technicalRegistrations, pdlLifecycle, contextView, true);
             }
         }));
     }
@@ -149,7 +149,7 @@ public class FunctionalTestCoordinator {
                         .findFirst();
                 if (pdlLifecycle.isPresent()) {
                     verifyCooldown(pdlKeys(pdlLifecycle.get()));
-                    return launch(List.of(), List.of(), pdlLifecycle, contextView);
+                    return launch(List.of(), List.of(), pdlLifecycle, contextView, false);
                 }
 
                 var registrations = registry.registrationsFor(systemId);
@@ -168,7 +168,7 @@ public class FunctionalTestCoordinator {
                                 .anyMatch(registration -> registration.definition().requiresPdl())
                                 || technicalRegistrations.stream()
                                 .anyMatch(registration -> registration.definition().requiresPdl()));
-                return launch(registrations, technicalRegistrations, requiredPdlLifecycle, contextView);
+                return launch(registrations, technicalRegistrations, requiredPdlLifecycle, contextView, false);
             }
         }));
     }
@@ -193,7 +193,8 @@ public class FunctionalTestCoordinator {
             List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
             List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
             Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
-            ContextView contextView
+            ContextView contextView,
+            boolean allSystemsRequested
     ) {
         var runId = RunId.random();
         var startedAt = clock.instant();
@@ -205,7 +206,13 @@ public class FunctionalTestCoordinator {
         orderedKeys.addAll(technicalRegistrations.stream()
                 .map(FunctionalTestRegistry.RegisteredTechnicalStatus::key)
                 .toList());
-        var run = new ActiveRun(runId, startedAt, orderedKeys);
+        var enabledCheckCount = registry.registrations().size()
+                + registry.technicalRegistrations().size()
+                + pdlLifecycles.stream()
+                .mapToInt(lifecycle -> lifecycle.descriptor().environments().size())
+                .sum();
+        var fullRun = allSystemsRequested && orderedKeys.size() == enabledCheckCount;
+        var run = new ActiveRun(runId, startedAt, orderedKeys, fullRun);
         pdlLifecycle.ifPresent(lifecycle -> lifecycle.descriptor().environments().forEach(environment ->
                 run.update(cache.start(
                         new FunctionalTestKey(lifecycle.descriptor().systemId(), environment),
@@ -232,7 +239,7 @@ public class FunctionalTestCoordinator {
                         ignored -> {
                         },
                         throwable -> failRun(run, throwable),
-                        () -> completeRun(run));
+                        () -> completeRun(run, true));
 
         return new RunReference(runId);
     }
@@ -250,10 +257,10 @@ public class FunctionalTestCoordinator {
                 registrations,
                 technicalRegistrations,
                 registration -> registration.definition().requiresPdl()
-                        ? blockRegistration(registration, run)
+                        ? blockRegistration(registration.key(), run)
                         : execute(registration, run),
                 registration -> registration.definition().requiresPdl()
-                        ? completeTechnical(registration, TechnicalStatusState.DOWN, run)
+                        ? blockRegistration(registration.key(), run)
                         : executeTechnical(registration, run));
     }
 
@@ -278,12 +285,12 @@ public class FunctionalTestCoordinator {
     }
 
     private Mono<Void> blockRegistration(
-            FunctionalTestRegistry.RegisteredFunctionalTest registration,
+            FunctionalTestKey key,
             ActiveRun run
     ) {
         return completeFailure(
                 run,
-                registration.key(),
+                key,
                 FunctionalTestState.BLOCKED,
                 0,
                 FunctionalTestErrorSanitizer.sanitize(
@@ -312,11 +319,11 @@ public class FunctionalTestCoordinator {
                                 technicalRegistrations,
                                 registration -> registration.definition().requiresPdl()
                                         && !execution.isReadyFor(registration.environment())
-                                        ? blockRegistration(registration, run)
+                                        ? blockRegistration(registration.key(), run)
                                         : execute(registration, run),
                                 registration -> registration.definition().requiresPdl()
                                         && !execution.isReadyFor(registration.environment())
-                                        ? completeTechnical(registration, TechnicalStatusState.DOWN, run)
+                                        ? blockRegistration(registration.key(), run)
                                         : executeTechnical(registration, run))
                         .then(cleanupPdl(lifecycle, execution, run)));
     }
@@ -789,8 +796,20 @@ public class FunctionalTestCoordinator {
         });
     }
 
-    private void completeRun(ActiveRun run) {
+    private void completeRun(ActiveRun run, boolean executionCompleted) {
         run.complete(clock.instant());
+        if (executionCompleted && run.fullRun) {
+            var completedRun = run.snapshot();
+            resultListeners.forEach(listener -> {
+                try {
+                    listener.onFullRunCompleted(completedRun);
+                } catch (RuntimeException exception) {
+                    log.error(
+                            "Klarte ikke å behandle ferdig testkjøring: {}",
+                            exception.getClass().getSimpleName());
+                }
+            });
+        }
         synchronized (runMonitor) {
             if (activeRun == run) {
                 activeRun = null;
@@ -806,7 +825,7 @@ public class FunctionalTestCoordinator {
                 FunctionalTestState.CREATE_FAILED,
                 status.cleanupAttempts(),
                 FunctionalTestErrorSanitizer.sanitize(CREATE, throwable)));
-        completeRun(run);
+        completeRun(run, false);
     }
 
     private record CompletionOutcome(FunctionalTestState state, FunctionalTestError error) {
@@ -836,6 +855,7 @@ public class FunctionalTestCoordinator {
         private final RunId runId;
         private final Instant startedAt;
         private final List<FunctionalTestKey> orderedKeys;
+        private final boolean fullRun;
         private final Map<FunctionalTestKey, FunctionalTestStatus> statuses = new LinkedHashMap<>();
         private FunctionalTestRunState state = FunctionalTestRunState.RUNNING;
         private Instant completedAt;
@@ -843,11 +863,13 @@ public class FunctionalTestCoordinator {
         private ActiveRun(
                 RunId runId,
                 Instant startedAt,
-                List<FunctionalTestKey> orderedKeys
+                List<FunctionalTestKey> orderedKeys,
+                boolean fullRun
         ) {
             this.runId = runId;
             this.startedAt = startedAt;
             this.orderedKeys = List.copyOf(orderedKeys);
+            this.fullRun = fullRun;
         }
 
         private RunId runId() {

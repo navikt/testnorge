@@ -1,14 +1,20 @@
 package no.nav.testnav.apps.statusfrontend.slack;
 
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.SlackProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestResultListener;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestRunState;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestRunStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestStatus;
 import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import no.nav.testnav.libs.slack.dto.Message;
 import no.nav.testnav.libs.slack.dto.Section;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -20,6 +26,8 @@ public class SlackNotifier implements FunctionalTestResultListener {
     private final SlackConsumer slackConsumer;
     private final SlackTransitionTracker transitionTracker;
     private final SlackProperties properties;
+    private final Scheduler notificationScheduler =
+            Schedulers.newBoundedElastic(1, 256, "dollystatus-slack");
 
     public SlackNotifier(
             SlackConsumer slackConsumer,
@@ -34,25 +42,37 @@ public class SlackNotifier implements FunctionalTestResultListener {
     @Override
     public void onCompleted(FunctionalTestStatus status) {
         transitionTracker.update(status)
-                .ifPresent(transition -> publish(status, transition));
+                .ifPresent(_ -> publish(redMessage(status)));
     }
 
-    private void publish(
-            FunctionalTestStatus status,
-            SlackTransitionTracker.SlackTransition transition
-    ) {
-        var text = transition == SlackTransitionTracker.SlackTransition.RED
-                ? redMessage(status)
-                : recoveryMessage(status);
-        try {
-            slackConsumer.publish(Message.builder()
-                    .channel(properties.getChannel())
-                    .blocks(List.of(Section.from(text)))
-                    .attachments(List.of())
-                    .build());
-        } catch (RuntimeException exception) {
-            log.error("Klarte ikke å sende statusvarsel til Slack: {}", exception.getClass().getSimpleName());
+    @Override
+    public void onFullRunCompleted(FunctionalTestRunStatus run) {
+        if (run.state() == FunctionalTestRunState.COMPLETED
+                && !run.results().isEmpty()
+                && run.results().stream().allMatch(SlackTransitionTracker::isSuccessful)) {
+            publish(":large_green_circle: Alle dollystatus tester kjørte vellykket!");
         }
+    }
+
+    private void publish(String text) {
+        var message = Message.builder()
+                .channel(properties.getChannel())
+                .blocks(List.of(Section.from(text)))
+                .attachments(List.of())
+                .build();
+        Mono.fromRunnable(() -> slackConsumer.publish(message))
+                .subscribeOn(notificationScheduler)
+                .subscribe(
+                        _ -> {
+                        },
+                        exception -> log.error(
+                                "Klarte ikke å sende statusvarsel til Slack: {}",
+                                exception.getClass().getSimpleName()));
+    }
+
+    @PreDestroy
+    void stopNotifications() {
+        notificationScheduler.dispose();
     }
 
     private String redMessage(FunctionalTestStatus status) {
@@ -64,16 +84,6 @@ public class SlackNotifier implements FunctionalTestResultListener {
                         status.displayName().value(),
                         status.environment(),
                         category,
-                        status.completedAt(),
-                        status.runId().value(),
-                        properties.getStatusPageUrl());
-    }
-
-    private String recoveryMessage(FunctionalTestStatus status) {
-        return ":large_green_circle: *%s (%s) er grønn igjen*\nTid: %s\nKjøring: %s\n<%s|Åpne Dollystatus>"
-                .formatted(
-                        status.displayName().value(),
-                        status.environment(),
                         status.completedAt(),
                         status.runId().value(),
                         properties.getStatusPageUrl());
