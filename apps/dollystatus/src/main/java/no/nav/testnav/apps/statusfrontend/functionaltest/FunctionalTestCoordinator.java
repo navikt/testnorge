@@ -797,7 +797,12 @@ public class FunctionalTestCoordinator {
     }
 
     private void completeRun(ActiveRun run, boolean executionCompleted) {
-        run.complete(clock.instant());
+        synchronized (runMonitor) {
+            run.complete(clock.instant());
+            if (activeRun == run) {
+                activeRun = null;
+            }
+        }
         if (executionCompleted && run.fullRun) {
             var completedRun = run.snapshot();
             resultListeners.forEach(listener -> {
@@ -809,11 +814,6 @@ public class FunctionalTestCoordinator {
                             exception.getClass().getSimpleName());
                 }
             });
-        }
-        synchronized (runMonitor) {
-            if (activeRun == run) {
-                activeRun = null;
-            }
         }
     }
 

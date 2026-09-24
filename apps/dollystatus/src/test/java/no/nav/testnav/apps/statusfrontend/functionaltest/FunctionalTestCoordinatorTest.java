@@ -44,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.after;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -204,6 +205,46 @@ class FunctionalTestCoordinatorTest {
         assertThat(manualRun).isNotNull();
         awaitCompleted(coordinator, manualRun);
         assertThat(definition.createAttempts).hasValue(2);
+    }
+
+    @Test
+    void shouldReleaseRunBeforeFullRunListenerCompletes() throws InterruptedException {
+        var definition = new CountingDefinition();
+        var clock = new MutableClock(STARTED_AT);
+        var listener = mock(FunctionalTestResultListener.class);
+        var listenerStarted = new CountDownLatch(1);
+        var releaseListener = new CountDownLatch(1);
+        doAnswer(_ -> {
+            listenerStarted.countDown();
+            assertThat(releaseListener.await(5, TimeUnit.SECONDS)).isTrue();
+            return null;
+        }).when(listener).onFullRunCompleted(any());
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(definition)),
+                new FunctionalTestCache(clock),
+                clock,
+                List.of(),
+                List.of(listener));
+
+        try {
+            var firstRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+            assertThat(firstRun).isNotNull();
+            assertThat(listenerStarted.await(5, TimeUnit.SECONDS)).isTrue();
+            awaitCompleted(coordinator, firstRun);
+
+            assertThatThrownBy(() -> coordinator.startSystem(new SystemId("arena"))
+                    .block(Duration.ofSeconds(1)))
+                    .isInstanceOf(FunctionalTestCooldownException.class);
+
+            clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+            var manualRun = coordinator.startSystem(new SystemId("arena")).block(Duration.ofSeconds(1));
+            assertThat(manualRun).isNotNull();
+            assertThat(manualRun.runId()).isNotEqualTo(firstRun.runId());
+            awaitCompleted(coordinator, manualRun);
+            assertThat(definition.createAttempts).hasValue(2);
+        } finally {
+            releaseListener.countDown();
+        }
     }
 
     @Test
