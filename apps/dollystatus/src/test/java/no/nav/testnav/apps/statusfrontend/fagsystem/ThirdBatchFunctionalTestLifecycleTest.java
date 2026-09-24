@@ -41,6 +41,8 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -289,8 +291,9 @@ class ThirdBatchFunctionalTestLifecycleTest {
         verify(brregstubClient, never()).deleteOrganization();
     }
 
-    @Test
-    void shouldVerifyTerminatedSkjermingInsteadOfAbsence() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldAcceptTerminatedOrNoLongerVisibleSkjermingAfterCleanup(boolean hiddenAfterTermination) {
         when(skjermingsregisterClient.getScreening(any(), any()))
                 .thenReturn(
                         Mono.just(SkjermingsregisterResourceStatus.emptyStatus()),
@@ -300,7 +303,9 @@ class ThirdBatchFunctionalTestLifecycleTest {
                                 true,
                                 false,
                                 true)),
-                        Mono.just(new SkjermingsregisterResourceStatus(
+                        Mono.just(hiddenAfterTermination
+                                ? SkjermingsregisterResourceStatus.emptyStatus()
+                                : new SkjermingsregisterResourceStatus(
                                 false,
                                 true,
                                 false,
@@ -332,6 +337,22 @@ class ThirdBatchFunctionalTestLifecycleTest {
         calls.verify(skjermingsregisterClient).getScreening(any(), any());
         calls.verify(skjermingsregisterClient).updateScreening(any());
         calls.verify(skjermingsregisterClient).getScreening(any(), any());
+    }
+
+    @Test
+    void shouldNotAcceptMissingSkjermingDuringCreationVerification() {
+        when(skjermingsregisterClient.getScreening(any(), any()))
+                .thenReturn(Mono.just(SkjermingsregisterResourceStatus.emptyStatus()));
+        var lifecycle = skjermingsregisterLifecycle();
+
+        StepVerifier.withVirtualTime(
+                        () -> lifecycle.verify(
+                                context("skjermingsregister"), new SkjermingsregisterPreflight(false),
+                                Creation.COMPLETED),
+                        () -> scheduler, 1)
+                .thenAwait(Duration.ofMinutes(3))
+                .expectError(FunctionalTestVerificationTimeoutException.class)
+                .verify();
     }
 
     @Test

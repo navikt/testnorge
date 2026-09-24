@@ -25,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
@@ -382,6 +383,40 @@ class ThirdBatchCommandContractTest {
                         TIMEOUT).call())
                 .assertNext(status -> assertThat(status.empty()).isTrue())
                 .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {200, 204})
+    void shouldRejectEmptySuccessfulSkjermingsregisterResponse(int statusCode) {
+        var request = new SkjermingsregisterRequest(
+                "Testperson", "Dollystatus", IDENT,
+                LocalDateTime.parse("2026-09-21T10:00:00"),
+                LocalDateTime.parse("2026-09-21T10:00:00"));
+        stubFor(get(urlPathEqualTo("/skjermingsregister/api/v1/skjerming/dolly"))
+                .willReturn(aResponse().withStatus(statusCode)));
+
+        StepVerifier.create(new GetSkjermingsregisterCommand(
+                        webClient, TOKEN, request, request.skjermetTil(), TIMEOUT).call())
+                .expectErrorMatches(error -> error instanceof IllegalStateException
+                        && error.getMessage().equals("Skjermingsregister-oppslaget returnerte tom respons."))
+                .verify();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {401, 403})
+    void shouldNotTreatSkjermingsregisterAuthenticationErrorsAsAbsence(int statusCode) {
+        var request = new SkjermingsregisterRequest(
+                "Testperson", "Dollystatus", IDENT,
+                LocalDateTime.parse("2026-09-21T10:00:00"),
+                LocalDateTime.parse("2026-09-21T10:00:00"));
+        stubFor(get(urlPathEqualTo("/skjermingsregister/api/v1/skjerming/dolly"))
+                .willReturn(aResponse().withStatus(statusCode)));
+
+        StepVerifier.create(new GetSkjermingsregisterCommand(
+                        webClient, TOKEN, request, request.skjermetTil(), TIMEOUT).call())
+                .expectErrorMatches(error -> error instanceof WebClientResponseException responseException
+                        && responseException.getStatusCode().value() == statusCode)
+                .verify();
     }
 
     @Test

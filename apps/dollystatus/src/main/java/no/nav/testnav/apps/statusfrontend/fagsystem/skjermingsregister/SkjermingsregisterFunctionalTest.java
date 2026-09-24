@@ -122,30 +122,26 @@ public class SkjermingsregisterFunctionalTest implements FunctionalTestDefinitio
                 pdlProperties.getIdent(),
                 context);
         return client.updateScreening(request)
-                .then(awaitTerminated(context, createResult.isEmpty()));
+                .then(awaitTerminated(context));
     }
 
     private Mono<Void> awaitActive(FunctionalTestContext context) {
         var request = SkjermingsregisterTestData.activeRequest(
                 pdlProperties.getIdent(),
                 context);
-        return awaitStatus(context, request, false);
+        return awaitStatus(context, request);
     }
 
-    private Mono<Void> awaitTerminated(
-            FunctionalTestContext context,
-            boolean allowEmpty
-    ) {
+    private Mono<Void> awaitTerminated(FunctionalTestContext context) {
         var request = SkjermingsregisterTestData.terminatedRequest(
                 pdlProperties.getIdent(),
                 context);
-        return awaitStatus(context, request, allowEmpty);
+        return awaitStatus(context, request);
     }
 
     private Mono<Void> awaitStatus(
             FunctionalTestContext context,
-            SkjermingsregisterRequest expectedRequest,
-            boolean allowEmpty
+            SkjermingsregisterRequest expectedRequest
     ) {
         var expectedActive = expectedRequest.skjermetTil()
                 .isAfter(expectedRequest.skjermetFra());
@@ -155,7 +151,7 @@ public class SkjermingsregisterFunctionalTest implements FunctionalTestDefinitio
                     () -> client.getScreening(expectedRequest, referenceTime(context))
                             .doOnNext(lastStatus::set),
                     status -> {
-                        if (allowEmpty && status.empty()) {
+                        if (!expectedActive && status.empty()) {
                             return true;
                         }
                         return expectedActive
