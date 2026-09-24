@@ -19,7 +19,7 @@ export const useSoekMalerOversikt = () => {
 
 export const useSoekMalerBruker = (brukerId?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
-		`${templateSearchServiceUrl}/brukerId/${brukerId}`,
+		brukerId ? `${templateSearchServiceUrl}/brukerId/${brukerId}` : null,
 		fetcher,
 	)
 

@@ -59,7 +59,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 					data-testid={TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL}
 				/>
 			</div>
-			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 ? (
+			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 && antallEgneTenorsoekMaler === 0 ? (
 				<StyledAlert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
