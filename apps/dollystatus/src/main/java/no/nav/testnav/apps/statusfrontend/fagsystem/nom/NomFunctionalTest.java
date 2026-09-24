@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import static java.util.Objects.nonNull;
 
 @Service
 @ConditionalOnProperty(prefix = "functional-test.nom", name = "enabled", havingValue = "true")
@@ -64,7 +65,7 @@ public class NomFunctionalTest
     public Mono<Preflight> preflight(FunctionalTestContext context) {
         var request = NomTestData.request(pdlProperties.getIdent(), context);
         return client.getResource(context.runId(), request)
-                .flatMap(status -> status.empty() || status.closed()
+                .flatMap(status -> status.empty() || isInactive(status, context)
                         ? Mono.just(Preflight.COMPLETED)
                         : Mono.error(new FunctionalTestBlockedException()));
     }
@@ -94,11 +95,33 @@ public class NomFunctionalTest
             Optional<NomVerification> verificationResult,
             CleanupExpectation expectedEndState
     ) {
-        var endDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();
-        var resourceId = verificationResult.map(NomVerification::resourceId).orElse(null);
+        if (verificationResult.isPresent()) {
+            return closeAndVerify(context, verificationResult.get().resourceId());
+        }
+        var request = NomTestData.request(pdlProperties.getIdent(), context);
+        return client.getResource(context.runId(), request)
+                .flatMap(status -> {
+                    if (status.empty() || isInactive(status, context)) {
+                        return Mono.empty();
+                    }
+                    if (!status.expectedDataPresent()) {
+                        return Mono.error(new FunctionalTestBlockedException());
+                    }
+                    return closeAndVerify(context, status.resourceId());
+                });
+    }
+
+    private Mono<Void> closeAndVerify(FunctionalTestContext context, String resourceId) {
+        var endDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate().minusDays(1);
         return client.closeResource(context.runId(), endDate)
                 .then(awaitStatus(context, false, resourceId))
                 .then();
+    }
+
+    private static boolean isInactive(NomResourceStatus status, FunctionalTestContext context) {
+        return status.closed()
+                && nonNull(status.endDate())
+                && status.endDate().isBefore(context.startedAt().atZone(ZoneOffset.UTC).toLocalDate());
     }
 
     private Mono<NomResourceStatus> awaitStatus(
@@ -107,14 +130,14 @@ public class NomFunctionalTest
             String expectedResourceId
     ) {
         var request = NomTestData.request(pdlProperties.getIdent(), context);
-        var expectedEndDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();
+        var expectedEndDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate().minusDays(1);
         return pollUntil(
                 () -> client.getResource(context.runId(), request),
                 status -> expectedActive
                         ? status.expectedDataPresent()
                         : status.closed()
                         && expectedEndDate.equals(status.endDate())
-                        && expectedResourceId != null
+                        && nonNull(expectedResourceId)
                         && expectedResourceId.equals(status.resourceId()),
                 properties.getPollInterval(),
                         properties.getPollTimeout(),

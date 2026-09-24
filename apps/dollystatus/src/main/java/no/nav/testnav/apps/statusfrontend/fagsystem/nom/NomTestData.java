@@ -15,7 +15,7 @@ final class NomTestData {
                 "Testesen",
                 "Test",
                 null,
-                context.startedAt().atZone(ZoneOffset.UTC).toLocalDate(),
+                context.startedAt().atZone(ZoneOffset.UTC).toLocalDate().minusDays(2),
                 null);
     }
 }

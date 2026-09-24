@@ -20,6 +20,7 @@ final class InntektstubTestData {
                         RESERVED_INCOME_TYPE,
                         1234.0,
                         "fastloenn",
+                        "kontantytelse",
                         true,
                         true)));
     }

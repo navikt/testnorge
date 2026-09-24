@@ -5,11 +5,13 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrResourceStatus;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -22,11 +24,12 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
 
     @Override
     public Mono<KrrResourceStatus> call() {
-        return webClient.get()
-                .uri("/krrstub/api/v2/person/kontaktinformasjon")
+        return webClient.post()
+                .uri("/krrstub/api/v2/person/kontaktinformasjon/soek")
+                .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers -> headers.setBearerAuth(token))
                 .header("Nav-Consumer-Id", "Dolly")
-                .header("Nav-Personident", expectedRequest.personident())
+                .bodyValue(Map.of("personidentifikator", expectedRequest.personident()))
                 .exchangeToMono(response -> {
                     if (response.statusCode() == HttpStatus.NOT_FOUND
                             || response.statusCode() == HttpStatus.NO_CONTENT) {
@@ -62,7 +65,8 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
     }
 
     private boolean matches(JsonNode response) {
-        return expectedRequest.personident().equals(response.path("personident").asString())
+        return (response.path("personident").isMissingNode()
+                || expectedRequest.personident().equals(response.path("personident").asString()))
                 && expectedRequest.mobil().equals(response.path("mobil").asString())
                 && expectedRequest.epost().equals(response.path("epost").asString())
                 && expectedRequest.spraak().equals(response.path("spraak").asString())

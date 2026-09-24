@@ -3,12 +3,15 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.SkjermingsregisterFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -23,6 +26,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 @Service
+@Slf4j
 @ConditionalOnProperty(
         prefix = "functional-test.skjermingsregister",
         name = "enabled",
@@ -145,19 +149,27 @@ public class SkjermingsregisterFunctionalTest implements FunctionalTestDefinitio
     ) {
         var expectedActive = expectedRequest.skjermetTil()
                 .isAfter(expectedRequest.skjermetFra());
-        return pollUntil(
-                () -> client.getScreening(expectedRequest, referenceTime(context)),
-                status -> {
-                    if (allowEmpty && status.empty()) {
-                        return true;
-                    }
-                    return expectedActive
-                            ? status.active() && status.expectedDataPresent()
-                            : status.terminated() && status.expectedDataPresent();
-                },
-                properties.getPollInterval(),
-                        properties.getPollTimeout(),
-                        scheduler).then();
+        return Mono.defer(() -> {
+            var lastStatus = new AtomicReference<SkjermingsregisterResourceStatus>();
+            return pollUntil(
+                    () -> client.getScreening(expectedRequest, referenceTime(context))
+                            .doOnNext(lastStatus::set),
+                    status -> {
+                        if (allowEmpty && status.empty()) {
+                            return true;
+                        }
+                        return expectedActive
+                                ? status.active() && status.expectedDataPresent()
+                                : status.terminated() && status.expectedDataPresent();
+                    },
+                    properties.getPollInterval(),
+                    properties.getPollTimeout(),
+                    scheduler)
+                    .doOnError(FunctionalTestVerificationTimeoutException.class, _ -> log.warn(
+                            "Skjermingsregister oppnådde ikke forventet tilstand: runId={}, expectedActive={}, lastStatus={}",
+                            context.runId().value(), expectedActive, lastStatus.get()))
+                    .then();
+        });
     }
 
     private static java.time.LocalDateTime referenceTime(FunctionalTestContext context) {

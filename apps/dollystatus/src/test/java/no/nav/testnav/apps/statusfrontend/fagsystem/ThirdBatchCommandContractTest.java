@@ -22,6 +22,8 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.udi.command.GetUdiPersonComm
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -191,6 +193,7 @@ class ThirdBatchCommandContractTest {
                         "LOENNSINNTEKT",
                         1234.0,
                         "fastloenn",
+                        "kontantytelse",
                         true,
                         true)));
         var response = """
@@ -203,6 +206,7 @@ class ThirdBatchCommandContractTest {
                     "inntektstype": "LOENNSINNTEKT",
                     "beloep": 1234.0,
                     "beskrivelse": "fastloenn",
+                    "fordel": "kontantytelse",
                     "inngaarIGrunnlagForTrekk": true,
                     "utloeserArbeidsgiveravgift": true
                   }]
@@ -243,6 +247,43 @@ class ThirdBatchCommandContractTest {
                         webClient, TOKEN, request, TIMEOUT).call())
                 .assertNext(status -> assertThat(status.empty()).isTrue())
                 .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldRejectInntektstubValidationErrorsReturnedWithHttpOk(boolean nestedError) {
+        var request = new InntektstubRequest(
+                IDENT, "2099-12", "991825827", "991825827",
+                List.of(new InntektstubRequest.Income(
+                        "LOENNSINNTEKT", 1234.0, "fastloenn", "kontantytelse", true, true)));
+        var errorField = "\"feilmelding\": \"Sensitive downstream validation details\",";
+        stubFor(post(urlPathEqualTo("/inntektstub/api/v2/inntektsinformasjon"))
+                .willReturn(okJson("""
+                        [{
+                          %s
+                          "norskIdent": "03458537037",
+                          "aarMaaned": "2099-12",
+                          "opplysningspliktig": "991825827",
+                          "virksomhet": "991825827",
+                          "inntektsliste": [{
+                            %s
+                            "inntektstype": "LOENNSINNTEKT",
+                            "beloep": 1234.0,
+                            "beskrivelse": "fastloenn",
+                            "fordel": "kontantytelse",
+                            "inngaarIGrunnlagForTrekk": true,
+                            "utloeserArbeidsgiveravgift": true
+                          }]
+                        }]
+                        """.formatted(nestedError ? "" : errorField, nestedError ? errorField : ""))));
+
+        StepVerifier.create(new CreateInntektstubIncomeCommand(
+                        webClient, TOKEN, request, TIMEOUT).call())
+                .expectErrorSatisfies(error -> assertThat(error)
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("Inntektstub avviste testdata.")
+                        .hasNoCause())
+                .verify();
     }
 
     @Test

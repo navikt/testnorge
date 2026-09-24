@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArenaFunctionalTestProperties;
@@ -21,11 +22,13 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrResourceStatus;
 import no.nav.testnav.apps.statusfrontend.fagsystem.nom.NomClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.nom.NomFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.nom.NomResourceStatus;
+import no.nav.testnav.apps.statusfrontend.fagsystem.nom.NomRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
@@ -35,6 +38,8 @@ import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,6 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -200,6 +206,99 @@ class SecondBatchFunctionalTestLifecycleTest {
                 .verify();
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1})
+    void shouldBlockNomUntilExistingEndDateHasPassed(int daysUntilEnd) {
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new NomResourceStatus(
+                        false, false, true, "12345",
+                        LocalDate.of(2026, 9, 21).plusDays(daysUntilEnd))));
+
+        StepVerifier.create(nomLifecycle().preflight(context("nom", FunctionalTestEnvironment.GLOBAL)))
+                .expectError(FunctionalTestBlockedException.class)
+                .verify();
+        verify(nomClient, never()).createResource(any(), any());
+        verify(nomClient, never()).closeResource(any(), any());
+    }
+
+    @Test
+    void shouldCreateAndCloseNomWithDatesThatAllowAnotherRunTheSameDay() {
+        var endDate = LocalDate.of(2026, 9, 20);
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(
+                        Mono.just(NomResourceStatus.emptyStatus()),
+                        Mono.just(new NomResourceStatus(false, true, false, "12345", null)),
+                        Mono.just(new NomResourceStatus(false, false, true, "12345", endDate)));
+        when(nomClient.createResource(eq(RUN_ID), any())).thenReturn(Mono.empty());
+        when(nomClient.closeResource(RUN_ID, endDate)).thenReturn(Mono.empty());
+        var lifecycle = nomLifecycle();
+        var context = context("nom", FunctionalTestEnvironment.GLOBAL);
+
+        StepVerifier.create(lifecycle.preflight(context)
+                        .flatMap(preflight -> lifecycle.create(context, preflight)
+                                .flatMap(created -> lifecycle.verify(context, preflight, created)
+                                        .flatMap(verified -> lifecycle.cleanup(
+                                                context, preflight, Optional.of(created), Optional.of(verified),
+                                                lifecycle.descriptor().expectedCleanupState()))))
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNext(Preflight.COMPLETED)
+                .verifyComplete();
+
+        var requestCaptor = ArgumentCaptor.forClass(NomRequest.class);
+        verify(nomClient).createResource(eq(RUN_ID), requestCaptor.capture());
+        assertThat(requestCaptor.getValue().startDato()).isEqualTo(LocalDate.of(2026, 9, 19));
+        verify(nomClient).closeResource(RUN_ID, endDate);
+    }
+
+    @Test
+    void shouldDiscoverNomResourceIdForCleanupAfterVerificationFailure() {
+        var endDate = LocalDate.of(2026, 9, 20);
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(
+                        Mono.just(new NomResourceStatus(false, true, false, "12345", null)),
+                        Mono.just(new NomResourceStatus(false, false, true, "12345", endDate)));
+        when(nomClient.closeResource(RUN_ID, endDate)).thenReturn(Mono.empty());
+        var lifecycle = nomLifecycle();
+
+        StepVerifier.create(lifecycle.cleanup(
+                        context("nom", FunctionalTestEnvironment.GLOBAL), Preflight.COMPLETED,
+                        Optional.of(Creation.COMPLETED), Optional.empty(),
+                        lifecycle.descriptor().expectedCleanupState()))
+                .verifyComplete();
+
+        var calls = inOrder(nomClient);
+        calls.verify(nomClient).getResource(eq(RUN_ID), any());
+        calls.verify(nomClient).closeResource(RUN_ID, endDate);
+        calls.verify(nomClient).getResource(eq(RUN_ID), any());
+    }
+
+    @Test
+    void shouldSkipNomCleanupWhenFailedCreationLeftNoResource() {
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(NomResourceStatus.emptyStatus()));
+        var lifecycle = nomLifecycle();
+
+        StepVerifier.create(lifecycle.cleanup(
+                        context("nom", FunctionalTestEnvironment.GLOBAL), Preflight.COMPLETED,
+                        Optional.empty(), Optional.empty(), lifecycle.descriptor().expectedCleanupState()))
+                .verifyComplete();
+        verify(nomClient, never()).closeResource(any(), any());
+    }
+
+    @Test
+    void shouldNotCloseUnexpectedNomResourceAfterFailedCreation() {
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new NomResourceStatus(false, false, false, "54321", null)));
+        var lifecycle = nomLifecycle();
+
+        StepVerifier.create(lifecycle.cleanup(
+                        context("nom", FunctionalTestEnvironment.GLOBAL), Preflight.COMPLETED,
+                        Optional.empty(), Optional.empty(), lifecycle.descriptor().expectedCleanupState()))
+                .expectError(FunctionalTestBlockedException.class)
+                .verify();
+        verify(nomClient, never()).closeResource(any(), any());
+    }
+
     @Test
     void shouldBlockSkattekortWhenTaxCardExists() {
         when(skattekortClient.getTaxCard(
@@ -269,6 +368,10 @@ class SecondBatchFunctionalTestLifecycleTest {
                 pdlProperties,
                 new KrrFunctionalTestProperties(),
                 scheduler);
+    }
+
+    private NomFunctionalTest nomLifecycle() {
+        return new NomFunctionalTest(nomClient, pdlProperties, new NomFunctionalTestProperties(), scheduler);
     }
 
     private static FunctionalTestContext context(

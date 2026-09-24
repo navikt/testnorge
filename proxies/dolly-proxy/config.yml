@@ -177,8 +177,9 @@ spec:
         - application: pensjon-samboerforhold-backend-q2
           namespace: pensjon-person
           cluster: dev-gcp
-        - application: repr-fullmakt
+        - application: fullmakt
           namespace: repr
+          cluster: dev-gcp
         - application: skjermede-personer
           namespace: nom
         - application: sokos-skattekort

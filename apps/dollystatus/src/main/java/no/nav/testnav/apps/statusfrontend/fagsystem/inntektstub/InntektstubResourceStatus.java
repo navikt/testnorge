@@ -15,6 +15,12 @@ public record InntektstubResourceStatus(boolean empty, boolean expectedDataPrese
             return emptyStatus();
         }
         for (var entry : response) {
+            rejectValidationError(entry);
+            for (var income : entry.path("inntektsliste")) {
+                rejectValidationError(income);
+            }
+        }
+        for (var entry : response) {
             if (matches(entry, expectedRequest)) {
                 return new InntektstubResourceStatus(false, true);
             }
@@ -24,6 +30,12 @@ public record InntektstubResourceStatus(boolean empty, boolean expectedDataPrese
 
     public static InntektstubResourceStatus emptyStatus() {
         return new InntektstubResourceStatus(true, false);
+    }
+
+    private static void rejectValidationError(JsonNode entry) {
+        if (!entry.path("feilmelding").asText("").isBlank()) {
+            throw new IllegalArgumentException("Inntektstub avviste testdata.");
+        }
     }
 
     private static boolean matches(JsonNode entry, InntektstubRequest expectedRequest) {
@@ -44,7 +56,8 @@ public record InntektstubResourceStatus(boolean empty, boolean expectedDataPrese
                     && Double.compare(
                     expectedIncome.beloep(),
                     income.path("beloep").asDouble()) == 0
-                    && expectedIncome.beskrivelse().equals(income.path("beskrivelse").asString())) {
+                    && expectedIncome.beskrivelse().equals(income.path("beskrivelse").asString())
+                    && expectedIncome.fordel().equals(income.path("fordel").asString())) {
                 return true;
             }
         }

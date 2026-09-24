@@ -1,5 +1,10 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
@@ -20,10 +25,12 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.sigrun.SigrunTechnicalStatus
 import no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister.SkjermingsregisterClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister.SkjermingsregisterFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister.SkjermingsregisterResourceStatus;
+import no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister.SkjermingsregisterPreflight;
 import no.nav.testnav.apps.statusfrontend.fagsystem.udi.UdiClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.udi.UdiFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.udi.UdiResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
@@ -37,6 +44,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
@@ -254,6 +262,7 @@ class ThirdBatchFunctionalTestLifecycleTest {
         calls.verify(inntektstubClient).getIncome(any());
         assertThat(requestCaptor.getValue().inntektsliste()).singleElement()
                 .satisfies(income -> {
+                    assertThat(income.fordel()).isEqualTo("kontantytelse");
                     assertThat(income.inngaarIGrunnlagForTrekk()).isTrue();
                     assertThat(income.utloeserArbeidsgiveravgift()).isTrue();
                 });
@@ -323,6 +332,45 @@ class ThirdBatchFunctionalTestLifecycleTest {
         calls.verify(skjermingsregisterClient).getScreening(any(), any());
         calls.verify(skjermingsregisterClient).updateScreening(any());
         calls.verify(skjermingsregisterClient).getScreening(any(), any());
+    }
+
+    @Test
+    void shouldKeepMismatchedSkjermingCleanupRedAndLogOnlyStatusFlags() {
+        when(skjermingsregisterClient.updateScreening(any())).thenReturn(Mono.empty());
+        when(skjermingsregisterClient.getScreening(any(), any()))
+                .thenReturn(Mono.just(new SkjermingsregisterResourceStatus(
+                        false, true, false, true, false)));
+        var lifecycle = skjermingsregisterLifecycle();
+        var logger = (Logger) LoggerFactory.getLogger(SkjermingsregisterFunctionalTest.class);
+        var previousLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(Level.WARN);
+        try {
+            StepVerifier.withVirtualTime(
+                            () -> lifecycle.cleanup(
+                                    context("skjermingsregister"), new SkjermingsregisterPreflight(false),
+                                    Optional.of(Creation.COMPLETED), Optional.empty(),
+                                    lifecycle.descriptor().expectedCleanupState()),
+                            () -> scheduler, 1)
+                    .thenAwait(Duration.ofMinutes(3))
+                    .expectError(FunctionalTestVerificationTimeoutException.class)
+                    .verify();
+
+            assertThat(appender.list).singleElement().satisfies(event -> {
+                assertThat(event.getFormattedMessage())
+                        .contains("runId=" + RUN_ID.value(), "expectedActive=false",
+                                "empty=false", "owned=true", "active=false", "terminated=true",
+                                "expectedDataPresent=false")
+                        .doesNotContain(IDENT, "Testperson", "skjermetFra", "skjermetTil");
+                assertThat(event.getThrowableProxy()).isNull();
+            });
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(previousLevel);
+            appender.stop();
+        }
     }
 
     private BrregstubFunctionalTest brregstubLifecycle() {

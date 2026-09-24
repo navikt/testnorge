@@ -53,13 +53,14 @@ public class GetArenaUserCommand implements Callable<Mono<ArenaResourceStatus>> 
         var user = expectedRequest.nyeBrukere().getFirst();
         var registered = !response.path("registrertDato").isMissingNode()
                 && !response.path("registrertDato").isNull();
-        var inactive = !response.path("sistInaktivDato").isMissingNode()
-                && !response.path("sistInaktivDato").isNull();
+        var placementGroup = response.path("formidlingsgruppe").path("kode").asText("");
+        var inactive = "ISERV".equals(placementGroup);
+        var active = registered && !placementGroup.isBlank() && !inactive;
         var serviceGroup = response.path("servicegruppe").path("kode").asString();
         return new ArenaResourceStatus(
                 false,
-                registered && !inactive,
-                registered && !inactive && user.kvalifiseringsgruppe().equals(serviceGroup),
+                active,
+                active && user.kvalifiseringsgruppe().equals(serviceGroup),
                 registered && inactive);
     }
 }

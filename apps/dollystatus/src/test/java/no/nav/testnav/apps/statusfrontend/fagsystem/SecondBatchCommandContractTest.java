@@ -24,6 +24,8 @@ import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -78,7 +80,8 @@ class SecondBatchCommandContractTest {
                 .willReturn(okJson("""
                         {
                           "registrertDato": "2026-09-21",
-                          "sistInaktivDato": null,
+                          "sistInaktivDato": "2026-09-20",
+                          "formidlingsgruppe": {"kode": "ARBS"},
                           "servicegruppe": {"kode": "IKVAL"}
                         }
                         """)));
@@ -144,6 +147,33 @@ class SecondBatchCommandContractTest {
                 .expectErrorMatches(error -> error instanceof IllegalStateException
                         && error.getMessage().contains("ugyldig respons"))
                 .verify();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"ARBS,true,false", "ISERV,false,true", "'',false,false"})
+    void shouldDetermineArenaActivityFromCurrentPlacementGroup(
+            String placementGroup, boolean active, boolean inactive) {
+        var request = new ArenaRequest(List.of(new ArenaRequest.User(
+                IDENT, "q1", LocalDate.of(2026, 9, 21), "IKVAL", true)));
+        stubFor(get(urlPathEqualTo(
+                "/arena/q1/arena/syntetiser/brukeroppfolging/personstatusytelse"))
+                .willReturn(okJson("""
+                        {
+                          "registrertDato": "2026-09-21",
+                          "sistInaktivDato": null,
+                          "formidlingsgruppe": {"kode": "%s"},
+                          "servicegruppe": {"kode": "IKVAL"}
+                        }
+                        """.formatted(placementGroup))));
+
+        StepVerifier.create(new GetArenaUserCommand(
+                        webClient, TOKEN, IDENT, "q1", request, TIMEOUT).call())
+                .assertNext(status -> {
+                    assertThat(status.active()).isEqualTo(active);
+                    assertThat(status.inactive()).isEqualTo(inactive);
+                    assertThat(status.expectedDataPresent()).isEqualTo(active);
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -225,16 +255,15 @@ class SecondBatchCommandContractTest {
                 timestamp);
         stubFor(post(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon"))
                 .willReturn(ok()));
-        stubFor(get(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon"))
+        stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
                 .willReturn(okJson("""
-                        {
-                          "personident": "03458537037",
+                        [{
                           "reservert": false,
                           "registrert": true,
                           "mobil": "+4740000000",
                           "epost": "dollystatus@example.invalid",
                           "spraak": "nb"
-                        }
+                        }]
                         """)));
         stubFor(delete(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon"))
                 .willReturn(ok()));
@@ -270,14 +299,25 @@ class SecondBatchCommandContractTest {
                           "reservertOppdatert": "2026-09-21T10:00:00Z"
                         }
                         """)));
-        verify(getRequestedFor(urlPathEqualTo(
-                        "/krrstub/api/v2/person/kontaktinformasjon"))
-                .withHeader("Nav-Personident", equalTo(IDENT)));
+        verify(postRequestedFor(urlPathEqualTo(
+                        "/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                .withHeader("Authorization", equalTo("Bearer " + TOKEN))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {"personidentifikator":"03458537037"}
+                        """)));
         verify(deleteRequestedFor(urlPathEqualTo(
                         "/krrstub/api/v2/person/kontaktinformasjon"))
                 .withRequestBody(equalToJson("""
                         {"personidentifikator":"03458537037"}
                         """)));
+
+        stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                .willReturn(okJson("[]")));
+        StepVerifier.create(new GetKrrContactInformationCommand(
+                        webClient, TOKEN, request, TIMEOUT).call())
+                .assertNext(status -> assertThat(status.empty()).isTrue())
+                .verifyComplete();
     }
 
     @Test
