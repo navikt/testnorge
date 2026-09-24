@@ -14,6 +14,7 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.brregstub.BrregstubResourceS
 import no.nav.testnav.apps.statusfrontend.fagsystem.inntektstub.InntektstubClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.inntektstub.InntektstubFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.inntektstub.InntektstubResourceStatus;
+import no.nav.testnav.apps.statusfrontend.fagsystem.inntektstub.InntektstubRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.sigrun.SigrunTechnicalStatus;
 import no.nav.testnav.apps.statusfrontend.fagsystem.sigrun.SigrunTechnicalStatusClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister.SkjermingsregisterClient;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -245,10 +247,16 @@ class ThirdBatchFunctionalTestLifecycleTest {
 
         var calls = inOrder(inntektstubClient);
         calls.verify(inntektstubClient).getIncome(any());
-        calls.verify(inntektstubClient).createIncome(any());
+        var requestCaptor = ArgumentCaptor.forClass(InntektstubRequest.class);
+        calls.verify(inntektstubClient).createIncome(requestCaptor.capture());
         calls.verify(inntektstubClient).getIncome(any());
         calls.verify(inntektstubClient).deleteIncome(IDENT);
         calls.verify(inntektstubClient).getIncome(any());
+        assertThat(requestCaptor.getValue().inntektsliste()).singleElement()
+                .satisfies(income -> {
+                    assertThat(income.inngaarIGrunnlagForTrekk()).isTrue();
+                    assertThat(income.utloeserArbeidsgiveravgift()).isTrue();
+                });
     }
 
     @Test

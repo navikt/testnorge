@@ -190,7 +190,9 @@ class ThirdBatchCommandContractTest {
                 List.of(new InntektstubRequest.Income(
                         "LOENNSINNTEKT",
                         1234.0,
-                        "fastloenn")));
+                        "fastloenn",
+                        true,
+                        true)));
         var response = """
                 [{
                   "norskIdent": "03458537037",
@@ -200,7 +202,9 @@ class ThirdBatchCommandContractTest {
                   "inntektsliste": [{
                     "inntektstype": "LOENNSINNTEKT",
                     "beloep": 1234.0,
-                    "beskrivelse": "fastloenn"
+                    "beskrivelse": "fastloenn",
+                    "inngaarIGrunnlagForTrekk": true,
+                    "utloeserArbeidsgiveravgift": true
                   }]
                 }]
                 """;

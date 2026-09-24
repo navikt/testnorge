@@ -13,7 +13,9 @@ public record InntektstubRequest(
     public record Income(
             String inntektstype,
             Double beloep,
-            String beskrivelse
+            String beskrivelse,
+            boolean inngaarIGrunnlagForTrekk,
+            boolean utloeserArbeidsgiveravgift
     ) {
     }
 }

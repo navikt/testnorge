@@ -25,15 +25,18 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
+import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -43,6 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,6 +98,33 @@ class SecondBatchFunctionalTestLifecycleTest {
                 .isEqualTo(Set.of(FunctionalTestEnvironment.Q1, FunctionalTestEnvironment.Q2));
         assertThat(skattekort.descriptor().environments())
                 .isEqualTo(Set.of(FunctionalTestEnvironment.Q1, FunctionalTestEnvironment.Q2));
+    }
+
+    @Test
+    void shouldCreateKontoregisterAccountWithValidChecksum() {
+        when(kontoregisterClient.createAccount(eq(RUN_ID), any())).thenReturn(Mono.empty());
+        var lifecycle = new KontoregisterFunctionalTest(
+                kontoregisterClient,
+                pdlProperties,
+                new KontoregisterFunctionalTestProperties(),
+                scheduler);
+
+        StepVerifier.create(lifecycle.create(
+                        context("kontoregister", FunctionalTestEnvironment.GLOBAL),
+                        Preflight.COMPLETED))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        var captor = ArgumentCaptor.forClass(OppdaterKontoRequestDTO.class);
+        verify(kontoregisterClient).createAccount(eq(RUN_ID), captor.capture());
+        var accountNumber = captor.getValue().getKontonummer();
+        assertThat(accountNumber).matches("[0-9]{11}").isNotEqualTo("00000000000");
+        var weights = new int[]{5, 4, 3, 2, 7, 6, 5, 4, 3, 2, 1};
+        var checksum = 0;
+        for (var i = 0; i < weights.length; i++) {
+            checksum += Character.digit(accountNumber.charAt(i), 10) * weights[i];
+        }
+        assertThat(checksum % 11).isZero();
     }
 
     @Test

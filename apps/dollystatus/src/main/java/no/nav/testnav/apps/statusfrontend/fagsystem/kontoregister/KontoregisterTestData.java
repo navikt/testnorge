@@ -4,7 +4,7 @@ import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 
 final class KontoregisterTestData {
 
-    private static final String ACCOUNT_NUMBER = "36547371131";
+    private static final String ACCOUNT_NUMBER = "12345678903";
 
     private KontoregisterTestData() {
     }

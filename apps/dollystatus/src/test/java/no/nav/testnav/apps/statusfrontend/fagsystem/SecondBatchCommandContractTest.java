@@ -148,14 +148,14 @@ class SecondBatchCommandContractTest {
 
     @Test
     void shouldUseKontoregisterContractsAndTreatMissingAccountAsEmpty() {
-        var account = new OppdaterKontoRequestDTO(IDENT, "36547371131", "Dolly", null);
+        var account = new OppdaterKontoRequestDTO(IDENT, "12345678903", "Dolly", null);
         stubFor(post(urlPathEqualTo("/kontoregister/api/system/v1/oppdater-konto"))
                 .willReturn(ok()));
         stubFor(post(urlPathEqualTo("/kontoregister/api/system/v1/hent-aktiv-konto"))
                 .willReturn(okJson("""
                         {
                           "kontohaver": "03458537037",
-                          "kontonummer": "36547371131",
+                          "kontonummer": "12345678903",
                           "gyldigTom": null
                         }
                         """)));
@@ -182,7 +182,7 @@ class SecondBatchCommandContractTest {
                 .withRequestBody(equalToJson("""
                         {
                           "kontohaver": "03458537037",
-                          "kontonummer": "36547371131",
+                          "kontonummer": "12345678903",
                           "opprettetAv": "Dolly"
                         }
                         """)));

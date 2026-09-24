@@ -211,7 +211,7 @@ class PensjonCommandContractTest {
                         }]
                         """)));
         stubFor(delete(urlPathEqualTo("/pensjon/api/v1/pensjonsavtale/delete"))
-                .willReturn(okJson(successResponse("q1", "q2"))));
+                .willReturn(ok()));
 
         var request = PensjonTestData.pensjonsavtaleRequest(IDENT);
 
@@ -259,6 +259,19 @@ class PensjonCommandContractTest {
                 .withHeader("ident", equalTo(IDENT)));
         verify(deleteRequestedFor(urlPathEqualTo("/pensjon/api/v1/pensjonsavtale/delete"))
                 .withHeader("ident", equalTo(IDENT)));
+    }
+
+    @Test
+    void shouldRejectFailedPensjonsavtaleDeleteWithoutResponseBody() {
+        stubFor(delete(urlPathEqualTo("/pensjon/api/v1/pensjonsavtale/delete"))
+                .willReturn(aResponse().withStatus(403)));
+
+        StepVerifier.create(new DeletePensjonsavtaleCommand(
+                        webClient, TOKEN, RUN_ID, IDENT, TIMEOUT).call())
+                .expectErrorMatches(error ->
+                        error instanceof org.springframework.web.reactive.function.client.WebClientResponseException response
+                                && response.getStatusCode().value() == 403)
+                .verify();
     }
 
     @Test

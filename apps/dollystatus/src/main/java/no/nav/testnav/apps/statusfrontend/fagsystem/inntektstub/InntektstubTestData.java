@@ -19,6 +19,8 @@ final class InntektstubTestData {
                 List.of(new InntektstubRequest.Income(
                         RESERVED_INCOME_TYPE,
                         1234.0,
-                        "fastloenn")));
+                        "fastloenn",
+                        true,
+                        true)));
     }
 }

@@ -14,6 +14,12 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunReference;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatusDescriptor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
@@ -30,10 +36,41 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class FunctionalTestCoordinatorTest {
 
     private static final Instant STARTED_AT = Instant.parse("2026-09-21T10:00:00Z");
+
+    @Test
+    @ExtendWith(OutputCaptureExtension.class)
+    void shouldLogCreateAndCleanupFailuresWithoutSensitiveDetails(CapturedOutput output) {
+        var definition = new PhasedDefinition();
+        var coordinator = coordinator(definition);
+        var runReference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(runReference).isNotNull();
+        var sensitiveDetails = "03458537037 bearer-token raw-response";
+
+        definition.preflightResult.tryEmitValue(new TestValue());
+        definition.createResult.tryEmitError(WebClientResponseException.create(
+                400, sensitiveDetails, HttpHeaders.EMPTY, sensitiveDetails.getBytes(UTF_8), UTF_8));
+        definition.cleanupResult.tryEmitError(Exceptions.retryExhausted(
+                sensitiveDetails,
+                WebClientResponseException.create(
+                        403, sensitiveDetails, HttpHeaders.EMPTY, sensitiveDetails.getBytes(UTF_8), UTF_8)));
+        var completed = awaitCompleted(coordinator, runReference);
+
+        assertThat(completed.results()).singleElement()
+                .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.CLEANUP_FAILED));
+        assertThat(output.getAll())
+                .contains(
+                        "runId=" + runReference.runId().value(),
+                        "fase=CREATE",
+                        "fase=CLEANUP",
+                        "httpStatus=400",
+                        "httpStatus=403")
+                .doesNotContain("03458537037", "bearer-token", "raw-response");
+    }
 
     @Test
     void shouldSupportEmptyRegistry() {

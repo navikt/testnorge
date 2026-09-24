@@ -37,12 +37,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.context.ContextView;
 import reactor.util.retry.Retry;
 
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestErrorSanitizer.FailurePhase.CLEANUP;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestErrorSanitizer.FailurePhase.CREATE;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestErrorSanitizer.FailurePhase.PREFLIGHT;
@@ -360,6 +362,7 @@ public class FunctionalTestCoordinator {
                 registration.environment(),
                 run.startedAt());
         return Mono.defer(() -> registration.definition().check(context))
+                .doOnError(throwable -> logFailure(run, registration.key(), "TECHNICAL", throwable))
                 .then(completeTechnical(registration, TechnicalStatusState.UP, run))
                 .onErrorResume(_ -> completeTechnical(registration, TechnicalStatusState.DOWN, run));
     }
@@ -579,6 +582,7 @@ public class FunctionalTestCoordinator {
 
         return Mono.defer(() -> definition.preflight(context))
                 .switchIfEmpty(Mono.error(new IllegalStateException("Preflight returned no result.")))
+                .doOnError(throwable -> logFailure(run, registration.key(), PREFLIGHT.name(), throwable))
                 .flatMap(preflightResult ->
                         executeCreate(definition, registration.key(), context, preflightResult, run))
                 .onErrorResume(throwable -> {
@@ -601,6 +605,7 @@ public class FunctionalTestCoordinator {
 
         return Mono.defer(() -> definition.create(context, preflightResult))
                 .switchIfEmpty(Mono.error(new IllegalStateException("Create returned no result.")))
+                .doOnError(throwable -> logFailure(run, key, CREATE.name(), throwable))
                 .flatMap(createResult ->
                         executeVerify(definition, key, context, preflightResult, createResult, run))
                 .onErrorResume(throwable -> {
@@ -630,6 +635,7 @@ public class FunctionalTestCoordinator {
 
         return Mono.defer(() -> definition.verify(context, preflightResult, createResult))
                 .switchIfEmpty(Mono.error(new IllegalStateException("Verify returned no result.")))
+                .doOnError(throwable -> logFailure(run, key, VERIFY.name(), throwable))
                 .flatMap(verificationResult -> executeCleanup(
                         definition,
                         key,
@@ -683,6 +689,7 @@ public class FunctionalTestCoordinator {
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(250))
                         .maxBackoff(Duration.ofSeconds(2))
                         .filter(this::isRetryableCleanupFailure))
+                .doOnError(throwable -> logFailure(run, key, CLEANUP.name(), throwable))
                 .then(Mono.<Void>fromRunnable(() -> complete(
                         run,
                         key,
@@ -695,6 +702,28 @@ public class FunctionalTestCoordinator {
                         FunctionalTestState.CLEANUP_FAILED,
                         cleanupAttempts.get(),
                         FunctionalTestErrorSanitizer.sanitize(CLEANUP, throwable)));
+    }
+
+    private void logFailure(ActiveRun run, FunctionalTestKey key, String phase, Throwable throwable) {
+        var failure = throwable;
+        while (Exceptions.isRetryExhausted(failure) && nonNull(failure.getCause())) {
+            failure = failure.getCause();
+        }
+        var httpStatus = failure instanceof WebClientResponseException responseException
+                ? responseException.getStatusCode().value()
+                : null;
+        var causeType = nonNull(failure.getCause())
+                ? failure.getCause().getClass().getSimpleName()
+                : null;
+        log.warn(
+                "Funksjonstest feilet: runId={}, systemId={}, miljo={}, fase={}, feiltype={}, aarsakstype={}, httpStatus={}",
+                run.runId().value(),
+                key.systemId().value(),
+                key.environment(),
+                phase,
+                failure.getClass().getSimpleName(),
+                causeType,
+                httpStatus);
     }
 
     private boolean isRetryableCleanupFailure(Throwable throwable) {
