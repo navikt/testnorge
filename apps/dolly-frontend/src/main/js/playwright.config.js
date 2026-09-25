@@ -42,23 +42,15 @@ export default defineConfig({
 			name: 'Google Chrome',
 			use: {
 				...devices['Desktop Chrome'],
-				// Ubuntu 24.04 GitHub Actions runners restrict unprivileged user namespaces via AppArmor,
-				// which breaks Chrome's sandbox and hangs the browser launch. CI is already an isolated VM.
-				launchOptions: process.env.CI ? { args: ['--no-sandbox'] } : {},
 			},
 		},
 	],
 
 	/* Run the local dev server before starting the tests */
 	webServer: {
-		// Run vite directly instead of via `pnpm run`, since the pnpm wrapper process can swallow
-		// SIGTERM and prevent Playwright from ever tearing down the dev server after tests finish.
 		command: 'pnpm run test:start',
 		url: 'http://localhost:5678',
 		reuseExistingServer: !process.env.CI,
 		gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
-		// Vite's dep-optimizer can spawn child processes that inherit the piped stderr's write end,
-		// so the pipe's 'close' event never fires after teardown and Playwright hangs waiting for it.
-		stderr: 'ignore',
 	},
 })
