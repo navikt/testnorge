@@ -63,6 +63,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -525,7 +528,7 @@ class RouteLocatorConfigTest {
     }
 
     @Test
-    void testFullmakt() {
+    void shouldRouteFullmaktWithCurrentTokenXAudience() {
 
         var downstreamPath = "/api/v1/testdata";
         var responseBody = "Success from mocked fullmakt";
@@ -550,6 +553,9 @@ class RouteLocatorConfigTest {
                 .expectHeader().contentType("application/json; charset=UTF-8")
                 .expectBody(String.class).isEqualTo(responseBody);
 
+        verify(tokenXService).exchange(
+                argThat(properties -> "dev-gcp:repr:fullmakt".equals(properties.toTokenXScope())),
+                eq("dummy-fakedings-token"));
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath))
                 .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN)));
 

@@ -1,10 +1,17 @@
-import { BadRequestError, NotFoundError } from '@navikt/dolly-lib'
-
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
 
 type Config = {
 	method: Method
 	headers?: Record<string, string>
+}
+
+export class ApiError extends Error {
+	readonly response: Response
+
+	constructor(response: Response) {
+		super(`API-kallet feilet med status ${response.status}`)
+		this.response = response
+	}
 }
 
 const _fetch = (url: string, config: Config, body?: BodyInit): Promise<Response> =>
@@ -17,21 +24,12 @@ const _fetch = (url: string, config: Config, body?: BodyInit): Promise<Response>
 		})
 		.then((response: Response) => {
 			if (!response.ok) {
-				if (response.status === 404) {
-					throw new NotFoundError()
+				if (response.status === 401 && import.meta.env.DEV) {
+					window.location.assign('/oauth2/authorization/aad')
 				}
-
-				if (response.status == 400) {
-					throw new BadRequestError(response)
-				}
-
-				throw new Error('Response fra endepunkt var ikke ok')
+				throw new ApiError(response)
 			}
 			return response
-		})
-		.catch((error: Error) => {
-			console.error(error)
-			throw error
 		})
 
 const fetchJson = <T>(url: string, config: Config, body?: BodyInit): Promise<T> =>

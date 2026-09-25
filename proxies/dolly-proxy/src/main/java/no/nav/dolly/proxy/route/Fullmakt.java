@@ -13,9 +13,9 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Fullmakt {
 
-    private static final String CLUSTER = "dev-fss";
+    private static final String CLUSTER = "dev-gcp";
     private static final String NAMESPACE = "repr";
-    private static final String NAME = "repr-fullmakt";
+    private static final String NAME = "fullmakt";
 
     private final Targets targets;
     private final AuthenticationFilterService authenticationFilterService;

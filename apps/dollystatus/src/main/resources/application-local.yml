@@ -1,2 +1,95 @@
 server:
-  port : 8080
+  port: 8080
+
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            authorization-grant-type: authorization_code
+            redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
+            scope: openid, offline_access, ${AZURE_APP_CLIENT_ID}/.default
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+        provider:
+          aad:
+            authorization-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/authorize
+            token-uri: https://dolly-auth-local.intern.dev.nav.no/entraid/oauth2/token
+            jwk-set-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/discovery/v2.0/keys
+
+consumers:
+  testnav-pdl-forvalter:
+    url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no
+    name: testnav-pdl-forvalter-dev
+
+functional-test:
+  pensjon:
+    tp:
+      enabled: false
+    popp:
+      enabled: false
+    afp-offentlig:
+      enabled: false
+    pensjonsavtale:
+      enabled: false
+  arbeidssoekerregisteret:
+    enabled: false
+  instdata:
+    enabled: false
+  kdi:
+    enabled: false
+  tags:
+    enabled: false
+  tps-messaging-egenansatt:
+    enabled: false
+  arena:
+    enabled: false
+  kontoregister:
+    enabled: false
+  krr:
+    enabled: false
+  nom:
+    enabled: false
+  skattekort:
+    enabled: false
+  brregstub:
+    enabled: false
+  inntektstub:
+    enabled: false
+  skjermingsregister:
+    enabled: false
+  udi:
+    enabled: false
+  sigrun:
+    technical-only: false
+  arbeidsplassen-cv:
+    technical-only: false
+  medl:
+    technical-only: false
+  oppfoelgingsvedtak-14a:
+    technical-only: false
+  sykemelding:
+    technical-only: false
+  fullmakt:
+    technical-only: false
+  aareg:
+    technical-only: false
+  dokarkiv:
+    technical-only: false
+  inntektsmelding:
+    technical-only: false
+  kelvin-aap:
+    technical-only: false
+  pensjon-oevrige:
+    technical-only: false
+  tps-messaging-bankkonto:
+    technical-only: false
+  yrkesskade:
+    technical-only: false
+  organisasjon-forvalter:
+    technical-only: false

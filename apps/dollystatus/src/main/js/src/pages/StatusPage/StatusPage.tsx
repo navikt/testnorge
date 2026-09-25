@@ -1,145 +1,48 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import './StatusPage.less'
-import { Accordion, Heading } from '@navikt/ds-react'
+import { Heading, LocalAlert, VStack } from '@navikt/ds-react'
 
 import BlankHeader from '@/components/BlankHeader/BlankHeader'
 import Loading from '@/components/loading/Loading'
-import Icon from '@/components/icon/Icon'
-
-type Service = {
-	alive: string
-	ready: string
-	team: string
-}
-
-type Statuses = Record<string, Record<string, Service>>
-
-type ServiceStatus = 'OK' | 'Warn' | 'Feil'
-
-const statusLabels: Record<ServiceStatus, string> = {
-	OK: 'OK',
-	Warn: 'Varsel',
-	Feil: 'Feil',
-}
+import { FagsystemStatusCard } from '@/pages/StatusPage/FagsystemStatusCard'
+import { isRunning, useFagsystemStatuses } from '@/pages/StatusPage/useFagsystemStatuses'
 
 export default () => {
-	const [statuses, setStatuses] = useState<Statuses>({})
-	const [dataLoading, setDataLoading] = useState(true)
+	const { activeRunId, errorMessage, groupedStatuses, initialLoading, rerun, startingSystemId } =
+		useFagsystemStatuses()
+	const [now, setNow] = useState(() => Date.now())
 
 	useEffect(() => {
-		const endpoint = 'https://dolly-backend.intern.dev.nav.no/internal/status'
-
-		fetch(endpoint, {
-			headers: {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': 'https://dolly-backend.intern.dev.nav.no',
-			},
-		})
-			.then((response) => response.json())
-			.then((json: Statuses) => {
-				setStatuses(json)
-				setDataLoading(false)
-			})
-			.catch(() => {
-				setDataLoading(false)
-			})
+		const intervalId = window.setInterval(() => setNow(Date.now()), 30_000)
+		return () => window.clearInterval(intervalId)
 	}, [])
 
-	const serviceStatus = (service: Service): ServiceStatus => {
-		if (service.alive === 'OK' && service.ready === 'OK') {
-			return 'OK'
-		}
-		if (service.alive === 'OK') {
-			return 'Warn'
-		}
-		return 'Feil'
-	}
+	const runningCount = useMemo(
+		() => groupedStatuses.flat().filter((status) => isRunning(status.state)).length,
+		[groupedStatuses],
+	)
+	const failedCount = useMemo(
+		() =>
+			groupedStatuses
+				.flat()
+				.filter(
+					(status) =>
+						!isRunning(status.state) &&
+						status.state !== 'OK' &&
+						status.state !== 'NOT_RUN' &&
+						!(status.state === 'TECHNICAL_ONLY' && status.technicalStatus.state === 'UP'),
+				).length,
+		[groupedStatuses],
+	)
 
-	const aggregateStatus = (services: Service[]): ServiceStatus => {
-		const statuses = services.map((service) => serviceStatus(service))
-
-		const haveOk = statuses.includes('OK')
-		const haveWarn = statuses.includes('Warn')
-		const haveFeil = statuses.includes('Feil')
-
-		if (!haveWarn && !haveFeil) {
-			return 'OK'
-		}
-		if (!haveOk) {
-			return 'Feil'
-		}
-		return 'Warn'
-	}
-
-	const iconType = (status: ServiceStatus) => {
-		if (status === 'OK') {
-			return 'feedback-check-circle'
-		}
-		if (status === 'Warn') {
-			return 'report-problem-circle'
-		}
-		if (status === 'Feil') {
-			return 'report-problem-triangle'
-		}
-		return 'arbeid'
-	}
-
-	const clientStatus = (consumer: string, services: Record<string, Service>) => {
-		const consumerStatus = aggregateStatus(Object.values(services))
-
-		return (
-			<Accordion.Item className="consumer-status" key={consumer}>
-				<Accordion.Header className="consumer-header">
-					<span className={`consumer-header-content consumer-${consumerStatus}`}>
-						<span className="consumer-name">
-							{consumer}
-							<span className="consumer-status-assistive">
-								{' '}
-								har status {statusLabels[consumerStatus]}
-							</span>
-						</span>
-						<span className="consumer-status-icon">
-							<Icon kind={iconType(consumerStatus)} />
-						</span>
-					</span>
-				</Accordion.Header>
-				<Accordion.Content className="consumer-content">
-					<div className="consumer-services">
-						{Object.entries(services).map(([name, service]) => {
-							const status = serviceStatus(service)
-
-							return (
-								<div className="consumer-service" key={name}>
-									<div className="consumer-service-name">
-										<span className="consumer-service-title">{name}</span>
-										<span className="consumer-service-team">({service.team})</span>
-										<span className="consumer-status-assistive">
-											{' '}
-											har status {statusLabels[status]}
-										</span>
-									</div>
-									<div className="consumer-service-status">
-										<Icon kind={iconType(status)} />
-									</div>
-								</div>
-							)
-						})}
-					</div>
-				</Accordion.Content>
-			</Accordion.Item>
-		)
-	}
-
-	const clients = Object.entries(statuses).map(([name, services]) => clientStatus(name, services))
-
-	if (dataLoading) {
+	if (initialLoading) {
 		return (
 			<>
 				<BlankHeader />
-				<div className="status-page-loading">
-					<Loading label="Sjekker tjenester" />
-				</div>
+				<main className="status-page-loading">
+					<Loading label="Henter fagssystemstatus" />
+				</main>
 			</>
 		)
 	}
@@ -147,14 +50,54 @@ export default () => {
 	return (
 		<>
 			<BlankHeader />
-			<div className="status-page">
-				<Heading align="center" className="status-page-title" level="1" size="large">
-					Dolly tjenestestatus
-				</Heading>
-				<Accordion className="consumers-accordion" indent={false}>
-					{clients}
-				</Accordion>
-			</div>
+			<main className="status-page">
+				<VStack gap="space-24">
+					<div>
+						<Heading className="status-page-title" level="1" size="large">
+							Dolly fagssystemstatus
+						</Heading>
+						<p className="status-page-introduction">
+							Statusene oppdateres automatisk når siden lastes. Resultatene lagres i én time.
+						</p>
+					</div>
+					{errorMessage && (
+						<LocalAlert status="error" size="small">
+							<LocalAlert.Header>
+								<LocalAlert.Title as="h2">Statussjekken feilet</LocalAlert.Title>
+							</LocalAlert.Header>
+							<LocalAlert.Content>{errorMessage}</LocalAlert.Content>
+						</LocalAlert>
+					)}
+					<p className="status-page-live-region" aria-live="polite">
+						{runningCount > 0
+							? `${runningCount} statussjekker pågår.`
+							: activeRunId
+								? 'Testkjøringen fullføres.'
+								: `Statussjekkene er ferdige. ${failedCount} statuser har feil.`}
+					</p>
+					{groupedStatuses.length === 0 ? (
+						<LocalAlert status="warning" size="small">
+							<LocalAlert.Header>
+								<LocalAlert.Title as="h2">Ingen statuser tilgjengelig</LocalAlert.Title>
+							</LocalAlert.Header>
+							<LocalAlert.Content>Last inn siden på nytt for å prøve igjen.</LocalAlert.Content>
+						</LocalAlert>
+					) : (
+						<div className="fagsystem-grid">
+							{groupedStatuses.map((statuses) => (
+								<FagsystemStatusCard
+									key={statuses[0].systemId}
+									statuses={statuses}
+									anyRunActive={activeRunId !== null}
+									starting={startingSystemId === statuses[0].systemId}
+									now={now}
+									onRerun={(systemId) => void rerun(systemId)}
+								/>
+							))}
+						</div>
+					)}
+				</VStack>
+			</main>
 		</>
 	)
 }
