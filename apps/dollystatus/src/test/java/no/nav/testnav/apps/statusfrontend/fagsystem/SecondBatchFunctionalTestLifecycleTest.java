@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem;
 
 import java.time.Instant;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +28,7 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
@@ -40,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -194,6 +197,7 @@ class SecondBatchFunctionalTestLifecycleTest {
                         false,
                         false,
                         "12345",
+                        LocalDate.of(2026, 9, 19),
                         null)));
         var lifecycle = new NomFunctionalTest(
                 nomClient,
@@ -212,6 +216,7 @@ class SecondBatchFunctionalTestLifecycleTest {
         when(nomClient.getResource(eq(RUN_ID), any()))
                 .thenReturn(Mono.just(new NomResourceStatus(
                         false, false, true, "12345",
+                        LocalDate.of(2026, 9, 19),
                         LocalDate.of(2026, 9, 21).plusDays(daysUntilEnd))));
 
         StepVerifier.create(nomLifecycle().preflight(context("nom", FunctionalTestEnvironment.GLOBAL)))
@@ -227,8 +232,10 @@ class SecondBatchFunctionalTestLifecycleTest {
         when(nomClient.getResource(eq(RUN_ID), any()))
                 .thenReturn(
                         Mono.just(NomResourceStatus.emptyStatus()),
-                        Mono.just(new NomResourceStatus(false, true, false, "12345", null)),
-                        Mono.just(new NomResourceStatus(false, false, true, "12345", endDate)));
+                        Mono.just(new NomResourceStatus(false, true, false, "12345",
+                                LocalDate.of(2026, 9, 19), null)),
+                        Mono.just(new NomResourceStatus(false, true, true, "12345",
+                                LocalDate.of(2026, 9, 19), endDate)));
         when(nomClient.createResource(eq(RUN_ID), any())).thenReturn(Mono.empty());
         when(nomClient.closeResource(RUN_ID, endDate)).thenReturn(Mono.empty());
         var lifecycle = nomLifecycle();
@@ -241,7 +248,7 @@ class SecondBatchFunctionalTestLifecycleTest {
                                                 context, preflight, Optional.of(created), Optional.of(verified),
                                                 lifecycle.descriptor().expectedCleanupState()))))
                         .then(Mono.defer(() -> lifecycle.preflight(context))))
-                .expectNext(Preflight.COMPLETED)
+                .assertNext(preflight -> assertThat(preflight.previousStatus().endDate()).isEqualTo(endDate))
                 .verifyComplete();
 
         var requestCaptor = ArgumentCaptor.forClass(NomRequest.class);
@@ -255,13 +262,16 @@ class SecondBatchFunctionalTestLifecycleTest {
         var endDate = LocalDate.of(2026, 9, 20);
         when(nomClient.getResource(eq(RUN_ID), any()))
                 .thenReturn(
-                        Mono.just(new NomResourceStatus(false, true, false, "12345", null)),
-                        Mono.just(new NomResourceStatus(false, false, true, "12345", endDate)));
+                        Mono.just(new NomResourceStatus(false, true, false, "12345",
+                                LocalDate.of(2026, 9, 19), null)),
+                        Mono.just(new NomResourceStatus(false, true, true, "12345",
+                                LocalDate.of(2026, 9, 19), endDate)));
         when(nomClient.closeResource(RUN_ID, endDate)).thenReturn(Mono.empty());
         var lifecycle = nomLifecycle();
 
         StepVerifier.create(lifecycle.cleanup(
-                        context("nom", FunctionalTestEnvironment.GLOBAL), Preflight.COMPLETED,
+                        context("nom", FunctionalTestEnvironment.GLOBAL),
+                        new NomFunctionalTest.Preflight(NomResourceStatus.emptyStatus()),
                         Optional.of(Creation.COMPLETED), Optional.empty(),
                         lifecycle.descriptor().expectedCleanupState()))
                 .verifyComplete();
@@ -279,7 +289,8 @@ class SecondBatchFunctionalTestLifecycleTest {
         var lifecycle = nomLifecycle();
 
         StepVerifier.create(lifecycle.cleanup(
-                        context("nom", FunctionalTestEnvironment.GLOBAL), Preflight.COMPLETED,
+                        context("nom", FunctionalTestEnvironment.GLOBAL),
+                        new NomFunctionalTest.Preflight(NomResourceStatus.emptyStatus()),
                         Optional.empty(), Optional.empty(), lifecycle.descriptor().expectedCleanupState()))
                 .verifyComplete();
         verify(nomClient, never()).closeResource(any(), any());
@@ -288,11 +299,13 @@ class SecondBatchFunctionalTestLifecycleTest {
     @Test
     void shouldNotCloseUnexpectedNomResourceAfterFailedCreation() {
         when(nomClient.getResource(eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new NomResourceStatus(false, false, false, "54321", null)));
+                .thenReturn(Mono.just(new NomResourceStatus(false, false, false, "54321",
+                        LocalDate.of(2026, 9, 19), null)));
         var lifecycle = nomLifecycle();
 
         StepVerifier.create(lifecycle.cleanup(
-                        context("nom", FunctionalTestEnvironment.GLOBAL), Preflight.COMPLETED,
+                        context("nom", FunctionalTestEnvironment.GLOBAL),
+                        new NomFunctionalTest.Preflight(NomResourceStatus.emptyStatus()),
                         Optional.empty(), Optional.empty(), lifecycle.descriptor().expectedCleanupState()))
                 .expectError(FunctionalTestBlockedException.class)
                 .verify();
@@ -318,6 +331,60 @@ class SecondBatchFunctionalTestLifecycleTest {
                         context("skattekort", FunctionalTestEnvironment.Q2)))
                 .expectError(FunctionalTestBlockedException.class)
                 .verify();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldVerifyAndCleanupReactivatedNomWithItsOriginalStartDate(boolean verificationFailed) {
+        var originalStart = LocalDate.of(2026, 9, 20);
+        var previousStatus = new NomResourceStatus(false, true, true, "12345", originalStart, originalStart);
+        var reactivatedStatus = new NomResourceStatus(false, true, false, "12345", originalStart, null);
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(previousStatus), Mono.just(reactivatedStatus),
+                        Mono.just(new NomResourceStatus(false, true, true, "12345", originalStart, originalStart)));
+        when(nomClient.createResource(eq(RUN_ID), any())).thenReturn(Mono.empty());
+        when(nomClient.closeResource(RUN_ID, originalStart)).thenReturn(Mono.empty());
+        var lifecycle = nomLifecycle();
+        var context = context("nom", FunctionalTestEnvironment.GLOBAL);
+
+        StepVerifier.create(lifecycle.preflight(context)
+                        .flatMap(preflight -> lifecycle.create(context, preflight)
+                                .flatMap(created -> verificationFailed
+                                        ? lifecycle.cleanup(context, preflight, Optional.of(created), Optional.empty(),
+                                                lifecycle.descriptor().expectedCleanupState())
+                                        : lifecycle.verify(context, preflight, created)
+                                                .flatMap(verified -> lifecycle.cleanup(
+                                                        context, preflight, Optional.of(created), Optional.of(verified),
+                                                        lifecycle.descriptor().expectedCleanupState())))))
+                .verifyComplete();
+
+        verify(nomClient).closeResource(RUN_ID, originalStart);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"12345,2026-09-18,true", "54321,2026-09-20,true", "12345,2026-09-20,false"})
+    void shouldRejectUnexpectedNomDateResourceOrPerson(
+            String resourceId, LocalDate actualStartDate, boolean expectedPersonPresent) {
+        var originalStart = LocalDate.of(2026, 9, 20);
+        var preflight = new NomFunctionalTest.Preflight(
+                new NomResourceStatus(false, true, true, "12345", originalStart, originalStart));
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new NomResourceStatus(
+                        false, expectedPersonPresent, false, resourceId, actualStartDate, null)));
+        var lifecycle = nomLifecycle();
+        var context = context("nom", FunctionalTestEnvironment.GLOBAL);
+
+        StepVerifier.withVirtualTime(
+                        () -> lifecycle.verify(context, preflight, Creation.COMPLETED),
+                        () -> scheduler, 1)
+                .thenAwait(Duration.ofMinutes(3))
+                .expectError(FunctionalTestVerificationTimeoutException.class)
+                .verify();
+        StepVerifier.create(lifecycle.cleanup(context, preflight, Optional.of(Creation.COMPLETED),
+                        Optional.empty(), lifecycle.descriptor().expectedCleanupState()))
+                .expectError(FunctionalTestBlockedException.class)
+                .verify();
+        verify(nomClient, never()).closeResource(any(), any());
     }
 
     @Test

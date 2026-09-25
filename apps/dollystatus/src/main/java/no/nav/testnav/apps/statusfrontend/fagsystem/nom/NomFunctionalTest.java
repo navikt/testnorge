@@ -10,7 +10,6 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTes
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
@@ -26,7 +25,10 @@ import static java.util.Objects.nonNull;
 @Service
 @ConditionalOnProperty(prefix = "functional-test.nom", name = "enabled", havingValue = "true")
 public class NomFunctionalTest
-        implements FunctionalTestDefinition<Preflight, Creation, NomVerification> {
+        implements FunctionalTestDefinition<NomFunctionalTest.Preflight, Creation, NomVerification> {
+
+    public record Preflight(NomResourceStatus previousStatus) {
+    }
 
     private static final FunctionalTestDescriptor DESCRIPTOR = new FunctionalTestDescriptor(
             new SystemId("nom"),
@@ -66,7 +68,7 @@ public class NomFunctionalTest
         var request = NomTestData.request(pdlProperties.getIdent(), context);
         return client.getResource(context.runId(), request)
                 .flatMap(status -> status.empty() || isInactive(status, context)
-                        ? Mono.just(Preflight.COMPLETED)
+                        ? Mono.just(new Preflight(status))
                         : Mono.error(new FunctionalTestBlockedException()));
     }
 
@@ -83,7 +85,7 @@ public class NomFunctionalTest
             Preflight preflightResult,
             Creation createResult
     ) {
-        return awaitStatus(context, true, null)
+        return awaitStatus(context, preflightResult, true, null)
                 .map(status -> new NomVerification(status.resourceId()));
     }
 
@@ -96,7 +98,7 @@ public class NomFunctionalTest
             CleanupExpectation expectedEndState
     ) {
         if (verificationResult.isPresent()) {
-            return closeAndVerify(context, verificationResult.get().resourceId());
+            return closeAndVerify(context, preflightResult, verificationResult.get().resourceId());
         }
         var request = NomTestData.request(pdlProperties.getIdent(), context);
         return client.getResource(context.runId(), request)
@@ -104,17 +106,21 @@ public class NomFunctionalTest
                     if (status.empty() || isInactive(status, context)) {
                         return Mono.empty();
                     }
-                    if (!status.expectedDataPresent()) {
+                    if (!matchesCreatedResource(status, request, preflightResult)) {
                         return Mono.error(new FunctionalTestBlockedException());
                     }
-                    return closeAndVerify(context, status.resourceId());
+                    return closeAndVerify(context, preflightResult, status.resourceId());
                 });
     }
 
-    private Mono<Void> closeAndVerify(FunctionalTestContext context, String resourceId) {
+    private Mono<Void> closeAndVerify(
+            FunctionalTestContext context,
+            Preflight preflight,
+            String resourceId
+    ) {
         var endDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate().minusDays(1);
         return client.closeResource(context.runId(), endDate)
-                .then(awaitStatus(context, false, resourceId))
+                .then(awaitStatus(context, preflight, false, resourceId))
                 .then();
     }
 
@@ -126,6 +132,7 @@ public class NomFunctionalTest
 
     private Mono<NomResourceStatus> awaitStatus(
             FunctionalTestContext context,
+            Preflight preflight,
             boolean expectedActive,
             String expectedResourceId
     ) {
@@ -134,7 +141,7 @@ public class NomFunctionalTest
         return pollUntil(
                 () -> client.getResource(context.runId(), request),
                 status -> expectedActive
-                        ? status.expectedDataPresent()
+                        ? matchesCreatedResource(status, request, preflight)
                         : status.closed()
                         && expectedEndDate.equals(status.endDate())
                         && nonNull(expectedResourceId)
@@ -142,5 +149,21 @@ public class NomFunctionalTest
                 properties.getPollInterval(),
                         properties.getPollTimeout(),
                         scheduler);
+    }
+
+    private static boolean matchesCreatedResource(
+            NomResourceStatus status,
+            NomRequest request,
+            Preflight preflight
+    ) {
+        var previous = preflight.previousStatus();
+        var retainedStartDate = !previous.empty()
+                && nonNull(previous.resourceId())
+                && previous.resourceId().equals(status.resourceId())
+                && nonNull(previous.startDate())
+                && previous.startDate().equals(status.startDate());
+        return status.expectedPersonPresent()
+                && !status.closed()
+                && (request.startDato().equals(status.startDate()) || retainedStartDate);
     }
 }

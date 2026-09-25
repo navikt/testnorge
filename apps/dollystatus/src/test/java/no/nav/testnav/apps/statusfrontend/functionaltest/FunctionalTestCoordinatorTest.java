@@ -19,6 +19,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatusDescriptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -453,6 +455,157 @@ class FunctionalTestCoordinatorTest {
                 .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.BLOCKED));
     }
 
+    @Test
+    void shouldRunFourGroupsConcurrentlyAndShareTheLimitWithTechnicalChecks() throws InterruptedException {
+        var events = new CopyOnWriteArrayList<String>();
+        var started = new LinkedBlockingQueue<String>();
+        var definitions = List.of(
+                new GatedCleanupDefinition("brregstub", Set.of(FunctionalTestEnvironment.GLOBAL), events, started),
+                new GatedCleanupDefinition("instdata", Set.of(FunctionalTestEnvironment.GLOBAL), events, started),
+                new GatedCleanupDefinition("krr", Set.of(FunctionalTestEnvironment.GLOBAL), events, started),
+                new GatedCleanupDefinition("skattekort", Set.of(FunctionalTestEnvironment.GLOBAL), events, started),
+                new GatedCleanupDefinition("udi", Set.of(FunctionalTestEnvironment.GLOBAL), events, started));
+        var technicalGate = Sinks.<Void>empty();
+        var technicalCheck = new TechnicalStatusDefinition() {
+            @Override
+            public TechnicalStatusDescriptor descriptor() {
+                return new TechnicalStatusDescriptor(
+                        new SystemId("medl"), new DisplayName("MEDL"), Set.of(FunctionalTestEnvironment.GLOBAL));
+            }
+
+            @Override
+            public Mono<Void> check(FunctionalTestContext context) {
+                started.add("medl-GLOBAL");
+                return technicalGate.asMono();
+            }
+        };
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.copyOf(definitions), List.of(technicalCheck)),
+                new FunctionalTestCache(clock), clock);
+        try {
+            var run = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+            assertThat(run).isNotNull();
+            for (var definition : definitions.subList(0, 4)) {
+                assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo(definition.systemId + "-GLOBAL");
+            }
+            assertThat(started).isEmpty();
+            assertThat(coordinator.startAllExpired().block(Duration.ofSeconds(1))).isEqualTo(run);
+            var statuses = coordinator.getRun(run.runId()).block(Duration.ofSeconds(1));
+            assertThat(statuses).isNotNull();
+            assertThat(statuses.results().subList(0, 4))
+                    .allSatisfy(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.CLEANUP));
+            assertThat(statuses.results().subList(4, 6))
+                    .allSatisfy(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.RUNNING));
+
+            definitions.getFirst().cleanupGate.tryEmitError(new IllegalStateException("Cleanup failed"));
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo("udi-GLOBAL");
+            assertThat(started).isEmpty();
+            definitions.get(1).cleanupGate.tryEmitEmpty();
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo("medl-GLOBAL");
+            definitions.forEach(definition -> definition.cleanupGate.tryEmitEmpty());
+            technicalGate.tryEmitEmpty();
+
+            var completed = awaitCompleted(coordinator, run);
+            assertThat(completed.results()).hasSize(6);
+            assertThat(completed.results().getFirst().state()).isEqualTo(FunctionalTestState.CLEANUP_FAILED);
+            assertThat(completed.results().subList(1, 5))
+                    .allSatisfy(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.OK));
+            assertThat(completed.results().getLast().state()).isEqualTo(FunctionalTestState.TECHNICAL_ONLY);
+        } finally {
+            definitions.forEach(definition -> definition.cleanupGate.tryEmitEmpty());
+            technicalGate.tryEmitEmpty();
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "pensjon-afp-offentlig,pensjon-tp,inntektstub",
+            "arbeidssoekerregisteret,arena,instdata",
+            "nom,skjermingsregister,instdata",
+            "nom,tps-messaging-egenansatt,instdata",
+            "skjermingsregister,tps-messaging-egenansatt,instdata"
+    })
+    void shouldSerializeRelatedSystemsAndTheirEnvironments(
+            String firstSystem, String secondSystem, String independentSystem) throws InterruptedException {
+        var events = new CopyOnWriteArrayList<String>();
+        var started = new LinkedBlockingQueue<String>();
+        var first = new GatedCleanupDefinition(
+                firstSystem, Set.of(FunctionalTestEnvironment.Q1, FunctionalTestEnvironment.Q2), events, started);
+        var second = new GatedCleanupDefinition(
+                secondSystem, Set.of(FunctionalTestEnvironment.GLOBAL), events, started);
+        var independent = new GatedCleanupDefinition(
+                independentSystem, Set.of(FunctionalTestEnvironment.GLOBAL), events, started);
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(first, second, independent)),
+                new FunctionalTestCache(clock), clock);
+        try {
+            var run = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+            assertThat(run).isNotNull();
+            assertThat(List.of(started.poll(5, TimeUnit.SECONDS), started.poll(5, TimeUnit.SECONDS)))
+                    .containsExactlyInAnyOrder(firstSystem + "-Q1", independentSystem + "-GLOBAL");
+            assertThat(started).isEmpty();
+            first.cleanupGate.tryEmitEmpty();
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo(firstSystem + "-Q2");
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo(secondSystem + "-GLOBAL");
+            second.cleanupGate.tryEmitEmpty();
+            independent.cleanupGate.tryEmitEmpty();
+            awaitCompleted(coordinator, run);
+            assertThat(events).containsSubsequence(
+                    firstSystem + "-Q1-cleanup", firstSystem + "-Q2-start",
+                    firstSystem + "-Q2-cleanup", secondSystem + "-GLOBAL-start");
+        } finally {
+            first.cleanupGate.tryEmitEmpty();
+            second.cleanupGate.tryEmitEmpty();
+            independent.cleanupGate.tryEmitEmpty();
+        }
+    }
+
+    @Test
+    void shouldWaitForEachPhaseAndAllGroupCleanupBeforeFinalPdlCleanup() throws InterruptedException {
+        var events = new CopyOnWriteArrayList<String>();
+        var started = new LinkedBlockingQueue<String>();
+        var pension = new GatedCleanupDefinition(
+                "pensjon-tp", Set.of(FunctionalTestEnvironment.Q1), events, started);
+        var arena = new GatedCleanupDefinition(
+                "arena", Set.of(FunctionalTestEnvironment.Q1), events, started);
+        var instdata = new GatedCleanupDefinition(
+                "instdata", Set.of(FunctionalTestEnvironment.Q1), events, started);
+        var clock = new MutableClock(STARTED_AT);
+        var listener = mock(FunctionalTestResultListener.class);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(pension, arena, instdata),
+                        List.of(new OrderedTechnicalStatus(events, "tags"))),
+                new FunctionalTestCache(clock), clock,
+                List.of(new RecordingPdlLifecycle(events, false)), List.of(listener));
+        try {
+            var run = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+            assertThat(run).isNotNull();
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo("pensjon-tp-Q1");
+            assertThat(started).isEmpty();
+            assertThat(events).containsSubsequence("pdl-create", "tags", "pensjon-tp-Q1-start");
+            assertThat(events).doesNotContain("pdl-cleanup");
+
+            pension.cleanupGate.tryEmitEmpty();
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo("arena-Q1");
+            assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo("instdata-Q1");
+            arena.cleanupGate.tryEmitEmpty();
+            assertThat(events).doesNotContain("pdl-cleanup");
+            verify(listener, org.mockito.Mockito.never()).onFullRunCompleted(any());
+            instdata.cleanupGate.tryEmitEmpty();
+            awaitCompleted(coordinator, run);
+
+            assertThat(events).containsSubsequence("pensjon-tp-Q1-cleanup", "arena-Q1-start");
+            assertThat(events.getLast()).isEqualTo("pdl-cleanup");
+            verify(listener, timeout(1000)).onFullRunCompleted(any());
+        } finally {
+            pension.cleanupGate.tryEmitEmpty();
+            arena.cleanupGate.tryEmitEmpty();
+            instdata.cleanupGate.tryEmitEmpty();
+        }
+    }
+
     private static FunctionalTestCoordinator coordinator(FunctionalTestDefinition<?, ?, ?> definition) {
         var clock = new MutableClock(STARTED_AT);
         var registry = new FunctionalTestRegistry(List.of(definition));
@@ -581,6 +734,52 @@ class FunctionalTestCoordinatorTest {
         ) {
             cleanupInvoked.countDown();
             return cleanupResult.asMono();
+        }
+    }
+
+    private static final class GatedCleanupDefinition extends GatedPreflightDefinition {
+
+        private final String systemId;
+        private final Set<FunctionalTestEnvironment> environments;
+        private final List<String> events;
+        private final LinkedBlockingQueue<String> started;
+        private final Sinks.Empty<Void> cleanupGate = Sinks.empty();
+
+        private GatedCleanupDefinition(
+                String systemId,
+                Set<FunctionalTestEnvironment> environments,
+                List<String> events,
+                LinkedBlockingQueue<String> started
+        ) {
+            this.systemId = systemId;
+            this.environments = environments;
+            this.events = events;
+            this.started = started;
+        }
+
+        @Override
+        public FunctionalTestDescriptor descriptor() {
+            return new FunctionalTestDescriptor(
+                    new SystemId(systemId), new DisplayName(systemId), environments, CleanupExpectation.DELETED);
+        }
+
+        @Override
+        public Mono<TestValue> preflight(FunctionalTestContext context) {
+            events.add(systemId + "-" + context.environment() + "-start");
+            return Mono.just(new TestValue());
+        }
+
+        @Override
+        public Mono<Void> cleanup(
+                FunctionalTestContext context,
+                TestValue preflightResult,
+                Optional<TestValue> createResult,
+                Optional<TestValue> verificationResult,
+                CleanupExpectation expectedEndState
+        ) {
+            started.add(systemId + "-" + context.environment());
+            return cleanupGate.asMono()
+                    .doOnSuccess(_ -> events.add(systemId + "-" + context.environment() + "-cleanup"));
         }
     }
 

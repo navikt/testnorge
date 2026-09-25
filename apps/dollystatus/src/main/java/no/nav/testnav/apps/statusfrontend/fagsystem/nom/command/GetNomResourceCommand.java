@@ -14,6 +14,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
+
 @RequiredArgsConstructor
 public class GetNomResourceCommand implements Callable<Mono<NomResourceStatus>> {
 
@@ -54,18 +56,18 @@ public class GetNomResourceCommand implements Callable<Mono<NomResourceStatus>> 
                 ? LocalDate.parse(response.path("sluttDato").asString())
                 : null;
         var resourceId = response.path("fid").asText(null);
+        var startDate = LocalDate.parse(response.path("startDato").asString());
         var expected = expectedRequest.personident().equals(response.path("personident").asString())
                 && expectedRequest.fornavn().equals(response.path("navn").path("fornavn").asString())
                 && expectedRequest.etternavn().equals(response.path("navn").path("etternavn").asString())
-                && resourceId != null
-                && !resourceId.isBlank()
-                && expectedRequest.startDato().equals(
-                        LocalDate.parse(response.path("startDato").asString()));
+                && nonNull(resourceId)
+                && !resourceId.isBlank();
         return new NomResourceStatus(
                 false,
-                expected && endDate == null,
-                endDate != null,
+                expected,
+                nonNull(endDate),
                 resourceId,
+                startDate,
                 endDate);
     }
 }

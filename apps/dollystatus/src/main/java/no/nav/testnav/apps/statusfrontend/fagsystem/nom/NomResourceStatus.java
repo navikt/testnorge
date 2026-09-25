@@ -4,13 +4,14 @@ import java.time.LocalDate;
 
 public record NomResourceStatus(
         boolean empty,
-        boolean expectedDataPresent,
+        boolean expectedPersonPresent,
         boolean closed,
         String resourceId,
+        LocalDate startDate,
         LocalDate endDate
 ) {
 
     public static NomResourceStatus emptyStatus() {
-        return new NomResourceStatus(true, false, false, null, null);
+        return new NomResourceStatus(true, false, false, null, null, null);
     }
 }

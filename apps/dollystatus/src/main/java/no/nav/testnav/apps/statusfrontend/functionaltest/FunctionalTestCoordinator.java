@@ -54,6 +54,8 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestEr
 @Service
 public class FunctionalTestCoordinator {
 
+    private static final int MAX_CONCURRENT_GROUPS = 4;
+
     private final Object runMonitor = new Object();
     private final FunctionalTestRegistry registry;
     private final FunctionalTestCache cache;
@@ -335,14 +337,36 @@ public class FunctionalTestCoordinator {
             Function<FunctionalTestRegistry.RegisteredTechnicalStatus, Mono<Void>> technicalExecution
     ) {
         return Flux.range(1, 3)
-                .concatMap(phase -> Flux.concat(
-                        Flux.fromIterable(registrations)
-                                .filter(registration -> executionPhase(registration.key().systemId()) == phase)
-                                .concatMap(functionalExecution),
-                        Flux.fromIterable(technicalRegistrations)
-                                .filter(registration -> executionPhase(registration.key().systemId()) == phase)
-                                .concatMap(technicalExecution)))
+                .concatMap(phase -> {
+                    var groups = new LinkedHashMap<String, List<Mono<Void>>>();
+                    registrations.stream()
+                            .filter(registration -> executionPhase(registration.key().systemId()) == phase)
+                            .forEach(registration -> groups
+                                    .computeIfAbsent(executionGroup(registration.key().systemId()),
+                                            _ -> new ArrayList<>())
+                                    .add(Mono.defer(() -> functionalExecution.apply(registration))));
+                    technicalRegistrations.stream()
+                            .filter(registration -> executionPhase(registration.key().systemId()) == phase)
+                            .forEach(registration -> groups
+                                    .computeIfAbsent(executionGroup(registration.key().systemId()),
+                                            _ -> new ArrayList<>())
+                                    .add(Mono.defer(() -> technicalExecution.apply(registration))));
+                    return Flux.fromIterable(groups.values())
+                            .flatMap(group -> Flux.concat(group), MAX_CONCURRENT_GROUPS);
+                })
                 .then();
+    }
+
+    private String executionGroup(SystemId systemId) {
+        var value = systemId.value();
+        if (value.startsWith("pensjon-")) {
+            return "pensjon";
+        }
+        return switch (value) {
+            case "arena", "arbeidssoekerregisteret" -> "arbeidssoeker";
+            case "nom", "skjermingsregister", "tps-messaging-egenansatt" -> "skjerming";
+            default -> value;
+        };
     }
 
     private int executionPhase(SystemId systemId) {

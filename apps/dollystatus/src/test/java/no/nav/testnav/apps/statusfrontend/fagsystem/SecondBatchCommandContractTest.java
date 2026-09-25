@@ -350,8 +350,9 @@ class SecondBatchCommandContractTest {
         StepVerifier.create(new GetNomResourceCommand(
                         webClient, TOKEN, request, TIMEOUT).call())
                 .assertNext(status -> {
-                    assertThat(status.expectedDataPresent()).isTrue();
+                    assertThat(status.expectedPersonPresent()).isTrue();
                     assertThat(status.resourceId()).isEqualTo("12345");
+                    assertThat(status.startDate()).isEqualTo(LocalDate.of(2026, 9, 21));
                 })
                 .verifyComplete();
         StepVerifier.create(new CloseNomResourceCommand(
@@ -387,6 +388,32 @@ class SecondBatchCommandContractTest {
                           "sluttDato": "2026-09-21"
                         }
                         """)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"Test,true", "Annen,false"})
+    void shouldExposeActualNomStartDateWithoutIgnoringPersonMismatch(String firstName, boolean expectedPerson) {
+        var request = new NomRequest(
+                IDENT, "Testesen", "Test", null, LocalDate.of(2026, 9, 23), null);
+        stubFor(post(urlPathEqualTo("/api/v1/dolly/hentRessurs"))
+                .willReturn(okJson("""
+                        {
+                          "fid": "12345",
+                          "personident": "%s",
+                          "navn": {"fornavn": "%s", "etternavn": "Testesen"},
+                          "startDato": "2026-09-24",
+                          "sluttDato": null
+                        }
+                        """.formatted(IDENT, firstName))));
+
+        StepVerifier.create(new GetNomResourceCommand(webClient, TOKEN, request, TIMEOUT).call())
+                .assertNext(status -> {
+                    assertThat(status.expectedPersonPresent()).isEqualTo(expectedPerson);
+                    assertThat(status.startDate()).isEqualTo(LocalDate.of(2026, 9, 24));
+                    assertThat(status.resourceId()).isEqualTo("12345");
+                    assertThat(status.closed()).isFalse();
+                })
+                .verifyComplete();
     }
 
     @Test
