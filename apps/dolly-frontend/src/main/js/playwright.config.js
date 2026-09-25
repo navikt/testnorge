@@ -40,7 +40,13 @@ export default defineConfig({
 	projects: [
 		{
 			name: 'Google Chrome',
-			use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+			use: {
+				...devices['Desktop Chrome'],
+				channel: 'chrome',
+				// Ubuntu 24.04 GitHub Actions runners restrict unprivileged user namespaces via AppArmor,
+				// which breaks Chrome's sandbox and hangs the browser launch. CI is already an isolated VM.
+				launchOptions: process.env.CI ? { args: ['--no-sandbox'] } : {},
+			},
 		},
 	],
 
