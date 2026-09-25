@@ -34,7 +34,7 @@ export const Alder = ({ formMethods }) => {
 	const onlyNumberKeyPressHandler = (event: React.KeyboardEvent<any>) =>
 		!/\d/.test(event.key) && event.preventDefault()
 
-	const minDateAlder = opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
+	const minDateAlder = opts?.identtype === 'NPID' ? new Date(1870, 0, 1) : new Date(1900, 0, 1)
 
 	return (
 		<div className="flexbox--flex-wrap">
