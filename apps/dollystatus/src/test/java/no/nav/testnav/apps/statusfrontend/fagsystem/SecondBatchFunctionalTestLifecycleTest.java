@@ -28,6 +28,7 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -148,9 +149,11 @@ class SecondBatchFunctionalTestLifecycleTest {
     }
 
     @Test
-    void shouldBlockArenaWhenActiveUserExists() {
+    void shouldCleanupExistingArenaUserBeforeNewPreflight() {
         when(arenaClient.getUser(eq(FunctionalTestEnvironment.Q1), eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new ArenaResourceStatus(false, true, true, false)));
+                .thenReturn(Mono.just(new ArenaResourceStatus(false, true, true, false)),
+                        Mono.just(new ArenaResourceStatus(false, false, false, true)));
+        when(arenaClient.deactivateUser(FunctionalTestEnvironment.Q1, RUN_ID)).thenReturn(Mono.empty());
         var lifecycle = new ArenaFunctionalTest(
                 arenaClient,
                 pdlProperties,
@@ -158,14 +161,21 @@ class SecondBatchFunctionalTestLifecycleTest {
                 scheduler);
 
         StepVerifier.create(lifecycle.preflight(context("arena", FunctionalTestEnvironment.Q1)))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+        var context = context("arena", FunctionalTestEnvironment.Q1);
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(arenaClient).deactivateUser(FunctionalTestEnvironment.Q1, RUN_ID);
     }
 
     @Test
-    void shouldBlockKontoregisterWhenAnyActiveAccountExists() {
+    void shouldCleanupExistingKontoregisterAccountBeforeNewPreflight() {
         when(kontoregisterClient.getAccount(eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new KontoregisterResourceStatus(false, false)));
+                .thenReturn(Mono.just(new KontoregisterResourceStatus(false, false)),
+                        Mono.just(KontoregisterResourceStatus.emptyStatus()));
+        when(kontoregisterClient.deleteAccount(RUN_ID)).thenReturn(Mono.empty());
         var lifecycle = new KontoregisterFunctionalTest(
                 kontoregisterClient,
                 pdlProperties,
@@ -174,31 +184,42 @@ class SecondBatchFunctionalTestLifecycleTest {
 
         StepVerifier.create(lifecycle.preflight(
                         context("kontoregister", FunctionalTestEnvironment.GLOBAL)))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+        var context = context("kontoregister", FunctionalTestEnvironment.GLOBAL);
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(kontoregisterClient).deleteAccount(RUN_ID);
     }
 
     @Test
-    void shouldBlockKrrWhenContactInformationExists() {
+    void shouldCleanupExistingKrrContactInformationBeforeNewPreflight() {
         when(krrClient.getContactInformation(eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new KrrResourceStatus(false, false)));
+                .thenReturn(Mono.just(new KrrResourceStatus(false, false)),
+                        Mono.just(KrrResourceStatus.emptyStatus()));
+        when(krrClient.deleteContactInformation(RUN_ID)).thenReturn(Mono.empty());
         var lifecycle = krrLifecycle();
 
         StepVerifier.create(lifecycle.preflight(context("krr", FunctionalTestEnvironment.GLOBAL)))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+        var context = context("krr", FunctionalTestEnvironment.GLOBAL);
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(krrClient).deleteContactInformation(RUN_ID);
     }
 
     @Test
-    void shouldBlockNomWhenActiveResourceExists() {
+    void shouldCleanupExistingNomResourceWithRetainedDateBeforeNewPreflight() {
+        var originalStart = LocalDate.of(2020, 1, 1);
+        var endDate = LocalDate.of(2026, 9, 20);
+        var existing = new NomResourceStatus(false, false, false, "12345", originalStart, null);
+        var closed = new NomResourceStatus(false, false, true, "12345", originalStart, endDate);
         when(nomClient.getResource(eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new NomResourceStatus(
-                        false,
-                        false,
-                        false,
-                        "12345",
-                        LocalDate.of(2026, 9, 19),
-                        null)));
+                .thenReturn(Mono.just(existing), Mono.just(existing), Mono.just(closed));
+        when(nomClient.closeResource(RUN_ID, endDate)).thenReturn(Mono.empty());
         var lifecycle = new NomFunctionalTest(
                 nomClient,
                 pdlProperties,
@@ -206,13 +227,55 @@ class SecondBatchFunctionalTestLifecycleTest {
                 scheduler);
 
         StepVerifier.create(lifecycle.preflight(context("nom", FunctionalTestEnvironment.GLOBAL)))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+        var context = context("nom", FunctionalTestEnvironment.GLOBAL);
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .assertNext(preflight -> assertThat(preflight.previousStatus()).isEqualTo(closed))
+                .verifyComplete();
+        var calls = inOrder(nomClient);
+        calls.verify(nomClient, org.mockito.Mockito.times(2)).getResource(eq(RUN_ID), any());
+        calls.verify(nomClient).closeResource(RUN_ID, endDate);
+        calls.verify(nomClient, org.mockito.Mockito.times(2)).getResource(eq(RUN_ID), any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"12345", "other-resource"})
+    void shouldRequireSameNomResourceIdAfterCleaningExistingData(String returnedResourceId) {
+        var endDate = LocalDate.of(2026, 9, 20);
+        var originalStart = LocalDate.of(2020, 1, 1);
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new NomResourceStatus(false, false, false, "12345", originalStart, null)),
+                        Mono.just(new NomResourceStatus(false, false, true,
+                                returnedResourceId, originalStart, endDate)));
+        when(nomClient.closeResource(RUN_ID, endDate)).thenReturn(Mono.empty());
+        var lifecycle = nomLifecycle();
+        var verification = StepVerifier.withVirtualTime(
+                () -> lifecycle.cleanupExistingData(context("nom", FunctionalTestEnvironment.GLOBAL)),
+                () -> scheduler, 1);
+        if (returnedResourceId.equals("12345")) {
+            verification.verifyComplete();
+        } else {
+            verification.thenAwait(Duration.ofMinutes(3))
+                    .expectError(FunctionalTestVerificationTimeoutException.class).verify();
+        }
+    }
+
+    @Test
+    void shouldNotCloseExistingNomResourceWithoutId() {
+        when(nomClient.getResource(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new NomResourceStatus(false, false, false, null,
+                        LocalDate.of(2020, 1, 1), null)));
+
+        StepVerifier.create(nomLifecycle().cleanupExistingData(context("nom", FunctionalTestEnvironment.GLOBAL)))
+                .expectError(IllegalStateException.class).verify();
+        verify(nomClient, never()).closeResource(any(), any());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1})
-    void shouldBlockNomUntilExistingEndDateHasPassed(int daysUntilEnd) {
+    void shouldRequestCleanupOfNomWhenExistingEndDateHasNotPassed(int daysUntilEnd) {
         when(nomClient.getResource(eq(RUN_ID), any()))
                 .thenReturn(Mono.just(new NomResourceStatus(
                         false, false, true, "12345",
@@ -220,7 +283,7 @@ class SecondBatchFunctionalTestLifecycleTest {
                         LocalDate.of(2026, 9, 21).plusDays(daysUntilEnd))));
 
         StepVerifier.create(nomLifecycle().preflight(context("nom", FunctionalTestEnvironment.GLOBAL)))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
         verify(nomClient, never()).createResource(any(), any());
         verify(nomClient, never()).closeResource(any(), any());
@@ -313,14 +376,14 @@ class SecondBatchFunctionalTestLifecycleTest {
     }
 
     @Test
-    void shouldBlockSkattekortWhenTaxCardExists() {
+    void shouldCleanupExistingSkattekortBeforeNewPreflight() {
         when(skattekortClient.getTaxCard(
                 FunctionalTestEnvironment.Q2,
                 RUN_ID,
-                2026)).thenReturn(Mono.just(new SkattekortResourceStatus(
-                false,
-                true,
-                false)));
+                2026)).thenReturn(Mono.just(new SkattekortResourceStatus(false, true, false)),
+                Mono.just(new SkattekortResourceStatus(false, false, true)));
+        when(skattekortClient.createTaxCard(eq(FunctionalTestEnvironment.Q2), eq(RUN_ID), any()))
+                .thenReturn(Mono.empty());
         var lifecycle = new SkattekortFunctionalTest(
                 skattekortClient,
                 pdlProperties,
@@ -329,8 +392,13 @@ class SecondBatchFunctionalTestLifecycleTest {
 
         StepVerifier.create(lifecycle.preflight(
                         context("skattekort", FunctionalTestEnvironment.Q2)))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+        var context = context("skattekort", FunctionalTestEnvironment.Q2);
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(skattekortClient).createTaxCard(eq(FunctionalTestEnvironment.Q2), eq(RUN_ID), any());
     }
 
     @ParameterizedTest

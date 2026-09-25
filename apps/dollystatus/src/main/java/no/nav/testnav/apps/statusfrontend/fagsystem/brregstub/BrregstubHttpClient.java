@@ -54,7 +54,6 @@ public class BrregstubHttpClient implements BrregstubClient {
                         token.getTokenValue(),
                         BrregstubTestData.ORGANIZATION_NUMBER,
                         expectedRequest.fnr(),
-                        expectedRequest.enheter().getFirst().registreringsdato(),
                         properties.getRequestTimeout()).call());
     }
 

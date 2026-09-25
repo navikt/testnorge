@@ -5,7 +5,7 @@ import java.util.Optional;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PensjonFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
@@ -38,7 +38,13 @@ abstract class AbstractPensjonFunctionalTest
         return Mono.defer(() -> getResourceStatus(context))
                 .flatMap(status -> status.empty()
                         ? Mono.just(Preflight.COMPLETED)
-                        : Mono.error(new FunctionalTestBlockedException()));
+                        : Mono.error(new FunctionalTestExistingDataException()));
+    }
+
+    @Override
+    public final Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return cleanup(context, Preflight.COMPLETED, Optional.empty(), Optional.empty(),
+                descriptor().expectedCleanupState());
     }
 
     @Override

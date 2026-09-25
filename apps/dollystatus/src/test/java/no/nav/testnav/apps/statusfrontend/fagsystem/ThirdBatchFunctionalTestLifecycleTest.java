@@ -30,6 +30,7 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.udi.UdiClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.udi.UdiFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.udi.UdiResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
@@ -118,36 +119,96 @@ class ThirdBatchFunctionalTestLifecycleTest {
     }
 
     @Test
-    void shouldBlockEveryUnsafeMutatingPreflight() {
+    void shouldCleanupExistingDataBeforeNewPreflightForThirdBatch() {
         when(brregstubClient.getRoleOverview(any()))
-                .thenReturn(Mono.just(new BrregstubResourceStatus(false, false)));
+                .thenReturn(Mono.just(new BrregstubResourceStatus(false, false)),
+                        Mono.just(BrregstubResourceStatus.emptyStatus()));
         when(brregstubClient.getOrganization(any()))
                 .thenReturn(Mono.just(BrregstubResourceStatus.emptyStatus()));
+        when(brregstubClient.deleteRoleOverview(IDENT)).thenReturn(Mono.empty());
         when(inntektstubClient.getIncome(any()))
-                .thenReturn(Mono.just(new InntektstubResourceStatus(false, false)));
+                .thenReturn(Mono.just(new InntektstubResourceStatus(false, false)),
+                        Mono.just(InntektstubResourceStatus.emptyStatus()));
+        when(inntektstubClient.deleteIncome(IDENT)).thenReturn(Mono.empty());
         when(skjermingsregisterClient.getScreening(any(), any()))
                 .thenReturn(Mono.just(new SkjermingsregisterResourceStatus(
                         false,
                         false,
                         true,
                         false,
-                        false)));
+                        false)), Mono.just(SkjermingsregisterResourceStatus.emptyStatus()));
+        when(skjermingsregisterClient.updateScreening(any())).thenReturn(Mono.empty());
         when(udiClient.getPerson(any()))
-                .thenReturn(Mono.just(new UdiResourceStatus(false, false)));
+                .thenReturn(Mono.just(new UdiResourceStatus(false, false)),
+                        Mono.just(UdiResourceStatus.emptyStatus()));
+        when(udiClient.deletePerson(IDENT)).thenReturn(Mono.empty());
 
         StepVerifier.create(brregstubLifecycle().preflight(context("brregstub")))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
         StepVerifier.create(inntektstubLifecycle().preflight(context("inntektstub")))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
         StepVerifier.create(skjermingsregisterLifecycle().preflight(
                         context("skjermingsregister")))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
         StepVerifier.create(udiLifecycle().preflight(context("udi")))
-                .expectError(FunctionalTestBlockedException.class)
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+
+        StepVerifier.create(brregstubLifecycle().cleanupExistingData(context("brregstub"))
+                        .then(Mono.defer(() -> brregstubLifecycle().preflight(context("brregstub")))))
+                .expectNextCount(1).verifyComplete();
+        StepVerifier.create(inntektstubLifecycle().cleanupExistingData(context("inntektstub"))
+                        .then(Mono.defer(() -> inntektstubLifecycle().preflight(context("inntektstub")))))
+                .expectNextCount(1).verifyComplete();
+        StepVerifier.create(skjermingsregisterLifecycle().cleanupExistingData(context("skjermingsregister"))
+                        .then(Mono.defer(() -> skjermingsregisterLifecycle().preflight(context("skjermingsregister")))))
+                .expectNextCount(1).verifyComplete();
+        StepVerifier.create(udiLifecycle().cleanupExistingData(context("udi"))
+                        .then(Mono.defer(() -> udiLifecycle().preflight(context("udi")))))
+                .expectNextCount(1).verifyComplete();
+
+        verify(brregstubClient).deleteRoleOverview(IDENT);
+        verify(brregstubClient, never()).deleteOrganization();
+        verify(inntektstubClient).deleteIncome(IDENT);
+        verify(skjermingsregisterClient).updateScreening(any());
+        verify(udiClient).deletePerson(IDENT);
+    }
+
+    @Test
+    void shouldCleanupOwnedBrregstubOrganizationLeftByEarlierRun() {
+        when(brregstubClient.getRoleOverview(any()))
+                .thenReturn(Mono.just(BrregstubResourceStatus.emptyStatus()));
+        when(brregstubClient.getOrganization(any()))
+                .thenReturn(Mono.just(new BrregstubResourceStatus(false, true)),
+                        Mono.just(new BrregstubResourceStatus(false, true)),
+                        Mono.just(BrregstubResourceStatus.emptyStatus()));
+        when(brregstubClient.deleteRoleOverview(IDENT)).thenReturn(Mono.empty());
+        when(brregstubClient.deleteOrganization()).thenReturn(Mono.empty());
+        var lifecycle = brregstubLifecycle();
+        var context = context("brregstub");
+
+        StepVerifier.create(lifecycle.preflight(context))
+                .expectError(FunctionalTestExistingDataException.class).verify();
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(brregstubClient).deleteOrganization();
+    }
+
+    @Test
+    void shouldKeepBlockingBrregstubOrganizationWithOtherParticipants() {
+        when(brregstubClient.getRoleOverview(any()))
+                .thenReturn(Mono.just(BrregstubResourceStatus.emptyStatus()));
+        when(brregstubClient.getOrganization(any()))
+                .thenReturn(Mono.just(new BrregstubResourceStatus(false, false)));
+
+        StepVerifier.create(brregstubLifecycle().preflight(context("brregstub")))
+                .expectError(FunctionalTestBlockedException.class).verify();
+        verify(brregstubClient, never()).deleteOrganization();
+        verify(brregstubClient, never()).deleteRoleOverview(any());
     }
 
     @Test

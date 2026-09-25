@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunInProgressException;
@@ -55,6 +56,7 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestEr
 public class FunctionalTestCoordinator {
 
     private static final int MAX_CONCURRENT_GROUPS = 4;
+    private static final Duration COMPLETED_RUN_RETENTION = Duration.ofHours(24);
 
     private final Object runMonitor = new Object();
     private final FunctionalTestRegistry registry;
@@ -186,9 +188,17 @@ public class FunctionalTestCoordinator {
     }
 
     public Mono<FunctionalTestRunStatus> getRun(RunId runId) {
-        return Mono.fromSupplier(() -> Optional.ofNullable(runs.get(runId))
-                .map(ActiveRun::snapshot)
-                .orElseThrow(FunctionalTestRunNotFoundException::new));
+        return Mono.fromSupplier(() -> {
+            evictExpiredRuns();
+            return Optional.ofNullable(runs.get(runId))
+                    .map(ActiveRun::snapshot)
+                    .orElseThrow(FunctionalTestRunNotFoundException::new);
+        });
+    }
+
+    private void evictExpiredRuns() {
+        var now = clock.instant();
+        runs.values().removeIf(run -> run.isExpired(now));
     }
 
     private RunReference launch(
@@ -198,6 +208,7 @@ public class FunctionalTestCoordinator {
             ContextView contextView,
             boolean allSystemsRequested
     ) {
+        evictExpiredRuns();
         var runId = RunId.random();
         var startedAt = clock.instant();
         var orderedKeys = new ArrayList<FunctionalTestKey>();
@@ -613,6 +624,8 @@ public class FunctionalTestCoordinator {
 
         return Mono.defer(() -> definition.preflight(context))
                 .switchIfEmpty(Mono.error(new IllegalStateException("Preflight returned no result.")))
+                .onErrorResume(FunctionalTestExistingDataException.class,
+                        _ -> cleanupExistingData(definition, registration.key(), context, run))
                 .doOnError(throwable -> logFailure(run, registration.key(), PREFLIGHT.name(), throwable))
                 .flatMap(preflightResult ->
                         executeCreate(definition, registration.key(), context, preflightResult, run))
@@ -623,6 +636,34 @@ public class FunctionalTestCoordinator {
                     return completeFailure(run, registration.key(), state, 0,
                             FunctionalTestErrorSanitizer.sanitize(PREFLIGHT, throwable));
                 });
+    }
+
+    private <P, C, V> Mono<P> cleanupExistingData(
+            FunctionalTestDefinition<P, C, V> definition,
+            FunctionalTestKey key,
+            FunctionalTestContext context,
+            ActiveRun run
+    ) {
+        var cleanupAttempts = new AtomicInteger();
+        return Mono.defer(() -> {
+                    var attempt = cleanupAttempts.incrementAndGet();
+                    update(run, key, FunctionalTestState.CLEANUP, attempt, null);
+                    return definition.cleanupExistingData(context);
+                })
+                .retryWhen(cleanupRetry())
+                .then(Mono.defer(() -> {
+                    update(run, key, FunctionalTestState.PREFLIGHT, cleanupAttempts.get(), null);
+                    return definition.preflight(context)
+                            .switchIfEmpty(Mono.error(new IllegalStateException("Preflight returned no result.")));
+                }))
+                .doOnError(throwable -> logFailure(run, key, "CLEANUP_EXISTING", throwable))
+                .onErrorResume(throwable -> completeFailure(
+                        run,
+                        key,
+                        FunctionalTestState.CLEANUP_FAILED,
+                        cleanupAttempts.get(),
+                        FunctionalTestErrorSanitizer.sanitize(CLEANUP, throwable))
+                        .then(Mono.empty()));
     }
 
     private <P, C, V> Mono<Void> executeCreate(
@@ -717,9 +758,7 @@ public class FunctionalTestCoordinator {
                             verificationResult,
                             definition.descriptor().expectedCleanupState());
                 })
-                .retryWhen(Retry.backoff(3, Duration.ofMillis(250))
-                        .maxBackoff(Duration.ofSeconds(2))
-                        .filter(this::isRetryableCleanupFailure))
+                .retryWhen(cleanupRetry())
                 .doOnError(throwable -> logFailure(run, key, CLEANUP.name(), throwable))
                 .then(Mono.<Void>fromRunnable(() -> complete(
                         run,
@@ -758,7 +797,12 @@ public class FunctionalTestCoordinator {
     }
 
     private boolean isRetryableCleanupFailure(Throwable throwable) {
-        if (throwable instanceof TimeoutException || throwable instanceof WebClientRequestException) {
+        if (Exceptions.isRetryExhausted(throwable) && nonNull(throwable.getCause())) {
+            return isRetryableCleanupFailure(throwable.getCause());
+        }
+        if (throwable instanceof TimeoutException
+                || throwable instanceof FunctionalTestVerificationTimeoutException
+                || throwable instanceof WebClientRequestException) {
             return true;
         }
         if (throwable instanceof WebClientResponseException responseException) {
@@ -823,6 +867,7 @@ public class FunctionalTestCoordinator {
     private void completeRun(ActiveRun run, boolean executionCompleted) {
         synchronized (runMonitor) {
             run.complete(clock.instant());
+            evictExpiredRuns();
             if (activeRun == run) {
                 activeRun = null;
             }
@@ -911,6 +956,10 @@ public class FunctionalTestCoordinator {
         private synchronized void complete(Instant completionTime) {
             state = FunctionalTestRunState.COMPLETED;
             completedAt = completionTime;
+        }
+
+        private synchronized boolean isExpired(Instant now) {
+            return nonNull(completedAt) && !now.isBefore(completedAt.plus(COMPLETED_RUN_RETENTION));
         }
 
         private synchronized List<FunctionalTestStatus> incompleteStatuses() {

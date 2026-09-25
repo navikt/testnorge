@@ -10,6 +10,7 @@ import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.Instda
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -76,7 +77,13 @@ public class InstdataFunctionalTest
                         record))
                 .flatMap(status -> status.empty()
                         ? Mono.just(new InstdataPreflight(record))
-                        : Mono.error(new FunctionalTestBlockedException()));
+                        : Mono.error(new FunctionalTestExistingDataException()));
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return cleanup(context, new InstdataPreflight(testRecord(context)),
+                Optional.empty(), Optional.empty(), DESCRIPTOR.expectedCleanupState());
     }
 
     @Override

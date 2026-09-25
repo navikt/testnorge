@@ -9,7 +9,6 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.JsonNode;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.concurrent.Callable;
 import java.util.stream.StreamSupport;
 
@@ -20,7 +19,6 @@ public class GetBrregstubOrganizationCommand implements Callable<Mono<BrregstubR
     private final String token;
     private final int organizationNumber;
     private final String expectedIdent;
-    private final LocalDate expectedRegistrationDate;
     private final Duration timeout;
 
     @Override
@@ -45,11 +43,11 @@ public class GetBrregstubOrganizationCommand implements Callable<Mono<BrregstubR
 
     private BrregstubResourceStatus toStatus(JsonNode response) {
         var roles = response.path("deltakere").path("roller");
-        var expectedParticipant = roles.isArray()
+        var expectedParticipants = roles.isArray()
+                && !roles.isEmpty()
                 && StreamSupport.stream(roles.spliterator(), false)
-                .anyMatch(role -> expectedIdent.equals(role.path("fodselsnr").asText()));
-        var expectedDate = expectedRegistrationDate.toString()
-                .equals(response.path("registreringsdato").asText());
-        return new BrregstubResourceStatus(false, expectedParticipant && expectedDate);
+                .allMatch(role -> expectedIdent.equals(role.path("fodselsnr").asText()));
+        return new BrregstubResourceStatus(false,
+                response.path("orgnr").asInt() == organizationNumber && expectedParticipants);
     }
 }

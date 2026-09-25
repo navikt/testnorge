@@ -417,6 +417,25 @@ class SecondBatchCommandContractTest {
     }
 
     @Test
+    void shouldRejectNomLookupForAnotherIdentBeforeCleanup() {
+        var request = new NomRequest(
+                IDENT, "Testesen", "Test", null, LocalDate.of(2026, 9, 23), null);
+        stubFor(post(urlPathEqualTo("/api/v1/dolly/hentRessurs"))
+                .willReturn(okJson("""
+                        {
+                          "fid": "12345",
+                          "personident": "another-test-ident",
+                          "navn": {"fornavn": "Test", "etternavn": "Testesen"},
+                          "startDato": "2026-09-23",
+                          "sluttDato": null
+                        }
+                        """)));
+
+        StepVerifier.create(new GetNomResourceCommand(webClient, TOKEN, request, TIMEOUT).call())
+                .expectError(IllegalStateException.class).verify();
+    }
+
+    @Test
     void shouldUseSkattekortEnvironmentAndNotTaxCardCleanupContract() {
         var taxCard = new SkattekortRequest(
                 IDENT,

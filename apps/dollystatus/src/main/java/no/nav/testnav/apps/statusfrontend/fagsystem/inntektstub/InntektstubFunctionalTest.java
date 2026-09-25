@@ -7,7 +7,7 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPo
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.InntektstubFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -68,7 +68,13 @@ public class InntektstubFunctionalTest implements FunctionalTestDefinition<
         return client.getIncome(request)
                 .flatMap(status -> status.empty()
                         ? Mono.just(Preflight.COMPLETED)
-                        : Mono.error(new FunctionalTestBlockedException()));
+                        : Mono.error(new FunctionalTestExistingDataException()));
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return cleanup(context, Preflight.COMPLETED, Optional.empty(), Optional.empty(),
+                DESCRIPTOR.expectedCleanupState());
     }
 
     @Override

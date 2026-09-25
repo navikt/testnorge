@@ -8,11 +8,14 @@ import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
@@ -97,6 +100,24 @@ class DollyBackendStatusClientTest {
                 .verify();
         StepVerifier.create(client.check("Nede"))
                 .expectError(IllegalStateException.class)
+                .verify();
+
+        verify(1, getRequestedFor(urlPathEqualTo("/internal/status")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {200, 204})
+    void shouldRejectAndShareEmptyBackendResponseAsError(int statusCode) {
+        stubFor(get(urlPathEqualTo("/internal/status"))
+                .willReturn(aResponse().withStatus(statusCode)));
+
+        StepVerifier.create(client.check("Arbeidsregister (AAREG)"))
+                .expectErrorMatches(error -> error instanceof IllegalStateException
+                        && error.getMessage().equals("Teknisk status mangler."))
+                .verify();
+        StepVerifier.create(client.check("Yrkesskade"))
+                .expectErrorMatches(error -> error instanceof IllegalStateException
+                        && error.getMessage().equals("Teknisk status mangler."))
                 .verify();
 
         verify(1, getRequestedFor(urlPathEqualTo("/internal/status")));

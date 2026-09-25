@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.SkjermingsregisterFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
@@ -82,8 +82,14 @@ public class SkjermingsregisterFunctionalTest implements FunctionalTestDefinitio
                     if (status.owned() && status.terminated()) {
                         return Mono.just(new SkjermingsregisterPreflight(true));
                     }
-                    return Mono.error(new FunctionalTestBlockedException());
+                    return Mono.error(new FunctionalTestExistingDataException());
                 });
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return cleanup(context, new SkjermingsregisterPreflight(true),
+                Optional.empty(), Optional.empty(), DESCRIPTOR.expectedCleanupState());
     }
 
     @Override

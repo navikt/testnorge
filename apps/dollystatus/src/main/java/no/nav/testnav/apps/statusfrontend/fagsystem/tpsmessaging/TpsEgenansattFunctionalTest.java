@@ -9,6 +9,7 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPo
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.TpsMessagingFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -67,9 +68,21 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
     public Mono<TpsEgenansattPreflight> preflight(FunctionalTestContext context) {
         var fromDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();
         return client.getEgenansatt(context.runId(), ENVIRONMENTS, fromDate)
-                .flatMap(status -> status.allEnvironmentsPresent() && status.inactive()
-                        ? Mono.just(new TpsEgenansattPreflight(fromDate))
-                        : Mono.error(new FunctionalTestBlockedException()));
+                .flatMap(status -> {
+                    if (!status.allEnvironmentsPresent()) {
+                        return Mono.error(new FunctionalTestBlockedException());
+                    }
+                    return status.inactive()
+                            ? Mono.just(new TpsEgenansattPreflight(fromDate))
+                            : Mono.error(new FunctionalTestExistingDataException());
+                });
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        var fromDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();
+        return cleanup(context, new TpsEgenansattPreflight(fromDate),
+                Optional.empty(), Optional.empty(), DESCRIPTOR.expectedCleanupState());
     }
 
     @Override

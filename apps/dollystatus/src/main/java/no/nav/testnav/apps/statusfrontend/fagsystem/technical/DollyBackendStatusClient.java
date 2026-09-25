@@ -41,6 +41,7 @@ public class DollyBackendStatusClient {
                 .uri("/internal/status")
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .switchIfEmpty(Mono.error(new IllegalStateException("Teknisk status mangler.")))
                 .timeout(properties.getRequestTimeout());
     }
 

@@ -23,6 +23,7 @@ import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -141,7 +142,6 @@ class ThirdBatchCommandContractTest {
                         TOKEN,
                         ORGANIZATION_NUMBER,
                         IDENT,
-                        LocalDate.of(2026, 9, 21),
                         TIMEOUT).call())
                 .assertNext(status -> assertThat(status.expectedDataPresent()).isTrue())
                 .verifyComplete();
@@ -177,9 +177,47 @@ class ThirdBatchCommandContractTest {
                         TOKEN,
                         ORGANIZATION_NUMBER,
                         IDENT,
-                        LocalDate.of(2026, 9, 21),
                         TIMEOUT).call())
                 .assertNext(status -> assertThat(status.empty()).isTrue())
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRecognizeBrregstubOrganizationOwnedByTestIdentFromAnEarlierDay() {
+        stubFor(get(urlPathEqualTo("/brregstub/api/v1/hentrolle/" + ORGANIZATION_NUMBER))
+                .willReturn(okJson("""
+                        {
+                          "orgnr": %d,
+                          "registreringsdato": "2020-01-01",
+                          "deltakere": {"roller": [{"fodselsnr": "%s"}]}
+                        }
+                        """.formatted(ORGANIZATION_NUMBER, IDENT))));
+
+        StepVerifier.create(new GetBrregstubOrganizationCommand(
+                        webClient, TOKEN, ORGANIZATION_NUMBER, IDENT, TIMEOUT).call())
+                .assertNext(status -> assertThat(status.expectedDataPresent()).isTrue())
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"991825827,true", "991825828,false"})
+    void shouldRejectBrregstubOrganizationWithOtherParticipantsOrOrganizationNumber(
+            int returnedOrganizationNumber, boolean otherParticipant) {
+        var roles = """
+                [{"fodselsnr": "%s"}%s]
+                """.formatted(IDENT, otherParticipant ? ", {\"fodselsnr\": \"another-test-ident\"}" : "");
+        stubFor(get(urlPathEqualTo("/brregstub/api/v1/hentrolle/" + ORGANIZATION_NUMBER))
+                .willReturn(okJson("""
+                        {
+                          "orgnr": %d,
+                          "registreringsdato": "2026-09-21",
+                          "deltakere": {"roller": %s}
+                        }
+                        """.formatted(returnedOrganizationNumber, roles))));
+
+        StepVerifier.create(new GetBrregstubOrganizationCommand(
+                        webClient, TOKEN, ORGANIZATION_NUMBER, IDENT, TIMEOUT).call())
+                .assertNext(status -> assertThat(status.expectedDataPresent()).isFalse())
                 .verifyComplete();
     }
 

@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor;
 import reactor.core.publisher.Mono;
@@ -16,6 +17,10 @@ public interface FunctionalTestDefinition<P, C, V> {
     }
 
     Mono<P> preflight(FunctionalTestContext context);
+
+    default Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return Mono.error(new FunctionalTestBlockedException());
+    }
 
     Mono<C> create(FunctionalTestContext context, P preflightResult);
 

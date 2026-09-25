@@ -5,7 +5,11 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
@@ -24,6 +28,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
@@ -43,17 +48,145 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 class FunctionalTestCoordinatorTest {
 
     private static final Instant STARTED_AT = Instant.parse("2026-09-21T10:00:00Z");
+
+    @Test
+    void shouldCleanupExistingDataBeforeRecheckingPreflightAndCreating() {
+        var definition = spy(new GatedPreflightDefinition());
+        var cleanupGate = Sinks.<Void>empty();
+        doReturn(Mono.error(new FunctionalTestExistingDataException()), Mono.just(new TestValue()))
+                .when(definition).preflight(any());
+        doReturn(cleanupGate.asMono()).when(definition).cleanupExistingData(any());
+        var coordinator = coordinator(definition);
+
+        var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        verify(definition, timeout(1000)).cleanupExistingData(any());
+        assertState(coordinator, reference, FunctionalTestState.CLEANUP);
+        verify(definition, never()).create(any(), any());
+        assertThat(coordinator.startAllExpired().block(Duration.ofSeconds(1)).runId())
+                .isEqualTo(reference.runId());
+
+        cleanupGate.tryEmitEmpty();
+        assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
+                .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.OK));
+        var calls = org.mockito.Mockito.inOrder(definition);
+        calls.verify(definition).preflight(any());
+        calls.verify(definition).cleanupExistingData(any());
+        calls.verify(definition).preflight(any());
+        calls.verify(definition).create(any(), any());
+        calls.verify(definition).verify(any(), any(), any());
+        calls.verify(definition).cleanup(any(), any(), any(), any(), any());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"408,4", "429,4", "500,4", "400,1", "401,1", "403,1", "0,4", "-1,4", "-2,4"})
+    void shouldReportExistingDataCleanupFailureWithoutCreatingAndStillCleanupPdl(
+            int failureCode, int attempts) {
+        var events = new CopyOnWriteArrayList<String>();
+        var definition = spy(new GatedPreflightDefinition() {
+            @Override
+            public boolean requiresPdl() {
+                return true;
+            }
+        });
+        Throwable failure = switch (failureCode) {
+            case 0 -> new TimeoutException("Sensitive detail");
+            case -1 -> new FunctionalTestVerificationTimeoutException();
+            case -2 -> Exceptions.retryExhausted("Sensitive detail",
+                    WebClientResponseException.create(500, "", HttpHeaders.EMPTY, new byte[0], UTF_8));
+            default -> WebClientResponseException.create(
+                    failureCode, "Sensitive detail", HttpHeaders.EMPTY, new byte[0], UTF_8);
+        };
+        doReturn(Mono.error(new FunctionalTestExistingDataException())).when(definition).preflight(any());
+        doReturn(Mono.error(failure)).when(definition).cleanupExistingData(any());
+        var listener = mock(FunctionalTestResultListener.class);
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(definition, new OrderedDefinition(events, "instdata"))),
+                new FunctionalTestCache(clock), clock,
+                List.of(new RecordingPdlLifecycle(events, false)), List.of(listener));
+
+        var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        var completed = awaitCompleted(coordinator, reference);
+        assertThat(completed.results())
+                .filteredOn(status -> status.systemId().value().equals("arena"))
+                .singleElement().satisfies(status -> {
+                    assertThat(status.state()).isEqualTo(FunctionalTestState.CLEANUP_FAILED);
+                    assertThat(status.cleanupAttempts()).isEqualTo(attempts);
+                    assertThat(status.error().message()).isEqualTo("Testdata kunne ikke ryddes opp.");
+                    verify(listener, timeout(1000)).onCompleted(status);
+                });
+        assertThat(completed.results())
+                .filteredOn(status -> status.systemId().value().equals("instdata"))
+                .singleElement().satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.OK));
+        verify(definition, times(attempts)).cleanupExistingData(any());
+        verify(definition, never()).create(any(), any());
+        assertThat(events.getLast()).isEqualTo("pdl-cleanup");
+        assertThatThrownBy(() -> coordinator.startAllExpired().block(Duration.ofSeconds(1)))
+                .isInstanceOf(FunctionalTestNotFoundException.class);
+    }
+
+    @Test
+    void shouldRetryExistingDataCleanupWithoutRetryingCreate() {
+        var definition = spy(new GatedPreflightDefinition());
+        doReturn(Mono.error(new FunctionalTestExistingDataException()), Mono.just(new TestValue()))
+                .when(definition).preflight(any());
+        doReturn(Mono.error(new TimeoutException()), Mono.empty()).when(definition).cleanupExistingData(any());
+        var coordinator = coordinator(definition);
+
+        var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
+                .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.OK));
+        verify(definition, times(2)).cleanupExistingData(any());
+        verify(definition, times(1)).create(any(), any());
+    }
+
+    @Test
+    void shouldStopIfPreflightStillFindsDataAfterCleanup() {
+        var definition = spy(new GatedPreflightDefinition());
+        doReturn(Mono.error(new FunctionalTestExistingDataException())).when(definition).preflight(any());
+        doReturn(Mono.empty()).when(definition).cleanupExistingData(any());
+        var coordinator = coordinator(definition);
+
+        var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
+                .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.CLEANUP_FAILED));
+        verify(definition, times(1)).cleanupExistingData(any());
+        verify(definition, times(2)).preflight(any());
+        verify(definition, never()).create(any(), any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldNotCleanupWhenPreflightFailsWithoutConfirmedExistingData(boolean blocked) {
+        var definition = spy(new GatedPreflightDefinition());
+        var failure = blocked ? new FunctionalTestBlockedException()
+                : WebClientResponseException.create(403, "", HttpHeaders.EMPTY, new byte[0], UTF_8);
+        doReturn(Mono.error(failure)).when(definition).preflight(any());
+        var coordinator = coordinator(definition);
+
+        var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
+                .satisfies(status -> assertThat(status.state()).isEqualTo(blocked
+                        ? FunctionalTestState.BLOCKED : FunctionalTestState.PREFLIGHT_FAILED));
+        verify(definition, never()).cleanupExistingData(any());
+        verify(definition, never()).create(any(), any());
+    }
 
     @Test
     void shouldLogCreateAndCleanupFailuresWithoutSensitiveDetails() {
@@ -604,6 +737,72 @@ class FunctionalTestCoordinatorTest {
             arena.cleanupGate.tryEmitEmpty();
             instdata.cleanupGate.tryEmitEmpty();
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldRetainActiveRunsAndExpireResultsTwentyFourHoursAfterCompletion(boolean failVerification)
+            throws InterruptedException {
+        var definition = new GatedPreflightDefinition() {
+            @Override
+            public Mono<TestValue> verify(
+                    FunctionalTestContext context, TestValue preflightResult, TestValue createResult) {
+                return failVerification
+                        ? Mono.error(new IllegalStateException("Verification failed"))
+                        : Mono.just(new TestValue());
+            }
+        };
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(definition)), new FunctionalTestCache(clock), clock);
+        var run = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(run).isNotNull();
+        assertThat(definition.preflightInvoked.await(5, TimeUnit.SECONDS)).isTrue();
+        try {
+            clock.setInstant(STARTED_AT.plus(Duration.ofHours(25)));
+            var active = coordinator.getRun(run.runId()).block(Duration.ofSeconds(1));
+            assertThat(active).isNotNull();
+            assertThat(active.state()).isEqualTo(FunctionalTestRunState.RUNNING);
+            definition.preflightResult.tryEmitValue(new TestValue());
+            var completed = awaitCompleted(coordinator, run);
+            assertThat(completed.results()).singleElement()
+                    .satisfies(status -> assertThat(status.state()).isEqualTo(
+                            failVerification ? FunctionalTestState.VERIFY_FAILED : FunctionalTestState.OK));
+            var systemStatuses = coordinator.getSystemStatuses().block(Duration.ofSeconds(1));
+            var expiresAt = completed.completedAt().plus(Duration.ofHours(24));
+            clock.setInstant(expiresAt.minusNanos(1));
+            assertThat(coordinator.getRun(run.runId()).block(Duration.ofSeconds(1))).isEqualTo(completed);
+
+            clock.setInstant(expiresAt);
+            assertThatThrownBy(() -> coordinator.getRun(run.runId()).block(Duration.ofSeconds(1)))
+                    .isInstanceOf(FunctionalTestRunNotFoundException.class);
+            assertThat(ReflectionTestUtils.getField(coordinator, "runs")).asInstanceOf(MAP).isEmpty();
+            assertThat(coordinator.getSystemStatuses().block(Duration.ofSeconds(1))).isEqualTo(systemStatuses);
+        } finally {
+            definition.preflightResult.tryEmitValue(new TestValue());
+        }
+    }
+
+    @Test
+    void shouldEvictExpiredHistoryWhenStartingANewRunWithoutPollingOldRuns() {
+        var definition = new CountingDefinition();
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(definition)), new FunctionalTestCache(clock), clock);
+        var first = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(first).isNotNull();
+        awaitCompleted(coordinator, first);
+        clock.setInstant(STARTED_AT.plus(Duration.ofHours(23)));
+        var recent = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(recent).isNotNull();
+        awaitCompleted(coordinator, recent);
+
+        clock.setInstant(STARTED_AT.plus(Duration.ofHours(24)));
+        var next = coordinator.startSystem(new SystemId("arena")).block(Duration.ofSeconds(1));
+        assertThat(next).isNotNull();
+        assertThat(ReflectionTestUtils.getField(coordinator, "runs")).asInstanceOf(MAP)
+                .containsOnlyKeys(recent.runId(), next.runId());
+        awaitCompleted(coordinator, next);
     }
 
     private static FunctionalTestCoordinator coordinator(FunctionalTestDefinition<?, ?, ?> definition) {

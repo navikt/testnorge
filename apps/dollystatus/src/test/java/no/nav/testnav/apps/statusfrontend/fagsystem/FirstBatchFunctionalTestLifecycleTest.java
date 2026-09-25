@@ -20,6 +20,7 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsEgenansattFu
 import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsEgenansattResourceStatus;
 import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsMessagingClient;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
@@ -29,6 +30,8 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
@@ -38,6 +41,7 @@ import reactor.test.scheduler.VirtualTimeScheduler;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -68,20 +72,97 @@ class FirstBatchFunctionalTestLifecycleTest {
     }
 
     @Test
-    void shouldBlockArbeidssoekerregisteretWhenRegistrationAlreadyExists() {
+    void shouldCleanupExistingArbeidssoekerRegistrationBeforeNewPreflight() {
         when(arbeidssoekerregisteretClient.getRegistration(eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new ArbeidssoekerregisteretResourceStatus(false, false)));
+                .thenReturn(Mono.just(new ArbeidssoekerregisteretResourceStatus(false, false)),
+                        Mono.just(ArbeidssoekerregisteretResourceStatus.emptyStatus()));
+        when(arbeidssoekerregisteretClient.deleteRegistration(RUN_ID)).thenReturn(Mono.empty());
         var lifecycle = new ArbeidssoekerregisteretFunctionalTest(
                 arbeidssoekerregisteretClient,
                 pdlProperties,
                 new ArbeidssoekerregisteretFunctionalTestProperties(),
                 scheduler);
 
-        StepVerifier.create(lifecycle.preflight(context(
-                        "arbeidssoekerregisteret",
-                        FunctionalTestEnvironment.GLOBAL)))
-                .expectError(FunctionalTestBlockedException.class)
+        var context = context("arbeidssoekerregisteret", FunctionalTestEnvironment.GLOBAL);
+        StepVerifier.create(lifecycle.preflight(context))
+                .expectError(FunctionalTestExistingDataException.class)
                 .verify();
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        var calls = inOrder(arbeidssoekerregisteretClient);
+        calls.verify(arbeidssoekerregisteretClient).getRegistration(eq(RUN_ID), any());
+        calls.verify(arbeidssoekerregisteretClient).deleteRegistration(RUN_ID);
+        calls.verify(arbeidssoekerregisteretClient, org.mockito.Mockito.times(2))
+                .getRegistration(eq(RUN_ID), any());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = FunctionalTestEnvironment.class, names = {"Q1", "Q2"})
+    void shouldCleanupExistingInstdataOnlyInSelectedEnvironment(FunctionalTestEnvironment environment) {
+        var environmentName = environment.name().toLowerCase(java.util.Locale.ROOT);
+        when(instdataClient.getEnvironments(RUN_ID))
+                .thenReturn(Mono.just(new InstdataEnvironments(List.of("q1", "q2"), List.of("q2"))));
+        when(instdataClient.getInstdata(eq(RUN_ID), eq(IDENT), eq(environmentName), any()))
+                .thenReturn(Mono.just(new InstdataResourceStatus(false, false)),
+                        Mono.just(new InstdataResourceStatus(true, false)));
+        when(instdataClient.deleteInstdata(RUN_ID, IDENT, List.of(environmentName))).thenReturn(Mono.empty());
+        var lifecycle = new InstdataFunctionalTest(instdataClient, pdlProperties,
+                new InstdataFunctionalTestProperties(), scheduler);
+        var context = context("instdata", environment);
+
+        StepVerifier.create(lifecycle.preflight(context))
+                .expectError(FunctionalTestExistingDataException.class).verify();
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(instdataClient).deleteInstdata(RUN_ID, IDENT, List.of(environmentName));
+    }
+
+    @Test
+    void shouldNotRequestInstdataCleanupForUnsupportedEnvironment() {
+        when(instdataClient.getEnvironments(RUN_ID))
+                .thenReturn(Mono.just(new InstdataEnvironments(List.of("q1"), List.of("q2"))));
+        when(instdataClient.getInstdata(eq(RUN_ID), eq(IDENT), eq("q2"), any()))
+                .thenReturn(Mono.just(new InstdataResourceStatus(false, false)));
+        var lifecycle = new InstdataFunctionalTest(instdataClient, pdlProperties,
+                new InstdataFunctionalTestProperties(), scheduler);
+
+        StepVerifier.create(lifecycle.preflight(context("instdata", FunctionalTestEnvironment.Q2)))
+                .expectError(FunctionalTestBlockedException.class).verify();
+        verify(instdataClient, never()).deleteInstdata(any(), any(), any());
+    }
+
+    @Test
+    void shouldCleanupExistingTpsEgenansattInBothEnvironments() {
+        var fromDate = LocalDate.of(2026, 9, 21);
+        var environments = List.of("q1", "q2");
+        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
+                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(true, false, false)),
+                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)));
+        when(tpsMessagingClient.deleteEgenansatt(RUN_ID, environments)).thenReturn(Mono.empty());
+        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
+                new TpsMessagingFunctionalTestProperties(), scheduler);
+        var context = context("tps-messaging-egenansatt", FunctionalTestEnvironment.GLOBAL);
+
+        StepVerifier.create(lifecycle.preflight(context))
+                .expectError(FunctionalTestExistingDataException.class).verify();
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+        verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
+    }
+
+    @Test
+    void shouldNotRequestTpsCleanupWhenEnvironmentStatusIsMissing() {
+        when(tpsMessagingClient.getEgenansatt(eq(RUN_ID), any(), any()))
+                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(false, false, false)));
+        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
+                new TpsMessagingFunctionalTestProperties(), scheduler);
+
+        StepVerifier.create(lifecycle.preflight(context("tps-messaging-egenansatt", FunctionalTestEnvironment.GLOBAL)))
+                .expectError(FunctionalTestBlockedException.class).verify();
+        verify(tpsMessagingClient, never()).deleteEgenansatt(any(), any());
     }
 
     @Test

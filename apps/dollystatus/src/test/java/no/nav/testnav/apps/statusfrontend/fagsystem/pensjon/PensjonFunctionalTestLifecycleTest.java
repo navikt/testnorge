@@ -12,6 +12,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestCache;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestCoordinator;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestRegistry;
 import no.nav.testnav.apps.statusfrontend.functionaltest.PdlTestLifecycle;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
@@ -22,6 +23,8 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,6 +60,57 @@ class PensjonFunctionalTestLifecycleTest {
         properties = new PensjonFunctionalTestProperties();
         properties.setPollInterval(Duration.ofSeconds(1));
         properties.setPollTimeout(Duration.ofSeconds(5));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"tp,Q1", "tp,Q2", "popp,Q1", "popp,Q2", "afp,Q1", "afp,Q2", "avtale,GLOBAL"})
+    void shouldCleanupExistingPensjonDataBeforeNewPreflight(
+            String system, FunctionalTestEnvironment environment) {
+        var existing = Mono.just(new PensjonResourceStatus(false, false));
+        var empty = Mono.just(PensjonResourceStatus.emptyStatus());
+        AbstractPensjonFunctionalTest lifecycle = switch (system) {
+            case "tp" -> {
+                when(client.getTpForhold(environment, RUN_ID)).thenReturn(existing, empty);
+                when(client.deleteTpForhold(environment, RUN_ID)).thenReturn(Mono.empty());
+                yield new TpForholdFunctionalTest(client, properties, scheduler);
+            }
+            case "popp" -> {
+                when(client.getPopp(environment, RUN_ID)).thenReturn(existing, empty);
+                when(client.deletePopp(environment, RUN_ID)).thenReturn(Mono.empty());
+                yield new PoppFunctionalTest(client, properties, scheduler);
+            }
+            case "afp" -> {
+                when(client.getAfpOffentlig(environment, RUN_ID)).thenReturn(existing, empty);
+                when(client.deleteAfpOffentlig(environment, RUN_ID)).thenReturn(Mono.empty());
+                yield new AfpOffentligFunctionalTest(client, properties, scheduler);
+            }
+            case "avtale" -> {
+                when(client.getPensjonsavtale(Q1, RUN_ID)).thenReturn(existing, empty);
+                when(client.getPensjonsavtale(Q2, RUN_ID)).thenReturn(empty);
+                when(client.deletePensjonsavtale(RUN_ID)).thenReturn(Mono.empty());
+                yield new PensjonsavtaleFunctionalTest(client, properties, scheduler);
+            }
+            default -> throw new IllegalArgumentException(system);
+        };
+        var context = context(lifecycle.descriptor().systemId().value(), environment);
+
+        StepVerifier.create(lifecycle.preflight(context))
+                .expectError(FunctionalTestExistingDataException.class).verify();
+        StepVerifier.create(lifecycle.cleanupExistingData(context)
+                        .then(Mono.defer(() -> lifecycle.preflight(context))))
+                .expectNextCount(1).verifyComplete();
+
+        switch (system) {
+            case "tp" -> verify(client).deleteTpForhold(environment, RUN_ID);
+            case "popp" -> verify(client).deletePopp(environment, RUN_ID);
+            case "afp" -> verify(client).deleteAfpOffentlig(environment, RUN_ID);
+            case "avtale" -> {
+                verify(client).deletePensjonsavtale(RUN_ID);
+                verify(client, times(3)).getPensjonsavtale(Q1, RUN_ID);
+                verify(client, times(3)).getPensjonsavtale(Q2, RUN_ID);
+            }
+            default -> throw new IllegalArgumentException(system);
+        }
     }
 
     @Test

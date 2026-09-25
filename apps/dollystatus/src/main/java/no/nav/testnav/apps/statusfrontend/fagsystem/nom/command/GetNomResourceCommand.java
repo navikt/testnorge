@@ -52,6 +52,9 @@ public class GetNomResourceCommand implements Callable<Mono<NomResourceStatus>> 
         if (!response.isObject()) {
             throw new IllegalStateException("NOM-oppslaget returnerte ugyldig respons.");
         }
+        if (!expectedRequest.personident().equals(response.path("personident").asString())) {
+            throw new IllegalStateException("NOM-oppslaget returnerte en annen person enn testidenten.");
+        }
         var endDate = response.path("sluttDato").isTextual()
                 ? LocalDate.parse(response.path("sluttDato").asString())
                 : null;

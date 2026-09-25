@@ -8,6 +8,7 @@ import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.Brregs
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -66,9 +67,20 @@ public class BrregstubFunctionalTest implements FunctionalTestDefinition<
     public Mono<Preflight> preflight(FunctionalTestContext context) {
         var request = BrregstubTestData.request(pdlProperties.getIdent(), context);
         return Mono.zip(client.getRoleOverview(request), client.getOrganization(request))
-                .flatMap(statuses -> statuses.getT1().empty() && statuses.getT2().empty()
-                        ? Mono.just(Preflight.COMPLETED)
-                        : Mono.error(new FunctionalTestBlockedException()));
+                .flatMap(statuses -> {
+                    if (!statuses.getT2().empty() && !statuses.getT2().expectedDataPresent()) {
+                        return Mono.error(new FunctionalTestBlockedException());
+                    }
+                    return statuses.getT1().empty() && statuses.getT2().empty()
+                            ? Mono.just(Preflight.COMPLETED)
+                            : Mono.error(new FunctionalTestExistingDataException());
+                });
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return cleanup(context, Preflight.COMPLETED, Optional.empty(), Optional.empty(),
+                DESCRIPTOR.expectedCleanupState());
     }
 
     @Override
@@ -102,9 +114,14 @@ public class BrregstubFunctionalTest implements FunctionalTestDefinition<
         var request = BrregstubTestData.request(pdlProperties.getIdent(), context);
         return client.deleteRoleOverview(pdlProperties.getIdent())
                 .then(client.getOrganization(request))
-                .flatMap(status -> status.expectedDataPresent()
-                        ? client.deleteOrganization()
-                        : Mono.error(new FunctionalTestBlockedException()))
+                .flatMap(status -> {
+                    if (status.empty()) {
+                        return Mono.empty();
+                    }
+                    return status.expectedDataPresent()
+                            ? client.deleteOrganization()
+                            : Mono.error(new FunctionalTestBlockedException());
+                })
                 .then(awaitDeleted(context));
     }
 

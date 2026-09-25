@@ -22,7 +22,7 @@ const statusDetails = (status: FagsystemStatus) => {
 	}
 	if (status.state === 'TECHNICAL_ONLY') {
 		if (status.technicalStatus.state === 'UP') {
-			return { label: 'Teknisk OK', color: 'success' as const }
+			return { label: 'internal: OK', color: 'success' as const }
 		}
 		if (status.technicalStatus.state === 'DOWN') {
 			return { label: 'Teknisk feil', color: 'danger' as const }

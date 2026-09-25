@@ -7,6 +7,7 @@ import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.NomFun
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -69,7 +71,22 @@ public class NomFunctionalTest
         return client.getResource(context.runId(), request)
                 .flatMap(status -> status.empty() || isInactive(status, context)
                         ? Mono.just(new Preflight(status))
-                        : Mono.error(new FunctionalTestBlockedException()));
+                        : Mono.error(new FunctionalTestExistingDataException()));
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        var request = NomTestData.request(pdlProperties.getIdent(), context);
+        return client.getResource(context.runId(), request)
+                .flatMap(status -> {
+                    if (status.empty() || isInactive(status, context)) {
+                        return Mono.empty();
+                    }
+                    if (isNull(status.resourceId()) || status.resourceId().isBlank()) {
+                        return Mono.error(new IllegalStateException("NOM-ressursen mangler ID."));
+                    }
+                    return closeAndVerify(context, new Preflight(status), status.resourceId());
+                });
     }
 
     @Override

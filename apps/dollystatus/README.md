@@ -13,18 +13,23 @@
 - Innen hver fase kjører opptil fire uavhengige grupper samtidig, inkludert tekniske sjekker. Hver gruppe venter på opprydding før neste test starter. Miljøene i samme fagsystem kjøres etter hverandre.
 - Pensjon-testene deler én gruppe. Arena og Arbeidssøkerregisteret deler en annen, mens NOM, Skjermingsregister og TPS Messaging egenansatt deler en tredje. Dette hindrer samtidige endringer i relaterte testdata. PDL-opprydding venter på alle gruppene.
 - Opprydding får inntil tre nye forsøk ved feil som kan prøves på nytt. Systemer uten egnet opprydding har kun teknisk status for å ikke fylle opp med data.
+- Eksisterende data på den dedikerte testidenten ryddes med fagsystemets slette- eller avslutningskall før ny oppretting. Oppryddingen etterkontrolleres, og preflight kjøres på nytt. Ved feil stoppes denne testen med oppryddingsfeil og vanlig Slack-varsling. Oppretting prøves ikke før oppryddingen er bekreftet.
 
 Fagsystemenes klienter og kommandoer ligger i egne mapper under `src/main/java/no/nav/testnav/apps/statusfrontend/fagsystem`. Aktivering, tidsfrister og adresser styres i [application.yml](src/main/resources/application.yml).
 
 Ved feil i fagsystemtestene logger koordinatoren kjørings-ID, fagsystem, miljø, fase, feiltype og HTTP-status når den er tilgjengelig. Opprettings- og oppryddingsfeil logges separat, slik at en oppryddingsfeil ikke skjuler den opprinnelige feilen. Payload, responsbody og token logges ikke.
 
-NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende ressurs med sluttdato i dag eller senere, eller uten sluttdato, blokkerer testen.
+NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende aktiv ressurs avsluttes først. Oppryddingen kontrollerer sluttdato og ressurs-ID før testen fortsetter.
+
+Brregstub rydder rolleoversikten for testidenten og testorganisasjonen. Organisasjonen slettes bare hvis alle registrerte roller tilhører testidenten, uavhengig av hvilken dato restene ble opprettet. Roller for andre personer, manglende miljøstøtte og ugyldige oppslag gir fortsatt stopp, ikke en bredere sletting.
 
 Skjermingsregisterets oppslag returnerer bare aktive skjerminger. Etter opprydding godtas derfor HTTP 404 eller en avsluttet skjerming med forventede testdata. Verifisering etter oppretting krever fortsatt aktiv skjerming. Ved verifiseringstimeout logges siste observerte status som boolske verdier, uten persondata.
 
 **Testidenten er rekvirert og dedikert til Dollystatus.** Personen angitt i `functional-test.pdl.ident` slettes fra pdl-forvalter ved opprydding etter fullført preflight, også hvis den fantes før kjøringen. 
 
 Cache og kjørelås ligger i minnet og nullstilles ved restart. [Nais-manifestet](config.yml) bruker én replika; flere eventuelle instanser deler ikke cache eller kjørelås.
+
+Kjøringshistorikk beholdes i 24 timer etter at kjøringen er ferdig. Utløpte kjøringer fjernes ved oppslag, oppstart eller fullføring av en kjøring, uten en bakgrunnsjobb. Oppslag på utløpte kjørings-ID-er gir HTTP 404. Pågående kjøringer og fagsystemenes statuscache slettes ikke av denne oppryddingen.
 
 ## Lokal kjøring
 
