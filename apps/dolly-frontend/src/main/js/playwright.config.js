@@ -53,7 +53,7 @@ export default defineConfig({
 	webServer: {
 		// Run vite directly instead of via `pnpm run`, since the pnpm wrapper process can swallow
 		// SIGTERM and prevent Playwright from ever tearing down the dev server after tests finish.
-		command: 'pnpm exec vite --port 5678',
+		command: 'pnpm run test:start',
 		url: 'http://localhost:5678',
 		reuseExistingServer: !process.env.CI,
 		gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
