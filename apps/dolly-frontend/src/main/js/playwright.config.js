@@ -51,8 +51,14 @@ export default defineConfig({
 
 	/* Run the local dev server before starting the tests */
 	webServer: {
-		command: 'pnpm run test:start',
+		// Run vite directly instead of via `pnpm run`, since the pnpm wrapper process can swallow
+		// SIGTERM and prevent Playwright from ever tearing down the dev server after tests finish.
+		command: 'pnpm exec vite --port 5678',
 		url: 'http://localhost:5678',
 		reuseExistingServer: !process.env.CI,
+		gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
+		// Vite's dep-optimizer can spawn child processes that inherit the piped stderr's write end,
+		// so the pipe's 'close' event never fires after teardown and Playwright hangs waiting for it.
+		stderr: 'ignore',
 	},
 })
