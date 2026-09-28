@@ -1,6 +1,7 @@
 import { AppError } from './AppError'
 import { Logger } from '@/logger/Logger'
 import React, { ErrorInfo, ReactNode } from 'react'
+import { captureFrontendError } from '@/observability/frontendTelemetry'
 
 interface ErrorBoundaryProps {
 	children?: ReactNode
@@ -27,6 +28,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 	}
 
 	componentDidCatch(error: Error, info: ErrorInfo) {
+		captureFrontendError(error)
 		console.error('Error:', error)
 		console.error('Error message:', error.message)
 		console.error('Error name:', error.name)
