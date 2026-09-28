@@ -8,6 +8,7 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.kontoregister.command.Create
 import no.nav.testnav.apps.statusfrontend.fagsystem.kontoregister.command.DeleteKontoregisterAccountCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.kontoregister.command.GetKontoregisterAccountCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrRequest;
+import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrResourceStatus;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.command.CreateKrrContactInformationCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.command.DeleteKrrContactInformationCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.command.GetKrrContactInformationCommand;
@@ -20,12 +21,18 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortRequest
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.command.CreateSkattekortCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.command.GetSkattekortCommand;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -34,6 +41,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -236,6 +244,64 @@ class SecondBatchCommandContractTest {
     }
 
     @Test
+    void shouldDescribeKrrResponseShapeWithoutTreatingUnknownObjectsAsDeleted() {
+        var request = new KrrRequest(IDENT, null, false, true, "test-phone",
+                "test@example.invalid", "nb", null, null, null, null, null, null);
+        var responses = Map.of(
+                "[]", new KrrResourceStatus(true, false, KrrResourceStatus.ResponseShape.ARRAY, 0, false, false),
+                "{}", new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.OBJECT, 0, false, false),
+                "{\"melding\":\"sensitive-detail\"}",
+                new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.OBJECT, 1, true, false),
+                "[{\"registrert\":false,\"epost\":\"sensitive-detail\"}]",
+                new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.ARRAY, 1, false, true));
+
+        responses.forEach((body, expectedStatus) -> {
+            stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                    .willReturn(okJson(body)));
+            StepVerifier.create(new GetKrrContactInformationCommand(webClient, TOKEN, request, TIMEOUT).call())
+                    .assertNext(status -> {
+                        assertThat(status).isEqualTo(expectedStatus);
+                        assertThat(status.toString()).doesNotContain("sensitive-detail", IDENT, TOKEN);
+                    })
+                    .verifyComplete();
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({"204,true", "404,true", "401,false", "409,false"})
+    void shouldLogKrrDeleteHttpStatusWithoutResponseBody(int httpStatus, boolean accepted) {
+        var logger = (Logger) LoggerFactory.getLogger(DeleteKrrContactInformationCommand.class);
+        var originalLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(ch.qos.logback.classic.Level.INFO);
+        try {
+            stubFor(delete(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon"))
+                    .willReturn(aResponse().withStatus(httpStatus)
+                            .withBody("{\"melding\":\"sensitive-detail\"}")));
+            var verification = StepVerifier.create(new DeleteKrrContactInformationCommand(
+                    webClient, TOKEN, IDENT, RunId.from(CALL_ID), TIMEOUT).call());
+            if (accepted) {
+                verification.verifyComplete();
+            } else {
+                verification.expectErrorMatches(error -> error instanceof WebClientResponseException response
+                        && response.getStatusCode().value() == httpStatus).verify();
+            }
+            assertThat(appender.list).singleElement().satisfies(event -> {
+                assertThat(event.getFormattedMessage())
+                        .contains("runId=" + CALL_ID, "httpStatus=" + httpStatus)
+                        .doesNotContain(IDENT, TOKEN, "sensitive-detail");
+                assertThat(event.getThrowableProxy()).isNull();
+            });
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(originalLevel);
+            appender.stop();
+        }
+    }
+
+    @Test
     void shouldUseKrrContractsAndVerifyCleanup() {
         var timestamp = ZonedDateTime.of(
                 2026, 9, 21, 10, 0, 0, 0, ZoneOffset.UTC);
@@ -276,7 +342,7 @@ class SecondBatchCommandContractTest {
                 .assertNext(status -> assertThat(status.expectedDataPresent()).isTrue())
                 .verifyComplete();
         StepVerifier.create(new DeleteKrrContactInformationCommand(
-                        webClient, TOKEN, IDENT, TIMEOUT).call())
+                        webClient, TOKEN, IDENT, RunId.from(CALL_ID), TIMEOUT).call())
                 .verifyComplete();
 
         verify(postRequestedFor(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon"))

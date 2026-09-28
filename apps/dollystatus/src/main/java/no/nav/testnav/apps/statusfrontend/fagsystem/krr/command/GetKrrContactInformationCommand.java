@@ -49,19 +49,27 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
 
     private KrrResourceStatus toStatus(JsonNode response) {
         if (response.isArray()) {
+            var expectedDataPresent = false;
+            var hasMessage = false;
+            var hasUnregisteredEntry = false;
             for (var contactInformation : response) {
-                if (matches(contactInformation)) {
-                    return new KrrResourceStatus(false, true);
-                }
+                expectedDataPresent |= matches(contactInformation);
+                hasMessage |= contactInformation.has("melding");
+                hasUnregisteredEntry |= isUnregistered(contactInformation);
             }
-            return response.isEmpty()
-                    ? KrrResourceStatus.emptyStatus()
-                    : new KrrResourceStatus(false, false);
+            return new KrrResourceStatus(response.isEmpty(), expectedDataPresent,
+                    KrrResourceStatus.ResponseShape.ARRAY, response.size(), hasMessage, hasUnregisteredEntry);
         }
         if (response.isObject()) {
-            return new KrrResourceStatus(false, matches(response));
+            return new KrrResourceStatus(false, matches(response),
+                    KrrResourceStatus.ResponseShape.OBJECT, response.size(),
+                    response.has("melding"), isUnregistered(response));
         }
         throw new IllegalStateException("KRR-oppslaget returnerte ugyldig respons.");
+    }
+
+    private static boolean isUnregistered(JsonNode response) {
+        return response.path("registrert").isBoolean() && !response.path("registrert").asBoolean();
     }
 
     private boolean matches(JsonNode response) {

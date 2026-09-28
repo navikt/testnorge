@@ -19,6 +19,8 @@ Fagsystemenes klienter og kommandoer ligger i egne mapper under `src/main/java/n
 
 Ved feil i fagsystemtestene logger koordinatoren kjørings-ID, fagsystem, miljø, fase, feiltype og HTTP-status når den er tilgjengelig. Opprettings- og oppryddingsfeil logges separat, slik at en oppryddingsfeil ikke skjuler den opprinnelige feilen. Payload, responsbody og token logges ikke.
 
+KRR logger HTTP-status fra hvert sletteforsøk. Ved verifiseringstimeout logges siste observerte responsform (objekt eller liste), antall felt eller elementer og boolske statusflagg. Ingen feltverdier, kontakt-ID-er eller kontaktopplysninger logges. Diagnostikken endrer ikke hvilke svar som godtas som vellykket sletting.
+
 NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende aktiv ressurs avsluttes først. Oppryddingen kontrollerer sluttdato og ressurs-ID før testen fortsetter.
 
 Brregstub rydder rolleoversikten for testidenten og testorganisasjonen. Organisasjonen slettes bare hvis alle registrerte roller tilhører testidenten, uavhengig av hvilken dato restene ble opprettet. Roller for andre personer, manglende miljøstøtte og ugyldige oppslag gir fortsatt stopp, ikke en bredere sletting.

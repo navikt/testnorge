@@ -39,6 +39,10 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -495,6 +499,42 @@ class SecondBatchFunctionalTestLifecycleTest {
         calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
         calls.verify(krrClient).deleteContactInformation(RUN_ID);
         calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
+    }
+
+    @Test
+    void shouldLogOnlyLastSafeKrrStatusOnceWhenCleanupVerificationTimesOut() {
+        var logger = (Logger) LoggerFactory.getLogger(KrrFunctionalTest.class);
+        var originalLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(ch.qos.logback.classic.Level.WARN);
+        try {
+            when(krrClient.deleteContactInformation(RUN_ID)).thenReturn(Mono.empty());
+            when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                    .thenReturn(Mono.just(new KrrResourceStatus(false, false)),
+                            Mono.just(new KrrResourceStatus(false, false,
+                                    KrrResourceStatus.ResponseShape.OBJECT, 0, false, false)));
+
+            StepVerifier.withVirtualTime(
+                            () -> krrLifecycle().cleanupExistingData(context("krr", FunctionalTestEnvironment.GLOBAL)),
+                            () -> scheduler, 1)
+                    .thenAwait(Duration.ofMinutes(2))
+                    .expectError(FunctionalTestVerificationTimeoutException.class)
+                    .verify();
+
+            assertThat(appender.list).singleElement().satisfies(event -> {
+                assertThat(event.getFormattedMessage())
+                        .contains("runId=" + RUN_ID.value(), "expectedPresent=false",
+                                "responseShape=OBJECT", "responseSize=0", "empty=false")
+                        .doesNotContain(IDENT);
+                assertThat(event.getThrowableProxy()).isNull();
+            });
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(originalLevel);
+            appender.stop();
+        }
     }
 
     private KrrFunctionalTest krrLifecycle() {

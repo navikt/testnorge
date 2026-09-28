@@ -2,12 +2,15 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.krr;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.KrrFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -23,6 +26,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 @Service
+@Slf4j
 @ConditionalOnProperty(prefix = "functional-test.krr", name = "enabled", havingValue = "true")
 public class KrrFunctionalTest
         implements FunctionalTestDefinition<Preflight, Creation, Verification> {
@@ -106,11 +110,19 @@ public class KrrFunctionalTest
 
     private Mono<Void> awaitStatus(FunctionalTestContext context, boolean expectedPresent) {
         var request = KrrTestData.request(pdlProperties.getIdent(), context);
-        return pollUntil(
-                () -> client.getContactInformation(context.runId(), request),
-                status -> expectedPresent ? status.expectedDataPresent() : status.empty(),
-                properties.getPollInterval(),
-                        properties.getPollTimeout(),
-                        scheduler).then();
+        return Mono.defer(() -> {
+            var lastStatus = new AtomicReference<KrrResourceStatus>();
+            return pollUntil(
+                    () -> client.getContactInformation(context.runId(), request)
+                            .doOnNext(lastStatus::set),
+                    status -> expectedPresent ? status.expectedDataPresent() : status.empty(),
+                    properties.getPollInterval(),
+                    properties.getPollTimeout(),
+                    scheduler)
+                    .doOnError(FunctionalTestVerificationTimeoutException.class, _ -> log.warn(
+                            "KRR oppnådde ikke forventet tilstand: runId={}, expectedPresent={}, lastStatus={}",
+                            context.runId().value(), expectedPresent, lastStatus.get()))
+                    .then();
+        });
     }
 }

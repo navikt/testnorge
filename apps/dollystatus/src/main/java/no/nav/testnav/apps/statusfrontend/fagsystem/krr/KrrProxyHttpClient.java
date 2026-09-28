@@ -68,6 +68,7 @@ public class KrrProxyHttpClient implements KrrClient {
                         webClient,
                         token.getTokenValue(),
                         pdlProperties.getIdent(),
+                        runId,
                         properties.getRequestTimeout()).call());
     }
 }
