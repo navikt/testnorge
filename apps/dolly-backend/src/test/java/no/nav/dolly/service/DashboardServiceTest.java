@@ -916,7 +916,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Aareg").getDetaljer())
-                        .containsEntry("Antall arbeidsforhold", "2"))
+                        .containsEntry("Antall arbeidsforhold", 2))
                 .verifyComplete();
     }
 
@@ -926,7 +926,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Dokarkiv").getDetaljer())
-                        .containsEntry("Array/matrise antall", "1"))
+                        .containsEntry("Array/matrise antall", 1))
                 .verifyComplete();
     }
 
@@ -937,8 +937,8 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     var detaljer = kriterium(dto, "Bankkonto").getDetaljer();
-                    assertThat(detaljer).containsEntry("NorskBankkonto", "true");
-                    assertThat(detaljer).doesNotContainKey("UtenlandskBankkonto");
+                    assertThat(detaljer).containsEntry("NorskBankkonto-true", 1);
+                    assertThat(detaljer).doesNotContainKey("UtenlandskBankkonto-true");
                 })
                 .verifyComplete();
     }
@@ -950,8 +950,8 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     var detaljer = kriterium(dto, "Bankkonto").getDetaljer();
-                    assertThat(detaljer).containsEntry("UtenlandskBankkonto", "true");
-                    assertThat(detaljer).doesNotContainKey("NorskBankkonto");
+                    assertThat(detaljer).containsEntry("UtenlandskBankkonto-true", 1);
+                    assertThat(detaljer).doesNotContainKey("NorskBankkonto-true");
                 })
                 .verifyComplete();
     }
@@ -963,8 +963,8 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Bankkonto").getDetaljer())
-                        .containsEntry("NorskBankkonto", "true")
-                        .containsEntry("UtenlandskBankkonto", "true"))
+                        .containsEntry("NorskBankkonto-true", 1)
+                        .containsEntry("UtenlandskBankkonto-true", 1))
                 .verifyComplete();
     }
 
@@ -975,7 +975,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
-                        .containsEntry("ArenaBrukertype", "MED_SERVICEBEHOV"))
+                        .containsEntry("ArenaBrukertype-MED_SERVICEBEHOV", 1))
                 .verifyComplete();
     }
 
@@ -985,7 +985,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
-                        .containsEntry("Alderspensjon", "true"))
+                        .containsEntry("Alderspensjon-true", 1))
                 .verifyComplete();
     }
 
@@ -996,7 +996,22 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "PdlData").getDetaljer())
-                        .containsEntry("Syntetisk", "true"))
+                        .containsEntry("Syntetisk-true", 1))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldAggregateCategoricalDetailsAcrossWeightedRows() {
+        stubAdferd(
+                adferdFragment(DATE_1, "{\"pdldata\":{\"opprettNyPerson\":{\"syntetisk\":true}}}", 2),
+                adferdFragment(DATE_1, "{\"pdldata\":{\"opprettNyPerson\":{\"syntetisk\":true}}}", 3));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    var pdlData = kriterium(dto, "PdlData");
+                    assertThat(pdlData.getAntall()).isEqualTo(5);
+                    assertThat(pdlData.getDetaljer()).containsEntry("Syntetisk-true", 5);
+                })
                 .verifyComplete();
     }
 
@@ -1008,8 +1023,8 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     var detaljer = kriterium(dto, "PdlData").getDetaljer();
-                    assertThat(detaljer).containsEntry("Id2032", "true");
-                    assertThat(detaljer).doesNotContainKey("Syntetisk");
+                    assertThat(detaljer).containsEntry("Id2032-true", 1);
+                    assertThat(detaljer).doesNotContainKey("Syntetisk-true");
                 })
                 .verifyComplete();
     }
@@ -1020,7 +1035,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "PdlData").getDetaljer())
-                        .containsEntry("Legg-til/endre", "true"))
+                        .containsEntry("Legg-til/endre-true", 1))
                 .verifyComplete();
     }
 
@@ -1031,19 +1046,24 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "PdlData").getDetaljer())
-                        .containsEntry("Navn", "2"))
+                        .containsEntry("Navn", 2))
                 .verifyComplete();
     }
 
     @Test
-    void shouldKeepFagsystemerWithDifferentDetaljerAsSeparateEntries() {
+    void shouldGroupFagsystemerWithDifferentDetaljer() {
         stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[{}]}", 1),
                 adferdFragment(DATE_1, "{\"aareg\":[{},{}]}", 1));
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
-                .assertNext(dto -> assertThat(dto.getKriterier())
-                        .filteredOn(entry -> "Aareg".equals(entry.getFagsystem()))
-                        .hasSize(2))
+                .assertNext(dto ->
+                    assertThat(dto.getKriterier())
+                            .filteredOn(entry -> "Aareg".equals(entry.getFagsystem()))
+                            .singleElement()
+                            .satisfies(entry -> {
+                                assertThat(entry.getAntall()).isEqualTo(2);
+                                assertThat(entry.getDetaljer()).containsEntry("Antall arbeidsforhold", 3);
+                            }))
                 .verifyComplete();
     }
 
@@ -1054,9 +1074,9 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
-                        .containsEntry("AAP", "true")
-                        .containsEntry("AAP115", "true")
-                        .containsEntry("Dagpenger", "true"))
+                        .containsEntry("AAP-true", 1)
+                        .containsEntry("AAP115-true", 1)
+                        .containsEntry("Dagpenger-true", 1))
                 .verifyComplete();
     }
 
@@ -1067,7 +1087,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
-                        .doesNotContainKeys("AAP", "AAP115", "Dagpenger"))
+                        .doesNotContainKeys("AAP-true", "AAP115-true", "Dagpenger-true"))
                 .verifyComplete();
     }
 
@@ -1078,7 +1098,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Arena").getDetaljer())
-                        .containsEntry("Kvalifiseringsgruppe", "IKVAL"))
+                        .containsEntry("Kvalifiseringsgruppe-IKVAL", 1))
                 .verifyComplete();
     }
 
@@ -1090,8 +1110,8 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     var detaljer = kriterium(dto, "PdlData").getDetaljer();
-                    assertThat(detaljer).containsEntry("FødtFør", "true");
-                    assertThat(detaljer).doesNotContainKeys("FødtEtter", "Alder");
+                    assertThat(detaljer).containsEntry("FødtFør-true", 1);
+                    assertThat(detaljer).doesNotContainKeys("FødtEtter-true", "Alder-true");
                 })
                 .verifyComplete();
     }
@@ -1104,9 +1124,9 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     var detaljer = kriterium(dto, "PdlData").getDetaljer();
-                    assertThat(detaljer).containsEntry("Alder", "true");
-                    assertThat(detaljer).containsEntry("FødtEtter", "true");
-                    assertThat(detaljer).doesNotContainKey("FødtFør");
+                    assertThat(detaljer).containsEntry("Alder-true", 1);
+                    assertThat(detaljer).containsEntry("FødtEtter-true", 1);
+                    assertThat(detaljer).doesNotContainKey("FødtFør-true");
                 })
                 .verifyComplete();
     }
@@ -1118,8 +1138,8 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
-                        .containsEntry("PoppInntekt", "true")
-                        .containsEntry("PoppSpesifisertInntekt", "true"))
+                        .containsEntry("PoppInntekt-true", 1)
+                        .containsEntry("PoppSpesifisertInntekt-true", 1))
                 .verifyComplete();
     }
 
@@ -1130,8 +1150,8 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
-                        .containsEntry("Uforetrygd", "true")
-                        .containsEntry("AfpOffentlig", "true"))
+                        .containsEntry("Uforetrygd-true", 1)
+                        .containsEntry("AfpOffentlig-true", 1))
                 .verifyComplete();
     }
 
@@ -1142,8 +1162,8 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Pensjon").getDetaljer())
-                        .containsEntry("Pensjonsavtale", "2")
-                        .containsEntry("Tjenestepensjon", "1"))
+                        .containsEntry("Pensjonsavtale", 2)
+                        .containsEntry("Tjenestepensjon", 1))
                 .verifyComplete();
     }
 

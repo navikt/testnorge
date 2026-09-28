@@ -1,11 +1,9 @@
 package no.nav.dolly.provider;
 
 
-import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -19,9 +17,6 @@ class TestpersonControllerTest extends AbstractControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @MockitoBean
-    private PdlDataConsumer pdlDataConsumer;
 
     @Test
     @DisplayName("Sletter Testident fra Testgruppe")

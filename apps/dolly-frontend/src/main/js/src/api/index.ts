@@ -186,7 +186,7 @@ export const pdfFetcher = (...args: Argument[]) =>
 			})
 	})
 
-type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
+type Method = 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE'
 
 type Config = {
 	method: Method

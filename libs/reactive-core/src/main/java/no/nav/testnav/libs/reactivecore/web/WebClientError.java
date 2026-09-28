@@ -39,6 +39,12 @@ public class WebClientError {
             Duration.ofSeconds(10)
     );
 
+    /**
+     * System property used to scale all retry delays. Defaults to {@code 1}, meaning unmodified delays.
+     * Test JVMs set this to a very small value in order to avoid actually sleeping during retries.
+     */
+    static final String RETRY_DELAY_FACTOR_PROPERTY = "webclient.retry.delay.factor";
+
     private static final String DUAL_PARMS = "{} {}";
 
     private static final Predicate<Throwable> IS_5XX = throwable -> throwable instanceof WebClientResponseException webClientResponseException &&
@@ -57,8 +63,19 @@ public class WebClientError {
      */
     public static Retry is(Predicate<Throwable> on, long times, long afterSeconds) {
         return Retry
-                .backoff(times, Duration.ofSeconds(afterSeconds))
+                .backoff(times, scaled(Duration.ofSeconds(afterSeconds)))
                 .filter(on);
+    }
+
+    /**
+     * Scales a retry delay by the factor given by {@value #RETRY_DELAY_FACTOR_PROPERTY}.
+     *
+     * @param delay The configured delay.
+     * @return The delay to actually wait, never negative.
+     */
+    private static Duration scaled(Duration delay) {
+        var factor = Double.parseDouble(System.getProperty(RETRY_DELAY_FACTOR_PROPERTY, "1"));
+        return factor == 1 ? delay : Duration.ofNanos(Math.max(0, (long) (delay.toNanos() * factor)));
     }
 
     /**
@@ -101,7 +118,7 @@ public class WebClientError {
                         return Mono.error(failure);
                     }
 
-                    return Mono.delay(RETRY_DELAYS.get((int) retryNumber));
+                    return Mono.delay(scaled(RETRY_DELAYS.get((int) retryNumber)));
                 }));
     }
 
