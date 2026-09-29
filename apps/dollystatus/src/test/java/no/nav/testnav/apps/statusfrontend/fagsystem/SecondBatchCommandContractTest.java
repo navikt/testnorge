@@ -49,6 +49,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -324,8 +325,10 @@ class SecondBatchCommandContractTest {
                 verification.expectErrorMatches(error -> error instanceof WebClientResponseException response
                         && response.getStatusCode().value() == httpStatus).verify();
             }
-            verify(deleteRequestedFor(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon/contact-a"))
-                    .withRequestBody(equalTo("")));
+            assertThat(findAll(deleteRequestedFor(
+                    urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon/contact-a"))))
+                    .singleElement()
+                    .satisfies(request -> assertThat(request.getBody()).isNullOrEmpty());
             assertThat(appender.list).singleElement().satisfies(event -> {
                 assertThat(event.getFormattedMessage())
                         .contains("runId=" + CALL_ID, "httpStatus=" + httpStatus)
