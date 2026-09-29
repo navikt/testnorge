@@ -51,6 +51,9 @@ public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResource
         var returnedEnvironments = new HashSet<String>();
         var expectedActiveEnvironments = new HashSet<String>();
         var inactiveEnvironments = new HashSet<String>();
+        var hasStartDate = false;
+        var hasEndDate = false;
+        var activeWithDifferentStartDate = false;
         for (var environmentStatus : response) {
             var environment = environmentStatus.path("miljoe").asString();
             if (!environments.contains(environment)
@@ -64,6 +67,10 @@ public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResource
             returnedEnvironments.add(environment);
             var fromDate = readDate(person.path("egenAnsattDatoFom"));
             var toDate = readDate(person.path("egenAnsattDatoTom"));
+            hasStartDate |= fromDate != null;
+            hasEndDate |= toDate != null;
+            activeWithDifferentStartDate |= fromDate != null && toDate == null
+                    && !expectedFromDate.equals(fromDate);
             if (expectedFromDate.equals(fromDate) && toDate == null) {
                 expectedActiveEnvironments.add(environment);
             }
@@ -74,7 +81,8 @@ public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResource
         return new TpsEgenansattResourceStatus(
                 returnedEnvironments.containsAll(environments),
                 expectedActiveEnvironments.containsAll(environments),
-                inactiveEnvironments.containsAll(environments));
+                inactiveEnvironments.containsAll(environments),
+                hasStartDate, hasEndDate, activeWithDifferentStartDate);
     }
 
     private LocalDate readDate(JsonNode value) {

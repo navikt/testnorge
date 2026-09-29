@@ -1,5 +1,9 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,6 +43,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
@@ -258,6 +263,49 @@ class FirstBatchFunctionalTestLifecycleTest {
         calls.verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
         calls.verify(tpsMessagingClient).getEgenansatt(RUN_ID, environments, fromDate);
         verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
+    }
+
+    @Test
+    void shouldLogOnlyTpsStatusFlagsWhenVerificationTimesOut() {
+        var logger = (Logger) LoggerFactory.getLogger(TpsEgenansattFunctionalTest.class);
+        var originalLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(Level.WARN);
+        try {
+            var properties = new TpsMessagingFunctionalTestProperties();
+            properties.setPollInterval(Duration.ofSeconds(1));
+            properties.setPollTimeout(Duration.ofSeconds(5));
+            var fromDate = LocalDate.of(2026, 9, 21);
+            when(tpsMessagingClient.getEgenansatt(RUN_ID, List.of("q1"), fromDate))
+                    .thenReturn(Mono.just(new TpsEgenansattResourceStatus(
+                            true, false, false, true, false, true)));
+            var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient, properties, scheduler);
+            var context = context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q1);
+
+            StepVerifier.withVirtualTime(
+                            () -> lifecycle.verify(context, new TpsEgenansattPreflight(fromDate),
+                                    no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation.COMPLETED),
+                            () -> scheduler,
+                            Long.MAX_VALUE)
+                    .thenAwait(Duration.ofSeconds(5))
+                    .expectError(FunctionalTestVerificationTimeoutException.class)
+                    .verify();
+
+            assertThat(appender.list).singleElement().satisfies(event -> {
+                assertThat(event.getFormattedMessage())
+                        .contains("runId=" + RUN_ID.value(), "miljo=Q1", "expectedPresent=true",
+                                "allEnvironmentsPresent=true", "expectedDataPresent=false",
+                                "hasStartDate=true", "activeWithDifferentStartDate=true")
+                        .doesNotContain(IDENT, fromDate.toString());
+                assertThat(event.getThrowableProxy()).isNull();
+            });
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(originalLevel);
+            appender.stop();
+        }
     }
 
     @ParameterizedTest

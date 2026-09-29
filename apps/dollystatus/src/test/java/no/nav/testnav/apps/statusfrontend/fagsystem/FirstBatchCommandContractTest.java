@@ -265,6 +265,9 @@ class FirstBatchCommandContractTest {
                     assertThat(status.allEnvironmentsPresent()).isTrue();
                     assertThat(status.expectedDataPresent()).isTrue();
                     assertThat(status.inactive()).isFalse();
+                    assertThat(status.hasStartDate()).isTrue();
+                    assertThat(status.hasEndDate()).isFalse();
+                    assertThat(status.activeWithDifferentStartDate()).isFalse();
                 })
                 .verifyComplete();
         StepVerifier.create(new DeleteEgenansattCommand(
@@ -304,6 +307,26 @@ class FirstBatchCommandContractTest {
         verify(getRequestedFor(urlPathEqualTo("/pdl-testdata/api/v1/bestilling/tags"))
                 .withHeader("Authorization", equalTo("Bearer " + TOKEN))
                 .withHeader("Nav-Personident", equalTo(IDENT)));
+    }
+
+    @Test
+    void shouldDistinguishDifferentTpsStartDateFromMissingEnvironment() {
+        stubFor(post(urlPathEqualTo("/api/v1/personer/ident"))
+                .willReturn(okJson("""
+                        [{"miljoe":"q1","status":"OK","person":{"egenAnsattDatoFom":"2025-01-01T00:00:00"}}]
+                        """)));
+
+        StepVerifier.create(new GetEgenansattCommand(webClient, TOKEN, IDENT, List.of("q1"),
+                        LocalDate.of(2025, 1, 2), TIMEOUT).call())
+                .assertNext(status -> {
+                    assertThat(status.allEnvironmentsPresent()).isTrue();
+                    assertThat(status.expectedDataPresent()).isFalse();
+                    assertThat(status.inactive()).isFalse();
+                    assertThat(status.hasStartDate()).isTrue();
+                    assertThat(status.hasEndDate()).isFalse();
+                    assertThat(status.activeWithDifferentStartDate()).isTrue();
+                })
+                .verifyComplete();
     }
 
     @ParameterizedTest

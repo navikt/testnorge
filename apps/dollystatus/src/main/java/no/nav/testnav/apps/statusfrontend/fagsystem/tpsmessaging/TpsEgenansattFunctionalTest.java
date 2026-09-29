@@ -4,13 +4,16 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.TpsMessagingFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -28,6 +31,7 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.Functi
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_INCOMPLETE_ENVIRONMENT_STATUS;
 
 @Service
+@Slf4j
 @ConditionalOnProperty(
         prefix = "functional-test.tps-messaging-egenansatt",
         name = "enabled",
@@ -138,14 +142,22 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
             java.time.LocalDate fromDate,
             boolean expectedPresent
     ) {
-        return pollUntil(
-                () -> client.getEgenansatt(context.runId(), environments(context), fromDate),
-                status -> expectedPresent
-                        ? status.expectedDataPresent()
-                        : status.allEnvironmentsPresent() && status.inactive(),
-                properties.getPollInterval(),
-                        properties.getPollTimeout(),
-                        scheduler).then();
+        return Mono.defer(() -> {
+            var lastStatus = new AtomicReference<TpsEgenansattResourceStatus>();
+            return pollUntil(
+                    () -> client.getEgenansatt(context.runId(), environments(context), fromDate)
+                            .doOnNext(lastStatus::set),
+                    status -> expectedPresent
+                            ? status.expectedDataPresent()
+                            : status.allEnvironmentsPresent() && status.inactive(),
+                    properties.getPollInterval(),
+                    properties.getPollTimeout(),
+                    scheduler)
+                    .doOnError(FunctionalTestVerificationTimeoutException.class, _ -> log.warn(
+                            "TPS egenansatt oppnådde ikke forventet tilstand: runId={}, miljo={}, expectedPresent={}, lastStatus={}",
+                            context.runId().value(), context.environment(), expectedPresent, lastStatus.get()))
+                    .then();
+        });
     }
 
     private List<String> environments(FunctionalTestContext context) {
