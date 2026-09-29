@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -51,6 +52,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.not;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -249,11 +251,11 @@ class SecondBatchCommandContractTest {
                 "test@example.invalid", "nb", null, null, null, null, null, null);
         var responses = Map.of(
                 "[]", new KrrResourceStatus(true, false, KrrResourceStatus.ResponseShape.ARRAY, 0, false, false),
-                "{}", new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.OBJECT, 0, false, false),
-                "{\"melding\":\"sensitive-detail\"}",
-                new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.OBJECT, 1, true, false),
-                "[{\"registrert\":false,\"epost\":\"sensitive-detail\"}]",
-                new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.ARRAY, 1, false, true));
+                "{\"id\":\"contact-a\"}", new KrrResourceStatus(false, false,
+                        KrrResourceStatus.ResponseShape.OBJECT, 1, false, false, List.of("contact-a")),
+                "[{\"id\":123,\"registrert\":false,\"epost\":\"sensitive-detail\"},{\"id\":\"456\"}]",
+                new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.ARRAY,
+                        2, false, true, List.of("123", "456")));
 
         responses.forEach((body, expectedStatus) -> {
             stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
@@ -261,14 +263,48 @@ class SecondBatchCommandContractTest {
             StepVerifier.create(new GetKrrContactInformationCommand(webClient, TOKEN, request, TIMEOUT).call())
                     .assertNext(status -> {
                         assertThat(status).isEqualTo(expectedStatus);
-                        assertThat(status.toString()).doesNotContain("sensitive-detail", IDENT, TOKEN);
+                        assertThat(status.toString()).doesNotContain(
+                                "sensitive-detail", IDENT, TOKEN, "contact-a", "123", "456");
                     })
                     .verifyComplete();
         });
     }
 
     @ParameterizedTest
-    @CsvSource({"204,true", "404,true", "401,false", "409,false"})
+    @ValueSource(strings = {"{}", "[null]", "[{}]", "{\"melding\":\"error\"}", "{\"id\":null}",
+            "{\"id\":\" \"}", "{\"id\":true}", "{\"id\":{}}",
+            "[{\"id\":123},{\"id\":456,\"personident\":\"another-person\"}]",
+            "[{\"id\":123},{\"id\":456,\"personidentifikator\":\"another-person\"}]"})
+    void shouldRejectInvalidKrrEntriesBeforeReturningAnyIds(String body) {
+        var request = new KrrRequest(IDENT, null, false, true, "test-phone",
+                "test@example.invalid", "nb", null, null, null, null, null, null);
+        stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                .willReturn(okJson(body)));
+
+        StepVerifier.create(new GetKrrContactInformationCommand(webClient, TOKEN, request, TIMEOUT).call())
+                .expectError(IllegalStateException.class).verify();
+    }
+
+    @ParameterizedTest
+    @CsvSource({"200,false", "204,true", "404,true", "401,false"})
+    void shouldOnlyAcceptConfirmedKrrAbsence(int httpStatus, boolean absent) {
+        var request = new KrrRequest(IDENT, null, false, true, "test-phone",
+                "test@example.invalid", "nb", null, null, null, null, null, null);
+        stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                .willReturn(aResponse().withStatus(httpStatus)));
+        var verification = StepVerifier.create(
+                new GetKrrContactInformationCommand(webClient, TOKEN, request, TIMEOUT).call());
+        if (absent) {
+            verification.assertNext(status -> assertThat(status.empty()).isTrue()).verifyComplete();
+        } else if (httpStatus == 200) {
+            verification.expectError(IllegalStateException.class).verify();
+        } else {
+            verification.expectError(WebClientResponseException.class).verify();
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({"200,true", "204,true", "404,true", "401,false", "409,false", "500,false"})
     void shouldLogKrrDeleteHttpStatusWithoutResponseBody(int httpStatus, boolean accepted) {
         var logger = (Logger) LoggerFactory.getLogger(DeleteKrrContactInformationCommand.class);
         var originalLevel = logger.getLevel();
@@ -277,21 +313,23 @@ class SecondBatchCommandContractTest {
         logger.addAppender(appender);
         logger.setLevel(ch.qos.logback.classic.Level.INFO);
         try {
-            stubFor(delete(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon"))
+            stubFor(delete(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon/contact-a"))
                     .willReturn(aResponse().withStatus(httpStatus)
                             .withBody("{\"melding\":\"sensitive-detail\"}")));
             var verification = StepVerifier.create(new DeleteKrrContactInformationCommand(
-                    webClient, TOKEN, IDENT, RunId.from(CALL_ID), TIMEOUT).call());
+                    webClient, TOKEN, "contact-a", RunId.from(CALL_ID), TIMEOUT).call());
             if (accepted) {
                 verification.verifyComplete();
             } else {
                 verification.expectErrorMatches(error -> error instanceof WebClientResponseException response
                         && response.getStatusCode().value() == httpStatus).verify();
             }
+            verify(deleteRequestedFor(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon/contact-a"))
+                    .withRequestBody(equalTo("")));
             assertThat(appender.list).singleElement().satisfies(event -> {
                 assertThat(event.getFormattedMessage())
                         .contains("runId=" + CALL_ID, "httpStatus=" + httpStatus)
-                        .doesNotContain(IDENT, TOKEN, "sensitive-detail");
+                        .doesNotContain(IDENT, TOKEN, "sensitive-detail", "contact-a");
                 assertThat(event.getThrowableProxy()).isNull();
             });
         } finally {
@@ -324,6 +362,7 @@ class SecondBatchCommandContractTest {
         stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
                 .willReturn(okJson("""
                         [{
+                          "id": 123,
                           "reservert": false,
                           "registrert": true,
                           "mobil": "+4740000000",
@@ -331,7 +370,7 @@ class SecondBatchCommandContractTest {
                           "spraak": "nb"
                         }]
                         """)));
-        stubFor(delete(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon"))
+        stubFor(delete(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon/123"))
                 .willReturn(ok()));
 
         StepVerifier.create(new CreateKrrContactInformationCommand(
@@ -342,7 +381,7 @@ class SecondBatchCommandContractTest {
                 .assertNext(status -> assertThat(status.expectedDataPresent()).isTrue())
                 .verifyComplete();
         StepVerifier.create(new DeleteKrrContactInformationCommand(
-                        webClient, TOKEN, IDENT, RunId.from(CALL_ID), TIMEOUT).call())
+                        webClient, TOKEN, "123", RunId.from(CALL_ID), TIMEOUT).call())
                 .verifyComplete();
 
         verify(postRequestedFor(urlPathEqualTo("/krrstub/api/v2/kontaktinformasjon"))
@@ -373,10 +412,12 @@ class SecondBatchCommandContractTest {
                         {"personidentifikator":"03458537037"}
                         """)));
         verify(deleteRequestedFor(urlPathEqualTo(
-                        "/krrstub/api/v2/person/kontaktinformasjon"))
-                .withRequestBody(equalToJson("""
+                        "/krrstub/api/v2/kontaktinformasjon/123"))
+                .withHeader("Authorization", equalTo("Bearer " + TOKEN))
+                .withHeader("Nav-Consumer-Id", equalTo("Dolly"))
+                .withRequestBody(not(equalToJson("""
                         {"personidentifikator":"03458537037"}
-                        """)));
+                        """))));
 
         stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
                 .willReturn(okJson("[]")));

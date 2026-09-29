@@ -21,6 +21,8 @@ Ved feil i fagsystemtestene logger koordinatoren kjørings-ID, fagsystem, miljø
 
 KRR logger HTTP-status fra hvert sletteforsøk. Ved verifiseringstimeout logges siste observerte responsform (objekt eller liste), antall felt eller elementer og boolske statusflagg. Ingen feltverdier, kontakt-ID-er eller kontaktopplysninger logges. Diagnostikken endrer ikke hvilke svar som godtas som vellykket sletting.
 
+KRR-opprydding henter kontaktoppføringene for testidenten via `POST /api/v2/person/kontaktinformasjon/soek` og sletter hver unike kontakt-ID med `DELETE /api/v2/kontaktinformasjon/{id}`, slik frontend gjør. Slettingene kjøres etter hverandre via dolly-proxy. Etterkontrollen krever et tomt oppslag; HTTP 404 fra én sletting er ikke nok. Ved nytt forsøk hentes gjenværende ID-er på nytt. Manglende ID, ugyldig respons eller en annen personident i svaret stopper oppryddingen før sletting.
+
 NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende aktiv ressurs avsluttes først. Oppryddingen kontrollerer sluttdato og ressurs-ID før testen fortsetter.
 
 Brregstub rydder rolleoversikten for testidenten og testorganisasjonen. Organisasjonen slettes bare hvis alle registrerte roller tilhører testidenten, uavhengig av hvilken dato restene ble opprettet. Roller for andre personer, manglende miljøstøtte og ugyldige oppslag gir fortsatt stopp, ikke en bredere sletting.

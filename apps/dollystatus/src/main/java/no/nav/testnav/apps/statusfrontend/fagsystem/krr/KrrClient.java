@@ -9,5 +9,5 @@ public interface KrrClient {
 
     Mono<Void> createContactInformation(RunId runId, KrrRequest request);
 
-    Mono<Void> deleteContactInformation(RunId runId);
+    Mono<Void> deleteContactInformation(RunId runId, String contactId);
 }

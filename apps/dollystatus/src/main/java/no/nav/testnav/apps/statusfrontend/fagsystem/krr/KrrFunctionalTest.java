@@ -23,6 +23,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 
 @Service
@@ -104,8 +105,21 @@ public class KrrFunctionalTest
             Optional<Verification> verificationResult,
             CleanupExpectation expectedEndState
     ) {
-        return client.deleteContactInformation(context.runId())
-                .then(awaitStatus(context, false));
+        var request = KrrTestData.request(pdlProperties.getIdent(), context);
+        return client.getContactInformation(context.runId(), request)
+                .switchIfEmpty(Mono.error(new IllegalStateException("KRR-oppslaget mangler resultat.")))
+                .flatMap(status -> {
+                    if (status.empty()) {
+                        return Mono.empty();
+                    }
+                    if (status.contactIds().isEmpty()) {
+                        return Mono.error(new IllegalStateException("KRR-oppslaget mangler kontakt-ID."));
+                    }
+                    return Flux.fromIterable(status.contactIds())
+                            .distinct()
+                            .concatMap(contactId -> client.deleteContactInformation(context.runId(), contactId))
+                            .then(awaitStatus(context, false));
+                });
     }
 
     private Mono<Void> awaitStatus(FunctionalTestContext context, boolean expectedPresent) {

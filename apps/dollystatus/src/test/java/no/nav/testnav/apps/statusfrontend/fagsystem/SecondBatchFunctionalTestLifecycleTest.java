@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArenaFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.KontoregisterFunctionalTestProperties;
@@ -200,9 +201,10 @@ class SecondBatchFunctionalTestLifecycleTest {
     @Test
     void shouldCleanupExistingKrrContactInformationBeforeNewPreflight() {
         when(krrClient.getContactInformation(eq(RUN_ID), any()))
-                .thenReturn(Mono.just(new KrrResourceStatus(false, false)),
+                .thenReturn(Mono.just(krrContacts("123", "456")), Mono.just(krrContacts("123", "456")),
                         Mono.just(KrrResourceStatus.emptyStatus()));
-        when(krrClient.deleteContactInformation(RUN_ID)).thenReturn(Mono.empty());
+        when(krrClient.deleteContactInformation(RUN_ID, "123")).thenReturn(Mono.empty());
+        when(krrClient.deleteContactInformation(RUN_ID, "456")).thenReturn(Mono.empty());
         var lifecycle = krrLifecycle();
 
         StepVerifier.create(lifecycle.preflight(context("krr", FunctionalTestEnvironment.GLOBAL)))
@@ -212,7 +214,11 @@ class SecondBatchFunctionalTestLifecycleTest {
         StepVerifier.create(lifecycle.cleanupExistingData(context)
                         .then(Mono.defer(() -> lifecycle.preflight(context))))
                 .expectNextCount(1).verifyComplete();
-        verify(krrClient).deleteContactInformation(RUN_ID);
+        var calls = inOrder(krrClient);
+        calls.verify(krrClient, org.mockito.Mockito.times(2)).getContactInformation(eq(RUN_ID), any());
+        calls.verify(krrClient).deleteContactInformation(RUN_ID, "123");
+        calls.verify(krrClient).deleteContactInformation(RUN_ID, "456");
+        calls.verify(krrClient, org.mockito.Mockito.times(2)).getContactInformation(eq(RUN_ID), any());
     }
 
     @Test
@@ -465,10 +471,11 @@ class SecondBatchFunctionalTestLifecycleTest {
                 .thenReturn(
                         Mono.just(KrrResourceStatus.emptyStatus()),
                         Mono.error(new IllegalStateException("Verification failed.")),
+                        Mono.just(krrContacts("123")),
                         Mono.just(KrrResourceStatus.emptyStatus()));
         when(krrClient.createContactInformation(eq(RUN_ID), any()))
                 .thenReturn(Mono.empty());
-        when(krrClient.deleteContactInformation(RUN_ID))
+        when(krrClient.deleteContactInformation(RUN_ID, "123"))
                 .thenReturn(Mono.empty());
         var lifecycle = krrLifecycle();
         var context = context("krr", FunctionalTestEnvironment.GLOBAL);
@@ -496,9 +503,73 @@ class SecondBatchFunctionalTestLifecycleTest {
         var calls = inOrder(krrClient);
         calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
         calls.verify(krrClient).createContactInformation(eq(RUN_ID), any());
+        calls.verify(krrClient, org.mockito.Mockito.times(2)).getContactInformation(eq(RUN_ID), any());
+        calls.verify(krrClient).deleteContactInformation(RUN_ID, "123");
         calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
-        calls.verify(krrClient).deleteContactInformation(RUN_ID);
+    }
+
+    @Test
+    void shouldSkipKrrDeletesWhenLookupIsEmpty() {
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(KrrResourceStatus.emptyStatus()));
+
+        StepVerifier.create(krrLifecycle().cleanupExistingData(context("krr", FunctionalTestEnvironment.GLOBAL)))
+                .verifyComplete();
+        verify(krrClient, never()).deleteContactInformation(any(), any());
+    }
+
+    @Test
+    void shouldRejectKrrCleanupWithoutContactIds() {
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new KrrResourceStatus(false, false)));
+
+        StepVerifier.create(krrLifecycle().cleanupExistingData(context("krr", FunctionalTestEnvironment.GLOBAL)))
+                .expectError(IllegalStateException.class).verify();
+        verify(krrClient, never()).deleteContactInformation(any(), any());
+    }
+
+    @Test
+    void shouldReadRemainingKrrIdsAgainAfterPartialCleanupFailure() {
+        var failure = new java.util.concurrent.TimeoutException("Delete timed out.");
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(krrContacts("123", "123", "456")),
+                        Mono.just(krrContacts("456")), Mono.just(KrrResourceStatus.emptyStatus()));
+        when(krrClient.deleteContactInformation(RUN_ID, "123")).thenReturn(Mono.empty());
+        when(krrClient.deleteContactInformation(RUN_ID, "456"))
+                .thenReturn(Mono.error(failure), Mono.empty());
+        var lifecycle = krrLifecycle();
+        var context = context("krr", FunctionalTestEnvironment.GLOBAL);
+
+        StepVerifier.create(lifecycle.cleanupExistingData(context))
+                .expectErrorMatches(error -> error == failure).verify();
+        StepVerifier.create(lifecycle.cleanupExistingData(context)).verifyComplete();
+
+        var calls = inOrder(krrClient);
         calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
+        calls.verify(krrClient).deleteContactInformation(RUN_ID, "123");
+        calls.verify(krrClient).deleteContactInformation(RUN_ID, "456");
+        calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
+        calls.verify(krrClient).deleteContactInformation(RUN_ID, "456");
+        calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
+        verify(krrClient).deleteContactInformation(RUN_ID, "123");
+    }
+
+    @Test
+    void shouldWaitForEachKrrDeleteBeforeStartingTheNext() {
+        var firstDelete = reactor.core.publisher.Sinks.<Void>empty();
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(krrContacts("123", "456")), Mono.just(KrrResourceStatus.emptyStatus()));
+        when(krrClient.deleteContactInformation(RUN_ID, "123")).thenReturn(firstDelete.asMono());
+        when(krrClient.deleteContactInformation(RUN_ID, "456")).thenReturn(Mono.empty());
+
+        StepVerifier.create(krrLifecycle().cleanupExistingData(context("krr", FunctionalTestEnvironment.GLOBAL)))
+                .then(() -> {
+                    verify(krrClient).deleteContactInformation(RUN_ID, "123");
+                    verify(krrClient, never()).deleteContactInformation(RUN_ID, "456");
+                    firstDelete.tryEmitEmpty();
+                })
+                .verifyComplete();
+        verify(krrClient).deleteContactInformation(RUN_ID, "456");
     }
 
     @Test
@@ -510,9 +581,9 @@ class SecondBatchFunctionalTestLifecycleTest {
         logger.addAppender(appender);
         logger.setLevel(ch.qos.logback.classic.Level.WARN);
         try {
-            when(krrClient.deleteContactInformation(RUN_ID)).thenReturn(Mono.empty());
+            when(krrClient.deleteContactInformation(RUN_ID, "123")).thenReturn(Mono.empty());
             when(krrClient.getContactInformation(eq(RUN_ID), any()))
-                    .thenReturn(Mono.just(new KrrResourceStatus(false, false)),
+                    .thenReturn(Mono.just(krrContacts("123")),
                             Mono.just(new KrrResourceStatus(false, false,
                                     KrrResourceStatus.ResponseShape.OBJECT, 0, false, false)));
 
@@ -543,6 +614,11 @@ class SecondBatchFunctionalTestLifecycleTest {
                 pdlProperties,
                 new KrrFunctionalTestProperties(),
                 scheduler);
+    }
+
+    private static KrrResourceStatus krrContacts(String... ids) {
+        return new KrrResourceStatus(false, false, KrrResourceStatus.ResponseShape.ARRAY,
+                ids.length, false, false, List.of(ids));
     }
 
     private NomFunctionalTest nomLifecycle() {

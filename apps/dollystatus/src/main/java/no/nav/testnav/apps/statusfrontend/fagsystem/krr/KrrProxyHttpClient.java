@@ -2,7 +2,6 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.krr;
 
 import no.nav.testnav.apps.statusfrontend.config.Consumers;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.KrrFunctionalTestProperties;
-import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.command.CreateKrrContactInformationCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.command.DeleteKrrContactInformationCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.command.GetKrrContactInformationCommand;
@@ -18,20 +17,17 @@ public class KrrProxyHttpClient implements KrrClient {
 
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
-    private final PdlFunctionalTestProperties pdlProperties;
     private final KrrFunctionalTestProperties properties;
     private final WebClient webClient;
 
     public KrrProxyHttpClient(
             TokenExchange tokenExchange,
             Consumers consumers,
-            PdlFunctionalTestProperties pdlProperties,
             KrrFunctionalTestProperties properties,
             WebClient webClient
     ) {
         this.tokenExchange = tokenExchange;
         this.serverProperties = consumers.getTestnavDollyProxy();
-        this.pdlProperties = pdlProperties;
         this.properties = properties;
         this.webClient = webClient.mutate()
                 .baseUrl(serverProperties.getUrl())
@@ -62,12 +58,12 @@ public class KrrProxyHttpClient implements KrrClient {
     }
 
     @Override
-    public Mono<Void> deleteContactInformation(RunId runId) {
+    public Mono<Void> deleteContactInformation(RunId runId, String contactId) {
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new DeleteKrrContactInformationCommand(
                         webClient,
                         token.getTokenValue(),
-                        pdlProperties.getIdent(),
+                        contactId,
                         runId,
                         properties.getRequestTimeout()).call());
     }
