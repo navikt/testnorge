@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_EMPTY_RESPONSE;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_ENVIRONMENT_FAILURE;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_INCOMPLETE_ENVIRONMENT_STATUS;
 
 @Service
@@ -133,6 +134,15 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
                         return Mono.empty();
                     }
                     return client.deleteEgenansatt(context.runId(), environments(context))
+                            .onErrorResume(FunctionalTestResponseException.class, failure ->
+                                    failure.reason() == TPS_ENVIRONMENT_FAILURE
+                                            ? client.getEgenansatt(context.runId(), environments(context),
+                                                    preflightResult.fromDate())
+                                            .filter(TpsEgenansattResourceStatus::allEnvironmentsPresent)
+                                            .filter(TpsEgenansattResourceStatus::inactive)
+                                            .switchIfEmpty(Mono.error(failure))
+                                            .then()
+                                            : Mono.error(failure))
                             .then(awaitStatus(context, preflightResult.fromDate(), false));
                 });
     }

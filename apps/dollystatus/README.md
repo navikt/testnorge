@@ -31,6 +31,8 @@ NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gj
 
 TPS Messaging egenansatt testes separat i Q1 og Q2. Hvert oppryddingsforsøk slår først opp tilstanden i valgt miljø og sender bare opphør hvis egenansatt fortsatt er aktiv. Et allerede ryddet miljø får ikke et nytt slettekall. Manglende oppslagsdata, tom respons eller avvist opphør gir fortsatt feil. Etter godkjent opphør må et nytt oppslag bekrefte inaktiv status.
 
+Hvis TPS avviser et opphør, sjekker Dollystatus tilstanden på nytt. Avvisningen godtas bare dersom et ferskt oppslag bekrefter at miljøet er inaktivt; ellers beholdes oppryddingsfeilen.
+
 HTTP 200 fra oppretting eller opphør bekrefter ikke at TPS-oppslaget viser forventet tilstand. Hvis verifiseringen går ut på tid, logger Dollystatus siste oppslagsstatus som boolske flagg for miljøsvar, startdato, sluttdato og om en aktiv startdato avviker fra testens dato. Verken datoer eller persondata logges.
 
 Brregstub rydder rolleoversikten for testidenten og testorganisasjonen. Organisasjonen slettes bare hvis alle registrerte roller tilhører testidenten, uavhengig av hvilken dato restene ble opprettet. Roller for andre personer, manglende miljøstøtte og ugyldige oppslag gir fortsatt stopp, ikke en bredere sletting.
