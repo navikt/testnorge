@@ -20,6 +20,8 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortData;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.SkattekortRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.command.CreateSkattekortCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.skattekort.command.GetSkattekortCommand;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.libs.dto.kontoregister.v1.OppdaterKontoRequestDTO;
@@ -28,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -272,18 +273,33 @@ class SecondBatchCommandContractTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"{}", "[null]", "[{}]", "{\"melding\":\"error\"}", "{\"id\":null}",
-            "{\"id\":\" \"}", "{\"id\":true}", "{\"id\":{}}",
-            "[{\"id\":123},{\"id\":456,\"personident\":\"another-person\"}]",
-            "[{\"id\":123},{\"id\":456,\"personidentifikator\":\"another-person\"}]"})
-    void shouldRejectInvalidKrrEntriesBeforeReturningAnyIds(String body) {
+    @CsvSource(value = {
+            "{}|KRR_MISSING_CONTACT_ID",
+            "[null]|KRR_INVALID_CONTACT_INFORMATION",
+            "[{}]|KRR_MISSING_CONTACT_ID",
+            "{\"melding\":\"sensitive-detail\"}|KRR_INVALID_CONTACT_INFORMATION",
+            "{\"id\":null}|KRR_MISSING_CONTACT_ID",
+            "{\"id\":\" \"}|KRR_MISSING_CONTACT_ID",
+            "{\"id\":true}|KRR_MISSING_CONTACT_ID",
+            "{\"id\":{}}|KRR_MISSING_CONTACT_ID",
+            "[{\"id\":123},{\"id\":456,\"personident\":\"another-person\"}]|KRR_UNEXPECTED_PERSON",
+            "[{\"id\":123},{\"id\":456,\"personidentifikator\":\"another-person\"}]|KRR_UNEXPECTED_PERSON",
+            "true|KRR_INVALID_RESPONSE"
+    }, delimiter = '|')
+    void shouldRejectInvalidKrrEntriesBeforeReturningAnyIds(String body, Reason expectedReason) {
         var request = new KrrRequest(IDENT, null, false, true, "test-phone",
                 "test@example.invalid", "nb", null, null, null, null, null, null);
         stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
                 .willReturn(okJson(body)));
 
         StepVerifier.create(new GetKrrContactInformationCommand(webClient, TOKEN, request, TIMEOUT).call())
-                .expectError(IllegalStateException.class).verify();
+                .expectErrorSatisfies(error -> assertThat(error)
+                        .isInstanceOfSatisfying(FunctionalTestResponseException.class, failure -> {
+                            assertThat(failure.reason()).isEqualTo(expectedReason);
+                            assertThat(failure.getMessage()).isEqualTo(expectedReason.name());
+                            assertThat(failure.getCause()).isNull();
+                        }))
+                .verify();
     }
 
     @ParameterizedTest
@@ -298,7 +314,10 @@ class SecondBatchCommandContractTest {
         if (absent) {
             verification.assertNext(status -> assertThat(status.empty()).isTrue()).verifyComplete();
         } else if (httpStatus == 200) {
-            verification.expectError(IllegalStateException.class).verify();
+            verification.expectErrorSatisfies(error -> assertThat(error)
+                            .isInstanceOfSatisfying(FunctionalTestResponseException.class,
+                                    failure -> assertThat(failure.reason()).isEqualTo(Reason.KRR_EMPTY_RESPONSE)))
+                    .verify();
         } else {
             verification.expectError(WebClientResponseException.class).verify();
         }

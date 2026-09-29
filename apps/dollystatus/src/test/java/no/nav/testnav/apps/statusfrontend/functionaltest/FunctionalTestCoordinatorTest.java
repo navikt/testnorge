@@ -7,6 +7,8 @@ import ch.qos.logback.core.read.ListAppender;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunNotFoundException;
@@ -226,6 +228,41 @@ class FunctionalTestCoordinatorTest {
                     .contains("fase=CREATE", "httpStatus=400");
             assertThat(appender.list.get(1).getFormattedMessage())
                     .contains("fase=CLEANUP", "httpStatus=403");
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(originalLevel);
+            appender.stop();
+        }
+    }
+
+    @Test
+    void shouldLogFixedResponseFailureReasonWithRunId() {
+        var logger = (Logger) LoggerFactory.getLogger(FunctionalTestCoordinator.class);
+        var originalLevel = logger.getLevel();
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(Level.WARN);
+
+        try {
+            var definition = spy(new GatedPreflightDefinition());
+            var failure = new FunctionalTestResponseException(Reason.KRR_MISSING_CONTACT_ID);
+            failure.initCause(new IllegalStateException("bearer-token raw-response"));
+            doReturn(Mono.error(failure)).when(definition).preflight(any());
+            var coordinator = coordinator(definition);
+            var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+            assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
+                    .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.PREFLIGHT_FAILED));
+            assertThat(appender.list).singleElement().satisfies(event -> {
+                assertThat(event.getFormattedMessage())
+                        .contains("runId=" + reference.runId().value(),
+                                "fase=PREFLIGHT", "responsfeil=KRR_MISSING_CONTACT_ID")
+                        .doesNotContain("bearer-token", "raw-response");
+                assertThat(event.getThrowableProxy()).isNull();
+            });
+            verify(definition, never()).cleanupExistingData(any());
+            verify(definition, never()).create(any(), any());
         } finally {
             logger.detachAppender(appender);
             logger.setLevel(originalLevel);

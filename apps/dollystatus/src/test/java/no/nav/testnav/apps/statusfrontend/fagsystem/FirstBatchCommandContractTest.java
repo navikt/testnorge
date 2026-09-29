@@ -15,9 +15,13 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.tags.command.GetTagsCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.command.CreateEgenansattCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.command.DeleteEgenansattCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.command.GetEgenansattCommand;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason;
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -297,6 +301,48 @@ class FirstBatchCommandContractTest {
         verify(getRequestedFor(urlPathEqualTo("/pdl-testdata/api/v1/bestilling/tags"))
                 .withHeader("Authorization", equalTo("Bearer " + TOKEN))
                 .withHeader("Nav-Personident", equalTo(IDENT)));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "{}|TPS_INVALID_RESPONSE",
+            "[]|TPS_INCOMPLETE_ENVIRONMENT_STATUS",
+            "[{\"miljoe\":\"q1\",\"status\":\"OK\"}]|TPS_INCOMPLETE_ENVIRONMENT_STATUS",
+            "[{\"miljoe\":\"q1\",\"status\":\"OK\"},{\"miljoe\":\"q2\",\"status\":\"FEIL\",\"utfyllendeMelding\":\"sensitive-detail\"}]|TPS_ENVIRONMENT_FAILURE",
+            "[{\"miljoe\":\"q1\",\"status\":\"FEIL\"},{\"miljoe\":\"q2\",\"status\":\"OK\"}]|TPS_ENVIRONMENT_FAILURE",
+            "[{\"miljoe\":\"q1\",\"status\":\"OK\"},{\"miljoe\":\"q2\"}]|TPS_ENVIRONMENT_FAILURE"
+    }, delimiter = '|')
+    void shouldDescribeTpsMutationResponseFailuresWithoutResponseValues(String body, Reason expectedReason) {
+        var path = "/api/v1/personer/" + IDENT + "/egenansatt";
+        var environments = List.of("q1", "q2");
+        stubFor(post(urlPathEqualTo(path)).willReturn(okJson(body)));
+        stubFor(delete(urlPathEqualTo(path)).willReturn(okJson(body)));
+
+        var operations = List.of(
+                new CreateEgenansattCommand(webClient, TOKEN, IDENT, environments,
+                        LocalDate.of(2025, 1, 1), TIMEOUT).call(),
+                new DeleteEgenansattCommand(webClient, TOKEN, IDENT, environments, TIMEOUT).call());
+        operations.forEach(operation -> StepVerifier.create(operation)
+                .expectErrorSatisfies(error -> assertThat(error)
+                        .isInstanceOfSatisfying(FunctionalTestResponseException.class, failure -> {
+                            assertThat(failure.reason()).isEqualTo(expectedReason);
+                            assertThat(failure.getMessage()).isEqualTo(expectedReason.name());
+                            assertThat(failure.getCause()).isNull();
+                        }))
+                .verify());
+    }
+
+    @Test
+    void shouldDistinguishInvalidTpsLookupFromMutationResponse() {
+        stubFor(post(urlPathEqualTo("/api/v1/personer/ident"))
+                .willReturn(okJson("{\"melding\":\"sensitive-detail\"}")));
+
+        StepVerifier.create(new GetEgenansattCommand(webClient, TOKEN, IDENT, List.of("q1", "q2"),
+                        LocalDate.of(2025, 1, 1), TIMEOUT).call())
+                .expectErrorSatisfies(error -> assertThat(error)
+                        .isInstanceOfSatisfying(FunctionalTestResponseException.class,
+                                failure -> assertThat(failure.reason()).isEqualTo(Reason.TPS_LOOKUP_INVALID_RESPONSE)))
+                .verify();
     }
 
     private static ArbeidssoekerregisteretRequest arbeidssoekerRequest() {

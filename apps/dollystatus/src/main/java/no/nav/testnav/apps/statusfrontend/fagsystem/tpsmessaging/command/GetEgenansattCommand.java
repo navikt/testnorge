@@ -2,6 +2,7 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsEgenansattResourceStatus;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -12,6 +13,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_LOOKUP_INVALID_RESPONSE;
 
 @RequiredArgsConstructor
 public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResourceStatus>> {
@@ -41,7 +44,7 @@ public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResource
 
     private TpsEgenansattResourceStatus toStatus(JsonNode response) {
         if (!response.isArray()) {
-            throw new IllegalStateException("TPS-oppslaget returnerte ugyldig respons.");
+            throw new FunctionalTestResponseException(TPS_LOOKUP_INVALID_RESPONSE);
         }
         var returnedEnvironments = new HashSet<String>();
         var expectedActiveEnvironments = new HashSet<String>();

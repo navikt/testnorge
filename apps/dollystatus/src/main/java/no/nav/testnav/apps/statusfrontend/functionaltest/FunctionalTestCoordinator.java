@@ -18,6 +18,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTes
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunInProgressException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
@@ -785,15 +786,19 @@ public class FunctionalTestCoordinator {
         var causeType = nonNull(failure.getCause())
                 ? failure.getCause().getClass().getSimpleName()
                 : null;
+        var responseFailure = failure instanceof FunctionalTestResponseException responseException
+                ? responseException.reason()
+                : null;
         log.warn(
-                "Funksjonstest feilet: runId={}, systemId={}, miljo={}, fase={}, feiltype={}, aarsakstype={}, httpStatus={}",
+                "Funksjonstest feilet: runId={}, systemId={}, miljo={}, fase={}, feiltype={}, aarsakstype={}, httpStatus={}, responsfeil={}",
                 run.runId().value(),
                 key.systemId().value(),
                 key.environment(),
                 phase,
                 failure.getClass().getSimpleName(),
                 causeType,
-                httpStatus);
+                httpStatus,
+                responseFailure);
     }
 
     private boolean isRetryableCleanupFailure(Throwable throwable) {

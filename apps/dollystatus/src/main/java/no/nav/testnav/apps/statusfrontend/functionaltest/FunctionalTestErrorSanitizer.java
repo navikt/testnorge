@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestError;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestErrorCategory;
@@ -27,6 +28,11 @@ final class FunctionalTestErrorSanitizer {
     }
 
     static FunctionalTestError sanitize(FailurePhase phase, Throwable throwable) {
+        if (throwable instanceof FunctionalTestResponseException responseException) {
+            return new FunctionalTestError(
+                    phase == FailurePhase.CLEANUP ? CLEANUP : INTERNAL,
+                    messageFor(phase) + " Feilkode: " + responseException.reason().name() + ".");
+        }
         if (phase == FailurePhase.CLEANUP) {
             return new FunctionalTestError(CLEANUP, "Testdata kunne ikke ryddes opp.");
         }

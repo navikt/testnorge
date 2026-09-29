@@ -19,6 +19,8 @@ Fagsystemenes klienter og kommandoer ligger i egne mapper under `src/main/java/n
 
 Ved feil i fagsystemtestene logger koordinatoren kjørings-ID, fagsystem, miljø, fase, feiltype og HTTP-status når den er tilgjengelig. Opprettings- og oppryddingsfeil logges separat, slik at en oppryddingsfeil ikke skjuler den opprinnelige feilen. Payload, responsbody og token logges ikke.
 
+KRR og TPS har faste feilkoder for avviste responser. Koden vises i feilmeldingen på statussida og som `responsfeil` i loggen. KRR skiller mellom tom eller ugyldig respons, ugyldig kontaktoppføring, avvikende personident og manglende kontakt-ID. TPS skiller mellom ugyldig svar på endring eller oppslag, manglende miljøstatus og miljøer som ikke har status `OK`. Feilkodene inneholder ingen verdier fra responsen, og endrer ikke kravene til vellykket opprydding.
+
 KRR logger HTTP-status fra hvert sletteforsøk. Ved verifiseringstimeout logges siste observerte responsform (objekt eller liste), antall felt eller elementer og boolske statusflagg. Ingen feltverdier, kontakt-ID-er eller kontaktopplysninger logges. Diagnostikken endrer ikke hvilke svar som godtas som vellykket sletting.
 
 KRR-opprydding henter kontaktoppføringene for testidenten via `POST /api/v2/person/kontaktinformasjon/soek` og sletter hver unike kontakt-ID med `DELETE /api/v2/kontaktinformasjon/{id}`, slik frontend gjør. Slettingene kjøres etter hverandre via dolly-proxy. Etterkontrollen krever et tomt oppslag; HTTP 404 fra én sletting er ikke nok. Ved nytt forsøk hentes gjenværende ID-er på nytt. Manglende ID, ugyldig respons eller en annen personident i svaret stopper oppryddingen før sletting.

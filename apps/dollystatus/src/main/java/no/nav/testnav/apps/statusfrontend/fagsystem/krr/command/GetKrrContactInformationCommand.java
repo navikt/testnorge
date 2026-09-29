@@ -3,6 +3,7 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.krr.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrResourceStatus;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_EMPTY_RESPONSE;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_INVALID_CONTACT_INFORMATION;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_INVALID_RESPONSE;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_MISSING_CONTACT_ID;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_UNEXPECTED_PERSON;
 
 @RequiredArgsConstructor
 public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourceStatus>> {
@@ -40,11 +47,10 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
                     if (response.statusCode().is2xxSuccessful()) {
                         return response.bodyToMono(JsonNode.class)
                                 .map(this::toStatus)
-                                .switchIfEmpty(Mono.error(new IllegalStateException(
-                                        "KRR-oppslaget returnerte tom respons.")));
+                                .switchIfEmpty(Mono.error(new FunctionalTestResponseException(KRR_EMPTY_RESPONSE)));
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<KrrResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
@@ -71,28 +77,24 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
                     KrrResourceStatus.ResponseShape.OBJECT, response.size(),
                     response.has("melding"), isUnregistered(response), List.of(contactId(response)));
         }
-        throw new IllegalStateException("KRR-oppslaget returnerte ugyldig respons.");
+        throw new FunctionalTestResponseException(KRR_INVALID_RESPONSE);
     }
 
     private String contactId(JsonNode contactInformation) {
         if (!contactInformation.isObject() || contactInformation.has("melding")) {
-            throw new IllegalStateException("KRR-oppslaget returnerte ugyldig kontaktinformasjon.");
+            throw new FunctionalTestResponseException(KRR_INVALID_CONTACT_INFORMATION);
         }
         for (var identField : List.of("personident", "personidentifikator")) {
             if (contactInformation.has(identField)
                     && !expectedRequest.personident().equals(contactInformation.path(identField).asText())) {
-                throw new IllegalStateException("KRR-oppslaget returnerte en annen person enn testidenten.");
+                throw new FunctionalTestResponseException(KRR_UNEXPECTED_PERSON);
             }
         }
         var id = contactInformation.path("id");
-        if ((!id.isTextual() && !id.isIntegralNumber()) || id.asText().isBlank()) {
-            throw new IllegalStateException("KRR-oppslaget mangler kontakt-ID.");
+        if ((!id.isString() && !id.isIntegralNumber()) || id.asString().isBlank()) {
+            throw new FunctionalTestResponseException(KRR_MISSING_CONTACT_ID);
         }
-        return id.asText();
-    }
-
-    private static boolean isUnregistered(JsonNode response) {
-        return response.path("registrert").isBoolean() && !response.path("registrert").asBoolean();
+        return id.asString();
     }
 
     private boolean matches(JsonNode response) {
@@ -103,5 +105,9 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
                 && expectedRequest.spraak().equals(response.path("spraak").asString())
                 && expectedRequest.reservert() == response.path("reservert").asBoolean()
                 && expectedRequest.registrert() == response.path("registrert").asBoolean();
+    }
+
+    private static boolean isUnregistered(JsonNode response) {
+        return response.path("registrert").isBoolean() && !response.path("registrert").asBoolean();
     }
 }
