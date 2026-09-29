@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_LOOKUP_INVALID_RESPONSE;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_EMPTY_RESPONSE;
 
 @RequiredArgsConstructor
 public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResourceStatus>> {
@@ -38,6 +39,7 @@ public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResource
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(this::toStatus)
+                .switchIfEmpty(Mono.error(new FunctionalTestResponseException(TPS_EMPTY_RESPONSE)))
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
     }
@@ -55,8 +57,11 @@ public class GetEgenansattCommand implements Callable<Mono<TpsEgenansattResource
                     || !"OK".equals(environmentStatus.path("status").asString())) {
                 continue;
             }
-            returnedEnvironments.add(environment);
             var person = environmentStatus.path("person");
+            if (!person.isObject()) {
+                throw new FunctionalTestResponseException(TPS_LOOKUP_INVALID_RESPONSE);
+            }
+            returnedEnvironments.add(environment);
             var fromDate = readDate(person.path("egenAnsattDatoFom"));
             var toDate = readDate(person.path("egenAnsattDatoTom"));
             if (expectedFromDate.equals(fromDate) && toDate == null) {

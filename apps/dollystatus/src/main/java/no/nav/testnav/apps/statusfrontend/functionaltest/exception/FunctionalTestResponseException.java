@@ -19,6 +19,7 @@ public final class FunctionalTestResponseException extends IllegalStateException
         KRR_INVALID_CONTACT_INFORMATION,
         KRR_UNEXPECTED_PERSON,
         KRR_MISSING_CONTACT_ID,
+        TPS_EMPTY_RESPONSE,
         TPS_INVALID_RESPONSE,
         TPS_INCOMPLETE_ENVIRONMENT_STATUS,
         TPS_ENVIRONMENT_FAILURE,

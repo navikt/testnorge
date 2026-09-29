@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -9,6 +10,8 @@ import tools.jackson.databind.JsonNode;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_EMPTY_RESPONSE;
 
 @RequiredArgsConstructor
 public class DeleteEgenansattCommand implements Callable<Mono<Void>> {
@@ -29,6 +32,7 @@ public class DeleteEgenansattCommand implements Callable<Mono<Void>> {
                 .headers(headers -> headers.setBearerAuth(token))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .switchIfEmpty(Mono.error(new FunctionalTestResponseException(TPS_EMPTY_RESPONSE)))
                 .flatMap(response ->
                         TpsMessagingCommandSupport.requireSuccessful(response, environments))
                 .timeout(timeout)

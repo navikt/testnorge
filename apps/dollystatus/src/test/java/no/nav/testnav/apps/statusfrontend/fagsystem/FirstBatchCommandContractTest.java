@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -30,10 +31,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -343,6 +346,62 @@ class FirstBatchCommandContractTest {
                         .isInstanceOfSatisfying(FunctionalTestResponseException.class,
                                 failure -> assertThat(failure.reason()).isEqualTo(Reason.TPS_LOOKUP_INVALID_RESPONSE)))
                 .verify();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[{\"miljoe\":\"q2\",\"status\":\"OK\"}]",
+            "[{\"miljoe\":\"q2\",\"status\":\"OK\",\"person\":null}]",
+            "[{\"miljoe\":\"q2\",\"status\":\"OK\",\"person\":[]}]"
+    })
+    void shouldRejectMissingTpsPersonInsteadOfReportingInactive(String body) {
+        stubFor(post(urlPathEqualTo("/api/v1/personer/ident")).willReturn(okJson(body)));
+
+        StepVerifier.create(new GetEgenansattCommand(webClient, TOKEN, IDENT, List.of("q2"),
+                        LocalDate.of(2025, 1, 1), TIMEOUT).call())
+                .expectErrorSatisfies(error -> assertThat(error)
+                        .isInstanceOfSatisfying(FunctionalTestResponseException.class,
+                                failure -> assertThat(failure.reason()).isEqualTo(Reason.TPS_LOOKUP_INVALID_RESPONSE)))
+                .verify();
+    }
+
+    @Test
+    void shouldRejectEmptyTpsLookupAndMutationResponses() {
+        var path = "/api/v1/personer/" + IDENT + "/egenansatt";
+        var environments = List.of("q2");
+        var fromDate = LocalDate.of(2025, 1, 1);
+        stubFor(post(urlPathEqualTo("/api/v1/personer/ident")).willReturn(ok()));
+        stubFor(post(urlPathEqualTo(path)).willReturn(ok()));
+        stubFor(delete(urlPathEqualTo(path)).willReturn(ok()));
+
+        var operations = List.of(
+                new GetEgenansattCommand(webClient, TOKEN, IDENT, environments, fromDate, TIMEOUT).call(),
+                new CreateEgenansattCommand(webClient, TOKEN, IDENT, environments, fromDate, TIMEOUT).call(),
+                new DeleteEgenansattCommand(webClient, TOKEN, IDENT, environments, TIMEOUT).call());
+        operations.forEach(operation -> StepVerifier.create(operation)
+                .expectErrorSatisfies(error -> assertThat(error)
+                        .isInstanceOfSatisfying(FunctionalTestResponseException.class,
+                                failure -> assertThat(failure.reason()).isEqualTo(Reason.TPS_EMPTY_RESPONSE)))
+                .verify());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2"})
+    void shouldSendTpsMutationsOnlyToSelectedEnvironment(String environment) {
+        var path = "/api/v1/personer/" + IDENT + "/egenansatt";
+        var environments = List.of(environment);
+        var response = "[{\"miljoe\":\"" + environment + "\",\"status\":\"OK\"}]";
+        stubFor(post(urlPathEqualTo(path)).willReturn(okJson(response)));
+        stubFor(delete(urlPathEqualTo(path)).willReturn(okJson(response)));
+
+        StepVerifier.create(new CreateEgenansattCommand(webClient, TOKEN, IDENT, environments,
+                LocalDate.of(2025, 1, 1), TIMEOUT).call()).verifyComplete();
+        StepVerifier.create(new DeleteEgenansattCommand(webClient, TOKEN, IDENT, environments, TIMEOUT).call())
+                .verifyComplete();
+
+        var requests = findAll(anyRequestedFor(urlPathEqualTo(path)));
+        assertThat(requests).hasSize(2).allSatisfy(request ->
+                assertThat(request.queryParameter("miljoer").values()).containsExactly(environment));
     }
 
     private static ArbeidssoekerregisteretRequest arbeidssoekerRequest() {

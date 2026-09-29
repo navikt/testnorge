@@ -10,6 +10,7 @@ import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.TpsMes
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
@@ -23,6 +24,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_EMPTY_RESPONSE;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_INCOMPLETE_ENVIRONMENT_STATUS;
+
 @Service
 @ConditionalOnProperty(
         prefix = "functional-test.tps-messaging-egenansatt",
@@ -33,11 +37,10 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
         Creation,
         Verification> {
 
-    private static final List<String> ENVIRONMENTS = List.of("q1", "q2");
     private static final FunctionalTestDescriptor DESCRIPTOR = new FunctionalTestDescriptor(
             new SystemId("tps-messaging-egenansatt"),
             new DisplayName("TPS Messaging egenansatt"),
-            Set.of(FunctionalTestEnvironment.GLOBAL),
+            Set.of(FunctionalTestEnvironment.Q1, FunctionalTestEnvironment.Q2),
             CleanupExpectation.INACTIVE);
 
     private final TpsMessagingClient client;
@@ -67,7 +70,7 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
     @Override
     public Mono<TpsEgenansattPreflight> preflight(FunctionalTestContext context) {
         var fromDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();
-        return client.getEgenansatt(context.runId(), ENVIRONMENTS, fromDate)
+        return client.getEgenansatt(context.runId(), environments(context), fromDate)
                 .flatMap(status -> {
                     if (!status.allEnvironmentsPresent()) {
                         return Mono.error(new FunctionalTestBlockedException());
@@ -92,7 +95,7 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
     ) {
         return client.createEgenansatt(
                         context.runId(),
-                        ENVIRONMENTS,
+                        environments(context),
                         preflightResult.fromDate())
                 .thenReturn(Creation.COMPLETED);
     }
@@ -115,8 +118,19 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
             Optional<Verification> verificationResult,
             CleanupExpectation expectedEndState
     ) {
-        return client.deleteEgenansatt(context.runId(), ENVIRONMENTS)
-                .then(awaitStatus(context, preflightResult.fromDate(), false));
+        return Mono.defer(() -> client.getEgenansatt(
+                        context.runId(), environments(context), preflightResult.fromDate()))
+                .switchIfEmpty(Mono.error(new FunctionalTestResponseException(TPS_EMPTY_RESPONSE)))
+                .flatMap(status -> {
+                    if (!status.allEnvironmentsPresent()) {
+                        return Mono.error(new FunctionalTestResponseException(TPS_INCOMPLETE_ENVIRONMENT_STATUS));
+                    }
+                    if (status.inactive()) {
+                        return Mono.empty();
+                    }
+                    return client.deleteEgenansatt(context.runId(), environments(context))
+                            .then(awaitStatus(context, preflightResult.fromDate(), false));
+                });
     }
 
     private Mono<Void> awaitStatus(
@@ -125,12 +139,20 @@ public class TpsEgenansattFunctionalTest implements FunctionalTestDefinition<
             boolean expectedPresent
     ) {
         return pollUntil(
-                () -> client.getEgenansatt(context.runId(), ENVIRONMENTS, fromDate),
+                () -> client.getEgenansatt(context.runId(), environments(context), fromDate),
                 status -> expectedPresent
                         ? status.expectedDataPresent()
                         : status.allEnvironmentsPresent() && status.inactive(),
                 properties.getPollInterval(),
                         properties.getPollTimeout(),
                         scheduler).then();
+    }
+
+    private List<String> environments(FunctionalTestContext context) {
+        return List.of(switch (context.environment()) {
+            case Q1 -> "q1";
+            case Q2 -> "q2";
+            case GLOBAL -> throw new IllegalArgumentException("TPS krever et konkret testmiljø.");
+        });
     }
 }

@@ -23,9 +23,13 @@ KRR og TPS har faste feilkoder for avviste responser. Koden vises i feilmeldinge
 
 KRR logger HTTP-status fra hvert sletteforsøk. Ved verifiseringstimeout logges siste observerte responsform (objekt eller liste), antall felt eller elementer og boolske statusflagg. Ingen feltverdier, kontakt-ID-er eller kontaktopplysninger logges. Diagnostikken endrer ikke hvilke svar som godtas som vellykket sletting.
 
+Ved manglende brukbar kontakt-ID logger KRR også kjørings-ID, JSON-datatypen til ID-feltet og boolske flagg for blank ID, registrering og kontaktdata. Dette skiller et manglende eller null ID-felt fra feil datatype, uten å logge ID-en eller kontaktverdiene.
+
 KRR-opprydding henter kontaktoppføringene for testidenten via `POST /api/v2/person/kontaktinformasjon/soek` og sletter hver unike kontakt-ID med `DELETE /api/v2/kontaktinformasjon/{id}`, slik frontend gjør. Slettingene kjøres etter hverandre via dolly-proxy. Etterkontrollen krever et tomt oppslag; HTTP 404 fra én sletting er ikke nok. Ved nytt forsøk hentes gjenværende ID-er på nytt. Manglende ID, ugyldig respons eller en annen personident i svaret stopper oppryddingen før sletting.
 
 NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende aktiv ressurs avsluttes først. Oppryddingen kontrollerer sluttdato og ressurs-ID før testen fortsetter.
+
+TPS Messaging egenansatt testes separat i Q1 og Q2. Hvert oppryddingsforsøk slår først opp tilstanden i valgt miljø og sender bare opphør hvis egenansatt fortsatt er aktiv. Et allerede ryddet miljø får ikke et nytt slettekall. Manglende oppslagsdata, tom respons eller avvist opphør gir fortsatt feil. Etter godkjent opphør må et nytt oppslag bekrefte inaktiv status.
 
 Brregstub rydder rolleoversikten for testidenten og testorganisasjonen. Organisasjonen slettes bare hvis alle registrerte roller tilhører testidenten, uavhengig av hvilken dato restene ble opprettet. Roller for andre personer, manglende miljøstøtte og ugyldige oppslag gir fortsatt stopp, ikke en bredere sletting.
 

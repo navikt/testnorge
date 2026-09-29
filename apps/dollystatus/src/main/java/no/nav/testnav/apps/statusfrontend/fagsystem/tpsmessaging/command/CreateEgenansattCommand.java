@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.TPS_EMPTY_RESPONSE;
 
 @RequiredArgsConstructor
 public class CreateEgenansattCommand implements Callable<Mono<Void>> {
@@ -34,6 +37,7 @@ public class CreateEgenansattCommand implements Callable<Mono<Void>> {
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .switchIfEmpty(Mono.error(new FunctionalTestResponseException(TPS_EMPTY_RESPONSE)))
                 .flatMap(response ->
                         TpsMessagingCommandSupport.requireSuccessful(response, environments))
                 .timeout(timeout)

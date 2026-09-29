@@ -1,9 +1,11 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.krr.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.krr.KrrResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,11 +26,13 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.Functi
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_UNEXPECTED_PERSON;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourceStatus>> {
 
     private final WebClient webClient;
     private final String token;
     private final KrrRequest expectedRequest;
+    private final RunId runId;
     private final Duration timeout;
 
     @Override
@@ -92,6 +96,16 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
         }
         var id = contactInformation.path("id");
         if ((!id.isString() && !id.isIntegralNumber()) || id.asString().isBlank()) {
+            var registered = contactInformation.path("registrert");
+            log.warn(
+                    "KRR-oppslag mangler brukbar kontakt-ID: runId={}, idType={}, idBlank={}, registrert={}, hasContactData={}",
+                    runId.value(),
+                    id.getNodeType(),
+                    id.isString() && id.asString().isBlank(),
+                    registered.isBoolean() ? registered.asBoolean() : null,
+                    !contactInformation.path("mobil").asString("").isBlank()
+                            || !contactInformation.path("epost").asString("").isBlank()
+                            || !contactInformation.path("sdpAdresse").asString("").isBlank());
             throw new FunctionalTestResponseException(KRR_MISSING_CONTACT_ID);
         }
         return id.asString();
