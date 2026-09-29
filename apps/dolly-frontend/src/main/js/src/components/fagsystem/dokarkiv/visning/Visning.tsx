@@ -27,8 +27,6 @@ export const sjekkManglerDokarkivData = (dokarkivdata: Array<MiljoDataListe>) =>
 	)
 }
 
-// Person med dokarkiv-feil: 21527744765
-
 const Dokarkiv = ({ data, miljo }: MiljoDataListe) => {
 	if (!data || data?.length < 1) {
 		return null

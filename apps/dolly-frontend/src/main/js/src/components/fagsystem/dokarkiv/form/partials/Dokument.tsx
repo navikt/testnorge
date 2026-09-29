@@ -25,7 +25,6 @@ type Skjema = {
 }
 
 export enum Kodeverk {
-	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
 	BEHANDLINGSTEMA = 'Behandlingstema',
 	ARKIVTEMAER = 'Arkivtemaer',
