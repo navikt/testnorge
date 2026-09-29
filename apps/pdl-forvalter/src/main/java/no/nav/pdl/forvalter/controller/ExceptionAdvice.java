@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,6 +42,23 @@ public class ExceptionAdvice {
     @ExceptionHandler({InternalServerException.class, IllegalStateException.class})
     ExceptionInformation clientErrorException(ServerWebExchange serverWebExchange, InternalServerException exception) {
         return getExceptionInformation(serverWebExchange, exception);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    ExceptionInformation optimisticLockingFailureException(
+            ServerWebExchange serverWebExchange,
+            OptimisticLockingFailureException exception) {
+
+        log.warn("Samtidig oppdatering oppdaget for {}", serverWebExchange.getRequest().getPath().value(), exception);
+        return ExceptionInformation.builder()
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .status(HttpStatus.CONFLICT.value())
+                .message("Personen ble endret av en annen operasjon. Forsøk på nytt.")
+                .path(serverWebExchange.getRequest().getPath().value())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
     private ExceptionInformation getExceptionInformation(ServerWebExchange serverWebExchange, HttpClientErrorException exception) {

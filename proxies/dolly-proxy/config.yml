@@ -8,6 +8,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8m"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "8m"
   labels:
     team: dolly
 spec:

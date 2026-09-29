@@ -19,13 +19,12 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-        - application: dolly-frontend-dev
         - application: dolly-idporten
-        - application: dolly-auth-local
         - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: testnav-bruker-service
+        - application: dolly-backend
         - application: logging
           namespace: nais-system
   liveness:
@@ -52,7 +51,11 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_15
-        tier: db-custom-1-3840
+        tier: db-f1-micro
+        diskSize: 10
+        diskType: SSD
+        diskAutoresize: false
+        highAvailability: false
         name: testnav-template-search-service
         databases:
           - name: testnav-template-search-service-db

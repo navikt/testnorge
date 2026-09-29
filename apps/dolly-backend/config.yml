@@ -20,7 +20,7 @@ spec:
         - application: dolly-auth-local
         - application: dolly-frontend
         - application: dolly-idporten
-        - application: testnav-bruker-service
+        - application: testnav-template-search-service
         - application: histark-proxy-dolly
           namespace: histark
           cluster: dev-fss

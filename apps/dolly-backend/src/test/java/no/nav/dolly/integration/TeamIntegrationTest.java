@@ -3,13 +3,10 @@ package no.nav.dolly.integration;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.team.RsTeam;
 import no.nav.dolly.domain.resultset.entity.team.RsTeamUpdate;
-import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -19,14 +16,10 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
-@Disabled("Integration test requires database cleanup between tests")
 class TeamIntegrationTest extends AbstractIntegrasjonTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @MockitoBean
-    private BrukerService brukerService;
 
     @BeforeEach
     void setUp() {

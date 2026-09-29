@@ -31,7 +31,8 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToFlux(Void.class)
-                .map(respons -> "")
-                .doOnError(WebClientError.logTo(log));
+                .map(_ -> "")
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(_ -> Flux.empty());
     }
 }

@@ -17,6 +17,7 @@ jobs:
     with:
       working-directory: "apps/template-search-service"
       deploy-tag: "#deploy-template-search-service"
+      deploy-tag-test: "#deploy-test-template-search-service"
     permissions:
       contents: read
       id-token: write

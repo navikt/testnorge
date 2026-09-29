@@ -2,13 +2,10 @@ package no.nav.dolly.provider;
 
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.service.BrukerService;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -23,9 +20,6 @@ class TestgruppeControllerPutTest extends AbstractControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @MockitoBean
-    private BrukerService brukerService;
 
     @Test
     @DisplayName("Returnerer HTTP 404 med korrekt feilmelding hvis Testgruppe ikke finnes")
@@ -50,7 +44,7 @@ class TestgruppeControllerPutTest extends AbstractControllerTest {
                 .isNotFound()
                 .expectBody()
                 .jsonPath("$.message")
-                .value(CoreMatchers.containsString("Gruppe med id " + id + " ble ikke funnet."));
+                .isEqualTo("Gruppe med id " + id + " ble ikke funnet.");
     }
 
     @Test
@@ -74,7 +68,7 @@ class TestgruppeControllerPutTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
-                .expectStatus()                .isOk()
+                .expectStatus().isOk()
                 .expectBody(RsTestgruppeMedBestillingId.class)
                 .value(response -> {
                     assertThat(response.getId()).isEqualTo(testgruppe.getId());

@@ -34,6 +34,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -142,6 +144,163 @@ class TestgruppeServiceTest {
         StepVerifier.create(testgruppeService.fetchTestgruppeById(GROUP_ID))
                 .assertNext(gruppe -> assertThat(gruppe, is(testgruppe)))
                 .verifyComplete();
+    }
+
+    @Test
+    void fetchPaginertTestgruppeById_filtrererUgyldigeBrukerIder() {
+
+        var bruker = Bruker.builder()
+                .id(123L)
+                .brukerId(BRUKERID)
+                .brukertype(Bruker.Brukertype.BANKID)
+                .build();
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", " ", BRUKERID, BRUKERID))
+                        .build()));
+        when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(
+                List.of(BRUKERID), Pageable.unpaged())).thenReturn(Flux.empty());
+
+        StepVerifier.create(testgruppeService.fetchPaginertTestgruppeById(GROUP_ID, 0, 10, null, null))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(testgruppeRepository).findByOpprettetAv_BrukerIdIn(
+                List.of(BRUKERID), Pageable.unpaged());
+    }
+
+    @Test
+    void fetchPaginertTestgruppeById_unngaarRepositorykallNaarBrukerlistenErTom() {
+
+        var bruker = Bruker.builder()
+                .id(123L)
+                .brukerId(BRUKERID)
+                .brukertype(Bruker.Brukertype.BANKID)
+                .build();
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", " "))
+                        .build()));
+
+        StepVerifier.create(testgruppeService.fetchPaginertTestgruppeById(GROUP_ID, 0, 10, null, null))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(testgruppeRepository, never())
+                .findByOpprettetAv_BrukerIdIn(any(), any());
+    }
+
+    @Test
+    void getAllTestgrupper_returnererTomSideNaarBankIdBrukereErUgyldige() {
+
+        var bruker = bankIdBruker();
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", " "))
+                        .build()));
+        stubTomTestgruppeSide(bruker);
+
+        StepVerifier.create(testgruppeService.getAllTestgrupper(0, 10))
+                .assertNext(side -> {
+                    org.assertj.core.api.Assertions.assertThat(side.getContents()).isEmpty();
+                    org.assertj.core.api.Assertions.assertThat(side.getAntallElementer()).isZero();
+                    org.assertj.core.api.Assertions.assertThat(side.getAntallPages()).isZero();
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository, never())
+                .findByOpprettetAv_BrukerIdIn(any(), any());
+        verify(testgruppeRepository, never())
+                .countByOpprettetAv_BrukerIdIn(any());
+    }
+
+    @Test
+    void getAllTestgrupper_filtrererBankIdBrukereFoerRepositorykall() {
+
+        var bruker = bankIdBruker();
+        var testgruppe = Testgruppe.builder().id(GROUP_ID).build();
+        var gyldigeBrukere = List.of(BRUKERID);
+        var pageRequest = PageRequest.of(0, 10, Sort.by("id").descending());
+        when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", BRUKERID, BRUKERID))
+                        .build()));
+        when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(gyldigeBrukere, pageRequest))
+                .thenReturn(Flux.just(testgruppe));
+        when(testgruppeRepository.countByOpprettetAv_BrukerIdIn(gyldigeBrukere))
+                .thenReturn(Mono.just(1L));
+        stubTestgruppeSide(bruker, testgruppe);
+
+        StepVerifier.create(testgruppeService.getAllTestgrupper(0, 10))
+                .assertNext(side -> {
+                    org.assertj.core.api.Assertions.assertThat(side.getContents()).hasSize(1);
+                    org.assertj.core.api.Assertions.assertThat(side.getAntallElementer()).isEqualTo(1L);
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository)
+                .findByOpprettetAv_BrukerIdIn(gyldigeBrukere, pageRequest);
+        verify(testgruppeRepository)
+                .countByOpprettetAv_BrukerIdIn(gyldigeBrukere);
+    }
+
+    @Test
+    void getTestgruppeByBrukerId_returnererTomSideNaarBankIdBrukereErUgyldige() {
+
+        var bruker = bankIdBruker();
+        when(brukerService.fetchOrCreateBruker(null)).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, "", " "))
+                        .build()));
+        stubTomTestgruppeSide(bruker);
+
+        StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
+                .assertNext(side -> {
+                    org.assertj.core.api.Assertions.assertThat(side.getContents()).isEmpty();
+                    org.assertj.core.api.Assertions.assertThat(side.getAntallElementer()).isZero();
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository, never())
+                .findByOpprettetAv_BrukerIdIn(any(), any());
+        verify(testgruppeRepository, never())
+                .countByOpprettetAv_BrukerIdIn(any());
+    }
+
+    @Test
+    void getTestgruppeByBrukerId_filtrererBankIdBrukereFoerRepositorykall() {
+
+        var bruker = bankIdBruker();
+        var testgruppe = Testgruppe.builder().id(GROUP_ID).build();
+        var gyldigeBrukere = List.of(BRUKERID);
+        var pageRequest = PageRequest.of(0, 10, Sort.by("id").descending());
+        when(brukerService.fetchOrCreateBruker(null)).thenReturn(Mono.just(bruker));
+        when(brukerServiceConsumer.getKollegaerIOrganisasjon(BRUKERID))
+                .thenReturn(Mono.just(BrukereDTO.builder()
+                        .brukere(Arrays.asList(null, " ", BRUKERID, BRUKERID))
+                        .build()));
+        when(testgruppeRepository.findByOpprettetAv_BrukerIdIn(gyldigeBrukere, pageRequest))
+                .thenReturn(Flux.just(testgruppe));
+        when(testgruppeRepository.countByOpprettetAv_BrukerIdIn(gyldigeBrukere))
+                .thenReturn(Mono.just(1L));
+        stubTestgruppeSide(bruker, testgruppe);
+
+        StepVerifier.create(testgruppeService.getTestgruppeByBrukerId(0, 10, null))
+                .assertNext(side -> {
+                    org.assertj.core.api.Assertions.assertThat(side.getContents()).hasSize(1);
+                    org.assertj.core.api.Assertions.assertThat(side.getAntallElementer()).isEqualTo(1L);
+                })
+                .verifyComplete();
+
+        verify(testgruppeRepository)
+                .findByOpprettetAv_BrukerIdIn(gyldigeBrukere, pageRequest);
+        verify(testgruppeRepository)
+                .countByOpprettetAv_BrukerIdIn(gyldigeBrukere);
     }
 
     @Test
@@ -421,5 +580,30 @@ class TestgruppeServiceTest {
                 .verifyComplete();
 
         verify(testgruppeRepository).findByIdAndNavnAndBrukere("1", "", new String[0]);
+    }
+
+    private Bruker bankIdBruker() {
+        return Bruker.builder()
+                .id(123L)
+                .brukerId(BRUKERID)
+                .brukertype(Bruker.Brukertype.BANKID)
+                .build();
+    }
+
+    private void stubTomTestgruppeSide(Bruker bruker) {
+        when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
+        when(brukerFavoritterRepository.findByBrukerId(bruker.getId())).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByIdIn(List.of())).thenReturn(Flux.empty());
+    }
+
+    private void stubTestgruppeSide(Bruker bruker, Testgruppe testgruppe) {
+        when(brukerRepository.findAll()).thenReturn(Flux.just(bruker));
+        when(brukerFavoritterRepository.findByBrukerId(bruker.getId())).thenReturn(Flux.empty());
+        when(testgruppeRepository.findByIdIn(List.of())).thenReturn(Flux.empty());
+        when(identRepository.countByGruppeId(testgruppe.getId())).thenReturn(Mono.just(1));
+        when(bestillingRepository.countByGruppeId(testgruppe.getId())).thenReturn(Mono.just(1));
+        when(identRepository.countByGruppeIdAndIBruk(testgruppe.getId(), true)).thenReturn(Mono.just(0));
+        when(mapperFacade.map(eq(testgruppe), eq(RsTestgruppe.class), any()))
+                .thenReturn(new RsTestgruppe());
     }
 }

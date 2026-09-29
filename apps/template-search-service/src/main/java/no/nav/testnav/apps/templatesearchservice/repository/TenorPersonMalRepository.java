@@ -19,7 +19,7 @@ public interface TenorPersonMalRepository extends
             String brukerId,
             String malNavn);
 
-    Flux<TenorPersonMal> findByBrukertype(TenorMalBrukerType brukertype);
+    Flux<TenorPersonMal> findByBrukertypeIn(Collection<TenorMalBrukerType> brukertyper);
 
     Flux<TenorPersonMal> findByBrukertypeAndBrukerIdIn(
             TenorMalBrukerType brukertype,

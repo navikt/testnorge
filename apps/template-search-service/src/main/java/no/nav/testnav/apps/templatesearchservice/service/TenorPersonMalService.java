@@ -1,6 +1,9 @@
 package no.nav.testnav.apps.templatesearchservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.templatesearchservice.consumers.DollyBackendConsumer;
+import no.nav.testnav.apps.templatesearchservice.consumers.dto.DollyTeamDTO;
 import no.nav.testnav.apps.templatesearchservice.domain.OpprettTenorPersonMalRequest;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorMalBrukerType;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorMalOwner;
@@ -10,8 +13,10 @@ import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalLagreResul
 import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalOversiktResponse;
 import no.nav.testnav.apps.templatesearchservice.domain.TenorPersonMalResponse;
 import no.nav.testnav.apps.templatesearchservice.domain.ValidertTenorPersonMal;
+import no.nav.testnav.apps.templatesearchservice.exception.DollyBackendUnavailableException;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalConflictException;
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalNotFoundException;
+import no.nav.testnav.apps.templatesearchservice.exception.TenorMalValidationException;
 import no.nav.testnav.apps.templatesearchservice.repository.TenorPersonMalRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -22,16 +27,21 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TenorPersonMalService {
 
     private static final String ALLE = "ALLE";
+    private static final String UKJENT_TEAM = "Ukjent team";
     private static final Comparator<TenorPersonMal> MAL_COMPARATOR =
             Comparator.comparing(TenorPersonMal::getMalNavn, CASE_INSENSITIVE_ORDER)
                     .thenComparing(TenorPersonMal::getId);
@@ -41,6 +51,7 @@ public class TenorPersonMalService {
 
     private final CurrentTenorUserService currentUserService;
     private final TenorMalAccessService accessService;
+    private final DollyBackendConsumer dollyBackendConsumer;
     private final TenorPersonMalValidationService validationService;
     private final TenorPersonMalRepository malRepository;
     private final JsonMapper jsonMapper;
@@ -52,7 +63,7 @@ public class TenorPersonMalService {
     }
 
     public Flux<TenorPersonMalResponse> getMaler(String brukerId) {
-        return currentUserService.getCurrentUser()
+        return currentUserService.getAuthenticatedUser()
                 .flatMapMany(currentUser -> accessService.getAccessibleMaler(currentUser)
                         .filter(mal -> isRequestedOwner(currentUser, brukerId, mal))
                         .sort(MAL_COMPARATOR)
@@ -60,15 +71,12 @@ public class TenorPersonMalService {
     }
 
     public Mono<TenorPersonMalOversiktResponse> getMalOversikt() {
-        return currentUserService.getCurrentUser()
+        return currentUserService.getAuthenticatedUser()
                 .flatMap(currentUser -> accessService.getAccessibleMaler(currentUser)
                         .sort(Comparator.comparing(TenorPersonMal::getSistOppdatert).reversed())
-                        .map(mal -> new TenorPersonMalBrukerResponse(
-                                mal.getBrukerId(),
-                                mal.getBrukernavn()))
-                        .distinct(TenorPersonMalBrukerResponse::brukerId)
-                        .sort(BRUKER_COMPARATOR)
+                        .distinct(TenorPersonMal::getBrukerId)
                         .collectList()
+                        .flatMap(this::getBrukereMedMaler)
                         .map(brukere -> new TenorPersonMalOversiktResponse(
                                 withAllUsersOption(currentUser, brukere))));
     }
@@ -85,6 +93,47 @@ public class TenorPersonMalService {
                 .filter(deletedRows -> deletedRows > 0)
                 .switchIfEmpty(Mono.error(new TenorMalNotFoundException("Malen ble ikke funnet.")))
                 .then();
+    }
+
+    private Mono<List<TenorPersonMalBrukerResponse>> getBrukereMedMaler(List<TenorPersonMal> maler) {
+        Mono<List<DollyTeamDTO>> teamOppslag = maler.stream()
+                .anyMatch(mal -> mal.getBrukertype() == TenorMalBrukerType.TEAM)
+                ? dollyBackendConsumer.getTeams()
+                : Mono.just(List.of());
+
+        return teamOppslag
+                .onErrorResume(DollyBackendUnavailableException.class, _ -> {
+                    log.warn("Kunne ikke hente teamnavn fra Dolly. Viser ukjent team.");
+                    return Mono.just(List.of());
+                })
+                .map(teams -> {
+                    var teamNavn = new HashMap<String, String>();
+                    teams.forEach(team -> teamNavn.put(team.brukerId(), team.navn()));
+                    return maler.stream()
+                            .map(mal -> new TenorPersonMalBrukerResponse(
+                                    mal.getBrukerId(),
+                                    getBrukernavn(mal, teamNavn)))
+                            .sorted(BRUKER_COMPARATOR)
+                            .toList();
+                });
+    }
+
+    private String getBrukernavn(TenorPersonMal mal, Map<String, String> teamNavn) {
+        if (mal.getBrukertype() != TenorMalBrukerType.TEAM) {
+            return mal.getBrukernavn();
+        }
+        var navn = teamNavn.get(mal.getBrukerId());
+        if (isBlank(navn)) {
+            log.warn("Teamnavn mangler i svaret fra Dolly. Viser ukjent team.");
+            return UKJENT_TEAM;
+        }
+        try {
+            validationService.validateNoPersonidentifikator(navn);
+            return navn;
+        } catch (TenorMalValidationException _) {
+            log.warn("Teamnavn inneholder en personidentifikator. Viser ukjent team.");
+            return UKJENT_TEAM;
+        }
     }
 
     private Mono<TenorPersonMalLagreResult> save(
@@ -169,7 +218,7 @@ public class TenorPersonMalService {
             TenorPersonMal mal
     ) {
         if (ALLE.equals(brukerId)) {
-            return currentUser.brukertype() == TenorMalBrukerType.AZURE;
+            return isAzureOrTeam(currentUser);
         }
         return mal.getBrukerId().equals(brukerId);
     }
@@ -178,13 +227,18 @@ public class TenorPersonMalService {
             TenorMalOwner currentUser,
             List<TenorPersonMalBrukerResponse> brukere
     ) {
-        if (currentUser.brukertype() != TenorMalBrukerType.AZURE) {
+        if (!isAzureOrTeam(currentUser)) {
             return brukere;
         }
         return Stream.concat(
                         Stream.of(new TenorPersonMalBrukerResponse(ALLE, ALLE)),
                         brukere.stream())
                 .toList();
+    }
+
+    private static boolean isAzureOrTeam(TenorMalOwner user) {
+        return user.brukertype() == TenorMalBrukerType.AZURE ||
+                user.brukertype() == TenorMalBrukerType.TEAM;
     }
 
     private TenorPersonMalResponse toResponse(TenorPersonMal mal) {

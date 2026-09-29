@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -9,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashMap;
@@ -23,6 +22,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand.ADRESSE_TIMEOUT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @RequiredArgsConstructor
 public class MatrikkeladresseServiceCommand implements Callable<Mono<MatrikkeladresseDTO[]>> {
 
@@ -65,9 +65,8 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .retrieve()
                 .bodyToMono(MatrikkeladresseDTO[].class)
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
-                                Exceptions.isRetryExhausted(throwable),
-                        _ -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}))
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(_ -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}))
                 .timeout(ADRESSE_TIMEOUT);
     }
 

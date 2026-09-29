@@ -23,9 +23,6 @@ spring:
         aad:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           accepted-audience:  ${AZURE_APP_CLIENT_ID}, api:// ${AZURE_APP_CLIENT_ID}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
 server:
   servlet:
     encoding:
@@ -35,6 +32,11 @@ server:
       force-response: true
 
 consumers:
+  dolly-backend:
+    url: http://dolly-backend.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: dolly-backend
   bruker-service:
     url: http://testnav-bruker-service.dolly.svc.cluster.local
     cluster: dev-gcp

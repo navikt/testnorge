@@ -9,13 +9,9 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.util.concurrent.Callable;
-
-import static java.time.Duration.ofSeconds;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,11 +36,7 @@ public class AapBehandlingStatusPostCommand implements Callable<Mono<AapStatusRe
                 .retrieve()
                 .bodyToMono(AapStatusResponse.class)
                 .doOnError(WebClientError.logTo(log))
-                .retryWhen(Retry.fixedDelay(3, ofSeconds(5))
-                        .filter(throwable -> throwable instanceof WebClientResponseException responseException &&
-                                responseException.getStatusCode().is5xxServerError())
-                        .onRetryExhaustedThrow(((_, lastSignal) ->
-                                new RuntimeException("Retries exhausted: %s".formatted(lastSignal.failure().getMessage())))))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> {
                     val feilmelding = WebClientError.describe(error);
                     return Mono.just(AapStatusResponse.builder()

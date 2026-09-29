@@ -1,7 +1,7 @@
 spring:
   http:
     codecs:
-      max-in-memory-size: 50MB
+      max-in-memory-size: 100MB
   application:
     name: testnav-dolly-proxy
   cloud:

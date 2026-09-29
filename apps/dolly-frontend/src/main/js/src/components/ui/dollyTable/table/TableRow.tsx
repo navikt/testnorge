@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import cn from 'classnames'
 import Column from './TableColumn'
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
@@ -15,10 +15,17 @@ export default function TableRow({
 }) {
 	const [isExpanded, setIsExpanded] = useState(false)
 	const dispatch = useDispatch()
+	const rowRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
 		setIsExpanded(expandPerson || expandBestilling)
 	}, [expandPerson, expandBestilling])
+
+	useEffect(() => {
+		if (isExpanded && (expandPerson || expandBestilling)) {
+			rowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+		}
+	}, [isExpanded, expandPerson, expandBestilling])
 
 	const onRowClick = () => {
 		if (isExpanded) dispatch(resetNavigering())
@@ -36,7 +43,7 @@ export default function TableRow({
 	})
 
 	return (
-		<div tabIndex={0} className={rowWrapperClass}>
+		<div ref={rowRef} tabIndex={0} className={rowWrapperClass}>
 			<div className={rowClass} onClick={onRowClick}>
 				{icon}
 				<div className="dot-body-row-columns">

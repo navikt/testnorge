@@ -5,6 +5,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.function.Supplier;
 
 /**
  * Flere artefakt-tjenester (Sivilstand, ForelderBarnRelasjon, Foreldreansvar) gjør uavhengige
@@ -23,6 +24,12 @@ public final class OptimisticLockingRetryUtils {
     public static <T> Mono<T> retryOnOptimisticLockingFailure(Mono<T> mono) {
 
         return mono.retryWhen(Retry.backoff(3, Duration.ofMillis(50))
-                .filter(OptimisticLockingFailureException.class::isInstance));
+                .filter(OptimisticLockingFailureException.class::isInstance)
+                .onRetryExhaustedThrow((_, retrySignal) -> retrySignal.failure()));
+    }
+
+    public static <T> Mono<T> retryOnOptimisticLockingFailure(Supplier<Mono<T>> operation) {
+
+        return retryOnOptimisticLockingFailure(Mono.defer(operation));
     }
 }

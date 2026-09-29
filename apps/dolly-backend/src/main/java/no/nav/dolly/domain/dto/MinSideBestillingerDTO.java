@@ -32,6 +32,6 @@ public class MinSideBestillingerDTO {
 
         private String fagsystem;
         private Integer antall;
-        private Map<String, String> detaljer;
+        private Map<String, Object> detaljer;
     }
 }

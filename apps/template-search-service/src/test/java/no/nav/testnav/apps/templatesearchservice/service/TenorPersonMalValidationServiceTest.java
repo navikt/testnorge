@@ -4,6 +4,9 @@ import no.nav.testnav.apps.templatesearchservice.domain.OpprettTenorPersonMalReq
 import no.nav.testnav.apps.templatesearchservice.exception.TenorMalValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,15 +63,67 @@ class TenorPersonMalValidationServiceTest {
                 .hasMessage("Malen kan ikke inneholde fødselsnummer eller d-nummer.");
     }
 
-    @Test
-    void shouldRejectUnsupportedCharactersInTemplateName() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Min mal, med komma!",
+            "Én mal: A/B & C + 50 %? [2026_1]",
+            "Ola's \"testmal\".",
+            "Alder < 18 og inntekt > 0"
+    })
+    void shouldPreservePunctuationInTemplateName(String malNavn) {
         var request = new OpprettTenorPersonMalRequest(
-                "Min mal!",
+                "  " + malNavn + "  ",
+                jsonMapper.readTree("{}"));
+
+        var result = validationService.validate(request);
+
+        assertThat(result.malNavn()).isEqualTo(malNavn);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 9, 10, 13, 31, 127, 133, 159})
+    void shouldRejectControlCharactersInTemplateName(int controlCharacter) {
+        var malNavn = "Mal" + Character.toString(controlCharacter) + "navn";
+
+        assertThatThrownBy(() -> validationService.validateMalNavn(malNavn))
+                .isInstanceOf(TenorMalValidationException.class)
+                .hasMessage("Malnavn kan ikke inneholde kontrolltegn.");
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", " \t\n "})
+    void shouldRejectBlankTemplateName(String malNavn) {
+        assertThatThrownBy(() -> validationService.validateMalNavn(malNavn))
+                .isInstanceOf(TenorMalValidationException.class)
+                .hasMessage("Malnavn må oppgis.");
+    }
+
+    @Test
+    void shouldAllowTemplateNameOfOneHundredCharacters() {
+        var malNavn = "A".repeat(99) + "!";
+
+        assertThat(validationService.validateMalNavn(malNavn)).isEqualTo(malNavn);
+    }
+
+    @Test
+    void shouldRejectTemplateNameLongerThanOneHundredCharacters() {
+        var malNavn = "A".repeat(100) + "!";
+
+        assertThatThrownBy(() -> validationService.validateMalNavn(malNavn))
+                .isInstanceOf(TenorMalValidationException.class)
+                .hasMessage("Malnavn kan ikke være lengre enn 100 tegn.");
+    }
+
+    @Test
+    void shouldRejectPersonIdentifierInTemplateNameWithPunctuation() {
+        var request = new OpprettTenorPersonMalRequest(
+                "Min mal, 41010100044!",
                 jsonMapper.readTree("{}"));
 
         assertThatThrownBy(() -> validationService.validate(request))
                 .isInstanceOf(TenorMalValidationException.class)
-                .hasMessage("Malnavn kan bare inneholde bokstaver, tall, mellomrom, bindestrek og parenteser.");
+                .hasMessage("Malen kan ikke inneholde fødselsnummer eller d-nummer.");
     }
 
     @Test

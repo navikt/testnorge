@@ -26,7 +26,10 @@ public class BrukeradferdUtils {
     private static final String NO_DATA = "Ingen data";
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
 
-    public record AkkumulertKriterium(String fagsystem, Integer antall, Map<String, String> detaljer) {
+    public record AkkumulertKriterium(String fagsystem, Integer antall, Map<String, Object> detaljer) {
+    }
+
+    private record Kriteriumsrad(String fagsystem, Integer antall, Map<String, String> detaljer) {
     }
 
     public static <T> List<AkkumulertKriterium> getAkkumulerteKriterier(
@@ -44,17 +47,43 @@ public class BrukeradferdUtils {
                             : getAntallAdferd(jsonMapper.readValue(bestKriterier, RsDollyBestilling.class), antall);
                 })
                 .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum))
-                .entrySet().stream()
-                .map(entry -> new AkkumulertKriterium(
+                .map(entry -> new Kriteriumsrad(
                         entry.getKey().split("=")[0],
                         entry.getValue(),
                         entry.getKey().split("=").length > 1 ?
                                 Arrays.stream(entry.getKey().split("=")[1].split(","))
                                         .filter(StringUtils::isNotBlank)
                                         .collect(Collectors.toMap(s -> s.split(":")[0], s -> s.split(":")[1]))
-                                : null))
+                                : Map.of()))
+                .collect(Collectors.groupingBy(Kriteriumsrad::fagsystem))
+                .entrySet().stream()
+                .map(entry -> new AkkumulertKriterium(
+                        entry.getKey(),
+                        entry.getValue().stream().mapToInt(Kriteriumsrad::antall).sum(),
+                        slaSammenDetaljer(entry.getValue())))
                 .toList();
+    }
+
+    private static Map<String, Object> slaSammenDetaljer(List<Kriteriumsrad> rader) {
+
+        var kategoriskeDetaljer = new HashMap<String, Integer>();
+        var antallsdetaljer = new HashMap<String, Integer>();
+
+        rader.forEach(rad -> rad.detaljer().forEach((key, value) -> {
+            try {
+                antallsdetaljer.merge(key, Integer.parseInt(value) * rad.antall(), Integer::sum);
+            } catch (NumberFormatException e) {
+                kategoriskeDetaljer.merge("%s-%s".formatted(key, value), rad.antall(), Integer::sum);
+            }
+        }));
+
+        if (kategoriskeDetaljer.isEmpty() && antallsdetaljer.isEmpty()) {
+            return null;
+        }
+
+        var detaljer = new HashMap<String, Object>(kategoriskeDetaljer);
+        detaljer.putAll(antallsdetaljer);
+        return detaljer;
     }
 
     public static Map<String, Integer> getAntallAdferd(RsDollyBestilling bestilling, Integer antall) {
@@ -86,7 +115,7 @@ public class BrukeradferdUtils {
         return adferd;
     }
 
-    private static String decodeData(String system, RsDollyBestilling bestilling) {
+    private static  String decodeData(String system, RsDollyBestilling bestilling) {
 
         return switch (system) {
             case "Pdldata" -> decodePdl(bestilling);

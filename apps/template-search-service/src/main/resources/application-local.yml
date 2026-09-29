@@ -14,5 +14,8 @@ spring:
     password:
 
 consumers:
+  dolly-backend:
+    url: https://dolly-backend-dev.intern.dev.nav.no
+    name: dolly-backend-dev
   bruker-service:
     url: https://testnav-bruker-service.intern.dev.nav.no

@@ -13,6 +13,7 @@ import {
 	initialOppfoelgingsvedtak14a,
 	oppfoelgingsvedtak14aPath,
 } from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
+import * as _ from 'lodash-es'
 
 export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
@@ -20,6 +21,12 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const veileder = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const maaned = veileder.personFoerLeggTil?.pdl?.ident?.substring?.(2, 4)
 	const syntetisk = maaned === undefined || maaned >= 40
+
+	const personFoerLeggTil = veileder.personFoerLeggTil
+	const harKelvinAap = sm.attrs.kelvinAap.checked || _.has(personFoerLeggTil, 'kelvinAap')
+	const harOppfoelgingsvedtak14a =
+		sm.attrs.oppfoelgingsvedtak14a.checked || _.has(personFoerLeggTil, 'oppfoelgingsvedtak14a')
+	const harArenaFoerLeggTil = _.has(personFoerLeggTil, 'arenaforvalteren')
 
 	const infoTekst = syntetisk
 		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
@@ -33,11 +40,10 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			heading={ArenaPanel.heading}
 			informasjonstekst={infoTekst}
 			checkAttributeArray={() => {
-				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
-					sm.batchAdd(['kelvinAap', 'oppfoelgingsvedtak14a', 'ikkeServicebehov', 'ingenYtelser'])
-				}
-				if (!syntetisk) {
+				if (!syntetisk || harKelvinAap || harOppfoelgingsvedtak14a) {
 					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser', 'aap', 'aap115', 'dagpenger'])
+				} else if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
+					sm.batchAdd(['kelvinAap', 'oppfoelgingsvedtak14a', 'ikkeServicebehov', 'ingenYtelser'])
 				}
 			}}
 			uncheckAttributeArray={sm.batchRemove}
@@ -52,6 +58,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					attr={sm.attrs.kelvinAap}
 					disabled={
+						harArenaFoerLeggTil ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -64,6 +71,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					attr={sm.attrs.oppfoelgingsvedtak14a}
 					disabled={
+						harArenaFoerLeggTil ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -75,8 +83,8 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title={'Aktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
-						sm.attrs.kelvinAap.checked ||
-						sm.attrs.oppfoelgingsvedtak14a.checked ||
+						harKelvinAap ||
+						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -87,8 +95,8 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.kelvinAap.checked ||
-						sm.attrs.oppfoelgingsvedtak14a.checked ||
+						harKelvinAap ||
+						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -97,8 +105,8 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.kelvinAap.checked ||
-						sm.attrs.oppfoelgingsvedtak14a.checked ||
+						harKelvinAap ||
+						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -107,8 +115,8 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.kelvinAap.checked ||
-						sm.attrs.oppfoelgingsvedtak14a.checked ||
+						harKelvinAap ||
+						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -120,8 +128,8 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title={'Inaktiv bruker (Arena)'} attr={sm.attrs}>
 				<Attributt
 					disabled={
-						sm.attrs.kelvinAap.checked ||
-						sm.attrs.oppfoelgingsvedtak14a.checked ||
+						harKelvinAap ||
+						harOppfoelgingsvedtak14a ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap.checked ||
 						sm.attrs.aap115.checked ||

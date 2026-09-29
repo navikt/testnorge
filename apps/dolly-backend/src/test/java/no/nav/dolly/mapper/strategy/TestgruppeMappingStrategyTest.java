@@ -6,10 +6,8 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.service.BrukerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -21,9 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class TestgruppeMappingStrategyTest {
 
     private static final String BRUKERID = "123";
-
-    @MockitoBean
-    private BrukerService brukerService;
 
     private MapperFacade mapper;
 

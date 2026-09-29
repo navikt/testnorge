@@ -10,7 +10,6 @@ import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -33,11 +32,7 @@ public class SafConsumer {
         serverProperties = consumers.getTestnavDollyProxy();
         this.webClient = webClient
                 .mutate()
-                .exchangeStrategies(
-                        ExchangeStrategies
-                                .builder()
-                                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50))
-                                .build())
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

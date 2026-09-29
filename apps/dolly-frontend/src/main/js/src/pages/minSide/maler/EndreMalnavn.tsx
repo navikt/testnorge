@@ -3,16 +3,30 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '@/service/Api'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Button, TextField } from '@navikt/ds-react'
+import { MalType } from '@/pages/minSide/maler/Maloversikt'
+import { tenorEndrePersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
-export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => {
-	const [nyttMalnavn, setMalnavn] = useState(malNavn)
+interface EndreMalnavnProps {
+	malNavn: string
+	id: number
+	type: string
+	avsluttRedigering: (id: number) => void
+}
 
-	const erOrganisasjon = bestilling?.organisasjon
+export const EndreMalnavn = ({ malNavn, id, type, avsluttRedigering }: EndreMalnavnProps) => {
+	const [nyttMalnavn, setNyttMalnavn] = useState(malNavn)
 
-	const lagreEndring = (nyttMalnavn, id) => {
-		erOrganisasjon
-			? DollyApi.endreMalNavnOrganisasjon(id, nyttMalnavn).then(() => avsluttRedigering(id))
-			: DollyApi.endreMalNavn(id, nyttMalnavn).then(() => avsluttRedigering(id))
+	const lagreEndring = () => {
+		switch (type) {
+			case MalType.ORGANISASJON:
+				return DollyApi.endreMalNavnOrganisasjon(id, nyttMalnavn).then(() => avsluttRedigering(id))
+			case MalType.PERSON:
+				return DollyApi.endreMalNavn(id, nyttMalnavn).then(() => avsluttRedigering(id))
+			case MalType.TENORSOEK:
+				return tenorEndrePersonMal(id, nyttMalnavn).then(() => avsluttRedigering(id))
+			default:
+				return null
+		}
 	}
 
 	return (
@@ -24,14 +38,14 @@ export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => 
 					label={'Skriv inn nytt malnavn'}
 					hideLabel
 					value={nyttMalnavn}
-					onChange={(e) => setMalnavn(e.target.value)}
+					onChange={(e) => setNyttMalnavn(e.target.value)}
 					className="navnInput"
 				/>
 				<Button
 					data-testid={TestComponentSelectors.BUTTON_MINSIDE_LAGRE_MALNAVN}
 					variant={'primary'}
 					size={'small'}
-					onClick={() => lagreEndring(nyttMalnavn, id)}
+					onClick={() => lagreEndring()}
 				>
 					Lagre
 				</Button>

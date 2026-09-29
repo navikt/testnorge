@@ -42,7 +42,7 @@ public class InntektstubClient implements ClientRegister {
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         return Mono.just(bestilling)
-                .flatMap(best -> {
+                .flatMap(_ -> {
                     if (isTestnorgeIdent(dollyPerson.getIdent())) {
                         return importFraTenor(dollyPerson, progress);
                     } else {
@@ -66,9 +66,9 @@ public class InntektstubClient implements ClientRegister {
                                 .flatMap(eksisterende ->
                                         Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                                                 .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
-                                                        entry.getAarMaaned().equals(nyinntekt.getAarMaaned()) &&
-                                                                entry.getVirksomhet().equals(nyinntekt.getVirksomhet()) &&
-                                                                entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
+                                                        nyinntekt.getAarMaaned().equals(entry.getAarMaaned()) &&
+                                                        nyinntekt.getVirksomhet().equals(entry.getVirksomhet()) &&
+                                                        entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
                                                 .collectList()
                                                 .flatMapMany(inntektstubConsumer::postInntekter)
                                                 .collectList()
@@ -125,6 +125,6 @@ public class InntektstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         inntektstubConsumer.deleteInntekter(identer)
-                .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
+                .subscribe(_ -> log.info("Slettet identer fra Inntektstub"));
     }
 }

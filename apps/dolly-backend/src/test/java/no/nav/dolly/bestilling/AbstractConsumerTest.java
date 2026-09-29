@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling;
 
+import no.nav.dolly.config.SecurityTestConfig;
 import no.nav.dolly.config.TestDatabaseConfig;
 import no.nav.dolly.config.TestOpenSearchConfig;
 import no.nav.dolly.libs.test.DollySpringBootTest;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @DollySpringBootTest
 @ExtendWith(DollyWireMockExtension.class)
-@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
+@Import({SecurityTestConfig.class, TestDatabaseConfig.class, TestOpenSearchConfig.class})
 public abstract class AbstractConsumerTest {
 
     @MockitoBean

@@ -1,5 +1,7 @@
 package no.nav.testnav.libs.reactivecore.web;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,6 +32,22 @@ class WebClientErrorTest {
 
     private static final URI URI_NOWHERE = URI.create("https://nowhere.net");
 
+    private static String originalRetryDelayFactor;
+
+    @BeforeAll
+    static void pinRetryDelayFactor() {
+        originalRetryDelayFactor = System.setProperty(WebClientError.RETRY_DELAY_FACTOR_PROPERTY, "1");
+    }
+
+    @AfterAll
+    static void restoreRetryDelayFactor() {
+        if (originalRetryDelayFactor == null) {
+            System.clearProperty(WebClientError.RETRY_DELAY_FACTOR_PROPERTY);
+        } else {
+            System.setProperty(WebClientError.RETRY_DELAY_FACTOR_PROPERTY, originalRetryDelayFactor);
+        }
+    }
+
     @Test
     void shouldRetryOn5xxResponse() {
         assertThatRetries(WebClientResponseException.create(500, "Internal Server Error", null, null, null));
@@ -43,6 +61,106 @@ class WebClientErrorTest {
     @Test
     void shouldRetryOnSocketException() {
         assertThatRetries(requestException(new SocketException("Connection reset")));
+    }
+
+    @Test
+    void shouldRetryAfterOneFiveAndTenSeconds() {
+        var attempts = new AtomicInteger();
+        var throwable = WebClientResponseException.create(500, "Internal Server Error", null, null, null);
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() ->
+                                attempts.incrementAndGet() < 4 ? Flux.error(throwable) : Flux.just("ok"))
+                        .retryWhen(WebClientError.is5xxException()))
+                .expectSubscription()
+                .then(() -> assertThat(attempts.get()).isEqualTo(1))
+                .expectNoEvent(Duration.ofMillis(999))
+                .thenAwait(Duration.ofMillis(1))
+                .then(() -> assertThat(attempts.get()).isEqualTo(2))
+                .expectNoEvent(Duration.ofMillis(4_999))
+                .thenAwait(Duration.ofMillis(1))
+                .then(() -> assertThat(attempts.get()).isEqualTo(3))
+                .expectNoEvent(Duration.ofMillis(9_999))
+                .thenAwait(Duration.ofMillis(1))
+                .expectNext("ok")
+                .verifyComplete();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
+    void shouldRetryAtMostThreeTimes() {
+        var attempts = new AtomicInteger();
+        var throwable = WebClientResponseException.create(500, "Internal Server Error", null, null, null);
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            attempts.incrementAndGet();
+                            return Flux.error(throwable);
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(16))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(throwable))
+                .verify();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
+    void shouldPropagateOriginalSocketExceptionAfterThreeRetries() {
+        var attempts = new AtomicInteger();
+        var throwable = requestException(new SocketException("Connection reset"));
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            attempts.incrementAndGet();
+                            return Flux.error(throwable);
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(16))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(throwable))
+                .verify();
+
+        assertThat(attempts.get()).isEqualTo(4);
+    }
+
+    @Test
+    void shouldStopRetryingWhenAFollowingFailureIsNotRetryable() {
+        var attempts = new AtomicInteger();
+        var serverError = WebClientResponseException.create(503, "Service Unavailable", null, null, null);
+        var clientError = WebClientResponseException.create(400, "Bad Request", null, null, null);
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            var attempt = attempts.incrementAndGet();
+                            return Flux.error(attempt == 1 ? serverError : clientError);
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(1))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(clientError))
+                .verify();
+
+        assertThat(attempts.get()).isEqualTo(2);
+    }
+
+    @Test
+    void shouldRetryDifferent5xxResponsesWithinTheSameSequence() {
+        var attempts = new AtomicInteger();
+
+        StepVerifier.withVirtualTime(() -> Flux.defer(() -> {
+                            var attempt = attempts.incrementAndGet();
+                            return switch (attempt) {
+                                case 1 -> Flux.error(WebClientResponseException.create(
+                                        500, "Internal Server Error", null, null, null));
+                                case 2 -> Flux.error(WebClientResponseException.create(
+                                        502, "Bad Gateway", null, null, null));
+                                case 3 -> Flux.error(WebClientResponseException.create(
+                                        503, "Service Unavailable", null, null, null));
+                                default -> Flux.just("ok");
+                            };
+                        })
+                        .retryWhen(WebClientError.is5xxException()))
+                .thenAwait(Duration.ofSeconds(16))
+                .expectNext("ok")
+                .verifyComplete();
+
+        assertThat(attempts.get()).isEqualTo(4);
     }
 
     @Test

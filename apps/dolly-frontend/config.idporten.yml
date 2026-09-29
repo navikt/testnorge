@@ -42,6 +42,7 @@ spec:
         - application: testnav-dolly-search-service
         - application: testnav-person-service
         - application: testnav-tenor-search-service
+        - application: testnav-template-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnorge-profil-api

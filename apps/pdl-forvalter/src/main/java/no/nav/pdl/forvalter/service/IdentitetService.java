@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.pdl.forvalter.utils.OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure;
 
 @Slf4j
 @Service
@@ -80,10 +81,11 @@ public class IdentitetService {
     @Transactional
     public Mono<Void> updateStandalone(String ident, Boolean standalone) {
 
-        return personRepository.findByIdent(ident)
-                .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
-                .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
-                .flatMap(personRepository::save)
+        return retryOnOptimisticLockingFailure(() ->
+                personRepository.findByIdent(ident)
+                        .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
+                        .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
+                        .flatMap(personRepository::save))
                 .flatMapMany(this::setStandaloneRelasjoner)
                 .then();
     }
@@ -94,40 +96,45 @@ public class IdentitetService {
         return relasjonRepository.findByPersonId(person.getId())
                 .filter(relasjon -> !relatertId.get().contains(relasjon.getRelatertPersonId()))
                 .doOnNext(relasjon -> relatertId.get().add(relasjon.getRelatertPersonId()))
-                .flatMap(relasjon ->
+                .concatMap(relasjon ->
                         setStandalonePerson(relasjon.getRelatertPersonId(), person.getIdent(), person.getPerson().isStandalone()));
     }
 
     private Mono<DbPerson> setStandalonePerson(Long id, String motpartsIdent, Boolean standalone) {
 
-        return personRepository.findById(id)
-                .flatMap(dbPerson ->
-                        Flux.fromArray(PersonDTO.class.getMethods())
-                                .filter(method -> method.getName().contains("get"))
-                                .filter(method -> method.getReturnType().equals(List.class))
-                                .flatMap(method -> {
-                                    try {
-                                        val opplysninger = (List<DbVersjonDTO>) method.invoke(dbPerson.getPerson());
-                                        return Flux.fromIterable(opplysninger);
-                                    } catch (IllegalAccessException | InvocationTargetException e) {
-                                        log.error("Feilet å utføre metodekall for {} ", method);
-                                        return Mono.empty();
-                                    }
-                                })
-                                .doOnNext(opplysning -> {
-                                    if (motpartsIdent.equals(opplysning.getIdentForRelasjon())) {
-                                        try {
-                                            var method = opplysning.getClass().getMethod("setEksisterendePerson", Boolean.class);
-                                            method.invoke(opplysning, isTrue(standalone));
+        return retryOnOptimisticLockingFailure(() ->
+                personRepository.findById(id)
+                        .flatMap(dbPerson -> updateStandaloneRelasjon(dbPerson, motpartsIdent, standalone))
+                        .flatMap(personRepository::save));
+    }
 
-                                        } catch (NoSuchMethodException | InvocationTargetException |
-                                                 IllegalAccessException e) {
-                                            log.error("Method setEksisterendePerson not found in {}", opplysning);
-                                        }
-                                    }
-                                })
-                                .collectList()
-                                .thenReturn(dbPerson))
-                .flatMap(personRepository::save);
+    private Mono<DbPerson> updateStandaloneRelasjon(DbPerson dbPerson, String motpartsIdent, Boolean standalone) {
+
+        return Flux.fromArray(PersonDTO.class.getMethods())
+                .filter(method -> method.getName().contains("get"))
+                .filter(method -> method.getReturnType().equals(List.class))
+                .flatMap(method -> {
+                    try {
+                        val opplysninger = (List<DbVersjonDTO>) method.invoke(dbPerson.getPerson());
+                        return Flux.fromIterable(opplysninger);
+                    } catch (IllegalAccessException | InvocationTargetException _) {
+                        log.error("Feilet å utføre metodekall for {} ", method);
+                        return Mono.empty();
+                    }
+                })
+                .doOnNext(opplysning -> {
+                    if (motpartsIdent.equals(opplysning.getIdentForRelasjon())) {
+                        try {
+                            var method = opplysning.getClass().getMethod("setEksisterendePerson", Boolean.class);
+                            method.invoke(opplysning, isTrue(standalone));
+
+                        } catch (NoSuchMethodException | InvocationTargetException |
+                                 IllegalAccessException _) {
+                            log.error("Method setEksisterendePerson not found in {}", opplysning);
+                        }
+                    }
+                })
+                .collectList()
+                .thenReturn(dbPerson);
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+@Slf4j
 @RequiredArgsConstructor
 public class VegadresseServiceCommand implements Callable<Flux<VegadresseDTO>> {
 
@@ -33,10 +35,8 @@ public class VegadresseServiceCommand implements Callable<Flux<VegadresseDTO>> {
                 .retrieve()
                 .bodyToFlux(VegadresseDTO.class)
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
-                                throwable instanceof WebClientResponseException.BadRequest ||
-                                Exceptions.isRetryExhausted(throwable),
-                        throwable -> Mono.just(defaultAdresse()));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(_ -> Mono.just(defaultAdresse()));
     }
 
     public static VegadresseDTO defaultAdresse() {

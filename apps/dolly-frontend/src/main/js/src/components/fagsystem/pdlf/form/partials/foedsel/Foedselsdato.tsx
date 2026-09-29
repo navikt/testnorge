@@ -23,7 +23,7 @@ export const FoedselsdatoForm = ({ formMethods, path }: FoedselsdatoTypes) => {
 	const foedselsdato = formMethods.watch(`${path}.foedselsdato`)
 
 	const minDateFoedsel =
-		opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
+		opts?.identtype === 'NPID' ? new Date(1870, 0, 1) : new Date(1900, 0, 1)
 
 	const harAlder = () => {
 		return (

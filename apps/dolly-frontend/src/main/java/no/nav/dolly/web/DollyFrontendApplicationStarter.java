@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
+
 import java.util.function.Function;
 
 @Slf4j
@@ -75,6 +76,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))
                 .route(createRoute(consumers.getTestnavTenorSearchService()))
+                .route(createRoute(consumers.getTestnavTemplateSearchService(), "testnav-template-search-service"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdAnsettelse(), "testnav-levende-arbeidsforhold-ansettelse"))
                 .route(createRoute(consumers.getTestnavLevendeArbeidsforholdScheduler(), "testnav-levende-arbeidsforhold-scheduler"))
                 .route(createRoute(consumers.getTestnavYrkesskadeProxy()))

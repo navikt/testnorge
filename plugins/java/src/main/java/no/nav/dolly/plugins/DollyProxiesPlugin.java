@@ -72,7 +72,7 @@ public class DollyProxiesPlugin implements Plugin<Project> {
         dependencyManagement.imports(imports -> {
             imports.mavenBom("org.springframework.boot:spring-boot-dependencies:" + versions.springBoot);
             imports.mavenBom("org.springframework.cloud:spring-cloud-dependencies:" + versions.springCloud);
-            imports.mavenBom("org.springframework.session:spring-session-bom:" + versions.springSession);
+            imports.mavenBom("org.springframework.session:spring-session-bom:" + versions.springSessionBom);
             imports.mavenBom("org.testcontainers:testcontainers-bom:" + versions.testcontainers);
         });
 
