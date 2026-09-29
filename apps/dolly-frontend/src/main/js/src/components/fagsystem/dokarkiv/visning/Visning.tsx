@@ -5,6 +5,8 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Journalpost } from '@/utils/hooks/useDokumenter'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
+import React from 'react'
 
 interface Form {
 	data?: Array<MiljoDataListe>
@@ -17,6 +19,15 @@ type MiljoDataListe = {
 	miljo: string
 	data: Array<Journalpost>
 }
+
+export const sjekkManglerDokarkivData = (dokarkivdata: Array<MiljoDataListe>) => {
+	return (
+		dokarkivdata?.length < 1 ||
+		dokarkivdata?.every((miljoData) => !miljoData?.data || miljoData?.data?.length < 1)
+	)
+}
+
+// Person med dokarkiv-feil: 21527744765
 
 const Dokarkiv = ({ data, miljo }: MiljoDataListe) => {
 	if (!data || data?.length < 1) {
@@ -50,10 +61,6 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 
 	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
 
-	if (!miljoerMedData?.some(Boolean)) {
-		return null
-	}
-
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
@@ -73,23 +80,32 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 		})
 		return mergeMiljo
 	}
-
 	const mergedData = mergeData()
 
 	const filteredData =
 		tilgjengeligMiljoe && mergedData?.filter((item) => tilgjengeligMiljoe.includes(item?.miljo))
 
+	const manglerDokarkivData = sjekkManglerDokarkivData(data)
+
 	return (
 		<>
-			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-			<MiljoTabs
-				bestilteMiljoer={bestilteMiljoer}
-				errorMiljoer={errorMiljoer}
-				forsteMiljo={forsteMiljo}
-				data={filteredData || mergedData}
-			>
-				<Dokarkiv />
-			</MiljoTabs>
+			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" isWarning={manglerDokarkivData} />
+			{manglerDokarkivData ? (
+				<StyledAlert variant={'warning'} size={'small'} inline>
+					Kunne ikke hente dokumenter fra Dokarkiv. Dette kan medføre problemer med å legge til nye
+					dokumenter på denne personen. Forsøk å laste inn siden på nytt, eller gjenopprett
+					personen.
+				</StyledAlert>
+			) : (
+				<MiljoTabs
+					bestilteMiljoer={bestilteMiljoer}
+					errorMiljoer={errorMiljoer}
+					forsteMiljo={forsteMiljo}
+					data={filteredData || mergedData}
+				>
+					<Dokarkiv />
+				</MiljoTabs>
+			)}
 		</>
 	)
 }
