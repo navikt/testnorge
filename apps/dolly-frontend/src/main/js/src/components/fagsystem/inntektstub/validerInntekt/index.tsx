@@ -28,6 +28,7 @@ const InntektStub = ({ inntektPath }) => {
 		tilleggsinformasjonstype,
 		tilleggsinformasjon,
 	} = inntektValues
+	const inntektValuesJson = JSON.stringify(inntektValues)
 
 	useEffect(() => {
 		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
@@ -42,7 +43,7 @@ const InntektStub = ({ inntektPath }) => {
 			)
 		}
 		formMethods.trigger(inntektPath)
-	}, [inntektValues])
+	}, [inntektValuesJson])
 
 	useEffect(() => {
 		Object.entries(fields).forEach((entry) => {
