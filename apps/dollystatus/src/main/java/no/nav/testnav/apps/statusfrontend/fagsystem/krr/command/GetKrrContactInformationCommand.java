@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_EMPTY_RESPONSE;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_INVALID_CONTACT_INFORMATION;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason.KRR_INVALID_RESPONSE;
@@ -67,19 +69,24 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
             var hasUnregisteredEntry = false;
             var contactIds = new ArrayList<String>();
             for (var contactInformation : response) {
-                contactIds.add(contactId(contactInformation));
-                expectedDataPresent |= matches(contactInformation);
+                var contactId = contactId(contactInformation);
+                if (nonNull(contactId)) {
+                    contactIds.add(contactId);
+                    expectedDataPresent |= matches(contactInformation);
+                }
                 hasMessage |= contactInformation.has("melding");
                 hasUnregisteredEntry |= isUnregistered(contactInformation);
             }
-            return new KrrResourceStatus(response.isEmpty(), expectedDataPresent,
+            return new KrrResourceStatus(contactIds.isEmpty(), expectedDataPresent && response.size() == 1,
                     KrrResourceStatus.ResponseShape.ARRAY, response.size(), hasMessage, hasUnregisteredEntry,
                     contactIds);
         }
         if (response.isObject()) {
-            return new KrrResourceStatus(false, matches(response),
+            var contactId = contactId(response);
+            return new KrrResourceStatus(isNull(contactId), nonNull(contactId) && matches(response),
                     KrrResourceStatus.ResponseShape.OBJECT, response.size(),
-                    response.has("melding"), isUnregistered(response), List.of(contactId(response)));
+                    response.has("melding"), isUnregistered(response),
+                    isNull(contactId) ? List.of() : List.of(contactId));
         }
         throw new FunctionalTestResponseException(KRR_INVALID_RESPONSE);
     }
@@ -95,6 +102,9 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
             }
         }
         var id = contactInformation.path("id");
+        if (id.isNull()) {
+            return null;
+        }
         if ((!id.isString() && !id.isIntegralNumber()) || id.asString().isBlank()) {
             var registered = contactInformation.path("registrert");
             log.warn(

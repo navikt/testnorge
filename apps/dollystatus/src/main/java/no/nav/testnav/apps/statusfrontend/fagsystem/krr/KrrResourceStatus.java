@@ -3,7 +3,7 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.krr;
 import java.util.List;
 
 public record KrrResourceStatus(
-        boolean empty,
+        boolean noActiveContacts,
         boolean expectedDataPresent,
         ResponseShape responseShape,
         int responseSize,
@@ -20,18 +20,18 @@ public record KrrResourceStatus(
         ABSENT, ARRAY, OBJECT, UNKNOWN
     }
 
-    public KrrResourceStatus(boolean empty, boolean expectedDataPresent) {
-        this(empty, expectedDataPresent, ResponseShape.UNKNOWN, 0, false, false);
+    public KrrResourceStatus(boolean noActiveContacts, boolean expectedDataPresent) {
+        this(noActiveContacts, expectedDataPresent, ResponseShape.UNKNOWN, 0, false, false);
     }
 
-    public KrrResourceStatus(boolean empty, boolean expectedDataPresent, ResponseShape responseShape,
+    public KrrResourceStatus(boolean noActiveContacts, boolean expectedDataPresent, ResponseShape responseShape,
                              int responseSize, boolean hasMessage, boolean hasUnregisteredEntry) {
-        this(empty, expectedDataPresent, responseShape, responseSize, hasMessage, hasUnregisteredEntry, List.of());
+        this(noActiveContacts, expectedDataPresent, responseShape, responseSize, hasMessage, hasUnregisteredEntry, List.of());
     }
 
     @Override
     public String toString() {
-        return "KrrResourceStatus[empty=" + empty + ", expectedDataPresent=" + expectedDataPresent
+        return "KrrResourceStatus[noActiveContacts=" + noActiveContacts + ", expectedDataPresent=" + expectedDataPresent
                 + ", responseShape=" + responseShape + ", responseSize=" + responseSize
                 + ", hasMessage=" + hasMessage + ", hasUnregisteredEntry=" + hasUnregisteredEntry
                 + ", contactIdCount=" + contactIds.size() + "]";

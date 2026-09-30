@@ -69,7 +69,7 @@ public class KrrFunctionalTest
     public Mono<Preflight> preflight(FunctionalTestContext context) {
         var request = KrrTestData.request(pdlProperties.getIdent(), context);
         return client.getContactInformation(context.runId(), request)
-                .flatMap(status -> status.empty()
+                .flatMap(status -> status.noActiveContacts()
                         ? Mono.just(Preflight.COMPLETED)
                         : Mono.error(new FunctionalTestExistingDataException()));
     }
@@ -109,7 +109,7 @@ public class KrrFunctionalTest
         return client.getContactInformation(context.runId(), request)
                 .switchIfEmpty(Mono.error(new IllegalStateException("KRR-oppslaget mangler resultat.")))
                 .flatMap(status -> {
-                    if (status.empty()) {
+                    if (status.noActiveContacts()) {
                         return Mono.empty();
                     }
                     if (status.contactIds().isEmpty()) {
@@ -129,7 +129,7 @@ public class KrrFunctionalTest
             return pollUntil(
                     () -> client.getContactInformation(context.runId(), request)
                             .doOnNext(lastStatus::set),
-                    status -> expectedPresent ? status.expectedDataPresent() : status.empty(),
+                    status -> expectedPresent ? status.expectedDataPresent() : status.noActiveContacts(),
                     properties.getPollInterval(),
                     properties.getPollTimeout(),
                     scheduler)

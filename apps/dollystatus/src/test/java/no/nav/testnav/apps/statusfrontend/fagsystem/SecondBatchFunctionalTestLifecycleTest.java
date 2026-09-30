@@ -509,6 +509,84 @@ class SecondBatchFunctionalTestLifecycleTest {
     }
 
     @Test
+    void shouldRepeatKrrLifecycleWhenContactDataRemainsWithoutIdAfterDeletion() {
+        var retainedContact = new KrrResourceStatus(true, false,
+                KrrResourceStatus.ResponseShape.ARRAY, 1, false, false);
+        var firstContact = new KrrResourceStatus(false, true,
+                KrrResourceStatus.ResponseShape.ARRAY, 1, false, false, List.of("first-contact"));
+        var secondContact = new KrrResourceStatus(false, true,
+                KrrResourceStatus.ResponseShape.ARRAY, 1, false, false, List.of("second-contact"));
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(retainedContact), Mono.just(firstContact),
+                        Mono.just(firstContact), Mono.just(retainedContact),
+                        Mono.just(retainedContact), Mono.just(secondContact),
+                        Mono.just(secondContact), Mono.just(retainedContact));
+        when(krrClient.createContactInformation(eq(RUN_ID), any())).thenReturn(Mono.empty());
+        when(krrClient.deleteContactInformation(RUN_ID, "first-contact")).thenReturn(Mono.empty());
+        when(krrClient.deleteContactInformation(RUN_ID, "second-contact")).thenReturn(Mono.empty());
+        var lifecycle = krrLifecycle();
+        var context = context("krr", FunctionalTestEnvironment.GLOBAL);
+        var calls = inOrder(krrClient);
+
+        for (var contactId : List.of("first-contact", "second-contact")) {
+            StepVerifier.create(lifecycle.preflight(context)
+                            .flatMap(preflight -> lifecycle.create(context, preflight)
+                                    .flatMap(created -> lifecycle.verify(context, preflight, created)
+                                            .flatMap(verified -> lifecycle.cleanup(context, preflight,
+                                                    Optional.of(created), Optional.of(verified),
+                                                    lifecycle.descriptor().expectedCleanupState())))))
+                    .verifyComplete();
+            calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
+            calls.verify(krrClient).createContactInformation(eq(RUN_ID), any());
+            calls.verify(krrClient, org.mockito.Mockito.times(2)).getContactInformation(eq(RUN_ID), any());
+            calls.verify(krrClient).deleteContactInformation(RUN_ID, contactId);
+            calls.verify(krrClient).getContactInformation(eq(RUN_ID), any());
+        }
+        calls.verifyNoMoreInteractions();
+    }
+
+    @Test
+    void shouldSkipKrrDeletesWhenOnlyContactDataWithoutIdRemains() {
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new KrrResourceStatus(true, false,
+                        KrrResourceStatus.ResponseShape.ARRAY, 1, false, false)));
+
+        StepVerifier.create(krrLifecycle().cleanupExistingData(context("krr", FunctionalTestEnvironment.GLOBAL)))
+                .verifyComplete();
+        verify(krrClient, never()).deleteContactInformation(any(), any());
+    }
+
+    @Test
+    void shouldNotVerifyKrrCreationWhenOnlyContactDataWithoutIdRemains() {
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(new KrrResourceStatus(true, false,
+                        KrrResourceStatus.ResponseShape.ARRAY, 1, false, false)));
+
+        StepVerifier.withVirtualTime(
+                        () -> krrLifecycle().verify(context("krr", FunctionalTestEnvironment.GLOBAL),
+                                Preflight.COMPLETED, Creation.COMPLETED),
+                        () -> scheduler, 1)
+                .thenAwait(Duration.ofMinutes(2))
+                .expectError(FunctionalTestVerificationTimeoutException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldNotConfirmKrrCleanupWhileContactIdRemains() {
+        when(krrClient.getContactInformation(eq(RUN_ID), any()))
+                .thenReturn(Mono.just(krrContacts("remaining-contact")));
+        when(krrClient.deleteContactInformation(RUN_ID, "remaining-contact")).thenReturn(Mono.empty());
+
+        StepVerifier.withVirtualTime(
+                        () -> krrLifecycle().cleanupExistingData(context("krr", FunctionalTestEnvironment.GLOBAL)),
+                        () -> scheduler, 1)
+                .thenAwait(Duration.ofMinutes(2))
+                .expectError(FunctionalTestVerificationTimeoutException.class)
+                .verify();
+        verify(krrClient).deleteContactInformation(RUN_ID, "remaining-contact");
+    }
+
+    @Test
     void shouldSkipKrrDeletesWhenLookupIsEmpty() {
         when(krrClient.getContactInformation(eq(RUN_ID), any()))
                 .thenReturn(Mono.just(KrrResourceStatus.emptyStatus()));
@@ -597,7 +675,7 @@ class SecondBatchFunctionalTestLifecycleTest {
             assertThat(appender.list).singleElement().satisfies(event -> {
                 assertThat(event.getFormattedMessage())
                         .contains("runId=" + RUN_ID.value(), "expectedPresent=false",
-                                "responseShape=OBJECT", "responseSize=0", "empty=false")
+                                "responseShape=OBJECT", "responseSize=0", "noActiveContacts=false")
                         .doesNotContain(IDENT);
                 assertThat(event.getThrowableProxy()).isNull();
             });

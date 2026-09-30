@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -279,12 +280,14 @@ class SecondBatchCommandContractTest {
             "[null]|KRR_INVALID_CONTACT_INFORMATION",
             "[{}]|KRR_MISSING_CONTACT_ID",
             "{\"melding\":\"sensitive-detail\"}|KRR_INVALID_CONTACT_INFORMATION",
-            "{\"id\":null}|KRR_MISSING_CONTACT_ID",
             "{\"id\":\" \"}|KRR_MISSING_CONTACT_ID",
             "{\"id\":true}|KRR_MISSING_CONTACT_ID",
             "{\"id\":{}}|KRR_MISSING_CONTACT_ID",
             "[{\"id\":123},{\"id\":456,\"personident\":\"another-person\"}]|KRR_UNEXPECTED_PERSON",
             "[{\"id\":123},{\"id\":456,\"personidentifikator\":\"another-person\"}]|KRR_UNEXPECTED_PERSON",
+            "{\"id\":null,\"personident\":\"another-person\"}|KRR_UNEXPECTED_PERSON",
+            "{\"id\":null,\"personidentifikator\":\"another-person\"}|KRR_UNEXPECTED_PERSON",
+            "{\"id\":null,\"melding\":\"sensitive-detail\"}|KRR_INVALID_CONTACT_INFORMATION",
             "true|KRR_INVALID_RESPONSE"
     }, delimiter = '|')
     void shouldRejectInvalidKrrEntriesBeforeReturningAnyIds(String body, Reason expectedReason) {
@@ -333,9 +336,82 @@ class SecondBatchCommandContractTest {
         StepVerifier.create(new GetKrrContactInformationCommand(
                         webClient, TOKEN, request, RunId.from(CALL_ID), TIMEOUT).call())
                 .assertNext(status -> {
-                    assertThat(status.empty()).isFalse();
+                    assertThat(status.noActiveContacts()).isFalse();
                     assertThat(status.expectedDataPresent()).isFalse();
                     assertThat(status.contactIds()).containsExactly(expectedId);
+                })
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldAcceptExplicitNullKrrIdWithoutTreatingRetainedDataAsCreated(boolean arrayResponse) {
+        var logger = (Logger) LoggerFactory.getLogger(GetKrrContactInformationCommand.class);
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            var request = new KrrRequest(IDENT, null, false, true, "test-phone",
+                    "test@example.invalid", "nb", null, null, null, null, null, null);
+            var contact = """
+                    {
+                      "id": null,
+                      "personident": "%s",
+                      "reservert": false,
+                      "registrert": true,
+                      "mobil": "test-phone",
+                      "epost": "test@example.invalid",
+                      "spraak": "nb"
+                    }
+                    """.formatted(IDENT);
+            stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                    .willReturn(okJson(arrayResponse ? "[" + contact + "]" : contact)));
+
+            StepVerifier.create(new GetKrrContactInformationCommand(
+                            webClient, TOKEN, request, RunId.from(CALL_ID), TIMEOUT).call())
+                    .assertNext(status -> {
+                        assertThat(status.noActiveContacts()).isTrue();
+                        assertThat(status.expectedDataPresent()).isFalse();
+                        assertThat(status.contactIds()).isEmpty();
+                        assertThat(status.responseShape()).isEqualTo(arrayResponse
+                                ? KrrResourceStatus.ResponseShape.ARRAY : KrrResourceStatus.ResponseShape.OBJECT);
+                        assertThat(status.responseSize()).isPositive();
+                    })
+                    .verifyComplete();
+            assertThat(appender.list).isEmpty();
+        } finally {
+            logger.detachAppender(appender);
+            appender.stop();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"null", "\"another-contact\"", "\"contact-a\""})
+    void shouldRejectDuplicateKrrEntriesDuringCreationVerification(String secondId) {
+        var request = new KrrRequest(IDENT, null, false, true, "test-phone",
+                "test@example.invalid", "nb", null, null, null, null, null, null);
+        stubFor(post(urlPathEqualTo("/krrstub/api/v2/person/kontaktinformasjon/soek"))
+                .willReturn(okJson("""
+                        [
+                          {
+                            "id": "contact-a",
+                            "reservert": false,
+                            "registrert": true,
+                            "mobil": "test-phone",
+                            "epost": "test@example.invalid",
+                            "spraak": "nb"
+                          },
+                          {"id": %s}
+                        ]
+                        """.formatted(secondId))));
+
+        StepVerifier.create(new GetKrrContactInformationCommand(
+                        webClient, TOKEN, request, RunId.from(CALL_ID), TIMEOUT).call())
+                .assertNext(status -> {
+                    assertThat(status.noActiveContacts()).isFalse();
+                    assertThat(status.expectedDataPresent()).isFalse();
+                    assertThat(status.contactIds()).contains("contact-a").doesNotContainNull();
+                    assertThat(status.responseSize()).isEqualTo(2);
                 })
                 .verifyComplete();
     }
@@ -350,7 +426,7 @@ class SecondBatchCommandContractTest {
         var verification = StepVerifier.create(
                 new GetKrrContactInformationCommand(webClient, TOKEN, request, RunId.from(CALL_ID), TIMEOUT).call());
         if (absent) {
-            verification.assertNext(status -> assertThat(status.empty()).isTrue()).verifyComplete();
+            verification.assertNext(status -> assertThat(status.noActiveContacts()).isTrue()).verifyComplete();
         } else if (httpStatus == 200) {
             verification.expectErrorSatisfies(error -> assertThat(error)
                             .isInstanceOfSatisfying(FunctionalTestResponseException.class,
@@ -402,7 +478,6 @@ class SecondBatchCommandContractTest {
     @ParameterizedTest
     @CsvSource(value = {
             "{\"registrert\":false,\"epost\":\"sensitive-detail\"}|MISSING|false",
-            "{\"id\":null,\"registrert\":false,\"epost\":\"sensitive-detail\"}|NULL|false",
             "{\"id\":\" \",\"registrert\":false,\"epost\":\"sensitive-detail\"}|STRING|true",
             "{\"id\":true,\"registrert\":false,\"epost\":\"sensitive-detail\"}|BOOLEAN|false"
     }, delimiter = '|')
@@ -522,7 +597,7 @@ class SecondBatchCommandContractTest {
                 .willReturn(okJson("[]")));
         StepVerifier.create(new GetKrrContactInformationCommand(
                         webClient, TOKEN, request, RunId.from(CALL_ID), TIMEOUT).call())
-                .assertNext(status -> assertThat(status.empty()).isTrue())
+                .assertNext(status -> assertThat(status.noActiveContacts()).isTrue())
                 .verifyComplete();
     }
 
@@ -772,7 +847,7 @@ class SecondBatchCommandContractTest {
                 .verifyComplete();
         StepVerifier.create(new GetKrrContactInformationCommand(
                         webClient, TOKEN, krrRequest, RunId.from(CALL_ID), TIMEOUT).call())
-                .assertNext(status -> assertThat(status.empty()).isTrue())
+                .assertNext(status -> assertThat(status.noActiveContacts()).isTrue())
                 .verifyComplete();
         StepVerifier.create(new GetNomResourceCommand(
                         webClient, TOKEN, nomRequest, TIMEOUT).call())

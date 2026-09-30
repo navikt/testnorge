@@ -23,9 +23,11 @@ KRR og TPS har faste feilkoder for avviste responser. Koden vises i feilmeldinge
 
 KRR logger HTTP-status fra hvert sletteforsøk. Ved verifiseringstimeout logges siste observerte responsform (objekt eller liste), antall felt eller elementer og boolske statusflagg. Ingen feltverdier, kontakt-ID-er eller kontaktopplysninger logges. Diagnostikken endrer ikke hvilke svar som godtas som vellykket sletting.
 
-Ved manglende brukbar kontakt-ID logger KRR også kjørings-ID, JSON-datatypen til ID-feltet og boolske flagg for blank ID, registrering og kontaktdata. Dette skiller et manglende eller null ID-felt fra feil datatype, uten å logge ID-en eller kontaktverdiene.
+Ved manglende ID-felt, blank ID eller ugyldig datatype logger KRR også kjørings-ID, JSON-datatypen til ID-feltet og boolske flagg for blank ID, registrering og kontaktdata. En eksplisitt `id: null` godtas uten advarsel, siden KRR beholder kontaktdata uten ID etter sletting. Ingen ID-er eller kontaktverdier logges.
 
-KRR-opprydding henter kontaktoppføringene for testidenten via `POST /api/v2/person/kontaktinformasjon/soek` og sletter hver unike kontakt-ID med `DELETE /api/v2/kontaktinformasjon/{id}`, slik frontend gjør. Slettingene kjøres etter hverandre via dolly-proxy. Etterkontrollen krever et tomt oppslag; HTTP 404 fra én sletting er ikke nok. Ved nytt forsøk hentes gjenværende ID-er på nytt. Manglende ID, ugyldig respons eller en annen personident i svaret stopper oppryddingen før sletting.
+KRR-opprydding henter kontaktoppføringene for testidenten via `POST /api/v2/person/kontaktinformasjon/soek` og sletter hver unike kontakt-ID med `DELETE /api/v2/kontaktinformasjon/{id}`, slik frontend gjør. Slettingene kjøres etter hverandre via dolly-proxy. Preflight og etterkontrollen godtar tomt oppslag eller kontaktoppføringer med `id: null`, selv om kontaktdata ligger igjen. HTTP 404 fra én sletting er ikke nok; et nytt oppslag må bekrefte at ingen kontakt-ID-er gjenstår. Ved nytt forsøk hentes gjenværende ID-er på nytt. Manglende ID-felt, ugyldig ID eller respons, og en annen personident i svaret stopper oppryddingen før sletting.
+
+Etter oppretting krever KRR-testen nøyaktig én kontaktoppføring med brukbar ID og forventede kontaktdata. Dermed kan testen gjentas selv om kontaktdata ligger igjen etter sletting, uten at duplikater eller gamle data med `id: null` gir godkjent verifisering.
 
 NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende aktiv ressurs avsluttes først. Oppryddingen kontrollerer sluttdato og ressurs-ID før testen fortsetter.
 

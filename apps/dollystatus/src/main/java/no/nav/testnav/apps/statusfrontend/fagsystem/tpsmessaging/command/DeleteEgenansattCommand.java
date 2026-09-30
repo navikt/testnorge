@@ -34,7 +34,7 @@ public class DeleteEgenansattCommand implements Callable<Mono<Void>> {
                 .bodyToMono(JsonNode.class)
                 .switchIfEmpty(Mono.error(new FunctionalTestResponseException(TPS_EMPTY_RESPONSE)))
                 .flatMap(response ->
-                        TpsMessagingCommandSupport.requireSuccessful(response, environments))
+                        TpsMessagingCommandSupport.requireSuccessful(response, environments, "opphor"))
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
     }
