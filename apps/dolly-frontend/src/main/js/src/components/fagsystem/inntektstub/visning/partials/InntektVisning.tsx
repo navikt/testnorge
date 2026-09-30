@@ -2,7 +2,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatStringDates } from '@/utils/DataFormatter'
-import texts from '@/components/inntektStub/texts'
+import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
 

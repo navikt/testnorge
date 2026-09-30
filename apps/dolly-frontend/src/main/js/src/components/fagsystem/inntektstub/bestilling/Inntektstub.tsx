@@ -6,7 +6,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, formatDateTime } from '@/utils/DataFormatter'
 import { AdresseKodeverk, InntektstubKodeverk } from '@/config/kodeverk'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
-import texts from '@/components/inntektStub/texts'
+import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
 import * as _ from 'lodash-es'
 
 type InntektstubTypes = {

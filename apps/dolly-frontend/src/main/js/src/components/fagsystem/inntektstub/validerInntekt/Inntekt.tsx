@@ -3,8 +3,8 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import texts from '@/components/inntektStub/texts'
-import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
+import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
+import tilleggsinformasjonPaths from '@/components/fagsystem/inntektstub/validerInntekt/paths'
 
 const sjekkFelt = (formMethods, field, options, values, path) => {
 	const { watch, getFieldState, setError } = formMethods
