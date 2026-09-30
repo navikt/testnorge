@@ -692,9 +692,7 @@ class FunctionalTestCoordinatorTest {
     @CsvSource({
             "pensjon-afp-offentlig,pensjon-tp,inntektstub",
             "arbeidssoekerregisteret,arena,instdata",
-            "nom,skjermingsregister,instdata",
-            "nom,tps-messaging-egenansatt,instdata",
-            "skjermingsregister,tps-messaging-egenansatt,instdata"
+            "nom,skjermingsregister,instdata"
     })
     void shouldSerializeRelatedSystemsAndTheirEnvironments(
             String firstSystem, String secondSystem, String independentSystem) throws InterruptedException {

@@ -53,11 +53,6 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-forvalter
-  testnav-tps-messaging-service:
-    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-tps-messaging-service
 
 functional-test:
   pdl:
@@ -91,11 +86,6 @@ functional-test:
     enabled: true
   tags:
     enabled: true
-  tps-messaging-egenansatt:
-    enabled: true
-    request-timeout: 30s
-    poll-interval: 2s
-    poll-timeout: 2m
   arena:
     enabled: true
     request-timeout: 30s
@@ -163,8 +153,6 @@ functional-test:
   kelvin-aap:
     technical-only: true
   pensjon-oevrige:
-    technical-only: true
-  tps-messaging-bankkonto:
     technical-only: true
   yrkesskade:
     technical-only: true

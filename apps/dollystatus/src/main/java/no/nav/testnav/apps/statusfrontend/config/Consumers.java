@@ -24,5 +24,4 @@ public class Consumers {
     private ServerProperties testnavArbeidsplassenCVProxy;
     private ServerProperties testnavNomProxy;
     private ServerProperties testnavOrganisasjonForvalter;
-    private ServerProperties testnavTpsMessagingService;
 }

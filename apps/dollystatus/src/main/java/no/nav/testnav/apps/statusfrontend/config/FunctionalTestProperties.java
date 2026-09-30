@@ -50,10 +50,6 @@ public final class FunctionalTestProperties {
     public static final class InstdataFunctionalTestProperties extends PollingProperties {
     }
 
-    @ConfigurationProperties(prefix = "functional-test.tps-messaging-egenansatt")
-    public static final class TpsMessagingFunctionalTestProperties extends PollingProperties {
-    }
-
     @ConfigurationProperties(prefix = "functional-test.arena")
     public static final class ArenaFunctionalTestProperties extends PollingProperties {
     }

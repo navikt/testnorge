@@ -14,7 +14,6 @@ import java.time.Clock;
         FunctionalTestProperties.PensjonFunctionalTestProperties.class,
         FunctionalTestProperties.ArbeidssoekerregisteretFunctionalTestProperties.class,
         FunctionalTestProperties.InstdataFunctionalTestProperties.class,
-        FunctionalTestProperties.TpsMessagingFunctionalTestProperties.class,
         FunctionalTestProperties.ArenaFunctionalTestProperties.class,
         FunctionalTestProperties.KontoregisterFunctionalTestProperties.class,
         FunctionalTestProperties.KrrFunctionalTestProperties.class,

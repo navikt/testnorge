@@ -376,7 +376,7 @@ public class FunctionalTestCoordinator {
         }
         return switch (value) {
             case "arena", "arbeidssoekerregisteret" -> "arbeidssoeker";
-            case "nom", "skjermingsregister", "tps-messaging-egenansatt" -> "skjerming";
+            case "nom", "skjermingsregister" -> "skjerming";
             default -> value;
         };
     }

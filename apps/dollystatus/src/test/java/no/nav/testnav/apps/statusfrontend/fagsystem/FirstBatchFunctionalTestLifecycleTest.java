@@ -1,19 +1,11 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArbeidssoekerregisteretFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.InstdataFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
-import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.TpsMessagingFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret.ArbeidssoekerregisteretClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret.ArbeidssoekerregisteretFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret.ArbeidssoekerregisteretResourceStatus;
@@ -21,16 +13,9 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.instdata.InstdataClient;
 import no.nav.testnav.apps.statusfrontend.fagsystem.instdata.InstdataEnvironments;
 import no.nav.testnav.apps.statusfrontend.fagsystem.instdata.InstdataFunctionalTest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.instdata.InstdataResourceStatus;
-import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsEgenansattFunctionalTest;
-import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsEgenansattPreflight;
-import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsEgenansattResourceStatus;
-import no.nav.testnav.apps.statusfrontend.fagsystem.tpsmessaging.TpsMessagingClient;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
@@ -40,15 +25,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
@@ -69,9 +51,6 @@ class FirstBatchFunctionalTestLifecycleTest {
 
     @Mock
     private InstdataClient instdataClient;
-
-    @Mock
-    private TpsMessagingClient tpsMessagingClient;
 
     private PdlFunctionalTestProperties pdlProperties;
     private VirtualTimeScheduler scheduler;
@@ -145,43 +124,6 @@ class FirstBatchFunctionalTestLifecycleTest {
         verify(instdataClient, never()).deleteInstdata(any(), any(), any());
     }
 
-    @ParameterizedTest
-    @EnumSource(value = FunctionalTestEnvironment.class, names = {"Q1", "Q2"})
-    void shouldCleanupExistingTpsEgenansattOnlyInSelectedEnvironment(FunctionalTestEnvironment environment) {
-        var fromDate = LocalDate.of(2026, 9, 21);
-        var environments = List.of(environment.name().toLowerCase(java.util.Locale.ROOT));
-        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(true, false, false)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, false)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)));
-        when(tpsMessagingClient.deleteEgenansatt(RUN_ID, environments)).thenReturn(Mono.empty());
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-        var context = context("tps-messaging-egenansatt", environment);
-        assertThat(lifecycle.descriptor().environments())
-                .containsExactlyInAnyOrder(FunctionalTestEnvironment.Q1, FunctionalTestEnvironment.Q2);
-
-        StepVerifier.create(lifecycle.preflight(context))
-                .expectError(FunctionalTestExistingDataException.class).verify();
-        StepVerifier.create(lifecycle.cleanupExistingData(context)
-                        .then(Mono.defer(() -> lifecycle.preflight(context))))
-                .expectNextCount(1).verifyComplete();
-        verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
-        verify(tpsMessagingClient, never()).deleteEgenansatt(RUN_ID, List.of("q1", "q2"));
-    }
-
-    @Test
-    void shouldNotRequestTpsCleanupWhenEnvironmentStatusIsMissing() {
-        when(tpsMessagingClient.getEgenansatt(eq(RUN_ID), any(), any()))
-                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(false, false, false)));
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-
-        StepVerifier.create(lifecycle.preflight(context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q1)))
-                .expectError(FunctionalTestBlockedException.class).verify();
-        verify(tpsMessagingClient, never()).deleteEgenansatt(any(), any());
-    }
-
     @Test
     void shouldTimeoutInstdataVerification() {
         var properties = new InstdataFunctionalTestProperties();
@@ -208,203 +150,6 @@ class FirstBatchFunctionalTestLifecycleTest {
                 .thenAwait(Duration.ofSeconds(5))
                 .expectError(FunctionalTestVerificationTimeoutException.class)
                 .verify();
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = FunctionalTestEnvironment.class, names = {"Q1", "Q2"})
-    void shouldCleanupTpsEgenansattAfterVerifyFailure(FunctionalTestEnvironment environment) {
-        var properties = new TpsMessagingFunctionalTestProperties();
-        properties.setPollInterval(Duration.ofSeconds(1));
-        properties.setPollTimeout(Duration.ofSeconds(5));
-        var fromDate = LocalDate.of(2026, 9, 21);
-        var environments = List.of(environment.name().toLowerCase(java.util.Locale.ROOT));
-        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)),
-                        Mono.error(new IllegalStateException("Verification failed.")),
-                        Mono.just(new TpsEgenansattResourceStatus(true, true, false)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)));
-        when(tpsMessagingClient.createEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(Mono.empty());
-        when(tpsMessagingClient.deleteEgenansatt(RUN_ID, environments))
-                .thenReturn(Mono.empty());
-        var lifecycle = new TpsEgenansattFunctionalTest(
-                tpsMessagingClient,
-                properties,
-                scheduler);
-        var context = context("tps-messaging-egenansatt", environment);
-
-        StepVerifier.withVirtualTime(() -> lifecycle.preflight(context)
-                        .flatMap(preflight -> lifecycle.create(context, preflight)
-                                .flatMap(created -> lifecycle.verify(context, preflight, created)
-                                        .flatMap(verified -> lifecycle.cleanup(
-                                                context,
-                                                preflight,
-                                                Optional.of(created),
-                                                Optional.of(verified),
-                                                lifecycle.descriptor().expectedCleanupState()))
-                                        .onErrorResume(throwable -> lifecycle.cleanup(
-                                                        context,
-                                                        preflight,
-                                                        Optional.of(created),
-                                                        Optional.empty(),
-                                                        lifecycle.descriptor().expectedCleanupState())
-                                                .then(Mono.error(throwable))))),
-                        () -> scheduler,
-                        Long.MAX_VALUE)
-                .expectErrorMatches(error -> error instanceof IllegalStateException
-                        && error.getMessage().equals("Verification failed."))
-                .verify();
-
-        var calls = inOrder(tpsMessagingClient);
-        calls.verify(tpsMessagingClient).getEgenansatt(RUN_ID, environments, fromDate);
-        calls.verify(tpsMessagingClient).createEgenansatt(RUN_ID, environments, fromDate);
-        calls.verify(tpsMessagingClient, times(2)).getEgenansatt(RUN_ID, environments, fromDate);
-        calls.verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
-        calls.verify(tpsMessagingClient).getEgenansatt(RUN_ID, environments, fromDate);
-        verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
-    }
-
-    @Test
-    void shouldLogOnlyTpsStatusFlagsWhenVerificationTimesOut() {
-        var logger = (Logger) LoggerFactory.getLogger(TpsEgenansattFunctionalTest.class);
-        var originalLevel = logger.getLevel();
-        var appender = new ListAppender<ILoggingEvent>();
-        appender.start();
-        logger.addAppender(appender);
-        logger.setLevel(Level.WARN);
-        try {
-            var properties = new TpsMessagingFunctionalTestProperties();
-            properties.setPollInterval(Duration.ofSeconds(1));
-            properties.setPollTimeout(Duration.ofSeconds(5));
-            var fromDate = LocalDate.of(2026, 9, 21);
-            when(tpsMessagingClient.getEgenansatt(RUN_ID, List.of("q1"), fromDate))
-                    .thenReturn(Mono.just(new TpsEgenansattResourceStatus(
-                            true, false, false, true, false, true)));
-            var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient, properties, scheduler);
-            var context = context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q1);
-
-            StepVerifier.withVirtualTime(
-                            () -> lifecycle.verify(context, new TpsEgenansattPreflight(fromDate),
-                                    no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation.COMPLETED),
-                            () -> scheduler,
-                            Long.MAX_VALUE)
-                    .thenAwait(Duration.ofSeconds(5))
-                    .expectError(FunctionalTestVerificationTimeoutException.class)
-                    .verify();
-
-            assertThat(appender.list).singleElement().satisfies(event -> {
-                assertThat(event.getFormattedMessage())
-                        .contains("runId=" + RUN_ID.value(), "miljo=Q1", "expectedPresent=true",
-                                "allEnvironmentsPresent=true", "expectedDataPresent=false",
-                                "hasStartDate=true", "activeWithDifferentStartDate=true")
-                        .doesNotContain(IDENT, fromDate.toString());
-                assertThat(event.getThrowableProxy()).isNull();
-            });
-        } finally {
-            logger.detachAppender(appender);
-            logger.setLevel(originalLevel);
-            appender.stop();
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = FunctionalTestEnvironment.class, names = {"Q1", "Q2"})
-    void shouldNotDeleteTpsEgenansattAgainWhenAlreadyInactive(FunctionalTestEnvironment environment) {
-        var fromDate = LocalDate.of(2026, 9, 21);
-        var environments = List.of(environment.name().toLowerCase(java.util.Locale.ROOT));
-        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(true, false, true)));
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-        var context = context("tps-messaging-egenansatt", environment);
-
-        StepVerifier.create(lifecycle.cleanupExistingData(context)).verifyComplete();
-        StepVerifier.create(lifecycle.cleanup(context, new TpsEgenansattPreflight(fromDate),
-                Optional.empty(), Optional.empty(), lifecycle.descriptor().expectedCleanupState())).verifyComplete();
-
-        verify(tpsMessagingClient, never()).deleteEgenansatt(any(), any());
-    }
-
-    @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    void shouldFailTpsCleanupWithoutConfirmedEnvironmentStatus(boolean emptyResponse) {
-        when(tpsMessagingClient.getEgenansatt(eq(RUN_ID), any(), any()))
-                .thenReturn(emptyResponse ? Mono.empty()
-                        : Mono.just(new TpsEgenansattResourceStatus(false, false, false)));
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-
-        StepVerifier.create(lifecycle.cleanupExistingData(
-                        context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q2)))
-                .expectErrorSatisfies(error -> assertThat(error)
-                        .isInstanceOfSatisfying(FunctionalTestResponseException.class,
-                                failure -> assertThat(failure.reason()).isEqualTo(emptyResponse
-                                        ? Reason.TPS_EMPTY_RESPONSE : Reason.TPS_INCOMPLETE_ENVIRONMENT_STATUS)))
-                .verify();
-        verify(tpsMessagingClient, never()).deleteEgenansatt(any(), any());
-    }
-
-    @Test
-    void shouldRediscoverTpsStateBeforeRepeatingCleanupAfterLostResponse() {
-        var fromDate = LocalDate.of(2026, 9, 21);
-        var environments = List.of("q2");
-        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(true, false, false)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)));
-        when(tpsMessagingClient.deleteEgenansatt(RUN_ID, environments))
-                .thenReturn(Mono.error(new TimeoutException()));
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-        var cleanup = lifecycle.cleanupExistingData(
-                context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q2));
-
-        StepVerifier.create(cleanup.retry(1)).verifyComplete();
-
-        verify(tpsMessagingClient, times(2)).getEgenansatt(RUN_ID, environments, fromDate);
-        verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
-    }
-
-    @Test
-    void shouldNotIgnoreRejectedTpsCleanup() {
-        var fromDate = LocalDate.of(2026, 9, 21);
-        var environments = List.of("q2");
-        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(true, false, false)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, false)));
-        when(tpsMessagingClient.deleteEgenansatt(RUN_ID, environments))
-                .thenReturn(Mono.error(new FunctionalTestResponseException(Reason.TPS_ENVIRONMENT_FAILURE)));
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-
-        StepVerifier.create(lifecycle.cleanupExistingData(
-                        context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q2)))
-                .expectErrorSatisfies(error -> assertThat(error)
-                        .isInstanceOfSatisfying(FunctionalTestResponseException.class,
-                                failure -> assertThat(failure.reason()).isEqualTo(Reason.TPS_ENVIRONMENT_FAILURE)))
-                .verify();
-        verify(tpsMessagingClient, times(2)).getEgenansatt(RUN_ID, environments, fromDate);
-    }
-
-    @Test
-    void shouldAcceptRejectedTpsCleanupOnlyWhenFreshLookupConfirmsInactive() {
-        var fromDate = LocalDate.of(2026, 9, 21);
-        var environments = List.of("q2");
-        when(tpsMessagingClient.getEgenansatt(RUN_ID, environments, fromDate))
-                .thenReturn(Mono.just(new TpsEgenansattResourceStatus(true, false, false)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)),
-                        Mono.just(new TpsEgenansattResourceStatus(true, false, true)));
-        when(tpsMessagingClient.deleteEgenansatt(RUN_ID, environments))
-                .thenReturn(Mono.error(new FunctionalTestResponseException(Reason.TPS_ENVIRONMENT_FAILURE)));
-        var lifecycle = new TpsEgenansattFunctionalTest(tpsMessagingClient,
-                new TpsMessagingFunctionalTestProperties(), scheduler);
-
-        StepVerifier.create(lifecycle.cleanupExistingData(
-                        context("tps-messaging-egenansatt", FunctionalTestEnvironment.Q2)))
-                .verifyComplete();
-
-        verify(tpsMessagingClient, times(3)).getEgenansatt(RUN_ID, environments, fromDate);
-        verify(tpsMessagingClient).deleteEgenansatt(RUN_ID, environments);
     }
 
     private static FunctionalTestContext context(

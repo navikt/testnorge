@@ -45,8 +45,6 @@ functional-test:
     enabled: false
   tags:
     enabled: false
-  tps-messaging-egenansatt:
-    enabled: false
   arena:
     enabled: false
   kontoregister:
@@ -86,8 +84,6 @@ functional-test:
   kelvin-aap:
     technical-only: false
   pensjon-oevrige:
-    technical-only: false
-  tps-messaging-bankkonto:
     technical-only: false
   yrkesskade:
     technical-only: false

@@ -30,7 +30,6 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnav-pdl-forvalter
         - application: testnav-budpro-service
-        - application: testnav-tps-messaging-service
         - application: logging
           namespace: nais-system
       external:

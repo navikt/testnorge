@@ -11,7 +11,7 @@
 - Frontend poller hvert andre sekund og viser fremdrift og resultat per fagsystem og miljø, med Q1/Q2 der systemet støtter det. SSE er et mulig forbedringspunkt her, men ble sløyfet for enklere oppsett i første omgang.
 - PDL klargjøres først. Deretter kjøres Tags, Kontoregister, Pensjon, AAREG og Inntektstub før øvrige systemer. PDL-opprydding kjøres sist.
 - Innen hver fase kjører opptil fire uavhengige grupper samtidig, inkludert tekniske sjekker. Hver gruppe venter på opprydding før neste test starter. Miljøene i samme fagsystem kjøres etter hverandre.
-- Pensjon-testene deler én gruppe. Arena og Arbeidssøkerregisteret deler en annen, mens NOM, Skjermingsregister og TPS Messaging egenansatt deler en tredje. Dette hindrer samtidige endringer i relaterte testdata. PDL-opprydding venter på alle gruppene.
+- Pensjon-testene deler én gruppe. Arena og Arbeidssøkerregisteret deler en annen, mens NOM og Skjermingsregister deler en tredje. Dette hindrer samtidige endringer i relaterte testdata. PDL-opprydding venter på alle gruppene.
 - Opprydding får inntil tre nye forsøk ved feil som kan prøves på nytt. Systemer uten egnet opprydding har kun teknisk status for å ikke fylle opp med data.
 - Eksisterende data på den dedikerte testidenten ryddes med fagsystemets slette- eller avslutningskall før ny oppretting. Oppryddingen etterkontrolleres, og preflight kjøres på nytt. Ved feil stoppes denne testen med oppryddingsfeil og vanlig Slack-varsling. Oppretting prøves ikke før oppryddingen er bekreftet.
 
@@ -19,7 +19,7 @@ Fagsystemenes klienter og kommandoer ligger i egne mapper under `src/main/java/n
 
 Ved feil i fagsystemtestene logger koordinatoren kjørings-ID, fagsystem, miljø, fase, feiltype og HTTP-status når den er tilgjengelig. Opprettings- og oppryddingsfeil logges separat, slik at en oppryddingsfeil ikke skjuler den opprinnelige feilen. Payload, responsbody og token logges ikke.
 
-KRR og TPS har faste feilkoder for avviste responser. Koden vises i feilmeldingen på statussida og som `responsfeil` i loggen. KRR skiller mellom tom eller ugyldig respons, ugyldig kontaktoppføring, avvikende personident og manglende kontakt-ID. TPS skiller mellom ugyldig svar på endring eller oppslag, manglende miljøstatus og miljøer som ikke har status `OK`. Feilkodene inneholder ingen verdier fra responsen, og endrer ikke kravene til vellykket opprydding.
+KRR har faste feilkoder for avviste responser. Koden vises i feilmeldingen på statussida og som `responsfeil` i loggen. KRR skiller mellom tom eller ugyldig respons, ugyldig kontaktoppføring, avvikende personident og manglende kontakt-ID. Feilkodene inneholder ingen verdier fra responsen, og endrer ikke kravene til vellykket opprydding.
 
 KRR logger HTTP-status fra hvert sletteforsøk. Ved verifiseringstimeout logges siste observerte responsform (objekt eller liste), antall felt eller elementer og boolske statusflagg. Ingen feltverdier, kontakt-ID-er eller kontaktopplysninger logges. Diagnostikken endrer ikke hvilke svar som godtas som vellykket sletting.
 
@@ -30,12 +30,6 @@ KRR-opprydding henter kontaktoppføringene for testidenten via `POST /api/v2/per
 Etter oppretting krever KRR-testen nøyaktig én kontaktoppføring med brukbar ID og forventede kontaktdata. Dermed kan testen gjentas selv om kontaktdata ligger igjen etter sletting, uten at duplikater eller gamle data med `id: null` gir godkjent verifisering.
 
 NOM bruker startdato to dager tilbake og sluttdato i går, slik at testen kan gjentas samme dag. Ved gjenoppretting godtas også startdatoen fra preflight, men bare på samme ressurs-ID og med forventet person og navn. En eksisterende aktiv ressurs avsluttes først. Oppryddingen kontrollerer sluttdato og ressurs-ID før testen fortsetter.
-
-TPS Messaging egenansatt testes separat i Q1 og Q2. Hvert oppryddingsforsøk slår først opp tilstanden i valgt miljø og sender bare opphør hvis egenansatt fortsatt er aktiv. Et allerede ryddet miljø får ikke et nytt slettekall. Manglende oppslagsdata, tom respons eller avvist opphør gir fortsatt feil. Etter godkjent opphør må et nytt oppslag bekrefte inaktiv status.
-
-Hvis TPS avviser et opphør, sjekker Dollystatus tilstanden på nytt. Avvisningen godtas bare dersom et ferskt oppslag bekrefter at miljøet er inaktivt; ellers beholdes oppryddingsfeilen.
-
-HTTP 200 fra oppretting eller opphør bekrefter ikke at TPS-oppslaget viser forventet tilstand. Hvis verifiseringen går ut på tid, logger Dollystatus siste oppslagsstatus som boolske flagg for miljøsvar, startdato, sluttdato og om en aktiv startdato avviker fra testens dato. Verken datoer eller persondata logges.
 
 Brregstub rydder rolleoversikten for testidenten og testorganisasjonen. Organisasjonen slettes bare hvis alle registrerte roller tilhører testidenten, uavhengig av hvilken dato restene ble opprettet. Roller for andre personer, manglende miljøstøtte og ugyldige oppslag gir fortsatt stopp, ikke en bredere sletting.
 
