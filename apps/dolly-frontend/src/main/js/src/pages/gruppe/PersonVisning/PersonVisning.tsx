@@ -103,7 +103,9 @@ import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/V
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
 import { sjekkManglerUdiData, UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
-import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
+import DokarkivVisning, {
+	sjekkManglerDokarkivData,
+} from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
@@ -391,7 +393,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 		arbeidsplassencvData,
 		arbeidsplassencvError,
 		dokarkivData,
-		dokarkivError,
 		histarkData,
 		histarkError,
 		udistub,
@@ -443,6 +444,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 				!oppfoelgingsvedtak14aData &&
 				errorOppfoelgingsvedtak14aData
 			),
+			!!(dokarkivData && sjekkManglerDokarkivData(dokarkivData)),
 		]
 
 		return checks.some(Boolean)
