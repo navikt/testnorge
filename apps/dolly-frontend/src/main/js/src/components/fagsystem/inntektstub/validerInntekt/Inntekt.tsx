@@ -71,6 +71,8 @@ interface InntektFeltProps {
 	formMethods: UseFormReturn
 	path: string
 	options?: FeltOptions
+	size?: string | null
+	isLoading?: boolean
 }
 
 const InntektFelt = ({
@@ -79,6 +81,8 @@ const InntektFelt = ({
 	formMethods,
 	path,
 	options = ingenOptions,
+	size = null,
+	isLoading = false,
 }: InntektFeltProps) => {
 	const fieldName = tilleggsinformasjonPaths(field)
 	const fieldPath = `${path}.${fieldName}`
@@ -127,7 +131,7 @@ const InntektFelt = ({
 				name={fieldPath}
 				label={texts(field)}
 				onSubmit={handleChange}
-				size={numberFields.includes(field) ? 'medium' : 'large'}
+				size={size ?? (numberFields.includes(field) ? 'medium' : 'large')}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)
@@ -142,16 +146,24 @@ const InntektFelt = ({
 			label={texts(field)}
 			options={labelValueOptions.filter((option) => option.value !== '<TOM>')}
 			afterChange={handleChange}
-			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
+			size={
+				size ?? (booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large')
+			}
 			isClearable={field !== 'inntektstype' && field !== 'beskrivelse'}
+			isLoading={isLoading}
 		/>
 	)
 }
 
-const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
-	console.log('fields: ', fields) //TODO - SLETT MEG
+const Inntekt = ({
+	fields = {} as any,
+	isLoadingFields = false,
+	onValidate,
+	formMethods,
+	path,
+}) => {
 	return (
-		<div className="flexbox--flex-wrap">
+		<>
 			<InntektFelt
 				key={`${path}.inntektstype`}
 				field="inntektstype"
@@ -159,20 +171,39 @@ const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
 				formMethods={formMethods}
 				path={path}
 				options={inntektstypeOptions}
+				size="medium"
 			/>
-			{Object.keys(fields)
-				.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
-				.map((field) => (
-					<InntektFelt
-						key={`${path}.${field}`}
-						field={field}
-						handleChange={onValidate}
-						formMethods={formMethods}
-						path={path}
-						options={fields[field]}
-					/>
-				))}
-		</div>
+			{formMethods.watch(`${path}.inntektstype`) && (
+				<InntektFelt
+					key={`${path}.beskrivelse`}
+					field="beskrivelse"
+					handleChange={onValidate}
+					formMethods={formMethods}
+					path={path}
+					options={fields?.beskrivelse ?? []}
+					size="xlarge"
+					isLoading={isLoadingFields}
+				/>
+			)}
+			{formMethods.watch(`${path}.beskrivelse`) && (
+				<div style={{ display: 'contents' }}>
+					{Object.keys(fields)
+						.filter((field) => field !== 'beskrivelse')
+						.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
+						.map((field) => (
+							<InntektFelt
+								key={`${path}.${field}`}
+								field={field}
+								handleChange={onValidate}
+								formMethods={formMethods}
+								path={path}
+								options={fields[field]}
+								isLoading={isLoadingFields}
+							/>
+						))}
+				</div>
+			)}
+		</>
 	)
 }
 

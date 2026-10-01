@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Inntekt from '@/components/fagsystem/inntektstub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import * as _ from 'lodash-es'
@@ -19,6 +19,8 @@ const tilleggsinformasjonAttributter = {
 const InntektStub = ({ inntektPath }) => {
 	const formMethods = useFormContext()
 	const [fields, setFields] = useState({})
+	const [isLoadingFields, setIsLoadingFields] = useState(false)
+	const sisteFieldsRequestId = useRef(0)
 	const inntektValues = useWatch({ name: inntektPath })
 	const {
 		beloep,
@@ -34,13 +36,25 @@ const InntektStub = ({ inntektPath }) => {
 		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
 	}, [inntektstype])
 
+	const getFields = (values) => {
+		const requestId = ++sisteFieldsRequestId.current
+		setIsLoadingFields(true)
+		InntektstubService.validate(_.omitBy(values, (value) => value === '' || !value))
+			.then((response) => {
+				if (requestId === sisteFieldsRequestId.current) {
+					setFields(response)
+				}
+			})
+			.finally(() => {
+				if (requestId === sisteFieldsRequestId.current) {
+					setIsLoadingFields(false)
+				}
+			})
+	}
+
 	useEffect(() => {
 		if (!_.isEmpty(inntektstype)) {
-			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
-				(response) => {
-					setFields(response)
-				},
-			)
+			getFields(inntektValues)
 		}
 		formMethods.trigger(inntektPath)
 	}, [inntektValuesJson])
@@ -129,6 +143,7 @@ const InntektStub = ({ inntektPath }) => {
 
 	return (
 		<Form
+			style={{ display: 'contents' }}
 			onSubmit={(values: any) => {
 				if (inntektstype && values.inntektstype !== inntektstype) {
 					values = { inntektstype: values.inntektstype }
@@ -141,16 +156,15 @@ const InntektStub = ({ inntektPath }) => {
 						values[key] = '<TOM>'
 					}
 				}
-				InntektstubService.validate(_.omitBy(values, (value) => value === '' || !value)).then(
-					(response) => setFields(response),
-				)
+				getFields(values)
 				clearEmptyValuesAndFields(values)
 				setForm(values)
 			}}
 		>
-			<div>
+			<div style={{ display: 'contents' }}>
 				<Inntekt
 					fields={fields}
+					isLoadingFields={isLoadingFields}
 					onValidate={() => formMethods.trigger('inntekt')}
 					formMethods={formMethods}
 					path={inntektPath}
