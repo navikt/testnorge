@@ -1,11 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister;
 
-import java.time.ZoneOffset;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.SkjermingsregisterFunctionalTestProperties;
@@ -25,12 +20,20 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.time.ZoneOffset;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
 @Service
 @Slf4j
 @ConditionalOnProperty(
         prefix = "functional-test.skjermingsregister",
         name = "enabled",
         havingValue = "true")
+@RequiredArgsConstructor
 public class SkjermingsregisterFunctionalTest implements FunctionalTestDefinition<
         SkjermingsregisterPreflight,
         Creation,
@@ -46,18 +49,6 @@ public class SkjermingsregisterFunctionalTest implements FunctionalTestDefinitio
     private final PdlFunctionalTestProperties pdlProperties;
     private final SkjermingsregisterFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public SkjermingsregisterFunctionalTest(
-            SkjermingsregisterClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            SkjermingsregisterFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

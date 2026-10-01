@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.pdl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.PdlTestLifecycle;
@@ -25,6 +26,7 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPo
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PdlFunctionalTestLifecycle implements PdlTestLifecycle<PdlPreflight, PdlCreation> {
 
     private static final FunctionalTestDescriptor DESCRIPTOR = new FunctionalTestDescriptor(
@@ -37,18 +39,6 @@ public class PdlFunctionalTestLifecycle implements PdlTestLifecycle<PdlPreflight
     private final PdlProxyClient pdlProxyClient;
     private final PdlFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public PdlFunctionalTestLifecycle(
-            PdlForvalterClient pdlForvalterClient,
-            PdlProxyClient pdlProxyClient,
-            PdlFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.pdlForvalterClient = pdlForvalterClient;
-        this.pdlProxyClient = pdlProxyClient;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

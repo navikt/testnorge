@@ -1,16 +1,15 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.brregstub;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.ZoneOffset;
 import java.util.List;
 
-final class BrregstubTestData {
+@UtilityClass
+class BrregstubTestData {
 
     static final int ORGANIZATION_NUMBER = 991825827;
-
-    private BrregstubTestData() {
-    }
 
     static BrregstubRequest request(String ident, FunctionalTestContext context) {
         var registrationDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();

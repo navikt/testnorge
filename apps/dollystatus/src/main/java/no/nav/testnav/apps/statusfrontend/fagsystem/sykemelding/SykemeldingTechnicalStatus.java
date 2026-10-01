@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.sykemelding;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.fagsystem.technical.SecondBatchTechnicalStatusClient;
 import no.nav.testnav.apps.statusfrontend.functionaltest.TechnicalStatusDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
@@ -18,6 +19,7 @@ import java.util.Set;
         prefix = "functional-test.sykemelding",
         name = "technical-only",
         havingValue = "true")
+@RequiredArgsConstructor
 public class SykemeldingTechnicalStatus implements TechnicalStatusDefinition {
 
     private static final TechnicalStatusDescriptor DESCRIPTOR = new TechnicalStatusDescriptor(
@@ -26,10 +28,6 @@ public class SykemeldingTechnicalStatus implements TechnicalStatusDefinition {
             Set.of(FunctionalTestEnvironment.GLOBAL));
 
     private final SecondBatchTechnicalStatusClient client;
-
-    public SykemeldingTechnicalStatus(SecondBatchTechnicalStatusClient client) {
-        this.client = client;
-    }
 
     @Override
     public TechnicalStatusDescriptor descriptor() {

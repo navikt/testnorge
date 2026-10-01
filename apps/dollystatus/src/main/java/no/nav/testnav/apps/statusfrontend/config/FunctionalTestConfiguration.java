@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.statusfrontend.config;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 

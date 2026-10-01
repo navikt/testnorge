@@ -1,14 +1,14 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.inntektstub;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.List;
 
-final class InntektstubTestData {
+@UtilityClass
+class InntektstubTestData {
 
     static final String RESERVED_YEAR_MONTH = "2099-12";
     static final String RESERVED_INCOME_TYPE = "LOENNSINNTEKT";
-
-    private InntektstubTestData() {
-    }
 
     static InntektstubRequest request(String ident) {
         return new InntektstubRequest(

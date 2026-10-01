@@ -1,17 +1,16 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.skjermingsregister;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
-final class SkjermingsregisterTestData {
+@UtilityClass
+class SkjermingsregisterTestData {
 
     static final String FIRST_NAME = "Dollystatus";
     static final String LAST_NAME = "Testperson";
-
-    private SkjermingsregisterTestData() {
-    }
 
     static SkjermingsregisterRequest activeRequest(
             String ident,

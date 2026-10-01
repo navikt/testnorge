@@ -27,7 +27,7 @@ public class DeleteArbeidssoekerregistreringCommand implements Callable<Mono<Voi
                         return response.releaseBody();
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<Void>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout);
     }

@@ -12,8 +12,8 @@ import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.GetAfpOffent
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.GetPensjonsavtaleCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.GetPoppCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.GetTpForholdCommand;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.libs.testing.DollyWireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +21,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -35,7 +37,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(DollyWireMockExtension.class)

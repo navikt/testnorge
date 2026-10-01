@@ -43,7 +43,7 @@ public class GetSkattekortCommand implements Callable<Mono<SkattekortResourceSta
                                 .defaultIfEmpty(SkattekortResourceStatus.emptyStatus());
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<SkattekortResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());

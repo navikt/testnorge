@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.slack;
 
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.SlackProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestResultListener;
@@ -18,9 +19,12 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @Component
 @ConditionalOnProperty(prefix = "slack", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class SlackNotifier implements FunctionalTestResultListener {
 
     private final SlackConsumer slackConsumer;
@@ -28,16 +32,6 @@ public class SlackNotifier implements FunctionalTestResultListener {
     private final SlackProperties properties;
     private final Scheduler notificationScheduler =
             Schedulers.newBoundedElastic(1, 256, "dollystatus-slack");
-
-    public SlackNotifier(
-            SlackConsumer slackConsumer,
-            SlackTransitionTracker transitionTracker,
-            SlackProperties properties
-    ) {
-        this.slackConsumer = slackConsumer;
-        this.transitionTracker = transitionTracker;
-        this.properties = properties;
-    }
 
     @Override
     public void onCompleted(FunctionalTestStatus status) {
@@ -76,7 +70,7 @@ public class SlackNotifier implements FunctionalTestResultListener {
     }
 
     private String redMessage(FunctionalTestStatus status) {
-        var category = status.error() == null
+        var category = isNull(status.error())
                 ? "TEKNISK_STATUS"
                 : status.error().category().name();
         return ":red_circle: *%s (%s) er rød*\nFeilkategori: %s\nTid: %s\nKjøring: %s\n<%s|Åpne Dollystatus>"

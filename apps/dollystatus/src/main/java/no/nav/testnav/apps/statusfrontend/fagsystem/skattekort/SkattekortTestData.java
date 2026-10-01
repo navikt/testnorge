@@ -1,17 +1,16 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.skattekort;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.ZoneOffset;
 import java.util.List;
 
-final class SkattekortTestData {
+@UtilityClass
+class SkattekortTestData {
 
     static final String RESULT_OK = "skattekortopplysningerOK";
     static final String RESULT_NOT_TAX_CARD = "ikkeSkattekort";
-
-    private SkattekortTestData() {
-    }
 
     static int incomeYear(FunctionalTestContext context) {
         return context.startedAt().atZone(ZoneOffset.UTC).getYear();

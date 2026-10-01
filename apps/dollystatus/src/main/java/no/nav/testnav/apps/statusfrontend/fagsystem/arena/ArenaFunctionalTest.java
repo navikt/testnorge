@@ -1,9 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arena;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArenaFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
@@ -22,8 +19,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.Optional;
+import java.util.Set;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
 @Service
 @ConditionalOnProperty(prefix = "functional-test.arena", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class ArenaFunctionalTest
         implements FunctionalTestDefinition<Preflight, Creation, Verification> {
 
@@ -37,18 +40,6 @@ public class ArenaFunctionalTest
     private final PdlFunctionalTestProperties pdlProperties;
     private final ArenaFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public ArenaFunctionalTest(
-            ArenaClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            ArenaFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

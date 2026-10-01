@@ -1,9 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArbeidssoekerregisteretFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
@@ -22,11 +19,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.Optional;
+import java.util.Set;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
 @Service
 @ConditionalOnProperty(
         prefix = "functional-test.arbeidssoekerregisteret",
         name = "enabled",
         havingValue = "true")
+@RequiredArgsConstructor
 public class ArbeidssoekerregisteretFunctionalTest implements FunctionalTestDefinition<
         Preflight,
         Creation,
@@ -42,18 +45,6 @@ public class ArbeidssoekerregisteretFunctionalTest implements FunctionalTestDefi
     private final PdlFunctionalTestProperties pdlProperties;
     private final ArbeidssoekerregisteretFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public ArbeidssoekerregisteretFunctionalTest(
-            ArbeidssoekerregisteretClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            ArbeidssoekerregisteretFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

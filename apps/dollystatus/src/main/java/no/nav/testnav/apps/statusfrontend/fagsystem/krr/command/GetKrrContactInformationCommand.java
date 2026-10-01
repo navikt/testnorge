@@ -97,7 +97,7 @@ public class GetKrrContactInformationCommand implements Callable<Mono<KrrResourc
         }
         for (var identField : List.of("personident", "personidentifikator")) {
             if (contactInformation.has(identField)
-                    && !expectedRequest.personident().equals(contactInformation.path(identField).asText())) {
+                    && !expectedRequest.personident().equals(contactInformation.path(identField).asString())) {
                 throw new FunctionalTestResponseException(KRR_UNEXPECTED_PERSON);
             }
         }

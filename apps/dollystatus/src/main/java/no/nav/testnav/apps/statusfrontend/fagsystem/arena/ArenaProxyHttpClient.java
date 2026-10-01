@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arena;
 
-import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArenaFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.Consumers;
+import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArenaFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arena.command.CreateArenaUserCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arena.command.DeactivateArenaUserCommand;

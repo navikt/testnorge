@@ -30,7 +30,7 @@ public class UpdateSkjermingsregisterCommand implements Callable<Mono<Void>> {
                         return response.releaseBody();
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<Void>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());

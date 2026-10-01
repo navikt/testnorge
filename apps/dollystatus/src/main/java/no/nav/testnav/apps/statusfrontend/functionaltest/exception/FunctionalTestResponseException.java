@@ -1,5 +1,8 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest.exception;
 
+import lombok.Getter;
+
+@Getter
 public final class FunctionalTestResponseException extends IllegalStateException {
 
     private final Reason reason;
@@ -7,10 +10,6 @@ public final class FunctionalTestResponseException extends IllegalStateException
     public FunctionalTestResponseException(Reason reason) {
         super(reason.name());
         this.reason = reason;
-    }
-
-    public Reason reason() {
-        return reason;
     }
 
     public enum Reason {

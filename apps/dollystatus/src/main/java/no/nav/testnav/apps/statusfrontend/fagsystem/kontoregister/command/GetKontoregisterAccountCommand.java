@@ -14,6 +14,8 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 public class GetKontoregisterAccountCommand implements Callable<Mono<KontoregisterResourceStatus>> {
 
@@ -41,7 +43,7 @@ public class GetKontoregisterAccountCommand implements Callable<Mono<Kontoregist
                                 .defaultIfEmpty(KontoregisterResourceStatus.emptyStatus());
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<KontoregisterResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
@@ -50,7 +52,7 @@ public class GetKontoregisterAccountCommand implements Callable<Mono<Kontoregist
     private KontoregisterResourceStatus toStatus(KontoDTO account) {
         var expected = expectedAccount.getKontohaver().equals(account.getKontohaver())
                 && expectedAccount.getKontonummer().equals(account.getKontonummer())
-                && account.getGyldigTom() == null;
+                && isNull(account.getGyldigTom());
         return new KontoregisterResourceStatus(false, expected);
     }
 }

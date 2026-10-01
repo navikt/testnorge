@@ -7,6 +7,8 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestSta
 import java.time.Instant;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
+
 public record FagsystemStatusResponse(
         String systemId,
         String displayName,
@@ -26,7 +28,7 @@ public record FagsystemStatusResponse(
                 status.systemId().value(),
                 status.displayName().value(),
                 status.environment(),
-                status.runId() == null ? null : status.runId().value(),
+                isNull(status.runId()) ? null : status.runId().value(),
                 status.state(),
                 status.startedAt(),
                 status.completedAt(),

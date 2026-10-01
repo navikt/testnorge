@@ -39,7 +39,7 @@ public class GetBrregstubRoleOverviewCommand implements Callable<Mono<BrregstubR
                                         "Brregstub-oppslaget returnerte tom respons.")));
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<BrregstubResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());

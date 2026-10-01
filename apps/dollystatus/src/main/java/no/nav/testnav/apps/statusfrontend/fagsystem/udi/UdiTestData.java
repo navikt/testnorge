@@ -1,13 +1,12 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.udi;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.ZoneOffset;
 
-final class UdiTestData {
-
-    private UdiTestData() {
-    }
+@UtilityClass
+class UdiTestData {
 
     static UdiRequest request(String ident, FunctionalTestContext context) {
         var testDate = context.startedAt().atZone(ZoneOffset.UTC).toLocalDate();

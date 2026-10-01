@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TechnicalStatusCoordinatorTest {
@@ -27,10 +28,10 @@ class TechnicalStatusCoordinatorTest {
     void shouldRegisterSuccessfulTechnicalOnlyStatus() {
         var coordinator = coordinator(Mono.empty());
 
-        var runId = coordinator.startSystem(new SystemId("technical-system"))
-                .block(Duration.ofSeconds(1))
-                .runId();
-        var run = awaitCompleted(coordinator, runId);
+        var reference = coordinator.startSystem(new SystemId("technical-system"))
+                .block(Duration.ofSeconds(1));
+        assertThat(reference).isNotNull();
+        var run = awaitCompleted(coordinator, reference.runId());
 
         assertThat(run.results()).singleElement().satisfies(status -> {
             assertThat(status.state()).isEqualTo(FunctionalTestState.TECHNICAL_ONLY);
@@ -42,10 +43,10 @@ class TechnicalStatusCoordinatorTest {
     void shouldRegisterFailedTechnicalOnlyStatusAsDown() {
         var coordinator = coordinator(Mono.error(new IllegalStateException("Unavailable.")));
 
-        var runId = coordinator.startSystem(new SystemId("technical-system"))
-                .block(Duration.ofSeconds(1))
-                .runId();
-        var run = awaitCompleted(coordinator, runId);
+        var reference = coordinator.startSystem(new SystemId("technical-system"))
+                .block(Duration.ofSeconds(1));
+        assertThat(reference).isNotNull();
+        var run = awaitCompleted(coordinator, reference.runId());
 
         assertThat(run.results()).singleElement().satisfies(status -> {
             assertThat(status.state()).isEqualTo(FunctionalTestState.TECHNICAL_ONLY);
@@ -82,7 +83,7 @@ class TechnicalStatusCoordinatorTest {
         var deadline = System.nanoTime() + Duration.ofSeconds(2).toNanos();
         while (System.nanoTime() < deadline) {
             var run = coordinator.getRun(runId).block(Duration.ofSeconds(1));
-            if (run != null && run.state() == FunctionalTestRunState.COMPLETED) {
+            if (nonNull(run) && run.state() == FunctionalTestRunState.COMPLETED) {
                 return run;
             }
             try {

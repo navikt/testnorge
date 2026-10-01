@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.pensjon;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 
 import java.time.LocalDate;
@@ -7,7 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-final class PensjonTestData {
+@UtilityClass
+class PensjonTestData {
 
     static final String TP_ORDNING = "3010";
     static final int POPP_YEAR = 2020;
@@ -15,9 +17,6 @@ final class PensjonTestData {
     static final String AFP_TP_ID = "4099";
     static final String PENSJONSAVTALE_PRODUCT = "Dollystatus syntetisk kontrakttest";
     static final List<String> PEN_ENVIRONMENTS = List.of("q1", "q2");
-
-    private PensjonTestData() {
-    }
 
     static String environmentName(FunctionalTestEnvironment environment) {
         if (environment != FunctionalTestEnvironment.Q1

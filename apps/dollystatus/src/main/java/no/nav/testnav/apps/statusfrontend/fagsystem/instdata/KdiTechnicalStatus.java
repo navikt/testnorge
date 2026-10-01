@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.instdata;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.TechnicalStatusDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @Service
 @ConditionalOnProperty(prefix = "functional-test.kdi", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class KdiTechnicalStatus implements TechnicalStatusDefinition {
 
     private static final TechnicalStatusDescriptor DESCRIPTOR = new TechnicalStatusDescriptor(
@@ -22,10 +24,6 @@ public class KdiTechnicalStatus implements TechnicalStatusDefinition {
             Set.of(FunctionalTestEnvironment.Q2));
 
     private final InstdataClient client;
-
-    public KdiTechnicalStatus(InstdataClient client) {
-        this.client = client;
-    }
 
     @Override
     public TechnicalStatusDescriptor descriptor() {

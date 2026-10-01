@@ -1,11 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.instdata;
 
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.InstdataFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
@@ -24,8 +19,16 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
 @Service
 @ConditionalOnProperty(prefix = "functional-test.instdata", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class InstdataFunctionalTest
         implements FunctionalTestDefinition<InstdataPreflight, Creation, Verification> {
 
@@ -39,18 +42,6 @@ public class InstdataFunctionalTest
     private final PdlFunctionalTestProperties pdlProperties;
     private final InstdataFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public InstdataFunctionalTest(
-            InstdataClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            InstdataFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

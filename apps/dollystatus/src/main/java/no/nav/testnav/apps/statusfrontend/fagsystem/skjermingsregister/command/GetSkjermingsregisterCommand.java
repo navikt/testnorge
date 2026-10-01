@@ -44,8 +44,7 @@ public class GetSkjermingsregisterCommand
                                         "Skjermingsregister-oppslaget returnerte tom respons.")));
                     }
                     return response.createException()
-                            .flatMap(exception ->
-                                    Mono.<SkjermingsregisterResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());

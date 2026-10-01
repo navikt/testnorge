@@ -45,20 +45,18 @@ class SecondBatchTechnicalStatusContractTest {
     private Consumers consumers;
 
     private ServerProperties dollyProxy;
-    private ServerProperties arbeidsplassenCvProxy;
-    private ServerProperties organisasjonForvalter;
     private SecondBatchTechnicalStatusClient client;
 
     @BeforeEach
     void setUp() {
         var baseUrl = "http://localhost:" + DollyWireMockExtension.getPort();
         dollyProxy = ServerProperties.of("dev-fss", "dolly", "testnav-dolly-proxy", baseUrl);
-        arbeidsplassenCvProxy = ServerProperties.of(
+        var arbeidsplassenCvProxy = ServerProperties.of(
                 "dev-gcp",
                 "dolly",
                 "testnav-arbeidsplassencv-proxy",
                 baseUrl);
-        organisasjonForvalter = ServerProperties.of(
+        var organisasjonForvalter = ServerProperties.of(
                 "dev-gcp",
                 "dolly",
                 "testnav-organisasjon-forvalter",

@@ -35,7 +35,7 @@ public class GetBrregstubOrganizationCommand implements Callable<Mono<BrregstubR
                                 .map(this::toStatus);
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<BrregstubResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
@@ -46,7 +46,7 @@ public class GetBrregstubOrganizationCommand implements Callable<Mono<BrregstubR
         var expectedParticipants = roles.isArray()
                 && !roles.isEmpty()
                 && StreamSupport.stream(roles.spliterator(), false)
-                .allMatch(role -> expectedIdent.equals(role.path("fodselsnr").asText()));
+                .allMatch(role -> expectedIdent.equals(role.path("fodselsnr").asString()));
         return new BrregstubResourceStatus(false,
                 response.path("orgnr").asInt() == organizationNumber && expectedParticipants);
     }

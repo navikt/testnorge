@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 public record SkjermingsregisterResourceStatus(
         boolean empty,
         boolean owned,
@@ -37,8 +40,8 @@ public record SkjermingsregisterResourceStatus(
         return new SkjermingsregisterResourceStatus(
                 false,
                 owned,
-                to == null || to.isAfter(referenceTime),
-                to != null && !to.isAfter(referenceTime),
+                isNull(to) || to.isAfter(referenceTime),
+                nonNull(to) && !to.isAfter(referenceTime),
                 expectedDataPresent);
     }
 

@@ -1,9 +1,10 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestError;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestError;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestKey;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestState;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestStatus;
@@ -19,7 +20,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Component
+@RequiredArgsConstructor
 public class FunctionalTestCache {
 
     static final Duration CACHE_TTL = Duration.ofHours(1);
@@ -27,10 +32,6 @@ public class FunctionalTestCache {
 
     private final Clock clock;
     private final Map<FunctionalTestKey, FunctionalTestStatus> statuses = new ConcurrentHashMap<>();
-
-    public FunctionalTestCache(Clock clock) {
-        this.clock = clock;
-    }
 
     public Optional<FunctionalTestStatus> get(FunctionalTestKey key) {
         return Optional.ofNullable(statuses.get(key));
@@ -57,15 +58,10 @@ public class FunctionalTestCache {
                 registration.definition().descriptor().displayName());
     }
 
-    private FunctionalTestStatus statusFor(FunctionalTestKey key, DisplayName displayName) {
-        return get(key)
-                .orElseGet(() -> FunctionalTestStatus.notRun(key, displayName, TechnicalStatus.unknown()));
-    }
-
     public boolean isExpired(FunctionalTestKey key) {
         return get(key)
-                .filter(status -> status.completedAt() != null)
-                .filter(status -> status.cachedUntil() != null)
+                .filter(status -> nonNull(status.completedAt()))
+                .filter(status -> nonNull(status.cachedUntil()))
                 .map(status -> !clock.instant().isBefore(status.cachedUntil()))
                 .orElse(true);
     }
@@ -84,12 +80,12 @@ public class FunctionalTestCache {
             Instant startedAt
     ) {
         var existingStatus = statuses.get(key);
-        if (existingStatus != null && existingStatus.startedAt() != null
+        if (nonNull(existingStatus) && nonNull(existingStatus.startedAt())
                 && existingStatus.startedAt().isAfter(startedAt)) {
             return existingStatus;
         }
 
-        var technicalStatus = existingStatus == null
+        var technicalStatus = isNull(existingStatus)
                 ? TechnicalStatus.unknown()
                 : existingStatus.technicalStatus();
         var status = new FunctionalTestStatus(
@@ -116,7 +112,7 @@ public class FunctionalTestCache {
             FunctionalTestError error
     ) {
         var existingStatus = statuses.get(key);
-        if (existingStatus == null || !runId.equals(existingStatus.runId())) {
+        if (isNull(existingStatus) || !runId.equals(existingStatus.runId())) {
             return Optional.empty();
         }
 
@@ -145,7 +141,7 @@ public class FunctionalTestCache {
             Instant completedAt
     ) {
         var existingStatus = statuses.get(key);
-        if (existingStatus == null || !runId.equals(existingStatus.runId())) {
+        if (isNull(existingStatus) || !runId.equals(existingStatus.runId())) {
             return Optional.empty();
         }
 
@@ -172,7 +168,7 @@ public class FunctionalTestCache {
             Instant completedAt
     ) {
         var existingStatus = statuses.get(key);
-        if (existingStatus == null || !runId.equals(existingStatus.runId())) {
+        if (isNull(existingStatus) || !runId.equals(existingStatus.runId())) {
             return Optional.empty();
         }
 
@@ -190,5 +186,10 @@ public class FunctionalTestCache {
                 new TechnicalStatus(technicalStatusState, completedAt));
         statuses.put(key, completedStatus);
         return Optional.of(completedStatus);
+    }
+
+    private FunctionalTestStatus statusFor(FunctionalTestKey key, DisplayName displayName) {
+        return get(key)
+                .orElseGet(() -> FunctionalTestStatus.notRun(key, displayName, TechnicalStatus.unknown()));
     }
 }

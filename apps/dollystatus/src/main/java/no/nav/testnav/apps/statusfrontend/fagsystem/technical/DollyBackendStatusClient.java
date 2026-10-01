@@ -50,8 +50,8 @@ public class DollyBackendStatusClient {
             return Mono.error(new IllegalStateException("Teknisk status mangler."));
         }
         for (var service : services) {
-            if (!"OK".equals(service.path("alive").asText())
-                    || !"OK".equals(service.path("ready").asText())) {
+            if (!"OK".equals(service.path("alive").asString())
+                    || !"OK".equals(service.path("ready").asString())) {
                 return Mono.error(new IllegalStateException("Teknisk status er ikke OK."));
             }
         }

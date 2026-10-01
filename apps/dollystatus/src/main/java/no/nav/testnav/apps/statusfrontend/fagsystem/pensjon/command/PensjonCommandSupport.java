@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.PensjonOperationResponse;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.PensjonResourceStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
@@ -12,10 +13,8 @@ import tools.jackson.databind.JsonNode;
 import java.util.Set;
 import java.util.function.Function;
 
-final class PensjonCommandSupport {
-
-    private PensjonCommandSupport() {
-    }
+@UtilityClass
+class PensjonCommandSupport {
 
     static void applyHeaders(HttpHeaders headers, String token, RunId runId) {
         headers.setBearerAuth(token);

@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.config;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
@@ -132,15 +133,13 @@ final class LocalAuthenticatedToken extends GetAuthenticatedToken {
     }
 }
 
-final class LocalAuthentication {
-
-    private LocalAuthentication() {
-    }
+@UtilityClass
+class LocalAuthentication {
 
     static Mono<OAuth2AuthenticationToken> current() {
         return ReactiveSecurityContextHolder
                 .getContext()
-                .map(SecurityContext::getAuthentication)
+                .mapNotNull(SecurityContext::getAuthentication)
                 .ofType(OAuth2AuthenticationToken.class)
                 .switchIfEmpty(Mono.error(new AccessDeniedException("Lokal Azure AD-innlogging mangler.")));
     }

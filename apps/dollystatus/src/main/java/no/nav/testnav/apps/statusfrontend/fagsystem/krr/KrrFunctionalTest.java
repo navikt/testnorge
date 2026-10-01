@@ -1,10 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.krr;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.KrrFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
@@ -22,13 +18,20 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnv
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
 
 @Service
 @Slf4j
 @ConditionalOnProperty(prefix = "functional-test.krr", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class KrrFunctionalTest
         implements FunctionalTestDefinition<Preflight, Creation, Verification> {
 
@@ -42,18 +45,6 @@ public class KrrFunctionalTest
     private final PdlFunctionalTestProperties pdlProperties;
     private final KrrFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public KrrFunctionalTest(
-            KrrClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            KrrFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

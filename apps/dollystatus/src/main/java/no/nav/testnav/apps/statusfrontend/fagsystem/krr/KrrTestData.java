@@ -1,13 +1,12 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.krr;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.ZoneOffset;
 
-final class KrrTestData {
-
-    private KrrTestData() {
-    }
+@UtilityClass
+class KrrTestData {
 
     static KrrRequest request(String ident, FunctionalTestContext context) {
         var timestamp = context.startedAt().atZone(ZoneOffset.UTC);

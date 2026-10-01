@@ -3,15 +3,14 @@ package no.nav.testnav.apps.statusfrontend.config;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.UtilityClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.Duration;
 
-public final class FunctionalTestProperties {
-
-    private FunctionalTestProperties() {
-    }
+@UtilityClass
+public class FunctionalTestProperties {
 
     @Getter
     @Setter

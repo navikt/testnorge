@@ -40,7 +40,7 @@ public class GetArenaUserCommand implements Callable<Mono<ArenaResourceStatus>> 
                                 .defaultIfEmpty(ArenaResourceStatus.emptyStatus());
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<ArenaResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
@@ -53,7 +53,7 @@ public class GetArenaUserCommand implements Callable<Mono<ArenaResourceStatus>> 
         var user = expectedRequest.nyeBrukere().getFirst();
         var registered = !response.path("registrertDato").isMissingNode()
                 && !response.path("registrertDato").isNull();
-        var placementGroup = response.path("formidlingsgruppe").path("kode").asText("");
+        var placementGroup = response.path("formidlingsgruppe").path("kode").asString("");
         var inactive = "ISERV".equals(placementGroup);
         var active = registered && !placementGroup.isBlank() && !inactive;
         var serviceGroup = response.path("servicegruppe").path("kode").asString();

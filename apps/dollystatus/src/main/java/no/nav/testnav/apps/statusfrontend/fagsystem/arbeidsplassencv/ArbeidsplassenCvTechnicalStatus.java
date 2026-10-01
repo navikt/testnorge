@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arbeidsplassencv;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.fagsystem.technical.SecondBatchTechnicalStatusClient;
 import no.nav.testnav.apps.statusfrontend.functionaltest.TechnicalStatusDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
@@ -18,6 +19,7 @@ import java.util.Set;
         prefix = "functional-test.arbeidsplassen-cv",
         name = "technical-only",
         havingValue = "true")
+@RequiredArgsConstructor
 public class ArbeidsplassenCvTechnicalStatus implements TechnicalStatusDefinition {
 
     private static final TechnicalStatusDescriptor DESCRIPTOR = new TechnicalStatusDescriptor(
@@ -26,10 +28,6 @@ public class ArbeidsplassenCvTechnicalStatus implements TechnicalStatusDefinitio
             Set.of(FunctionalTestEnvironment.GLOBAL));
 
     private final SecondBatchTechnicalStatusClient client;
-
-    public ArbeidsplassenCvTechnicalStatus(SecondBatchTechnicalStatusClient client) {
-        this.client = client;
-    }
 
     @Override
     public TechnicalStatusDescriptor descriptor() {

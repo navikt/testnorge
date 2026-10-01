@@ -1,9 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.inntektstub;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.InntektstubFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
@@ -22,8 +19,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.Optional;
+import java.util.Set;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
 @Service
 @ConditionalOnProperty(prefix = "functional-test.inntektstub", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class InntektstubFunctionalTest implements FunctionalTestDefinition<
         Preflight,
         Creation,
@@ -39,18 +42,6 @@ public class InntektstubFunctionalTest implements FunctionalTestDefinition<
     private final PdlFunctionalTestProperties pdlProperties;
     private final InntektstubFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public InntektstubFunctionalTest(
-            InntektstubClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            InntektstubFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

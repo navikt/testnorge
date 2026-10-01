@@ -42,7 +42,7 @@ public class GetInntektstubIncomeCommand implements Callable<Mono<InntektstubRes
                                 .defaultIfEmpty(InntektstubResourceStatus.emptyStatus());
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<InntektstubResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());

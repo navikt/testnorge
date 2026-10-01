@@ -36,7 +36,7 @@ public class GetPdlForvalterPersonCommand implements Callable<Mono<Boolean>> {
                                 .map(this::containsPerson);
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<Boolean>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout);
     }

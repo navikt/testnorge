@@ -38,13 +38,12 @@ class PdlFunctionalTestLifecycleTest {
     private PdlProxyClient pdlProxyClient;
 
     private VirtualTimeScheduler scheduler;
-    private PdlFunctionalTestProperties properties;
     private PdlFunctionalTestLifecycle lifecycle;
 
     @BeforeEach
     void setUp() {
         scheduler = VirtualTimeScheduler.create();
-        properties = new PdlFunctionalTestProperties();
+        var properties = new PdlFunctionalTestProperties();
         properties.setIdent("03458537037");
         properties.setPollInterval(Duration.ofSeconds(1));
         properties.setPollTimeout(Duration.ofSeconds(5));

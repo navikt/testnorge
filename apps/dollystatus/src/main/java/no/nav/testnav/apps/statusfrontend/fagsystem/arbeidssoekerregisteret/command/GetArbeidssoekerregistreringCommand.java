@@ -38,8 +38,7 @@ public class GetArbeidssoekerregistreringCommand
                                 .defaultIfEmpty(ArbeidssoekerregisteretResourceStatus.emptyStatus());
                     }
                     return response.createException()
-                            .flatMap(exception ->
-                                    Mono.<ArbeidssoekerregisteretResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());

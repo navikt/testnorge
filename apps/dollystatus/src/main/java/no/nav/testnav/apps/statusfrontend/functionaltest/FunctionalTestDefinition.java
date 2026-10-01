@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor;
 import reactor.core.publisher.Mono;

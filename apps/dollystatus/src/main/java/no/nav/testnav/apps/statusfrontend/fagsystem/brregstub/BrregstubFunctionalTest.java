@@ -1,9 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.brregstub;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.BrregstubFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
@@ -23,8 +20,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.Optional;
+import java.util.Set;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
 @Service
 @ConditionalOnProperty(prefix = "functional-test.brregstub", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class BrregstubFunctionalTest implements FunctionalTestDefinition<
         Preflight,
         Creation,
@@ -40,18 +43,6 @@ public class BrregstubFunctionalTest implements FunctionalTestDefinition<
     private final PdlFunctionalTestProperties pdlProperties;
     private final BrregstubFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public BrregstubFunctionalTest(
-            BrregstubClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            BrregstubFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

@@ -4,6 +4,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestKey;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestState;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class FunctionalTestCacheTest {
                 completedAt);
 
         assertThat(completedStatus).get()
-                .extracting(status -> status.cachedUntil())
+                .extracting(FunctionalTestStatus::cachedUntil)
                 .isEqualTo(completedAt.plus(Duration.ofHours(1)));
         assertThat(cache.isExpired(KEY)).isFalse();
 

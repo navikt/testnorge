@@ -2,6 +2,9 @@ package no.nav.testnav.apps.statusfrontend.config;
 
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
@@ -18,14 +21,17 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.core.context.ReactiveSecurityContextHolder.withAuthentication;
 
+@ExtendWith(MockitoExtension.class)
 class LocalSecurityConfigurationTest {
 
     private static final String REGISTRATION_ID = "aad";
     private static final String USER_ID = "local-user";
+
+    @Mock
+    private ReactiveOAuth2AuthorizedClientService authorizedClientService;
 
     @Test
     void shouldTreatLocalAadLoginAsAzureAd() {
@@ -53,7 +59,6 @@ class LocalSecurityConfigurationTest {
     @Test
     void shouldReuseLocalAuthorizedClientAccessToken() {
         var authentication = authentication();
-        var authorizedClientService = mock(ReactiveOAuth2AuthorizedClientService.class);
         var accessToken = new OAuth2AccessToken(
                 OAuth2AccessToken.TokenType.BEARER,
                 "local-access-token",
@@ -63,7 +68,7 @@ class LocalSecurityConfigurationTest {
                 clientRegistration(),
                 USER_ID,
                 accessToken);
-        when(authorizedClientService.<OAuth2AuthorizedClient>loadAuthorizedClient(REGISTRATION_ID, USER_ID))
+        when(authorizedClientService.loadAuthorizedClient(REGISTRATION_ID, USER_ID))
                 .thenReturn(Mono.just(authorizedClient));
         var authenticatedToken = new LocalAuthenticatedToken(
                 new LocalAuthenticatedResourceServerType(),

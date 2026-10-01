@@ -1,19 +1,11 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.pensjon;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PensjonFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestCache;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestCoordinator;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestRegistry;
 import no.nav.testnav.apps.statusfrontend.functionaltest.PdlTestLifecycle;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestRunState;
@@ -32,6 +24,15 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment.Q1;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment.Q2;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -299,7 +300,7 @@ class PensjonFunctionalTestLifecycleTest {
         var deadline = System.nanoTime() + Duration.ofSeconds(2).toNanos();
         while (System.nanoTime() < deadline) {
             var run = coordinator.getRun(runId).block(Duration.ofSeconds(1));
-            if (run != null && run.state() == FunctionalTestRunState.COMPLETED) {
+            if (nonNull(run) && run.state() == FunctionalTestRunState.COMPLETED) {
                 return run;
             }
             try {
@@ -312,13 +313,8 @@ class PensjonFunctionalTestLifecycleTest {
         throw new AssertionError("Test run did not complete.");
     }
 
-    private static final class RecordingPdlLifecycle implements PdlTestLifecycle<String, String> {
-
-        private final CopyOnWriteArrayList<String> events;
-
-        private RecordingPdlLifecycle(CopyOnWriteArrayList<String> events) {
-            this.events = events;
-        }
+    private record RecordingPdlLifecycle(CopyOnWriteArrayList<String> events)
+            implements PdlTestLifecycle<String, String> {
 
         @Override
         public no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor descriptor() {

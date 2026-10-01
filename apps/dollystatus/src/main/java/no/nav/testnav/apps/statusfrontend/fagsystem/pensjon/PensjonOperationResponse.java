@@ -5,10 +5,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 public record PensjonOperationResponse(List<EnvironmentStatus> status) {
 
     public PensjonOperationResponse {
-        status = Objects.isNull(status) ? List.of() : List.copyOf(status);
+        status = isNull(status) ? List.of() : List.copyOf(status);
     }
 
     public void requireSuccessful(Set<String> expectedEnvironments) {
@@ -20,9 +23,9 @@ public record PensjonOperationResponse(List<EnvironmentStatus> status) {
         var allSuccessful = status.stream()
                 .filter(Objects::nonNull)
                 .map(EnvironmentStatus::response)
-                .allMatch(response -> Objects.nonNull(response)
-                        && Objects.nonNull(response.httpStatus())
-                        && Objects.nonNull(response.httpStatus().status())
+                .allMatch(response -> nonNull(response)
+                        && nonNull(response.httpStatus())
+                        && nonNull(response.httpStatus().status())
                         && response.httpStatus().status() >= 200
                         && response.httpStatus().status() < 300);
 

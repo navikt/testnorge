@@ -4,14 +4,15 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunNotFoundException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
@@ -20,14 +21,18 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnv
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestRunState;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestRunStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestState;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunReference;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatusDescriptor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -38,34 +43,39 @@ import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class FunctionalTestCoordinatorTest {
 
     private static final Instant STARTED_AT = Instant.parse("2026-09-21T10:00:00Z");
+
+    @Mock
+    private FunctionalTestResultListener listener;
 
     @Test
     void shouldCleanupExistingDataBeforeRecheckingPreflightAndCreating() {
@@ -77,11 +87,13 @@ class FunctionalTestCoordinatorTest {
         var coordinator = coordinator(definition);
 
         var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(reference).isNotNull();
         verify(definition, timeout(1000)).cleanupExistingData(any());
         assertState(coordinator, reference, FunctionalTestState.CLEANUP);
         verify(definition, never()).create(any(), any());
-        assertThat(coordinator.startAllExpired().block(Duration.ofSeconds(1)).runId())
-                .isEqualTo(reference.runId());
+        var activeReference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+        assertThat(activeReference).isNotNull();
+        assertThat(activeReference.runId()).isEqualTo(reference.runId());
 
         cleanupGate.tryEmitEmpty();
         assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
@@ -116,7 +128,6 @@ class FunctionalTestCoordinatorTest {
         };
         doReturn(Mono.error(new FunctionalTestExistingDataException())).when(definition).preflight(any());
         doReturn(Mono.error(failure)).when(definition).cleanupExistingData(any());
-        var listener = mock(FunctionalTestResultListener.class);
         var clock = new MutableClock(STARTED_AT);
         var coordinator = new FunctionalTestCoordinator(
                 new FunctionalTestRegistry(List.of(definition, new OrderedDefinition(events, "instdata"))),
@@ -251,6 +262,7 @@ class FunctionalTestCoordinatorTest {
             doReturn(Mono.error(failure)).when(definition).preflight(any());
             var coordinator = coordinator(definition);
             var reference = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+            assertThat(reference).isNotNull();
 
             assertThat(awaitCompleted(coordinator, reference).results()).singleElement()
                     .satisfies(status -> assertThat(status.state()).isEqualTo(FunctionalTestState.PREFLIGHT_FAILED));
@@ -383,7 +395,6 @@ class FunctionalTestCoordinatorTest {
     void shouldReleaseRunBeforeFullRunListenerCompletes() throws InterruptedException {
         var definition = new CountingDefinition();
         var clock = new MutableClock(STARTED_AT);
-        var listener = mock(FunctionalTestResultListener.class);
         var listenerStarted = new CountDownLatch(1);
         var releaseListener = new CountDownLatch(1);
         doAnswer(_ -> {
@@ -503,7 +514,6 @@ class FunctionalTestCoordinatorTest {
         var pdlLifecycle = new RecordingPdlLifecycle(events, false);
         var definition = new RequiresPdlDefinition(events, false, Set.of(FunctionalTestEnvironment.Q1));
         var clock = new MutableClock(STARTED_AT);
-        var listener = mock(FunctionalTestResultListener.class);
         var coordinator = new FunctionalTestCoordinator(
                 new FunctionalTestRegistry(List.of(definition)),
                 new FunctionalTestCache(clock),
@@ -533,7 +543,6 @@ class FunctionalTestCoordinatorTest {
                         new OrderedDefinition(events, "pensjon-tp")),
                 List.of(new OrderedTechnicalStatus(events, "tags")));
         var clock = new MutableClock(STARTED_AT);
-        var listener = mock(FunctionalTestResultListener.class);
         var coordinator = new FunctionalTestCoordinator(
                 registry,
                 new FunctionalTestCache(clock),
@@ -579,7 +588,6 @@ class FunctionalTestCoordinatorTest {
             }
         };
         var clock = new MutableClock(STARTED_AT);
-        var listener = mock(FunctionalTestResultListener.class);
         var coordinator = new FunctionalTestCoordinator(
                 new FunctionalTestRegistry(List.of(definition), List.of(technicalCheck)),
                 new FunctionalTestCache(clock),
@@ -711,7 +719,7 @@ class FunctionalTestCoordinatorTest {
         try {
             var run = coordinator.startAllExpired().block(Duration.ofSeconds(1));
             assertThat(run).isNotNull();
-            assertThat(List.of(started.poll(5, TimeUnit.SECONDS), started.poll(5, TimeUnit.SECONDS)))
+            assertThat(Arrays.asList(started.poll(5, TimeUnit.SECONDS), started.poll(5, TimeUnit.SECONDS)))
                     .containsExactlyInAnyOrder(firstSystem + "-Q1", independentSystem + "-GLOBAL");
             assertThat(started).isEmpty();
             first.cleanupGate.tryEmitEmpty();
@@ -741,7 +749,6 @@ class FunctionalTestCoordinatorTest {
         var instdata = new GatedCleanupDefinition(
                 "instdata", Set.of(FunctionalTestEnvironment.Q1), events, started);
         var clock = new MutableClock(STARTED_AT);
-        var listener = mock(FunctionalTestResultListener.class);
         var coordinator = new FunctionalTestCoordinator(
                 new FunctionalTestRegistry(List.of(pension, arena, instdata),
                         List.of(new OrderedTechnicalStatus(events, "tags"))),
@@ -760,7 +767,7 @@ class FunctionalTestCoordinatorTest {
             assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo("instdata-Q1");
             arena.cleanupGate.tryEmitEmpty();
             assertThat(events).doesNotContain("pdl-cleanup");
-            verify(listener, org.mockito.Mockito.never()).onFullRunCompleted(any());
+            verify(listener, never()).onFullRunCompleted(any());
             instdata.cleanupGate.tryEmitEmpty();
             awaitCompleted(coordinator, run);
 
@@ -855,7 +862,7 @@ class FunctionalTestCoordinatorTest {
 
         assertThat(run).isNotNull();
         assertThat(run.results()).singleElement()
-                .extracting(status -> status.state())
+                .extracting(FunctionalTestStatus::state)
                 .isEqualTo(expectedState);
     }
 
@@ -866,7 +873,7 @@ class FunctionalTestCoordinatorTest {
         var deadline = System.nanoTime() + Duration.ofSeconds(5).toNanos();
         while (System.nanoTime() < deadline) {
             var run = coordinator.getRun(runReference.runId()).block(Duration.ofSeconds(1));
-            if (run != null && run.state() == FunctionalTestRunState.COMPLETED) {
+            if (nonNull(run) && run.state() == FunctionalTestRunState.COMPLETED) {
                 return run;
             }
             try {
@@ -971,6 +978,7 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
+    @RequiredArgsConstructor
     private static final class GatedCleanupDefinition extends GatedPreflightDefinition {
 
         private final String systemId;
@@ -978,18 +986,6 @@ class FunctionalTestCoordinatorTest {
         private final List<String> events;
         private final LinkedBlockingQueue<String> started;
         private final Sinks.Empty<Void> cleanupGate = Sinks.empty();
-
-        private GatedCleanupDefinition(
-                String systemId,
-                Set<FunctionalTestEnvironment> environments,
-                List<String> events,
-                LinkedBlockingQueue<String> started
-        ) {
-            this.systemId = systemId;
-            this.environments = environments;
-            this.events = events;
-            this.started = started;
-        }
 
         @Override
         public FunctionalTestDescriptor descriptor() {
@@ -1110,16 +1106,12 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
+    @RequiredArgsConstructor
     private static final class RecordingPdlLifecycle implements PdlTestLifecycle<TestValue, TestValue> {
 
         private final List<String> events;
         private final boolean failQ2;
         private final AtomicInteger createAttempts = new AtomicInteger();
-
-        private RecordingPdlLifecycle(List<String> events, boolean failQ2) {
-            this.events = events;
-            this.failQ2 = failQ2;
-        }
 
         @Override
         public FunctionalTestDescriptor descriptor() {
@@ -1167,27 +1159,16 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class RequiresPdlDefinition
-            implements FunctionalTestDefinition<TestValue, TestValue, TestValue> {
-
-        private final List<String> events;
-        private final boolean failVerification;
-        private final Set<FunctionalTestEnvironment> environments;
+    private record RequiresPdlDefinition(
+            List<String> events,
+            boolean failVerification,
+            Set<FunctionalTestEnvironment> environments
+    ) implements FunctionalTestDefinition<TestValue, TestValue, TestValue> {
 
         private RequiresPdlDefinition(List<String> events, boolean failVerification) {
             this(events, failVerification, Set.of(
                     FunctionalTestEnvironment.Q1,
                     FunctionalTestEnvironment.Q2));
-        }
-
-        private RequiresPdlDefinition(
-                List<String> events,
-                boolean failVerification,
-                Set<FunctionalTestEnvironment> environments
-        ) {
-            this.events = events;
-            this.failVerification = failVerification;
-            this.environments = environments;
         }
 
         @Override
@@ -1241,15 +1222,11 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class OrderedDefinition
+    private record OrderedDefinition(List<String> events, SystemId systemId)
             implements FunctionalTestDefinition<TestValue, TestValue, TestValue> {
 
-        private final List<String> events;
-        private final SystemId systemId;
-
         private OrderedDefinition(List<String> events, String systemId) {
-            this.events = events;
-            this.systemId = new SystemId(systemId);
+            this(events, new SystemId(systemId));
         }
 
         @Override
@@ -1298,14 +1275,11 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class OrderedTechnicalStatus implements TechnicalStatusDefinition {
-
-        private final List<String> events;
-        private final SystemId systemId;
+    private record OrderedTechnicalStatus(List<String> events, SystemId systemId)
+            implements TechnicalStatusDefinition {
 
         private OrderedTechnicalStatus(List<String> events, String systemId) {
-            this.events = events;
-            this.systemId = new SystemId(systemId);
+            this(events, new SystemId(systemId));
         }
 
         @Override

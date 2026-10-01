@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.medl;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.fagsystem.technical.SecondBatchTechnicalStatusClient;
 import no.nav.testnav.apps.statusfrontend.functionaltest.TechnicalStatusDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 @Service
 @ConditionalOnProperty(prefix = "functional-test.medl", name = "technical-only", havingValue = "true")
+@RequiredArgsConstructor
 public class MedlTechnicalStatus implements TechnicalStatusDefinition {
 
     private static final TechnicalStatusDescriptor DESCRIPTOR = new TechnicalStatusDescriptor(
@@ -23,10 +25,6 @@ public class MedlTechnicalStatus implements TechnicalStatusDefinition {
             Set.of(FunctionalTestEnvironment.GLOBAL));
 
     private final SecondBatchTechnicalStatusClient client;
-
-    public MedlTechnicalStatus(SecondBatchTechnicalStatusClient client) {
-        this.client = client;
-    }
 
     @Override
     public TechnicalStatusDescriptor descriptor() {

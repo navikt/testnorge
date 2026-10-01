@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.brregstub;
 
-import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.BrregstubFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.Consumers;
+import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.BrregstubFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.fagsystem.brregstub.command.CreateBrregstubRoleOverviewCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.brregstub.command.DeleteBrregstubOrganizationCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.brregstub.command.DeleteBrregstubRoleOverviewCommand;

@@ -1,8 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.nom;
 
-import java.time.ZoneOffset;
-import java.util.Optional;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.NomFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
@@ -20,12 +18,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import java.time.ZoneOffset;
+import java.util.Optional;
+import java.util.Set;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
 
 @Service
 @ConditionalOnProperty(prefix = "functional-test.nom", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
 public class NomFunctionalTest
         implements FunctionalTestDefinition<NomFunctionalTest.Preflight, Creation, NomVerification> {
 
@@ -42,18 +45,6 @@ public class NomFunctionalTest
     private final PdlFunctionalTestProperties pdlProperties;
     private final NomFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    public NomFunctionalTest(
-            NomClient client,
-            PdlFunctionalTestProperties pdlProperties,
-            NomFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.client = client;
-        this.pdlProperties = pdlProperties;
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public FunctionalTestDescriptor descriptor() {

@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest.model;
 
-public final class EmptyTestResult {
+import lombok.experimental.UtilityClass;
 
-    private EmptyTestResult() {
-    }
+@UtilityClass
+public class EmptyTestResult {
 
     public enum Preflight {
         COMPLETED

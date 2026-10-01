@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret;
 
-import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArbeidssoekerregisteretFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.Consumers;
+import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.ArbeidssoekerregisteretFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret.command.CreateArbeidssoekerregistreringCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret.command.DeleteArbeidssoekerregistreringCommand;

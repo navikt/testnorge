@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.organisasjon;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.fagsystem.technical.SecondBatchTechnicalStatusClient;
 import no.nav.testnav.apps.statusfrontend.functionaltest.TechnicalStatusDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
@@ -18,6 +19,7 @@ import java.util.Set;
         prefix = "functional-test.organisasjon-forvalter",
         name = "technical-only",
         havingValue = "true")
+@RequiredArgsConstructor
 public class OrganisasjonTechnicalStatus implements TechnicalStatusDefinition {
 
     private static final TechnicalStatusDescriptor DESCRIPTOR = new TechnicalStatusDescriptor(
@@ -26,10 +28,6 @@ public class OrganisasjonTechnicalStatus implements TechnicalStatusDefinition {
             Set.of(FunctionalTestEnvironment.GLOBAL));
 
     private final SecondBatchTechnicalStatusClient client;
-
-    public OrganisasjonTechnicalStatus(SecondBatchTechnicalStatusClient client) {
-        this.client = client;
-    }
 
     @Override
     public TechnicalStatusDescriptor descriptor() {

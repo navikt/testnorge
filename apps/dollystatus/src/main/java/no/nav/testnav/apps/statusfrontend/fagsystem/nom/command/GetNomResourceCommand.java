@@ -42,7 +42,7 @@ public class GetNomResourceCommand implements Callable<Mono<NomResourceStatus>> 
                                 .defaultIfEmpty(NomResourceStatus.emptyStatus());
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<NomResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
@@ -55,10 +55,10 @@ public class GetNomResourceCommand implements Callable<Mono<NomResourceStatus>> 
         if (!expectedRequest.personident().equals(response.path("personident").asString())) {
             throw new IllegalStateException("NOM-oppslaget returnerte en annen person enn testidenten.");
         }
-        var endDate = response.path("sluttDato").isTextual()
+        var endDate = response.path("sluttDato").isString()
                 ? LocalDate.parse(response.path("sluttDato").asString())
                 : null;
-        var resourceId = response.path("fid").asText(null);
+        var resourceId = response.path("fid").asString(null);
         var startDate = LocalDate.parse(response.path("startDato").asString());
         var expected = expectedRequest.personident().equals(response.path("personident").asString())
                 && expectedRequest.fornavn().equals(response.path("navn").path("fornavn").asString())

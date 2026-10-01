@@ -1,5 +1,8 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arena.ArenaRequest;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arena.command.CreateArenaUserCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.arena.command.DeactivateArenaUserCommand;
@@ -31,12 +34,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
@@ -54,8 +54,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.not;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -300,7 +300,7 @@ class SecondBatchCommandContractTest {
                         webClient, TOKEN, request, RunId.from(CALL_ID), TIMEOUT).call())
                 .expectErrorSatisfies(error -> assertThat(error)
                         .isInstanceOfSatisfying(FunctionalTestResponseException.class, failure -> {
-                            assertThat(failure.reason()).isEqualTo(expectedReason);
+                            assertThat(failure.getReason()).isEqualTo(expectedReason);
                             assertThat(failure.getMessage()).isEqualTo(expectedReason.name());
                             assertThat(failure.getCause()).isNull();
                         }))
@@ -430,7 +430,7 @@ class SecondBatchCommandContractTest {
         } else if (httpStatus == 200) {
             verification.expectErrorSatisfies(error -> assertThat(error)
                             .isInstanceOfSatisfying(FunctionalTestResponseException.class,
-                                    failure -> assertThat(failure.reason()).isEqualTo(Reason.KRR_EMPTY_RESPONSE)))
+                                    failure -> assertThat(failure.getReason()).isEqualTo(Reason.KRR_EMPTY_RESPONSE)))
                     .verify();
         } else {
             verification.expectError(WebClientResponseException.class).verify();

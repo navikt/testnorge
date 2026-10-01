@@ -1,14 +1,13 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arena;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.ZoneOffset;
 import java.util.List;
 
-final class ArenaTestData {
-
-    private ArenaTestData() {
-    }
+@UtilityClass
+class ArenaTestData {
 
     static ArenaRequest request(String ident, FunctionalTestContext context) {
         return new ArenaRequest(List.of(new ArenaRequest.User(

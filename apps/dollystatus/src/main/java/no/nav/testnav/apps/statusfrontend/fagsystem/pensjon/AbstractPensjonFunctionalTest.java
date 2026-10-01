@@ -1,8 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.pensjon;
 
-import java.util.Optional;
-
-import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PensjonFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
@@ -14,19 +13,16 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestCon
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.Optional;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractPensjonFunctionalTest
         implements FunctionalTestDefinition<Preflight, Creation, Verification> {
 
     private final PensjonFunctionalTestProperties properties;
     private final Scheduler scheduler;
-
-    protected AbstractPensjonFunctionalTest(
-            PensjonFunctionalTestProperties properties,
-            Scheduler scheduler
-    ) {
-        this.properties = properties;
-        this.scheduler = scheduler;
-    }
 
     @Override
     public final boolean requiresPdl() {

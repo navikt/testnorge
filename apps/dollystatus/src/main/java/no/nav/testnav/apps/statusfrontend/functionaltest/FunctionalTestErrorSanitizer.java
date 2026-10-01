@@ -1,10 +1,10 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestError;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestErrorCategory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -22,16 +22,40 @@ import static no.nav.testnav.apps.statusfrontend.functionaltest.model.Functional
 import static no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestErrorCategory.VALIDATION;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestErrorCategory.VERIFICATION_TIMEOUT;
 
-final class FunctionalTestErrorSanitizer {
+@UtilityClass
+class FunctionalTestErrorSanitizer {
 
-    private FunctionalTestErrorSanitizer() {
+    private static FunctionalTestError sanitizeResponse(int statusCode) {
+        if (statusCode == HttpStatus.UNAUTHORIZED.value() || statusCode == HttpStatus.FORBIDDEN.value()) {
+            return new FunctionalTestError(AUTHENTICATION, "Fagsystemet avviste tjenestetilgangen.");
+        }
+        if (statusCode >= 500) {
+            return new FunctionalTestError(DOWNSTREAM_SERVER, "Fagsystemet returnerte en teknisk feil.");
+        }
+        return new FunctionalTestError(DOWNSTREAM_CLIENT, "Fagsystemet avviste forespørselen.");
+    }
+
+    private static String messageFor(FailurePhase phase) {
+        return switch (phase) {
+            case PREFLIGHT -> "Forhåndskontrollen feilet.";
+            case CREATE -> "Testdata kunne ikke opprettes.";
+            case VERIFY -> "Testdata kunne ikke verifiseres.";
+            case CLEANUP -> "Testdata kunne ikke ryddes opp.";
+        };
+    }
+
+    enum FailurePhase {
+        PREFLIGHT,
+        CREATE,
+        VERIFY,
+        CLEANUP
     }
 
     static FunctionalTestError sanitize(FailurePhase phase, Throwable throwable) {
         if (throwable instanceof FunctionalTestResponseException responseException) {
             return new FunctionalTestError(
                     phase == FailurePhase.CLEANUP ? CLEANUP : INTERNAL,
-                    messageFor(phase) + " Feilkode: " + responseException.reason().name() + ".");
+                    messageFor(phase) + " Feilkode: " + responseException.getReason().name() + ".");
         }
         if (phase == FailurePhase.CLEANUP) {
             return new FunctionalTestError(CLEANUP, "Testdata kunne ikke ryddes opp.");
@@ -59,31 +83,5 @@ final class FunctionalTestErrorSanitizer {
             return new FunctionalTestError(VALIDATION, "Testdata ble avvist av valideringen.");
         }
         return new FunctionalTestError(INTERNAL, messageFor(phase));
-    }
-
-    private static FunctionalTestError sanitizeResponse(int statusCode) {
-        if (statusCode == HttpStatus.UNAUTHORIZED.value() || statusCode == HttpStatus.FORBIDDEN.value()) {
-            return new FunctionalTestError(AUTHENTICATION, "Fagsystemet avviste tjenestetilgangen.");
-        }
-        if (statusCode >= 500) {
-            return new FunctionalTestError(DOWNSTREAM_SERVER, "Fagsystemet returnerte en teknisk feil.");
-        }
-        return new FunctionalTestError(DOWNSTREAM_CLIENT, "Fagsystemet avviste forespørselen.");
-    }
-
-    private static String messageFor(FailurePhase phase) {
-        return switch (phase) {
-            case PREFLIGHT -> "Forhåndskontrollen feilet.";
-            case CREATE -> "Testdata kunne ikke opprettes.";
-            case VERIFY -> "Testdata kunne ikke verifiseres.";
-            case CLEANUP -> "Testdata kunne ikke ryddes opp.";
-        };
-    }
-
-    enum FailurePhase {
-        PREFLIGHT,
-        CREATE,
-        VERIFY,
-        CLEANUP
     }
 }

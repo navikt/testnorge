@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.statusfrontend.api;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
@@ -21,21 +22,17 @@ import java.time.Instant;
         FagsystemStatusController.class,
         TestkjoringController.class
 })
+@RequiredArgsConstructor
 public class ApiExceptionHandler {
 
     private final Clock clock;
-
-    public ApiExceptionHandler(Clock clock) {
-        this.clock = clock;
-    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     ResponseEntity<ExceptionInformation> badRequest(ServerWebExchange exchange) {
         return informationFor(
                 HttpStatus.BAD_REQUEST,
                 "Forespørselen har ugyldig format.",
-                exchange,
-                null);
+                exchange);
     }
 
     @ExceptionHandler({
@@ -46,8 +43,7 @@ public class ApiExceptionHandler {
         return informationFor(
                 HttpStatus.NOT_FOUND,
                 "Fagsystemet eller testkjøringen ble ikke funnet.",
-                exchange,
-                null);
+                exchange);
     }
 
     @ExceptionHandler(FunctionalTestRunInProgressException.class)
@@ -55,8 +51,7 @@ public class ApiExceptionHandler {
         return informationFor(
                 HttpStatus.CONFLICT,
                 "En annen testkjøring pågår.",
-                exchange,
-                null);
+                exchange);
     }
 
     @ExceptionHandler(FunctionalTestCooldownException.class)
@@ -85,18 +80,16 @@ public class ApiExceptionHandler {
         return informationFor(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Testkjøringen kunne ikke behandles.",
-                exchange,
-                null);
+                exchange);
     }
 
     private ResponseEntity<ExceptionInformation> informationFor(
             HttpStatus status,
             String message,
-            ServerWebExchange exchange,
-            Instant retryAfter
+            ServerWebExchange exchange
     ) {
         return ResponseEntity.status(status)
-                .body(information(status, message, exchange, retryAfter));
+                .body(information(status, message, exchange, null));
     }
 
     private ExceptionInformation information(

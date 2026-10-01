@@ -33,7 +33,7 @@ public record InntektstubResourceStatus(boolean empty, boolean expectedDataPrese
     }
 
     private static void rejectValidationError(JsonNode entry) {
-        if (!entry.path("feilmelding").asText("").isBlank()) {
+        if (!entry.path("feilmelding").asString("").isBlank()) {
             throw new IllegalArgumentException("Inntektstub avviste testdata.");
         }
     }

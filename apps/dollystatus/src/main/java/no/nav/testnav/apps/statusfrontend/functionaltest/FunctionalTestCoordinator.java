@@ -1,28 +1,14 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestBlockedException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestCooldownException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunInProgressException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
-import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestError;
@@ -46,6 +32,21 @@ import reactor.core.scheduler.Schedulers;
 import reactor.util.context.ContextView;
 import reactor.util.retry.Retry;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestErrorSanitizer.FailurePhase.CLEANUP;
 import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestErrorSanitizer.FailurePhase.CREATE;
@@ -119,7 +120,7 @@ public class FunctionalTestCoordinator {
     public Mono<RunReference> startAllExpired() {
         return Mono.deferContextual(contextView -> Mono.fromSupplier(() -> {
             synchronized (runMonitor) {
-                if (activeRun != null) {
+                if (nonNull(activeRun)) {
                     return new RunReference(activeRun.runId());
                 }
 
@@ -145,8 +146,8 @@ public class FunctionalTestCoordinator {
     public Mono<RunReference> startSystem(SystemId systemId) {
         return Mono.deferContextual(contextView -> Mono.fromSupplier(() -> {
             synchronized (runMonitor) {
-                if (activeRun != null) {
-                    throw new FunctionalTestRunInProgressException(activeRun.runId());
+                if (nonNull(activeRun)) {
+                    throw new FunctionalTestRunInProgressException();
                 }
 
                 var pdlLifecycle = pdlLifecycles.stream()
@@ -250,7 +251,7 @@ public class FunctionalTestCoordinator {
                 .subscribeOn(Schedulers.boundedElastic())
                 .contextWrite(context -> context.putAll(contextView))
                 .subscribe(
-                        ignored -> {
+                        _ -> {
                         },
                         throwable -> failRun(run, throwable),
                         () -> completeRun(run, true));
@@ -264,18 +265,17 @@ public class FunctionalTestCoordinator {
             Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
             ActiveRun run
     ) {
-        if (pdlLifecycle.isPresent()) {
-            return executeWithPdl(pdlLifecycle.get(), registrations, technicalRegistrations, run);
-        }
-        return executeInBackendOrder(
-                registrations,
-                technicalRegistrations,
-                registration -> registration.definition().requiresPdl()
-                        ? blockRegistration(registration.key(), run)
-                        : execute(registration, run),
-                registration -> registration.definition().requiresPdl()
-                        ? blockRegistration(registration.key(), run)
-                        : executeTechnical(registration, run));
+        return pdlLifecycle
+                .map(lifecycle -> executeWithPdl(lifecycle, registrations, technicalRegistrations, run))
+                .orElseGet(() -> executeInBackendOrder(
+                        registrations,
+                        technicalRegistrations,
+                        registration -> registration.definition().requiresPdl()
+                                ? blockRegistration(registration.key(), run)
+                                : execute(registration, run),
+                        registration -> registration.definition().requiresPdl()
+                                ? blockRegistration(registration.key(), run)
+                                : executeTechnical(registration, run)));
     }
 
     private Optional<PdlTestLifecycle<?, ?>> pdlLifecycleFor(boolean needed) {
@@ -332,11 +332,11 @@ public class FunctionalTestCoordinator {
                                 registrations,
                                 technicalRegistrations,
                                 registration -> registration.definition().requiresPdl()
-                                        && !execution.isReadyFor(registration.environment())
+                                        && execution.isNotReadyFor(registration.environment())
                                         ? blockRegistration(registration.key(), run)
                                         : execute(registration, run),
                                 registration -> registration.definition().requiresPdl()
-                                        && !execution.isReadyFor(registration.environment())
+                                        && execution.isNotReadyFor(registration.environment())
                                         ? blockRegistration(registration.key(), run)
                                         : executeTechnical(registration, run))
                         .then(cleanupPdl(lifecycle, execution, run)));
@@ -364,7 +364,7 @@ public class FunctionalTestCoordinator {
                                             _ -> new ArrayList<>())
                                     .add(Mono.defer(() -> technicalExecution.apply(registration))));
                     return Flux.fromIterable(groups.values())
-                            .flatMap(group -> Flux.concat(group), MAX_CONCURRENT_GROUPS);
+                            .flatMap(Flux::concat, MAX_CONCURRENT_GROUPS);
                 })
                 .then();
     }
@@ -428,7 +428,7 @@ public class FunctionalTestCoordinator {
             ActiveRun run
     ) {
         var context = pdlContext(lifecycle, run);
-        updatePdl(run, lifecycle, FunctionalTestState.PREFLIGHT, null);
+        updatePdl(run, lifecycle, FunctionalTestState.PREFLIGHT);
 
         return Mono.defer(() -> lifecycle.preflight(context))
                 .switchIfEmpty(Mono.error(new IllegalStateException("PDL preflight returned no result.")))
@@ -453,14 +453,14 @@ public class FunctionalTestCoordinator {
             P preflightResult,
             ActiveRun run
     ) {
-        updatePdl(run, lifecycle, FunctionalTestState.CREATE, null);
+        updatePdl(run, lifecycle, FunctionalTestState.CREATE);
 
         return Mono.defer(() -> lifecycle.create(context, preflightResult))
                 .switchIfEmpty(Mono.error(new IllegalStateException("PDL create returned no result.")))
                 .map(createResult -> new PdlExecution<>(
                         Optional.of(preflightResult),
                         Optional.of(createResult),
-                        Map.<no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment, CompletionOutcome>of()))
+                        Map.of()))
                 .onErrorResume(throwable -> Mono.just(new PdlExecution<>(
                         Optional.of(preflightResult),
                         Optional.empty(),
@@ -520,7 +520,7 @@ public class FunctionalTestCoordinator {
         lifecycle.descriptor().environments().forEach(environment -> {
             var key = new FunctionalTestKey(lifecycle.descriptor().systemId(), environment);
             var outcome = execution.outcomes().get(environment);
-            update(run, key, FunctionalTestState.CLEANUP, 1, outcome == null ? null : outcome.error());
+            update(run, key, FunctionalTestState.CLEANUP, 1, isNull(outcome) ? null : outcome.error());
         });
 
         var cleanupAttempts = new AtomicInteger();
@@ -553,7 +553,7 @@ public class FunctionalTestCoordinator {
                             FunctionalTestState.CLEANUP_FAILED,
                             cleanupAttempts.get(),
                             FunctionalTestErrorSanitizer.sanitize(CLEANUP, throwable)));
-                    return Mono.<Void>empty();
+                    return Mono.empty();
                 });
     }
 
@@ -585,15 +585,14 @@ public class FunctionalTestCoordinator {
     private void updatePdl(
             ActiveRun run,
             PdlTestLifecycle<?, ?> lifecycle,
-            FunctionalTestState state,
-            FunctionalTestError error
+            FunctionalTestState state
     ) {
         lifecycle.descriptor().environments().forEach(environment -> update(
                 run,
                 new FunctionalTestKey(lifecycle.descriptor().systemId(), environment),
                 state,
                 0,
-                error));
+                null));
     }
 
     private FunctionalTestContext pdlContext(PdlTestLifecycle<?, ?> lifecycle, ActiveRun run) {
@@ -787,7 +786,7 @@ public class FunctionalTestCoordinator {
                 ? failure.getCause().getClass().getSimpleName()
                 : null;
         var responseFailure = failure instanceof FunctionalTestResponseException responseException
-                ? responseException.reason()
+                ? responseException.getReason()
                 : null;
         log.warn(
                 "Funksjonstest feilet: runId={}, systemId={}, miljo={}, fase={}, feiltype={}, aarsakstype={}, httpStatus={}, responsfeil={}",
@@ -831,7 +830,7 @@ public class FunctionalTestCoordinator {
             int cleanupAttempts,
             FunctionalTestError error
     ) {
-        return Mono.<Void>fromRunnable(() -> complete(run, key, state, cleanupAttempts, error));
+        return Mono.fromRunnable(() -> complete(run, key, state, cleanupAttempts, error));
     }
 
     private void update(
@@ -911,16 +910,16 @@ public class FunctionalTestCoordinator {
             Map<FunctionalTestEnvironment, CompletionOutcome> outcomes
     ) {
 
-        private boolean isReadyFor(FunctionalTestEnvironment environment) {
+        private boolean isNotReadyFor(FunctionalTestEnvironment environment) {
             if (environment == FunctionalTestEnvironment.GLOBAL) {
-                return !outcomes.isEmpty()
-                        && outcomes.values().stream()
-                        .allMatch(outcome -> outcome.state() == FunctionalTestState.OK);
+                return outcomes.isEmpty()
+                        || outcomes.values().stream()
+                        .anyMatch(outcome -> outcome.state() != FunctionalTestState.OK);
             }
             return Optional.ofNullable(outcomes.get(environment))
                     .map(CompletionOutcome::state)
                     .filter(FunctionalTestState.OK::equals)
-                    .isPresent();
+                    .isEmpty();
         }
     }
 

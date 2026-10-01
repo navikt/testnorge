@@ -1,13 +1,12 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.arbeidssoekerregisteret;
 
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
 
 import java.time.LocalDate;
 
-final class ArbeidssoekerregisteretTestData {
-
-    private ArbeidssoekerregisteretTestData() {
-    }
+@UtilityClass
+class ArbeidssoekerregisteretTestData {
 
     static ArbeidssoekerregisteretRequest request(String ident, FunctionalTestContext context) {
         var appliesFrom = LocalDate.of(2025, 1, 1);

@@ -36,7 +36,7 @@ public class GetUdiPersonCommand implements Callable<Mono<UdiResourceStatus>> {
                                         "UDI-oppslaget returnerte tom respons.")));
                     }
                     return response.createException()
-                            .flatMap(exception -> Mono.<UdiResourceStatus>error(exception));
+                            .flatMap(Mono::error);
                 })
                 .timeout(timeout)
                 .retryWhen(WebClientError.is5xxException());
