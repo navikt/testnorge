@@ -32,8 +32,29 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: mode === 'local-dev' && {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+			'/oauth2/authorization/aad': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+			'/login/oauth2/code/aad': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+		},
 		port: 3000,
 		forwardConsole: true,
+	},
+	test: {
+		environment: 'jsdom',
+		setupFiles: ['./vitest.setup.ts'],
 	},
 	plugins: [
 		react(),

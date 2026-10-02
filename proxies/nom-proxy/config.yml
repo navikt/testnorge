@@ -33,6 +33,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: testnav-dollystatus
         - application: dolly-backend
         - application: dolly-backend-dev
         - application: dolly-frontend
