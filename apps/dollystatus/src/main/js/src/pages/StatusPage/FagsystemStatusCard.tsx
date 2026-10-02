@@ -71,7 +71,7 @@ export const FagsystemStatusCard = ({
 	return (
 		<article className="fagsystem-card">
 			<VStack gap="space-16">
-				<Heading level="2" size="small">
+				<Heading level="3" size="small">
 					{firstStatus.displayName}
 				</Heading>
 				<ul className="fagsystem-environments">

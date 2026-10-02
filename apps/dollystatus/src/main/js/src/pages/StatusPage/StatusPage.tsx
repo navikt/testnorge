@@ -5,12 +5,20 @@ import { Heading, LocalAlert, VStack } from '@navikt/ds-react'
 
 import BlankHeader from '@/components/BlankHeader/BlankHeader'
 import Loading from '@/components/loading/Loading'
-import { FagsystemStatusCard } from '@/pages/StatusPage/FagsystemStatusCard'
+import { FagsystemStatusPanel } from '@/pages/StatusPage/FagsystemStatusPanel'
 import { isRunning, useFagsystemStatuses } from '@/pages/StatusPage/useFagsystemStatuses'
 
 export default () => {
-	const { activeRunId, errorMessage, groupedStatuses, initialLoading, rerun, startingSystemId } =
-		useFagsystemStatuses()
+	const {
+		activeRunId,
+		errorMessage,
+		functionalStatuses,
+		groupedStatuses,
+		initialLoading,
+		rerun,
+		startingSystemId,
+		technicalStatuses,
+	} = useFagsystemStatuses()
 	const [now, setNow] = useState(() => Date.now())
 
 	useEffect(() => {
@@ -83,18 +91,28 @@ export default () => {
 							<LocalAlert.Content>Last inn siden på nytt for å prøve igjen.</LocalAlert.Content>
 						</LocalAlert>
 					) : (
-						<div className="fagsystem-grid">
-							{groupedStatuses.map((statuses) => (
-								<FagsystemStatusCard
-									key={statuses[0].systemId}
-									statuses={statuses}
+						<>
+							{functionalStatuses.length > 0 && (
+								<FagsystemStatusPanel
+									title="Funksjonstester"
+									groupedStatuses={functionalStatuses}
 									anyRunActive={activeRunId !== null}
-									starting={startingSystemId === statuses[0].systemId}
+									startingSystemId={startingSystemId}
 									now={now}
 									onRerun={(systemId) => void rerun(systemId)}
 								/>
-							))}
-						</div>
+							)}
+							{technicalStatuses.length > 0 && (
+								<FagsystemStatusPanel
+									title="Interne sjekker"
+									groupedStatuses={technicalStatuses}
+									anyRunActive={activeRunId !== null}
+									startingSystemId={startingSystemId}
+									now={now}
+									onRerun={(systemId) => void rerun(systemId)}
+								/>
+							)}
+						</>
 					)}
 				</VStack>
 			</main>

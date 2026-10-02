@@ -5,15 +5,34 @@ import statusApi, { FagsystemStatus } from '@/services/statusApi'
 
 const POLLING_INTERVAL_MILLISECONDS = 2_000
 
-const sortPriority = (statuses: FagsystemStatus[]) => {
-	if (statuses.some((status) => status.state === 'BLOCKED')) {
-		return 2
-	}
-	if (statuses.every((status) => status.state === 'TECHNICAL_ONLY')) {
-		return 1
-	}
-	return 0
-}
+const TECHNICAL_SYSTEM_IDS = new Set([
+	'aareg',
+	'arbeidsplassen-cv',
+	'dokarkiv',
+	'fullmakt',
+	'inntektsmelding',
+	'kdi',
+	'kelvin-aap',
+	'medl',
+	'oppfoelgingsvedtak-14a',
+	'organisasjon-forvalter',
+	'pensjon-oevrige',
+	'sigrun',
+	'sykemelding',
+	'tags',
+	'yrkesskade',
+])
+
+const isTechnical = (statuses: FagsystemStatus[]) =>
+	TECHNICAL_SYSTEM_IDS.has(statuses[0].systemId) ||
+	statuses.every((status) => status.state === 'TECHNICAL_ONLY')
+
+const sortPriority = (statuses: FagsystemStatus[]) =>
+	statuses.some((status) => status.state === 'BLOCKED') ? 1 : 0
+
+const compareGroups = (left: FagsystemStatus[], right: FagsystemStatus[]) =>
+	sortPriority(left) - sortPriority(right) ||
+	left[0].displayName.localeCompare(right[0].displayName, 'nb')
 
 export const useFagsystemStatuses = () => {
 	const [statuses, setStatuses] = useState<FagsystemStatus[]>([])
@@ -109,21 +128,27 @@ export const useFagsystemStatuses = () => {
 					groups[status.systemId] = [...(groups[status.systemId] ?? []), status]
 					return groups
 				}, {}),
-			).sort(
-				(left, right) =>
-					sortPriority(left) - sortPriority(right) ||
-					left[0].displayName.localeCompare(right[0].displayName, 'nb'),
 			),
 		[statuses],
+	)
+	const functionalStatuses = useMemo(
+		() => groupedStatuses.filter((group) => !isTechnical(group)).sort(compareGroups),
+		[groupedStatuses],
+	)
+	const technicalStatuses = useMemo(
+		() => groupedStatuses.filter(isTechnical).sort(compareGroups),
+		[groupedStatuses],
 	)
 
 	return {
 		activeRunId,
 		errorMessage,
+		functionalStatuses,
 		groupedStatuses,
 		initialLoading,
 		rerun,
 		startingSystemId,
+		technicalStatuses,
 	}
 }
 

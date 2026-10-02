@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { delay, http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
@@ -33,7 +33,12 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('StatusPage', () => {
-	it('should sort functional checks before technical checks and blocked systems alphabetically within each group', async () => {
+	const headingsIn = (panelName: string) =>
+		within(screen.getByRole('region', { name: panelName }))
+			.getAllByRole('heading', { level: 3 })
+			.map((heading) => heading.textContent)
+
+	it('should place functional and internal systems in separate panels sorted alphabetically with blocked systems last', async () => {
 		const statuses: FagsystemStatus[] = [
 			{ ...status, systemId: 'blocked-b', displayName: 'Blokkert B', state: 'BLOCKED' },
 			{
@@ -61,16 +66,40 @@ describe('StatusPage', () => {
 
 		render(<StatusPage />)
 
-		const headings = await screen.findAllByRole('heading', { level: 2 })
-		expect(headings.map((heading) => heading.textContent)).toEqual([
+		const panelHeadings = await screen.findAllByRole('heading', { level: 2 })
+		expect(panelHeadings.map((heading) => heading.textContent)).toEqual([
+			'Funksjonstester',
+			'Interne sjekker',
+		])
+		expect(headingsIn('Funksjonstester')).toEqual([
 			'Funksjonell A',
 			'Funksjonell B',
-			'Teknisk A',
-			'Teknisk B',
 			'Blokkert A',
 			'Blokkert B',
 		])
+		expect(headingsIn('Interne sjekker')).toEqual(['Teknisk A', 'Teknisk B'])
 	})
+
+	it.each(['NOT_RUN', 'RUNNING', 'TECHNICAL_ONLY'] as const)(
+		'should keep a known internal system in the internal panel when its state is %s',
+		async (state) => {
+			server.use(
+				http.get('/api/v1/fagsystem-statuser', () =>
+					HttpResponse.json([
+						{ ...status, systemId: 'sigrun', displayName: 'Sigrun', environment: 'GLOBAL', state },
+						{ ...status, systemId: 'pdl', displayName: 'PDL', state: 'NOT_RUN' },
+					]),
+				),
+				http.post('/api/v1/testkjoringer', () => new HttpResponse(null, { status: 404 })),
+			)
+
+			render(<StatusPage />)
+
+			await screen.findByRole('heading', { level: 2, name: 'Interne sjekker' })
+			expect(headingsIn('Funksjonstester')).toEqual(['PDL'])
+			expect(headingsIn('Interne sjekker')).toEqual(['Sigrun'])
+		},
+	)
 
 	it.each(['NOT_RUN', 'VERIFY', 'OK', 'CREATE_FAILED'] as const)(
 		'should keep a system with a blocked environment last when its other environment is %s',
@@ -81,12 +110,6 @@ describe('StatusPage', () => {
 						{ ...status, state },
 						{ ...status, environment: 'Q2', state: 'BLOCKED' },
 						{ ...status, systemId: 'pdl', displayName: 'PDL', state: 'OK' },
-						{
-							...status,
-							systemId: 'sigrun',
-							displayName: 'Sigrun',
-							state: 'TECHNICAL_ONLY',
-						},
 					]),
 				),
 				http.post('/api/v1/testkjoringer', () => new HttpResponse(null, { status: 404 })),
@@ -94,8 +117,8 @@ describe('StatusPage', () => {
 
 			render(<StatusPage />)
 
-			const headings = await screen.findAllByRole('heading', { level: 2 })
-			expect(headings.map((heading) => heading.textContent)).toEqual(['PDL', 'Sigrun', 'Arena'])
+			await screen.findByRole('heading', { level: 2, name: 'Funksjonstester' })
+			expect(headingsIn('Funksjonstester')).toEqual(['PDL', 'Arena'])
 		},
 	)
 
