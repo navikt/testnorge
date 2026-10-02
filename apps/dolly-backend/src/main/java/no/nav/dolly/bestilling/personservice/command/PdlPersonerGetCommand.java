@@ -25,7 +25,7 @@ public class PdlPersonerGetCommand implements Callable<Flux<PdlPersonBolk>> {
 
     @Override
     public Flux<PdlPersonBolk> call() {
-        log.info("PdlPersonerGetCommand: Starter kall for identer: {}", identer);
+
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
