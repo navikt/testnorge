@@ -92,7 +92,7 @@ spec:
     - secret: idporten-dolly-prod
   env:
     - name: FRONTEND_TELEMETRY_ENABLED
-      value: "false"
+      value: "true"
     - name: NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL
       value: "https://telemetry.ekstern.dev.nav.no/collect"
     - name: SPRING_PROFILES_ACTIVE
