@@ -7,6 +7,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
 import tilleggsinformasjonPaths from '@/components/fagsystem/inntektstub/validerInntekt/paths'
+import { initialValues } from '@/components/fagsystem/inntektstub/form/partials/inntektsinformasjonLister/inntektForm'
 
 type FeltOptions = Array<string | boolean>
 
@@ -91,10 +92,12 @@ const InntektFelt = ({
 	const value = _.get(inntektValue, fieldName)
 
 	const { errors } = useFormState({ control: formMethods.control, name: fieldPath })
-	const harFeil = !!_.get(errors, fieldPath)
+	const error = _.get(errors, fieldPath)
+	const harFeil = !!error
 
 	const enesteValg = hentEnesteValg(options)
 	const paakrevd = enesteValg === undefined && erFeltPaakrevd(options, inntektValue, value)
+	const isClearable = options.includes('<TOM>')
 
 	useEffect(() => {
 		if (enesteValg !== undefined && value !== enesteValg) {
@@ -103,10 +106,18 @@ const InntektFelt = ({
 	}, [enesteValg, fieldPath, value])
 
 	useEffect(() => {
-		if (paakrevd && !harFeil) {
-			formMethods.setError(fieldPath, { message: 'Feltet er påkrevd' })
+		if (isLoading || options.length === 0) {
+			return
 		}
-	}, [paakrevd, harFeil, fieldPath])
+		if (paakrevd && !harFeil) {
+			formMethods.setError(fieldPath, {
+				type: 'inntektPaakrevd',
+				message: 'Feltet er påkrevd',
+			})
+		} else if (!paakrevd && error?.type === 'inntektPaakrevd') {
+			formMethods.clearErrors(fieldPath)
+		}
+	}, [paakrevd, harFeil, error?.type, fieldPath, isLoading, options.length, formMethods])
 
 	if (dateFields.includes(field)) {
 		return <FormDatepicker visHvisAvhuket={false} name={fieldPath} label={texts(field)} />
@@ -120,6 +131,7 @@ const InntektFelt = ({
 				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 				afterChange={handleChange}
 				size="large"
+				isClearable={isClearable}
 			/>
 		)
 	}
@@ -149,7 +161,7 @@ const InntektFelt = ({
 			size={
 				size ?? (booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large')
 			}
-			isClearable={field !== 'inntektstype' && field !== 'beskrivelse'}
+			isClearable={isClearable}
 			isLoading={isLoading}
 		/>
 	)
@@ -167,7 +179,15 @@ const Inntekt = ({
 			<InntektFelt
 				key={`${path}.inntektstype`}
 				field="inntektstype"
-				handleChange={onValidate}
+				handleChange={(val) => {
+					formMethods.setValue(path, {
+						...initialValues,
+						beloep: formMethods.getValues(`${path}.beloep`),
+						inntektstype: val ? val.value : '',
+						beskrivelse: '',
+					})
+					onValidate()
+				}}
 				formMethods={formMethods}
 				path={path}
 				options={inntektstypeOptions}

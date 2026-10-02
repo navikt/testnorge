@@ -14,7 +14,7 @@ export enum FormType {
 	FORENKLET = 'forenklet',
 }
 
-const initialValues = {
+export const initialValues = {
 	beloep: '',
 	startOpptjeningsperiode: '',
 	sluttOpptjeningsperiode: '',
