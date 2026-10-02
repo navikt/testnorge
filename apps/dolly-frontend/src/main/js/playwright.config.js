@@ -7,9 +7,9 @@ export default defineConfig({
 	testDir: './playwright/tests',
 	fullyParallel: true,
 	// Increase timeout for CI to minimize test flakiness
-	timeout: process.env.ci ? 50000 : 30000,
+	timeout: process.env.CI ? 50000 : 30000,
 	expect: {
-		timeout: process.env.ci ? 10000 : 5000,
+		timeout: process.env.CI ? 10000 : 5000,
 	},
 
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,6 +25,7 @@ export default defineConfig({
 				attachments: true,
 			},
 		],
+		...(process.env.CI ? [['dot']] : []),
 	],
 
 	use: {
@@ -39,7 +40,9 @@ export default defineConfig({
 	projects: [
 		{
 			name: 'Google Chrome',
-			use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+			use: {
+				...devices['Desktop Chrome'],
+			},
 		},
 	],
 
@@ -48,5 +51,6 @@ export default defineConfig({
 		command: 'pnpm run test:start',
 		url: 'http://localhost:5678',
 		reuseExistingServer: !process.env.CI,
+		gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
 	},
 })

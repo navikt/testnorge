@@ -39,6 +39,10 @@ export default class Request {
 		return api.fetchJson(url, { method: 'PUT' }, data).then((response) => ({ data: response }))
 	}
 
+	static patch(url: string, data?: object) {
+		return api.fetchJson(url, { method: 'PATCH' }, data).then((response) => ({ data: response }))
+	}
+
 	static putWithoutResponse(url: string, data?: object) {
 		return api.fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' } }, data)
 	}

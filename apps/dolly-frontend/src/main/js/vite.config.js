@@ -41,7 +41,6 @@ export default defineConfig(({ mode }) => ({
 		sourcemap: true,
 		cssCodeSplit: false,
 		rolldownOptions: {
-			external: ['./nais.js'],
 			output: {
 				sourcemapExcludeSources: false,
 				codeSplitting: {

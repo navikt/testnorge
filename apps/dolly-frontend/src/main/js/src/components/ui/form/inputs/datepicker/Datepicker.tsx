@@ -1,4 +1,4 @@
-import { addYears, subYears } from 'date-fns'
+import { addYears, isValid, subYears } from 'date-fns'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { SyntEvent } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'
@@ -23,19 +23,23 @@ type DollyDatepickerProps = {
 	[key: string]: any
 }
 
+const toValidDate = (value: any, fallback: Date) => (isValid(value) ? new Date(value) : fallback)
+
 export const DollyDatepicker = ({
 	excludeDates,
 	disabled,
 	onChange,
-	minDate = subYears(new Date(), 125),
+	minDate: minDateProp,
 	name,
 	duplicateName,
 	label,
-	maxDate = addYears(new Date(), 5),
+	maxDate: maxDateProp,
 	format,
 	...props
 }: DollyDatepickerProps) => {
 	const dateFormat = format || 'DD.MM.YYYY'
+	const minDate = toValidDate(minDateProp, subYears(new Date(), 125))
+	const maxDate = toValidDate(maxDateProp, addYears(new Date(), 5))
 	const formMethods = useFormContext()
 	const existingValue = formMethods.watch(name)
 	const [showDatepicker, setShowDatepicker] = useState(false)

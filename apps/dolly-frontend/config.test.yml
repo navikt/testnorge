@@ -47,6 +47,7 @@ spec:
         - application: testnav-dolly-search-service-dev
         - application: testnav-person-service
         - application: testnav-tenor-search-service
+        - application: testnav-template-search-service-dev
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnav-varslinger-service-dev
@@ -119,5 +120,9 @@ spec:
       memory: 2048Mi
   image: "{{image}}"
   env:
+    - name: FRONTEND_TELEMETRY_ENABLED
+      value: "true"
+    - name: NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL
+      value: "https://telemetry.ekstern.dev.nav.no/collect"
     - name: SPRING_PROFILES_ACTIVE
       value: dev
