@@ -18,16 +18,9 @@ export const InntektVisning = ({ data }) => {
 				<DollyFieldArray data={data} nested>
 					{(id, idx) => (
 						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Inntektstype" value={texts(id.inntektstype)} />
 							<TitleValue title="Beløp" value={id.beloep} />
-							<TitleValue
-								title="Start opptjeningsperiode"
-								value={formatStringDates(id.startOpptjeningsperiode)}
-							/>
-							<TitleValue
-								title="Slutt opptjeningsperiode"
-								value={formatStringDates(id.sluttOpptjeningsperiode)}
-							/>
+							<TitleValue title="Inntektstype" value={texts(id.inntektstype)} />
+							<TitleValue title="Beskrivelse" value={texts(id.beskrivelse)} />
 							<TitleValue
 								title="Inngår i grunnlag for trekk"
 								value={texts(id.inngaarIGrunnlagForTrekk)}
@@ -48,7 +41,6 @@ export const InntektVisning = ({ data }) => {
 								value={id.opptjeningsland}
 								kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 							/>
-							<TitleValue title="Beskrivelse" value={texts(id.beskrivelse)} />
 							{id.tilleggsinformasjon && (
 								<React.Fragment>
 									<TitleValue
@@ -125,6 +117,14 @@ export const InntektVisning = ({ data }) => {
 								</React.Fragment>
 							)}
 							<TitleValue title="Antall" value={id.antall} />
+							<TitleValue
+								title="Start opptjeningsperiode"
+								value={formatStringDates(id.startOpptjeningsperiode)}
+							/>
+							<TitleValue
+								title="Slutt opptjeningsperiode"
+								value={formatStringDates(id.sluttOpptjeningsperiode)}
+							/>
 						</div>
 					)}
 				</DollyFieldArray>

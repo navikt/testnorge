@@ -109,16 +109,19 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 				{(path: string) => (
 					<div className="flexbox--flex-wrap">
 						<FormTextInput name={`${path}.beloep`} label="Beløp" type="number" />
-						{/*TODO: Flyttes til mindre synlig sted*/}
-						{/*<FormDatepicker*/}
-						{/*	name={`${path}.startOpptjeningsperiode`}*/}
-						{/*	label="Start opptjeningsperiode"*/}
-						{/*/>*/}
-						{/*<FormDatepicker*/}
-						{/*	name={`${path}.sluttOpptjeningsperiode`}*/}
-						{/*	label="Slutt opptjeningsperiode"*/}
-						{/*/>*/}
 						{!formSimple && <InntektStub inntektPath={path} />}
+						{formMethods.watch(`${path}.beskrivelse`) && (
+							<>
+								<FormDatepicker
+									name={`${path}.startOpptjeningsperiode`}
+									label="Start opptjeningsperiode"
+								/>
+								<FormDatepicker
+									name={`${path}.sluttOpptjeningsperiode`}
+									label="Slutt opptjeningsperiode"
+								/>
+							</>
+						)}
 					</div>
 				)}
 			</FormDollyFieldArray>
