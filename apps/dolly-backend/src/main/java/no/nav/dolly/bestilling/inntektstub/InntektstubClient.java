@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
@@ -13,17 +12,19 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
@@ -32,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.truncate;
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
 
-    private static final int MAX_STATUS_LEN = 2048;
+    private static final int MAX_STATUS_LEN = 200;
 
     private final InntektstubConsumer inntektstubConsumer;
     private final MapperFacade mapperFacade;
@@ -43,7 +44,7 @@ public class InntektstubClient implements ClientRegister {
 
         return Mono.just(bestilling)
                 .flatMap(_ -> {
-                    if (isTestnorgeIdent(dollyPerson.getIdent())) {
+                    if (dollyPerson.isTestnorgeIdent()) {
                         return importFraTenor(dollyPerson, progress);
                     } else {
                         return nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty() ?
@@ -53,41 +54,80 @@ public class InntektstubClient implements ClientRegister {
                     }
                 })
                 .flatMap(status -> {
-                    if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-                        var context = MappingContextUtils.getMappingContext();
-                        context.setProperty("ident", dollyPerson.getIdent());
+                    if (!bestilling.getInntekter().isEmpty()) {
+                        return sendInntekterData(bestilling, dollyPerson);
 
-                        var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
-                                InntektsinformasjonWrapper.class, context);
+                    } else if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
+                        return sendInntektsinformasjonWrapper(bestilling, dollyPerson);
 
-                        return inntektstubConsumer.getInntekter(dollyPerson.getIdent())
-                                .collectList()
-                                .flatMap(eksisterende ->
-                                        Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
-                                                .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
-                                                        nyinntekt.getAarMaaned().equals(entry.getAarMaaned()) &&
-                                                        nyinntekt.getVirksomhet().equals(entry.getVirksomhet()) &&
-                                                        entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
-                                                .collectList()
-                                                .flatMapMany(inntektstubConsumer::postInntekter)
-                                                .collectList()
-                                                .map(inntekter -> {
-                                                    log.info("Inntektstub respons {}", inntekter);
-                                                    return inntekter.stream()
-                                                            .map(Inntektsinformasjon::getFeilmelding)
-                                                            .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                                                            "Feil= " + inntekter.stream()
-                                                                    .map(Inntektsinformasjon::getFeilmelding)
-                                                                    .filter(StringUtils::isNotBlank)
-                                                                    .map(ErrorStatusDecoder::encodeStatus)
-                                                                    .collect(Collectors.joining(","));
-                                                }));
                     } else {
                         return Mono.just(status);
                     }
                 })
                 .flatMap(status -> isNotBlank(status) ? oppdaterStatus(progress, status) : Mono.empty());
+    }
+
+    private Mono<String> sendInntekterData(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
+        var nyInntektsinformasjon = bestilling.getInntekter().stream()
+                .flatMap(inntekter -> inntekter.getPerioder().stream()
+                        .map(periode -> {
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty("ident", dollyPerson.getIdent());
+                            context.setProperty("periode", periode);
+                            return mapperFacade.map(inntekter, Inntektsinformasjon.class, context);
+                        }))
+                .toList();
+
+        return oppdaterInntektstub(dollyPerson, nyInntektsinformasjon);
+    }
+
+    private @NonNull Mono<String> sendInntektsinformasjonWrapper(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
+        var nyInntektsinformasjon = bestilling.getInntektstub().getInntektsinformasjon().stream()
+                .flatMap(inntekter -> {
+                    var sisteAarMaaned = YearMonth.parse(inntekter.getSisteAarMaaned());
+                    return LongStream.range(0, nonNull(inntekter.getAntallMaaneder()) ?
+                                    inntekter.getAntallMaaneder() : 1)
+                            .mapToObj(sisteAarMaaned::minusMonths)
+                            .map(yearMonth -> {
+                                var context = MappingContextUtils.getMappingContext();
+                                context.setProperty("ident", dollyPerson.getIdent());
+                                context.setProperty("periode", yearMonth);
+                                return mapperFacade.map(inntekter, Inntektsinformasjon.class, context);
+                            });
+                })
+                .toList();
+
+        return oppdaterInntektstub(dollyPerson, nyInntektsinformasjon);
+    }
+
+    private @NonNull Mono<String> oppdaterInntektstub(DollyPerson dollyPerson, List<Inntektsinformasjon> nyInntektsinformasjon) {
+        return inntektstubConsumer.getInntekter(dollyPerson.getIdent())
+                .collectList()
+                .flatMap(eksisterende ->
+                        Flux.fromIterable(nyInntektsinformasjon)
+                                .filter(nyinntekt ->
+                                        eksisterende.stream().noneMatch(entry ->
+                                                nyinntekt.getAarMaaned().equals(entry.getAarMaaned()) &&
+                                                nyinntekt.getVirksomhet().equals(entry.getVirksomhet()) &&
+                                                entry.getInntektsliste().stream().anyMatch(gammelt -> nyinntekt.getInntektsliste().contains(gammelt))))
+                                .collectList()
+                                .flatMapMany(inntektstubConsumer::postInntekter)
+                                .collectList()
+                                .map(inntekter -> {
+                                    log.info("Inntektstub respons {}", inntekter);
+                                    return inntekter.stream()
+                                            .map(Inntektsinformasjon::getFeilmelding)
+                                            .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                            "Feil= " + inntekter.stream()
+                                                    .map(Inntektsinformasjon::getFeilmelding)
+                                                    .filter(StringUtils::isNotBlank)
+                                                    .map(ErrorStatusDecoder::encodeStatus)
+                                                    .distinct()
+                                                    .collect(Collectors.joining(","));
+                                }));
     }
 
     private Mono<String> importFraTenor(DollyPerson dollyPerson, BestillingProgress progress) {

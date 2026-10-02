@@ -19,12 +19,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singletonList;
 
-class SigrunStubConsumerTest extends AbstractConsumerTest {
+class SigrunstubConsumerTest extends AbstractConsumerTest {
 
     private static final String IDENT = "111111111";
 
     @Autowired
-    private SigrunStubConsumer sigrunStubConsumer;
+    private SigrunstubConsumer sigrunStubConsumer;
 
     private SigrunstubPensjonsgivendeInntektRequest pensjonsgivendeForFolketrygden;
 
@@ -55,15 +55,15 @@ class SigrunStubConsumerTest extends AbstractConsumerTest {
     }
 
     @Test
-    void deleteSkattegrunnlag_Ok() {
+    void deletePensjonsgivendeInntekt_Ok() {
 
-        stubFor(delete(urlPathMatching("(.*)/sigrunstub/api/v1/slett"))
-                .withHeader("personidentifikator", matching(IDENT))
+        stubFor(delete(urlPathMatching("(.*)/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden"))
+                .withHeader("norskident", matching(IDENT))
                 .willReturn(ok()
                         .withBody("{}")
                         .withHeader("Content-Type", "application/json")));
 
-        StepVerifier.create(sigrunStubConsumer.deleteLignetInntekt(List.of(IDENT)))
+        StepVerifier.create(sigrunStubConsumer.deletePensjonsgivendeInntekt(List.of(IDENT)))
                 .expectNext(SigrunstubResponse.builder()
                         .status(HttpStatus.OK)
                         .ident(IDENT)

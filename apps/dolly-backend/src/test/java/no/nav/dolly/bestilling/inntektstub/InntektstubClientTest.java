@@ -1,14 +1,15 @@
 package no.nav.dolly.bestilling.inntektstub;
 
 import lombok.val;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.inntektstub.domain.CheckImportResponse;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
+import no.nav.dolly.bestilling.inntektstub.domain.ResponseDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.service.TransactionHelperService;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -63,7 +65,7 @@ class InntektstubClientTest {
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.OK).build()));
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.OK).build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
                 .assertNext(_ -> {
@@ -71,8 +73,8 @@ class InntektstubClientTest {
                             statusCaptor.capture());
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
-                    assertThat(statusCaptor.getAllValues().getFirst(), equalTo("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
-                    assertThat(statusCaptor.getAllValues().getLast(), equalTo("OK"));
+                    assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK");
                 })
                 .verifyComplete();
     }
@@ -86,8 +88,8 @@ class InntektstubClientTest {
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.OK).build()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.OK).build()))
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .message("Blah").build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
@@ -96,8 +98,8 @@ class InntektstubClientTest {
                             statusCaptor.capture());
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
-                    assertThat(statusCaptor.getAllValues().getFirst(), equalTo("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
-                    assertThat(statusCaptor.getAllValues().getLast(), equalTo("Feil= Import av inntektsdata feilet= Blah"));
+                    assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Import av inntektsdata feilet= Blah");
                 })
                 .verifyComplete();
     }
@@ -108,7 +110,7 @@ class InntektstubClientTest {
         val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
 
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
-                .thenReturn(Mono.just(CheckImportResponse.builder().status(HttpStatus.NOT_FOUND).build()));
+                .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.NOT_FOUND).build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
                 .expectNextCount(0)
@@ -127,13 +129,14 @@ class InntektstubClientTest {
 
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
-        when(inntektstubConsumer.getInntekter(anyString()))
-                .thenReturn(Flux.just(Inntektsinformasjon.builder().build()));
-        when(mapperFacade.map(any(InntektMultiplierWrapper.class), eq(InntektsinformasjonWrapper.class), any()))
-                .thenReturn(new InntektsinformasjonWrapper());
+        stubInntektsinformasjonMapping();
+        when(inntektstubConsumer.getInntekter(anyString())).thenReturn(Flux.empty());
+        val postedInntekter = new ArrayList<List<Inntektsinformasjon>>();
         when(inntektstubConsumer.postInntekter(any()))
-                .thenReturn(Flux.just(Inntektsinformasjon.builder()
-                        .build()));
+                .thenAnswer(invocation -> {
+                    postedInntekter.add(invocation.getArgument(0));
+                    return Flux.just(Inntektsinformasjon.builder().build());
+                });
 
         StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
                 .assertNext(_ -> {
@@ -141,10 +144,17 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).postInntekter(any());
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().getFirst(), equalTo("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
-                    assertThat(statusCaptor.getAllValues().getLast(), equalTo("OK"));
+                    assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK");
                 })
                 .verifyComplete();
+
+        assertThat(postedInntekter.getFirst())
+                .extracting(Inntektsinformasjon::getAarMaaned)
+                .containsExactly("2025-12", "2025-11", "2025-10", "2025-09");
+        assertThat(postedInntekter.getFirst())
+                .extracting(Inntektsinformasjon::getNorskIdent)
+                .containsOnly(DOLLY_IDENT);
     }
 
     @Test
@@ -157,10 +167,8 @@ class InntektstubClientTest {
 
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
-        when(inntektstubConsumer.getInntekter(anyString()))
-                .thenReturn(Flux.just(Inntektsinformasjon.builder().build()));
-        when(mapperFacade.map(any(InntektMultiplierWrapper.class), eq(InntektsinformasjonWrapper.class), any()))
-                .thenReturn(new InntektsinformasjonWrapper());
+        stubInntektsinformasjonMapping();
+        when(inntektstubConsumer.getInntekter(anyString())).thenReturn(Flux.empty());
         when(inntektstubConsumer.postInntekter(any()))
                 .thenReturn(Flux.just(Inntektsinformasjon.builder()
                         .feilmelding("Feil ved lagring")
@@ -172,10 +180,50 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).postInntekter(any());
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().getFirst(), equalTo("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
-                    assertThat(statusCaptor.getAllValues().getLast(), equalTo("Feil= Feil ved lagring"));
+                    assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Feil ved lagring");
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldSendInntekterDataToInntektstub() {
+
+        val statusCaptor = ArgumentCaptor.forClass(String.class);
+        val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
+        val bestilling = new RsDollyUtvidetBestilling();
+        bestilling.setInntekter(List.of(RsInntekter.builder()
+                .perioder(List.of(YearMonth.of(2025, 12), YearMonth.of(2025, 11)))
+                .build()));
+
+        when(transactionHelperService.persister(any(), any(), anyString()))
+                .thenReturn(Mono.just(new BestillingProgress()));
+        when(mapperFacade.map(any(RsInntekter.class), eq(Inntektsinformasjon.class), any()))
+                .thenAnswer(invocation -> mapInntektsinformasjon(invocation.getArgument(2)));
+        when(inntektstubConsumer.getInntekter(DOLLY_IDENT)).thenReturn(Flux.empty());
+        val postedInntekter = new ArrayList<List<Inntektsinformasjon>>();
+        when(inntektstubConsumer.postInntekter(any()))
+                .thenAnswer(invocation -> {
+                    postedInntekter.add(invocation.getArgument(0));
+                    return Flux.just(Inntektsinformasjon.builder().build());
+                });
+
+        StepVerifier.create(inntektstubClient.gjenopprett(
+                        bestilling, dollyPerson, new BestillingProgress(), true))
+                .assertNext(_ -> {
+                    verify(inntektstubConsumer).getInntekter(DOLLY_IDENT);
+                    verify(inntektstubConsumer).postInntekter(any());
+                    verify(transactionHelperService).persister(any(), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue()).isEqualTo("OK");
+                })
+                .verifyComplete();
+
+        assertThat(postedInntekter.getFirst())
+                .extracting(Inntektsinformasjon::getAarMaaned)
+                .containsExactly("2025-12", "2025-11");
+        assertThat(postedInntekter.getFirst())
+                .extracting(Inntektsinformasjon::getNorskIdent)
+                .containsOnly(DOLLY_IDENT);
     }
 
     @Test
@@ -193,8 +241,6 @@ class InntektstubClientTest {
 
         when(transactionHelperService.persister(any(), any(), anyString()))
                 .thenReturn(Mono.just(new BestillingProgress()));
-        when(mapperFacade.map(any(InntektMultiplierWrapper.class), eq(InntektsinformasjonWrapper.class), any()))
-                .thenReturn(new InntektsinformasjonWrapper());
         when(inntektstubConsumer.getInntekter(DOLLY_IDENT))
                 .thenReturn(Flux.error(internalServerError));
 
@@ -210,8 +256,22 @@ class InntektstubClientTest {
 
         verify(inntektstubConsumer).getInntekter(DOLLY_IDENT);
         verify(inntektstubConsumer, never()).postInntekter(any());
-        verify(transactionHelperService, times(1)).persister(any(), any(),
+        verify(transactionHelperService).persister(any(), any(),
                 eq("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
+    }
+
+    private void stubInntektsinformasjonMapping() {
+
+        when(mapperFacade.map(any(RsInntektsinformasjon.class), eq(Inntektsinformasjon.class), any()))
+                .thenAnswer(invocation -> mapInntektsinformasjon(invocation.getArgument(2)));
+    }
+
+    private static Inntektsinformasjon mapInntektsinformasjon(MappingContext mappingContext) {
+
+        return Inntektsinformasjon.builder()
+                .norskIdent((String) mappingContext.getProperty("ident"))
+                .aarMaaned(((YearMonth) mappingContext.getProperty("periode")).toString())
+                .build();
     }
 
     private static InntektMultiplierWrapper buildInntektsinformasjon() {
