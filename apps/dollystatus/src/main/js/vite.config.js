@@ -3,6 +3,19 @@ import svgr from 'vite-plugin-svgr'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { fileURLToPath } from 'url'
+import { readFileSync } from 'fs'
+import { createRequire } from 'module'
+
+const serveMockServiceWorker = () => ({
+	name: 'serve-mock-service-worker',
+	configureServer(server) {
+		const workerPath = createRequire(import.meta.url).resolve('msw/mockServiceWorker.js')
+		server.middlewares.use('/mockServiceWorker.js', (_request, response) => {
+			response.setHeader('Content-Type', 'text/javascript')
+			response.end(readFileSync(workerPath))
+		})
+	},
+})
 
 /** @type {import('vite').UserConfig} */
 
@@ -62,5 +75,6 @@ export default defineConfig(({ mode }) => ({
 			presets: [reactCompilerPreset()],
 		}),
 		svgr(),
+		mode === 'mock' && serveMockServiceWorker(),
 	],
 }))

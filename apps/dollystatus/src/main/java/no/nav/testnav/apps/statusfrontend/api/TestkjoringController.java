@@ -41,4 +41,18 @@ public class TestkjoringController {
         return coordinator.startSystem(SystemId.from(systemId))
                 .map(RunAcceptedResponse::from);
     }
+
+    @PostMapping("/funksjonstester/testkjoringer")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Mono<RunAcceptedResponse> startFunctionalTests() {
+        return coordinator.startFunctionalTests()
+                .map(RunAcceptedResponse::from);
+    }
+
+    @PostMapping("/interne-sjekker/testkjoringer")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Mono<RunAcceptedResponse> startTechnicalStatuses() {
+        return coordinator.startTechnicalStatuses()
+                .map(RunAcceptedResponse::from);
+    }
 }

@@ -64,6 +64,12 @@ const startSystemTest = (systemId: string) =>
 		method: 'POST',
 	})
 
+const startFunctionalTests = () =>
+	Api.fetchJson<RunAccepted>('/api/v1/funksjonstester/testkjoringer', { method: 'POST' })
+
+const startTechnicalStatuses = () =>
+	Api.fetchJson<RunAccepted>('/api/v1/interne-sjekker/testkjoringer', { method: 'POST' })
+
 const readProblem = async (error: unknown): Promise<ProblemDetail | null> => {
 	if (!(error instanceof ApiError)) {
 		return null
@@ -79,5 +85,7 @@ export default {
 	getStatuses,
 	startExpiredTests,
 	startSystemTest,
+	startFunctionalTests,
+	startTechnicalStatuses,
 	readProblem,
 }

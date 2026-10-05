@@ -144,39 +144,82 @@ public class FunctionalTestCoordinator {
     }
 
     public Mono<RunReference> startSystem(SystemId systemId) {
+        var pdlLifecycle = pdlLifecycles.stream()
+                .filter(lifecycle -> lifecycle.descriptor().systemId().equals(systemId))
+                .findFirst();
+        if (pdlLifecycle.isPresent()) {
+            return startManual(List.of(), List.of(), pdlLifecycle, pdlKeys(pdlLifecycle.get()));
+        }
+
+        var registrations = registry.registrationsFor(systemId);
+        var technicalRegistrations = registry.technicalRegistrationsFor(systemId);
+        return startManual(
+                registrations,
+                technicalRegistrations,
+                requiredPdlLifecycle(registrations, technicalRegistrations),
+                keysOf(registrations, technicalRegistrations));
+    }
+
+    public Mono<RunReference> startFunctionalTests() {
+        var registrations = registry.registrations();
+        var pdlLifecycle = pdlLifecycles.stream().findFirst();
+        var cooldownKeys = Stream.concat(
+                        pdlLifecycle.map(this::pdlKeys).stream().flatMap(List::stream),
+                        keysOf(registrations, List.of()).stream())
+                .toList();
+        return startManual(registrations, List.of(), pdlLifecycle, cooldownKeys);
+    }
+
+    public Mono<RunReference> startTechnicalStatuses() {
+        var technicalRegistrations = registry.technicalRegistrations();
+        return startManual(
+                List.of(),
+                technicalRegistrations,
+                requiredPdlLifecycle(List.of(), technicalRegistrations),
+                keysOf(List.of(), technicalRegistrations));
+    }
+
+    private Mono<RunReference> startManual(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
+            Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
+            List<FunctionalTestKey> cooldownKeys
+    ) {
         return Mono.deferContextual(contextView -> Mono.fromSupplier(() -> {
             synchronized (runMonitor) {
                 if (nonNull(activeRun)) {
                     throw new FunctionalTestRunInProgressException();
                 }
-
-                var pdlLifecycle = pdlLifecycles.stream()
-                        .filter(lifecycle -> lifecycle.descriptor().systemId().equals(systemId))
-                        .findFirst();
-                if (pdlLifecycle.isPresent()) {
-                    verifyCooldown(pdlKeys(pdlLifecycle.get()));
-                    return launch(List.of(), List.of(), pdlLifecycle, contextView, false);
-                }
-
-                var registrations = registry.registrationsFor(systemId);
-                var technicalRegistrations = registry.technicalRegistrationsFor(systemId);
-                if (registrations.isEmpty() && technicalRegistrations.isEmpty()) {
+                if (registrations.isEmpty() && technicalRegistrations.isEmpty() && pdlLifecycle.isEmpty()) {
                     throw new FunctionalTestNotFoundException();
                 }
-                verifyCooldown(Stream.concat(
-                                registrations.stream()
-                                        .map(FunctionalTestRegistry.RegisteredFunctionalTest::key),
-                                technicalRegistrations.stream()
-                                        .map(FunctionalTestRegistry.RegisteredTechnicalStatus::key))
-                        .toList());
-                var requiredPdlLifecycle = pdlLifecycleFor(
-                        registrations.stream()
-                                .anyMatch(registration -> registration.definition().requiresPdl())
-                                || technicalRegistrations.stream()
-                                .anyMatch(registration -> registration.definition().requiresPdl()));
-                return launch(registrations, technicalRegistrations, requiredPdlLifecycle, contextView, false);
+                verifyCooldown(cooldownKeys);
+                return launch(registrations, technicalRegistrations, pdlLifecycle, contextView, false);
             }
         }));
+    }
+
+    private Optional<PdlTestLifecycle<?, ?>> requiredPdlLifecycle(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations
+    ) {
+        return pdlLifecycleFor(
+                registrations.stream()
+                        .anyMatch(registration -> registration.definition().requiresPdl())
+                        || technicalRegistrations.stream()
+                        .anyMatch(registration -> registration.definition().requiresPdl()));
+    }
+
+    private static List<FunctionalTestKey> keysOf(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations
+    ) {
+        return Stream.concat(
+                        registrations.stream()
+                                .map(FunctionalTestRegistry.RegisteredFunctionalTest::key),
+                        technicalRegistrations.stream()
+                                .map(FunctionalTestRegistry.RegisteredTechnicalStatus::key))
+                .toList();
     }
 
     private void verifyCooldown(List<FunctionalTestKey> keys) {
