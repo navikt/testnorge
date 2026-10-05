@@ -37,6 +37,7 @@ public class InntektstubDeleteMonthCommand implements Callable<Mono<ResponseDTO>
                         .status(HttpStatus.valueOf(entity.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientError.logTo(log))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(error -> {
                     var description = WebClientError.describe(error);
                     return Mono.just(ResponseDTO.builder()

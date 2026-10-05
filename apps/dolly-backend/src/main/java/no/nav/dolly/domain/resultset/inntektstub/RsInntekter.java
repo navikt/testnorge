@@ -40,11 +40,16 @@ public class RsInntekter {
 
     private List<Forskuddstrekk> forskuddstrekksliste;
 
-    private List<Historikk> historikk;
-
     private LocalDateTime rapporteringsdato;
 
     private Integer versjon;
+
+    public List<YearMonth> getPerioder() {
+        if (isNull(perioder)) {
+            perioder = new ArrayList<>();
+        }
+        return perioder;
+    }
 
     public List<Inntekt> getInntektsliste() {
         if (isNull(inntektsliste)) {
@@ -65,13 +70,6 @@ public class RsInntekter {
             forskuddstrekksliste = new ArrayList<>();
         }
         return forskuddstrekksliste;
-    }
-
-    public List<Historikk> getHistorikk() {
-        if (isNull(historikk)) {
-            historikk = new ArrayList<>();
-        }
-        return historikk;
     }
 
     @Data
@@ -96,20 +94,5 @@ public class RsInntekter {
 
         @Schema(description = "Gyldige verdier finnes i kodeverket 'Forskuddstrekkbeskrivelse'")
         private String beskrivelse;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Historikk {
-
-        private List<Inntekt> inntektsliste;
-
-        private List<Fradrag> fradragsliste;
-
-        private List<Forskuddstrekk> forskuddstrekksliste;
-
-        private LocalDateTime rapporteringsdato;
     }
 }

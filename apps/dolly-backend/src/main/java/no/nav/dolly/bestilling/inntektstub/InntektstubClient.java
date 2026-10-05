@@ -8,6 +8,8 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
@@ -18,6 +20,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -25,7 +28,6 @@ import java.util.stream.LongStream;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
 @Slf4j
@@ -33,6 +35,7 @@ import static org.apache.commons.lang3.StringUtils.truncate;
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
 
+    private static final DateTimeFormatter YEAR_MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM");
     private static final int MAX_STATUS_LEN = 200;
 
     private final InntektstubConsumer inntektstubConsumer;
@@ -56,38 +59,39 @@ public class InntektstubClient implements ClientRegister {
                 .flatMap(status -> {
 
                     if (!bestilling.getInntekter().isEmpty()) {
-                        return sendInntekterData(bestilling, dollyPerson);
+                        return mapInntekterData(bestilling.getInntekter(), dollyPerson)
+                                .zipWith(Mono.just(status));
 
                     } else if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
-                        return sendInntektsinformasjonWrapper(bestilling, dollyPerson);
-
-                    } else {
-                        return Mono.just(status);
+                        return mapInntektsinformasjonWrapper(bestilling.getInntektstub(), dollyPerson)
+                                .zipWith(Mono.just(status));
                     }
+                    return Mono.just("").zipWith(Mono.just(status));
                 })
-                .flatMap(status -> isNotBlank(status) ? oppdaterStatus(progress, status) : Mono.empty());
+                .map(tuple -> "%s,%s".formatted(tuple.getT2(), tuple.getT1()))
+                .flatMap(status -> status.length() > 1 ? oppdaterStatus(progress, status) : Mono.empty());
     }
 
-    private Mono<String> sendInntekterData(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+    private Mono<String> mapInntekterData(List<RsInntekter> inntekter, DollyPerson dollyPerson) {
 
-        var nyInntektsinformasjon = bestilling.getInntekter().stream()
-                .flatMap(inntekter -> inntekter.getPerioder().stream()
+        var nyeInntekter = inntekter.stream()
+                .flatMap(inntekt -> inntekt.getPerioder().stream()
                         .map(periode -> {
                             var context = MappingContextUtils.getMappingContext();
                             context.setProperty("ident", dollyPerson.getIdent());
                             context.setProperty("periode", periode);
-                            return mapperFacade.map(inntekter, Inntektsinformasjon.class, context);
+                            return mapperFacade.map(inntekt, Inntektsinformasjon.class, context);
                         }))
                 .toList();
 
-        return oppdaterInntektstub(dollyPerson, nyInntektsinformasjon);
+        return oppdaterInntektstub(dollyPerson, nyeInntekter);
     }
 
-    private @NonNull Mono<String> sendInntektsinformasjonWrapper(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+    private Mono<String> mapInntektsinformasjonWrapper(InntektMultiplierWrapper warpper, DollyPerson dollyPerson) {
 
-        var nyInntektsinformasjon = bestilling.getInntektstub().getInntektsinformasjon().stream()
+        var nyeInntekter = warpper.getInntektsinformasjon().stream()
                 .flatMap(inntekter -> {
-                    var sisteAarMaaned = YearMonth.parse(inntekter.getSisteAarMaaned());
+                    var sisteAarMaaned = YearMonth.parse(inntekter.getSisteAarMaaned(), YEAR_MONTH_FORMAT);
                     return LongStream.range(0, nonNull(inntekter.getAntallMaaneder()) ?
                                     inntekter.getAntallMaaneder() : 1)
                             .mapToObj(sisteAarMaaned::minusMonths)
@@ -100,7 +104,7 @@ public class InntektstubClient implements ClientRegister {
                 })
                 .toList();
 
-        return oppdaterInntektstub(dollyPerson, nyInntektsinformasjon);
+        return oppdaterInntektstub(dollyPerson, nyeInntekter);
     }
 
     private @NonNull Mono<String> oppdaterInntektstub(DollyPerson dollyPerson, List<Inntektsinformasjon> nyInntektsinformasjon) {
