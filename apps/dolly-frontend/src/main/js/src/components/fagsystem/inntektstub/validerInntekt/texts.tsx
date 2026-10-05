@@ -1,3 +1,5 @@
+import { codeToNorskLabel } from '@/utils/DataFormatter'
+
 const texts = {
 	// INNTEKTSTYPE
 	inntektstype: 'Inntektstype',
@@ -267,7 +269,7 @@ const texts = {
 		'Lønn utbetalt fra den norske stat opptjent i utlandet',
 	loennVedArbeidsmarkedstiltak: 'Lønn ved arbeidsmarkedstiltak',
 	hyreTilMannskapPaaFiskeSmaahvalfangstOgSelfangstfartoey:
-		'Hyre til mannskap på fiske-, smaahvalfangst-, og selfangstfartøy',
+		'Hyre til mannskap på fiske-, småhvalfangst-, og selfangstfartøy',
 	skattefriArbeidsinntektBarnUnderTrettenAar: 'Skattefri arbeidsinntekt barn under tretten år',
 	loennOgAnnenGodtgjoerelseSomIkkeErSkattepliktig:
 		'Lønn og annen godtgjørelse som ikke er skattepliktig',
@@ -302,4 +304,4 @@ const texts = {
 	sluttOpptjeningsperiode: 'Slutt opptjeningsperiode',
 }
 
-export default (key) => (texts[key] ? texts[key] : key)
+export default (key) => (texts[key] ? texts[key] : codeToNorskLabel(key))
