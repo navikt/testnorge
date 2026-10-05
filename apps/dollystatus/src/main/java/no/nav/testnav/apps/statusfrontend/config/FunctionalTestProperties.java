@@ -90,6 +90,11 @@ public class FunctionalTestProperties {
     }
 
     @ConfigurationProperties(prefix = "functional-test.technical-status")
+    @Getter
+    @Setter
     public static final class SecondBatchTechnicalStatusProperties extends RequestTimeoutProperties {
+
+        private int retryAttempts = 2;
+        private Duration retryDelay = Duration.ofSeconds(10);
     }
 }

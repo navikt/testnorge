@@ -66,7 +66,8 @@ public class SecondBatchTechnicalStatusClient {
                             return response.createException()
                                     .flatMap(Mono::error);
                         }))
-                .timeout(properties.getRequestTimeout());
+                .timeout(properties.getRequestTimeout())
+                .retryWhen(TechnicalStatusRetry.transientFailures(properties));
     }
 
     public Mono<Void> checkFullmakt(RunId runId) {
@@ -88,7 +89,8 @@ public class SecondBatchTechnicalStatusClient {
                             return response.createException()
                                     .flatMap(Mono::error);
                         }))
-                .timeout(properties.getRequestTimeout());
+                .timeout(properties.getRequestTimeout())
+                .retryWhen(TechnicalStatusRetry.transientFailures(properties));
     }
 
     private Mono<Void> checkReadiness(ServerProperties serverProperties) {
@@ -100,6 +102,7 @@ public class SecondBatchTechnicalStatusClient {
                 .retrieve()
                 .toBodilessEntity()
                 .timeout(properties.getRequestTimeout())
+                .retryWhen(TechnicalStatusRetry.transientFailures(properties))
                 .then();
     }
 }

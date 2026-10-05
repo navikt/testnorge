@@ -15,8 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.time.Duration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -26,6 +29,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({
@@ -66,11 +70,13 @@ class SecondBatchTechnicalStatusContractTest {
         when(consumers.getTestnavDollyProxy()).thenReturn(dollyProxy);
         when(consumers.getTestnavArbeidsplassenCVProxy()).thenReturn(arbeidsplassenCvProxy);
         when(consumers.getTestnavOrganisasjonForvalter()).thenReturn(organisasjonForvalter);
+        var technicalStatusProperties = new SecondBatchTechnicalStatusProperties();
+        technicalStatusProperties.setRetryDelay(Duration.ofMillis(1));
         client = new SecondBatchTechnicalStatusClient(
                 tokenExchange,
                 consumers,
                 pdlProperties,
-                new SecondBatchTechnicalStatusProperties(),
+                technicalStatusProperties,
                 WebClient.builder().build());
     }
 
@@ -87,6 +93,36 @@ class SecondBatchTechnicalStatusContractTest {
                 .verifyComplete();
 
         verify(3, getRequestedFor(urlPathEqualTo("/internal/health/readiness")));
+    }
+
+    @Test
+    void shouldRetryTransientReadinessFailure() {
+        stubFor(get(urlPathEqualTo("/internal/health/readiness"))
+                .inScenario("readiness")
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse().withStatus(503))
+                .willSetStateTo("recovered"));
+        stubFor(get(urlPathEqualTo("/internal/health/readiness"))
+                .inScenario("readiness")
+                .whenScenarioStateIs("recovered")
+                .willReturn(ok()));
+
+        StepVerifier.create(client.checkArbeidsplassenCvProxy())
+                .verifyComplete();
+
+        verify(2, getRequestedFor(urlPathEqualTo("/internal/health/readiness")));
+    }
+
+    @Test
+    void shouldNotRetryClientErrorFromReadiness() {
+        stubFor(get(urlPathEqualTo("/internal/health/readiness"))
+                .willReturn(aResponse().withStatus(401)));
+
+        StepVerifier.create(client.checkArbeidsplassenCvProxy())
+                .expectError(WebClientResponseException.Unauthorized.class)
+                .verify();
+
+        verify(1, getRequestedFor(urlPathEqualTo("/internal/health/readiness")));
     }
 
     @Test

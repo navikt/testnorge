@@ -160,6 +160,8 @@ functional-test:
     technical-only: true
   technical-status:
     request-timeout: 30s
+    retry-attempts: 2
+    retry-delay: 10s
 
 slack:
   enabled: ${DOLLYSTATUS_SLACK_ENABLED:false}

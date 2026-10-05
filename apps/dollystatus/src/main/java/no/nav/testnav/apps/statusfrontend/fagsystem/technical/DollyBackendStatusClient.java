@@ -2,17 +2,17 @@ package no.nav.testnav.apps.statusfrontend.fagsystem.technical;
 
 import no.nav.testnav.apps.statusfrontend.config.Consumers;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.SecondBatchTechnicalStatusProperties;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 import tools.jackson.databind.JsonNode;
 
 import java.time.Duration;
 
 @Service
 public class DollyBackendStatusClient {
-
-    private static final Duration SHARED_RESPONSE_TTL = Duration.ofMinutes(1);
 
     private final SecondBatchTechnicalStatusProperties properties;
     private final WebClient client;
@@ -25,15 +25,21 @@ public class DollyBackendStatusClient {
     ) {
         this.properties = properties;
         client = webClient.mutate()
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .responseTimeout(properties.getRequestTimeout())))
                 .baseUrl(consumers.getTestnavDollyBackend().getUrl())
                 .build();
+        var sharedResponseTtl = properties.getRetryDelay().dividedBy(2);
         sharedStatusResponse = Mono.defer(this::fetchStatuses)
-                .cache(SHARED_RESPONSE_TTL);
+                .cache(_ -> sharedResponseTtl, _ -> Duration.ZERO, () -> Duration.ZERO);
     }
 
     public Mono<Void> check(String consumerName) {
         return sharedStatusResponse
-                .flatMap(statuses -> validate(statuses.path(consumerName)));
+                .flatMap(statuses -> validate(statuses.path(consumerName)))
+                .retryWhen(TechnicalStatusRetry.retryOn(
+                        properties,
+                        TechnicalStatusNotOkException.class::isInstance));
     }
 
     private Mono<JsonNode> fetchStatuses() {
@@ -41,8 +47,9 @@ public class DollyBackendStatusClient {
                 .uri("/internal/status")
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .switchIfEmpty(Mono.error(new IllegalStateException("Teknisk status mangler.")))
-                .timeout(properties.getRequestTimeout());
+                .timeout(properties.getRequestTimeout())
+                .retryWhen(TechnicalStatusRetry.transientFailures(properties))
+                .switchIfEmpty(Mono.error(new IllegalStateException("Teknisk status mangler.")));
     }
 
     private Mono<Void> validate(JsonNode services) {
@@ -52,9 +59,16 @@ public class DollyBackendStatusClient {
         for (var service : services) {
             if (!"OK".equals(service.path("alive").asString())
                     || !"OK".equals(service.path("ready").asString())) {
-                return Mono.error(new IllegalStateException("Teknisk status er ikke OK."));
+                return Mono.error(new TechnicalStatusNotOkException());
             }
         }
         return Mono.empty();
+    }
+
+    private static final class TechnicalStatusNotOkException extends IllegalStateException {
+
+        private TechnicalStatusNotOkException() {
+            super("Teknisk status er ikke OK.");
+        }
     }
 }

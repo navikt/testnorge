@@ -13,6 +13,7 @@
 - Innen hver fase kjører opptil fire uavhengige grupper samtidig, inkludert tekniske sjekker. Hver gruppe venter på opprydding før neste test starter. Miljøene i samme fagsystem kjøres etter hverandre.
 - Pensjon-testene deler én gruppe. Arena og Arbeidssøkerregisteret deler en annen, mens NOM og Skjermingsregister deler en tredje. Dette hindrer samtidige endringer i relaterte testdata. PDL-opprydding venter på alle gruppene.
 - Opprydding får inntil tre nye forsøk ved feil som kan prøves på nytt. Systemer uten egnet opprydding har kun teknisk status for å ikke fylle opp med data.
+- Tekniske sjekker prøves inntil to ganger til, med ti sekunders mellomrom, ved timeout, nettverksfeil, HTTP 408, 429 og 5xx. Dette styres av `functional-test.technical-status.retry-attempts` og `retry-delay`. Sjekkene mot dolly-backend deler ett vellykket svar fra `/internal/status` i halve ventetiden. Feilede svar deles ikke. Rapporterer dolly-backend at en tjeneste ikke er OK, hentes statusen på nytt før sjekken settes til DOWN.
 - Eksisterende data på den dedikerte testidenten ryddes med fagsystemets slette- eller avslutningskall før ny oppretting. Oppryddingen etterkontrolleres, og preflight kjøres på nytt. Ved feil stoppes denne testen med oppryddingsfeil og vanlig Slack-varsling. Oppretting prøves ikke før oppryddingen er bekreftet.
 
 Fagsystemenes klienter og kommandoer ligger i egne mapper under `src/main/java/no/nav/testnav/apps/statusfrontend/fagsystem`. Aktivering, tidsfrister og adresser styres i [application.yml](src/main/resources/application.yml).
