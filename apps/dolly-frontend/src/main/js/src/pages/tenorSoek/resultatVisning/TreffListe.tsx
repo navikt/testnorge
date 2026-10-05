@@ -1,4 +1,4 @@
-import { Alert, Box, Tag, Tooltip, VStack } from '@navikt/ds-react'
+import { Alert, Box, HStack, Tag, Tooltip, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
@@ -7,6 +7,8 @@ import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { malTyper } from '@/pages/minSide/maler/MalModal'
+import { SoekNyMalDialog } from '@/components/ui/soekMaler/SoekNyMalDialog'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -43,12 +45,11 @@ const getTagTooltip = (relasjon: string): string => {
 }
 
 export const TreffListe = ({
+	formRequest,
 	response,
 	personListe,
 	markertePersoner,
 	setMarkertePersoner,
-	inkluderPartnere,
-	setInkluderPartnere,
 	nesteSide,
 	loading,
 	error,
@@ -85,6 +86,7 @@ export const TreffListe = ({
 	}
 
 	const antallTreff = localStorage['antallTreff']
+	const antallSoekekriterier = Object.keys(formRequest)?.length
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -97,12 +99,14 @@ export const TreffListe = ({
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
 							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
-						<ImporterValgtePersoner
-							identer={markertePersoner}
-							isMultiple={true}
-							inkluderPartnere={inkluderPartnere}
-							setInkluderPartnere={setInkluderPartnere}
-						/>
+						<HStack gap="space-12">
+							<SoekNyMalDialog
+								verdier={formRequest}
+								malType={malTyper.TENORSOEK}
+								disabled={antallSoekekriterier < 1}
+							/>
+							<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
+						</HStack>
 					</div>
 				</Box>
 			</div>
@@ -188,8 +192,6 @@ export const TreffListe = ({
 						iBruk={valgtPerson?.iBruk}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
-						inkluderPartnere={inkluderPartnere}
-						setInkluderPartnere={setInkluderPartnere}
 					/>
 				)}
 			</div>

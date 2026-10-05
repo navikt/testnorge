@@ -33,12 +33,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SigrunStubClientTest {
+class SigrunstubClientTest {
 
     private static final String IDENT = "11111111";
 
     @Mock
-    private SigrunStubConsumer sigrunStubConsumer;
+    private SigrunstubConsumer sigrunStubConsumer;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -50,7 +50,7 @@ class SigrunStubClientTest {
     ArgumentCaptor<String> statusCaptor;
 
     @InjectMocks
-    private SigrunStubClient sigrunStubClient;
+    private SigrunstubClient sigrunStubClient;
 
     @Test
     void gjenopprett_ingendata() {

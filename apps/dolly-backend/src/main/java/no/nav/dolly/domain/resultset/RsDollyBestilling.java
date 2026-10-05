@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
@@ -72,6 +73,7 @@ public class RsDollyBestilling {
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private InntektMultiplierWrapper inntektstub;
+    private List<RsInntekter> inntekter;
     private Arenadata arenaforvalter;
     private RsUdiPerson udistub;
     private PensjonData pensjonforvalter;
@@ -118,6 +120,13 @@ public class RsDollyBestilling {
             sigrunstubPensjonsgivende = new ArrayList<>();
         }
         return sigrunstubPensjonsgivende;
+    }
+
+    public List<RsInntekter> getInntekter() {
+        if (isNull(inntekter)) {
+            inntekter = new ArrayList<>();
+        }
+        return inntekter;
     }
 
     public List<RsInstdata> getInstdata() {

@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubLignetDeleteCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubPensjonsgivendeDeleteCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubSummertSkattgrunnlagDeleteCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostImportCommand;
@@ -28,7 +27,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Component
-public class SigrunStubConsumer extends ConsumerStatus {
+public class SigrunstubConsumer extends ConsumerStatus {
 
     private static final String PREFIX = "/sigrunstub";
     private static final String PREFIX_V1 = PREFIX + "/api/v1";
@@ -41,7 +40,7 @@ public class SigrunStubConsumer extends ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serverProperties;
 
-    public SigrunStubConsumer(
+    public SigrunstubConsumer(
             TokenExchange tokenService,
             Consumers consumers,
             JsonMapper jsonMapper,
@@ -54,16 +53,6 @@ public class SigrunStubConsumer extends ConsumerStatus {
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(jsonMapper))
                 .build();
-    }
-
-    @Timed(name = "providers", tags = {"operation", "sigrun_deleteLignetInntekt"})
-    public Flux<SigrunstubResponse> deleteLignetInntekt(List<String> identer) {
-        return tokenService
-                .exchange(serverProperties)
-                .flatMapMany(token -> Flux.fromIterable(identer)
-                        .delayElements(Duration.ofMillis(50))
-                        .map(ident -> new SigrunstubLignetDeleteCommand(webClient, ident, token.getTokenValue()).call())
-                        .flatMap(Flux::from));
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_deletePensjonsgivendeInntekt"})

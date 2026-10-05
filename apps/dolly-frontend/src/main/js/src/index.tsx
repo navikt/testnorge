@@ -6,6 +6,7 @@ import '@navikt/ds-css'
 import '@/styles/main.less'
 import { RootComponent } from '@/RootComponent'
 import { runningE2ETest } from '@/service/services/Request'
+import { initializeFrontendTelemetry } from '@/observability/frontendTelemetry'
 
 async function enableMocking() {
 	if (import.meta.env.MODE !== 'test' || runningE2ETest()) {
@@ -18,6 +19,12 @@ async function enableMocking() {
 }
 
 enableMocking().then(() => {
+	void Promise.resolve()
+		.then(initializeFrontendTelemetry)
+		.catch(() => {
+			console.error('Nettlesertelemetri kunne ikke starte. Dolly fortsetter uten telemetri.')
+		})
+
 	const rootElement = document.getElementById('root')
 	if (!rootElement) {
 		throw new Error('Fant ikke rot-elementet for Dolly')

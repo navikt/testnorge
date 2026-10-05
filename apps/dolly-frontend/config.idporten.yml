@@ -42,6 +42,7 @@ spec:
         - application: testnav-dolly-search-service
         - application: testnav-person-service
         - application: testnav-tenor-search-service
+        - application: testnav-template-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnorge-profil-api
@@ -90,5 +91,9 @@ spec:
   envFrom:
     - secret: idporten-dolly-prod
   env:
+    - name: FRONTEND_TELEMETRY_ENABLED
+      value: "true"
+    - name: NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL
+      value: "https://telemetry.ekstern.dev.nav.no/collect"
     - name: SPRING_PROFILES_ACTIVE
       value: idporten

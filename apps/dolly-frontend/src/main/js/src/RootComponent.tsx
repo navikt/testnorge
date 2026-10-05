@@ -18,10 +18,14 @@ import allRoutes from '@/allRoutes'
 import React, { useEffect } from 'react'
 import { locationChange } from '@/ducks/finnPerson'
 import BrukerPage from '@/pages/brukerPage'
+import { captureFrontendError } from '@/observability/frontendTelemetry'
 
 const ErrorView = () => {
 	console.error('Applikasjonen har støtt på en feil')
 	const error: any = useRouteError()
+	useEffect(() => {
+		captureFrontendError(error)
+	}, [error])
 	console.error(error)
 
 	const isMinifiedReactError = error?.message?.includes('Minified React error')

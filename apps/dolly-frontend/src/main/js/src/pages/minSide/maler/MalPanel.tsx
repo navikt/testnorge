@@ -13,6 +13,8 @@ import * as _ from 'lodash-es'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
+import { MalType } from '@/pages/minSide/maler/Maloversikt'
+import { SoekMalVisning } from '@/components/ui/soekMaler/SoekMalVisning'
 
 type Props = {
 	antallEgneMaler: any
@@ -22,6 +24,12 @@ type Props = {
 	mutate: () => void
 	underRedigering: any
 	setUnderRedigering: any
+}
+
+type MalVisningProps = {
+	bestillingData: any
+	bestillingBasedOnMal: any
+	soekKriterier: Record<string, unknown>
 }
 
 export const MalPanel = ({
@@ -60,14 +68,14 @@ export const MalPanel = ({
 
 	const maler = malerFiltrert(malListe, searchText)
 
-	const DataCells = ({ id, malNavn, bestilling }) => (
+	const DataCells = ({ id, malNavn }: { id: number; malNavn: string }) => (
 		<>
 			<Table.DataCell scope="row" width={'75%'}>
 				{erUnderRedigering(id) ? (
 					<EndreMalnavn
 						malNavn={malNavn}
 						id={id}
-						bestilling={bestilling}
+						type={type}
 						avsluttRedigering={(id: number) => {
 							avsluttRedigering(id)
 							mutate()
@@ -95,10 +103,23 @@ export const MalPanel = ({
 				)}
 			</Table.DataCell>
 			<Table.DataCell width={'10%'}>
-				<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
+				<SlettMal id={id} type={type} mutate={mutate} />
 			</Table.DataCell>
 		</>
 	)
+
+	const MalVisning = ({ bestillingData, bestillingBasedOnMal, soekKriterier }: MalVisningProps) => {
+		switch (type) {
+			case MalType.ORGANISASJON:
+				return <BestillingsdataOrganisasjon bestilling={bestillingData.organisasjon} />
+			case MalType.PERSON:
+				return <Bestillingsdata bestilling={bestillingBasedOnMal} />
+			case MalType.TENORSOEK:
+				return <SoekMalVisning soekKriterier={soekKriterier} />
+			default:
+				return null
+		}
+	}
 
 	return (
 		<Box background="default" padding="space-16">
@@ -117,9 +138,9 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, malBestilling, bestilling }) => {
-									const bestillingData = malBestilling || bestilling
-									const erOrganisasjon = _.has(bestillingData, 'organisasjon')
+								{maler.map(({ malNavn, id, malBestilling, bestilling, soekKriterier }) => {
+									const bestillingData = malBestilling || bestilling || soekKriterier
+
 									const alert = harUtdaterteVerdier(bestillingData)
 									const erTomBestilling = isEmpty(bestillingData, [
 										'id2032',
@@ -152,18 +173,16 @@ export const MalPanel = ({
 														</Alert>
 													)}
 													<div className="bestilling-data">
-														{erOrganisasjon ? (
-															<BestillingsdataOrganisasjon
-																bestilling={bestillingData.organisasjon}
-															/>
-														) : (
-															<Bestillingsdata bestilling={bestillingBasedOnMal} />
-														)}
+														<MalVisning
+															bestillingData={bestillingData}
+															bestillingBasedOnMal={bestillingBasedOnMal}
+															soekKriterier={soekKriterier}
+														/>
 													</div>
 												</>
 											}
 										>
-											<DataCells id={id} bestilling={bestillingBasedOnMal} malNavn={malNavn} />
+											<DataCells id={id} malNavn={malNavn} />
 										</Table.ExpandableRow>
 									)
 								})}
@@ -175,7 +194,9 @@ export const MalPanel = ({
 				)
 			) : (
 				<StyledAlert variant={'info'}>
-					{`Du har ingen maler for ${type} enda. Neste gang du oppretter en ny ${type} kan du lagre bestillingen
+					{type === MalType.TENORSOEK
+						? 'Du har ingen maler for Tenor-søk enda. Neste gang du gjør et nytt Tenor-søk kan du lagre søket som en mal.'
+						: `Du har ingen maler for ${type} enda. Neste gang du oppretter en ny ${type} kan du lagre bestillingen
 						som en mal på siste side av bestillingsveilederen.`}
 				</StyledAlert>
 			)}

@@ -103,14 +103,20 @@ export const multiFetcherAfpOffentlig = (miljoUrlListe, headers = null, _path = 
 
 export const multiFetcherDokarkiv = (miljoUrlListe) =>
 	Promise.all(
-		miljoUrlListe?.map((obj) =>
-			obj.url
-				? fetcher(obj.url, { miljo: obj.miljo }).then((result) => ({
-						miljo: obj.miljo,
-						data: result,
-					}))
-				: { miljo: obj.miljo, data: null },
-		),
+		miljoUrlListe?.map((obj) => {
+			return obj.url
+				? fetcher(obj.url, { miljo: obj.miljo })
+						.then((result) => {
+							return {
+								miljo: obj.miljo,
+								data: result,
+							}
+						})
+						.catch((feil) => {
+							return { miljo: obj.miljo, data: null, feil: feil }
+						})
+				: { miljo: obj.miljo, data: null }
+		}),
 	)
 
 export const cvFetcher = (url, headers) => {
@@ -186,7 +192,7 @@ export const pdfFetcher = (...args: Argument[]) =>
 			})
 	})
 
-type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
+type Method = 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE'
 
 type Config = {
 	method: Method
