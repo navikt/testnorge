@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import * as _ from 'lodash-es'
 import { useFormState, useWatch, UseFormReturn } from 'react-hook-form'
 import { AdresseKodeverk } from '@/config/kodeverk'
@@ -97,13 +97,22 @@ const InntektFelt = ({
 
 	const enesteValg = hentEnesteValg(options)
 	const paakrevd = enesteValg === undefined && erFeltPaakrevd(options, inntektValue, value)
-	const isClearable = options.includes('<TOM>')
+
+	const sisteAutoutfylteValgRef = useRef<string | boolean | undefined>(undefined)
 
 	useEffect(() => {
-		if (enesteValg !== undefined && value !== enesteValg) {
+		if (enesteValg === undefined) {
+			sisteAutoutfylteValgRef.current = undefined
+			return
+		}
+		if (sisteAutoutfylteValgRef.current === enesteValg) {
+			return
+		}
+		sisteAutoutfylteValgRef.current = enesteValg
+		if (value !== enesteValg) {
 			formMethods.setValue(fieldPath, enesteValg, { shouldDirty: true, shouldValidate: true })
 		}
-	}, [enesteValg, fieldPath, value])
+	}, [enesteValg, fieldPath, value, formMethods])
 
 	useEffect(() => {
 		if (isLoading || options.length === 0) {
@@ -131,7 +140,7 @@ const InntektFelt = ({
 				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 				afterChange={handleChange}
 				size="large"
-				isClearable={isClearable}
+				isClearable={true}
 			/>
 		)
 	}
@@ -161,7 +170,7 @@ const InntektFelt = ({
 			size={
 				size ?? (booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large')
 			}
-			isClearable={isClearable}
+			isClearable={true}
 			isLoading={isLoading}
 		/>
 	)

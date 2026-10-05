@@ -120,6 +120,36 @@ describe('Inntekt validation', () => {
 		})
 	})
 
+	it('should autofill a single option once and let the user clear it', async () => {
+		const { formMethods, rerender, view } = setup('')
+		rerender(view({ beskrivelse: ['fastloenn'] }))
+
+		await waitFor(() => {
+			expect(formMethods.getValues(beskrivelsePath)).toBe('fastloenn')
+		})
+
+		act(() => formMethods.setValue(beskrivelsePath, null))
+		rerender(view({ beskrivelse: ['fastloenn'] }))
+
+		await waitFor(() => {
+			expect(formMethods.getValues(beskrivelsePath)).toBeNull()
+		})
+	})
+
+	it('should autofill again when the single option changes', async () => {
+		const { formMethods, rerender, view } = setup('')
+		rerender(view({ beskrivelse: ['fastloenn'] }))
+		await waitFor(() => {
+			expect(formMethods.getValues(beskrivelsePath)).toBe('fastloenn')
+		})
+		act(() => formMethods.setValue(beskrivelsePath, null))
+		rerender(view({ beskrivelse: ['bonus'] }))
+
+		await waitFor(() => {
+			expect(formMethods.getValues(beskrivelsePath)).toBe('bonus')
+		})
+	})
+
 	it('should preserve errors from other validation', () => {
 		const { formMethods, rerender, view } = setup()
 		act(() => formMethods.setError(beskrivelsePath, { type: 'server', message: 'Ugyldig inntekt' }))
