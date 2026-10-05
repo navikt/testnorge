@@ -1,5 +1,6 @@
 package no.nav.dolly.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.service.InntektService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ public class EndringController {
 
     private final InntektService inntektService;
 
+    @Operation(description = "Sletter inntekt for en gitt ident og periode (format yyyy-MM)")
     @DeleteMapping("/inntekt/ident/{ident}/periode/{periode}")
     public Mono<Void> deleteInntektByAarMaaned(
             @PathVariable String ident,
