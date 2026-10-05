@@ -74,7 +74,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK,");
                 })
                 .verifyComplete();
     }
@@ -99,7 +99,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Import av inntektsdata feilet= Blah");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Import av inntektsdata feilet= Blah,");
                 })
                 .verifyComplete();
     }
@@ -145,7 +145,7 @@ class InntektstubClientTest {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(",OK");
                 })
                 .verifyComplete();
 
@@ -181,7 +181,7 @@ class InntektstubClientTest {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Feil ved lagring");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(",Feil= Feil ved lagring");
                 })
                 .verifyComplete();
     }
@@ -214,7 +214,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).getInntekter(DOLLY_IDENT);
                     verify(inntektstubConsumer).postInntekter(any());
                     verify(transactionHelperService).persister(any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getValue()).isEqualTo("OK");
+                    assertThat(statusCaptor.getValue()).isEqualTo(",OK");
                 })
                 .verifyComplete();
 
