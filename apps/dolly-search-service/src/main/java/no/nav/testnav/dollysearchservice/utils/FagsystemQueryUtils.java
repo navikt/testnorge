@@ -12,6 +12,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.mustExistQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.mustMatchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.shouldExistQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
@@ -43,7 +44,7 @@ public class FagsystemQueryUtils {
             case ETTERLATTE -> mustExistQuery(queryBuilder, "etterlatteYtelser");
             case FULLMAKT -> mustExistQuery(queryBuilder, "fullmakt");
             case HISTARK -> mustExistQuery(queryBuilder, "histark");
-            case INNTK -> mustExistQuery(queryBuilder, "inntektstub");
+            case INNTK -> shouldExistQuery(queryBuilder, "inntekter","inntektstub");
             case INNTKMELD -> mustExistQuery(queryBuilder, "inntektsmelding");
             case INSTDATA -> mustExistQuery(queryBuilder, "instdata");
             case INSTDATA_KDI -> mustExistQuery(queryBuilder, "instdataKdi");

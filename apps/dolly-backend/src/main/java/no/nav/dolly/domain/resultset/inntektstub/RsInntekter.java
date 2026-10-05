@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,18 +19,12 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class RsInntektsinformasjon {
+public class RsInntekter {
 
-    @Schema(type = "Integer",
-            description = "Antall måneder som denne inntektsinformasjon skal kopieres",
-            example = "36")
-    private Integer antallMaaneder;
-
-    @Schema(description = "Siste år-måned for gjeldene inntektsinformasjon",
-            example = "yyyy-MM",
-            type = "String",
-            requiredMode = Schema.RequiredMode.REQUIRED)
-    private String sisteAarMaaned;
+    @Schema(description = "Liste av år-måneder som inntektsinformasjon er gyldig for",
+            example = "[\"2022-01\", \"2022-02\", \"2022-03\"]",
+            type = "List<String>")
+    private List<YearMonth> perioder;
 
     @Schema(description = "Organisasjonsnummer/norskIdent",
             requiredMode = Schema.RequiredMode.REQUIRED)
@@ -48,6 +43,13 @@ public class RsInntektsinformasjon {
     private LocalDateTime rapporteringsdato;
 
     private Integer versjon;
+
+    public List<YearMonth> getPerioder() {
+        if (isNull(perioder)) {
+            perioder = new ArrayList<>();
+        }
+        return perioder;
+    }
 
     public List<Inntekt> getInntektsliste() {
         if (isNull(inntektsliste)) {

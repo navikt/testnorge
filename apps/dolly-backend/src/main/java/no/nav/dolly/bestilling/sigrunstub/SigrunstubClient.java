@@ -27,13 +27,13 @@ import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class SigrunStubClient implements ClientRegister {
+public class SigrunstubClient implements ClientRegister {
 
     private static final String IDENT = "ident";
     private static final String SIGRUNSTUB_SUMMERT = "SIGRUN_SUMMERT:%s";
     private static final String SIGRUNSTUB_PENSJONSGIVENDE = "SIGRUN_PENSJONSGIVENDE:%s";
 
-    private final SigrunStubConsumer sigrunStubConsumer;
+    private final SigrunstubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
@@ -121,11 +121,7 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        Flux.merge(sigrunStubConsumer.deleteLignetInntekt(identer)
-                                .filter(SigrunstubResponse::isOK)
-                                .count()
-                                .map(antall -> "lignet inntekt: " + antall),
-                        sigrunStubConsumer.deletePensjonsgivendeInntekt(identer)
+        Flux.merge(sigrunStubConsumer.deletePensjonsgivendeInntekt(identer)
                                 .filter(SigrunstubResponse::isOK)
                                 .count()
                                 .map(antall -> "pensjonsgivende inntekt: " + antall),

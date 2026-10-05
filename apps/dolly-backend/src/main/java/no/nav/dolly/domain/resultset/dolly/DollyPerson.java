@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
+import no.nav.dolly.util.TestnorgeIdentUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +33,9 @@ public class DollyPerson {
             tags = new ArrayList<>();
         }
         return tags;
+    }
+
+    public boolean isTestnorgeIdent() {
+        return TestnorgeIdentUtility.isTestnorgeIdent(ident);
     }
 }
