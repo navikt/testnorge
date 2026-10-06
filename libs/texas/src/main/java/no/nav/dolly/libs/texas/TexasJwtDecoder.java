@@ -28,20 +28,18 @@ class TexasJwtDecoder implements ReactiveJwtDecoder {
                 .introspect(token)
                 .flatMap(introspection -> {
                     try {
-                        log.info("Token introspection result: {}", introspection);
-
                         var isActive = objectMapper
                                 .readTree(introspection)
                                 .path("active").asBoolean(false);
                         if (!isActive) {
-                            log.warn("Token is not active according to introspection endpoint: {}", introspection);
+                            log.warn("Token is not active according to introspection endpoint");
                             return Mono.error(new JwtException("Token is not active according to introspection endpoint"));
                         }
 
                         com.nimbusds.jwt.JWT parsedJwt = com.nimbusds.jwt.JWTParser.parse(token);
                         var claimsSet = parsedJwt.getJWTClaimsSet();
                         if (claimsSet == null) {
-                            log.error("Parsed JWT has no claims set: {}", token);
+                            log.error("Parsed JWT has no claims set");
                             return Mono.error(new JwtException("Parsed JWT has no claims"));
                         }
                         var claims = claimsSet.getClaims();
@@ -62,10 +60,10 @@ class TexasJwtDecoder implements ReactiveJwtDecoder {
                         return Mono.just(new Jwt(token, issuedAt, expiresAt, headers, claims));
 
                     } catch (tools.jackson.core.JacksonException e) {
-                        log.error("Failed to parse token introspection response: {}", introspection, e);
+                        log.error("Failed to parse token introspection response", e);
                         return Mono.error(new JwtException("Failed to parse token introspection response: " + e.getOriginalMessage(), e));
                     } catch (ParseException e) {
-                        log.error("Failed to parse JWT string: {}", token, e);
+                        log.error("Failed to parse JWT string", e);
                         return Mono.error(new JwtException("Failed to parse JWT string: " + e.getMessage(), e));
                     }
                 })
