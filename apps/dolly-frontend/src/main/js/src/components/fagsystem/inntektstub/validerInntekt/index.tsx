@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Inntekt from '@/components/fagsystem/inntektstub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
+import { GYLDIGE_VERDIER } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
 import * as _ from 'lodash-es'
 import { Form, useFormContext, useWatch } from 'react-hook-form'
 
@@ -12,8 +13,9 @@ const tilleggsinformasjonAttributter = {
 	LottOgPartInnenFiske: 'lottOgPart',
 	Nettoloennsordning: 'nettoloenn',
 	UtenlandskArtist: 'utenlandskArtist',
-	BonusFraForsvaret: 'bonusFraForsvaret',
-	ReiseKostOgLosji: 'reiseKostOgLosji',
+	// BonusFraForsvaret: 'bonusFraForsvaret',
+	// ReiseKostOgLosji: 'reiseKostOgLosji',
+	// TODO: Trenger vi disse?
 }
 
 const InntektStub = ({ inntektPath }) => {
@@ -30,7 +32,7 @@ const InntektStub = ({ inntektPath }) => {
 		tilleggsinformasjonstype,
 		tilleggsinformasjon,
 	} = inntektValues
-	const inntektValuesJson = JSON.stringify(inntektValues)
+	const inntektValuesJson = JSON.stringify(_.omit(inntektValues, GYLDIGE_VERDIER))
 
 	useEffect(() => {
 		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
@@ -39,10 +41,14 @@ const InntektStub = ({ inntektPath }) => {
 	const getFields = (values) => {
 		const requestId = ++sisteFieldsRequestId.current
 		setIsLoadingFields(true)
-		InntektstubService.validate(_.omitBy(values, (value) => value === '' || !value))
+		InntektstubService.validate(
+			_.omitBy(_.omit(values, GYLDIGE_VERDIER), (value) => value === '' || !value),
+		)
 			.then((response) => {
 				if (requestId === sisteFieldsRequestId.current) {
 					setFields(response)
+					formMethods.setValue(`${inntektPath}.${GYLDIGE_VERDIER}`, response)
+					formMethods.trigger(inntektPath)
 				}
 			})
 			.finally(() => {

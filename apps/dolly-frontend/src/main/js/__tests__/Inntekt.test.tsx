@@ -22,7 +22,6 @@ vi.mock(
 
 const path = 'inntektsliste.0'
 const beskrivelsePath = `${path}.beskrivelse`
-const fields = { beskrivelse: ['fastloenn', 'bonus'] }
 
 const setup = (beskrivelse = 'fastloenn') => {
 	const { result } = renderHook(() =>
@@ -51,75 +50,7 @@ const setup = (beskrivelse = 'fastloenn') => {
 	return { formMethods, rerender, view }
 }
 
-describe('Inntekt validation', () => {
-	it('should preserve a selected description without errors when returning before options load', async () => {
-		const { formMethods, rerender, view } = setup()
-		rerender(view(fields))
-		rerender(view({}, false, false))
-		rerender(view())
-
-		expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-		rerender(view({}, true))
-		expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-		rerender(view(fields))
-
-		await waitFor(() => {
-			expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-			expect(formMethods.getValues(beskrivelsePath)).toBe('fastloenn')
-		})
-	})
-
-	it('should not validate against stale options while loading', () => {
-		const { formMethods, rerender, view } = setup()
-		rerender(view({ beskrivelse: ['bonus', 'overtid'] }, true))
-
-		expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-		expect(formMethods.getValues(beskrivelsePath)).toBe('fastloenn')
-	})
-
-	it.each(['', 'ukjent'])(
-		'should report an invalid description "%s" once options load',
-		async (value) => {
-			const { formMethods, rerender, view } = setup(value)
-			expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-			rerender(view(fields))
-
-			await waitFor(() => {
-				expect(formMethods.getFieldState(beskrivelsePath).error).toMatchObject({
-					type: 'inntektPaakrevd',
-					message: 'Feltet er påkrevd',
-				})
-			})
-		},
-	)
-
-	it('should clear its own error when the description becomes valid', async () => {
-		const { formMethods, rerender, view } = setup('')
-		rerender(view(fields))
-		await waitFor(() => {
-			expect(formMethods.getFieldState(beskrivelsePath).error).toBeDefined()
-		})
-
-		act(() => formMethods.setValue(beskrivelsePath, 'fastloenn'))
-
-		await waitFor(() => {
-			expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-		})
-	})
-
-	it('should clear its own error when updated options allow the selected description', async () => {
-		const { formMethods, rerender, view } = setup()
-		rerender(view({ beskrivelse: ['bonus', 'overtid'] }))
-		await waitFor(() => {
-			expect(formMethods.getFieldState(beskrivelsePath).error).toBeDefined()
-		})
-		rerender(view(fields))
-
-		await waitFor(() => {
-			expect(formMethods.getFieldState(beskrivelsePath).error).toBeUndefined()
-		})
-	})
-
+describe('Inntekt autofill', () => {
 	it('should autofill a single option once and let the user clear it', async () => {
 		const { formMethods, rerender, view } = setup('')
 		rerender(view({ beskrivelse: ['fastloenn'] }))
@@ -147,17 +78,6 @@ describe('Inntekt validation', () => {
 
 		await waitFor(() => {
 			expect(formMethods.getValues(beskrivelsePath)).toBe('bonus')
-		})
-	})
-
-	it('should preserve errors from other validation', () => {
-		const { formMethods, rerender, view } = setup()
-		act(() => formMethods.setError(beskrivelsePath, { type: 'server', message: 'Ugyldig inntekt' }))
-		rerender(view(fields))
-
-		expect(formMethods.getFieldState(beskrivelsePath).error).toMatchObject({
-			type: 'server',
-			message: 'Ugyldig inntekt',
 		})
 	})
 })

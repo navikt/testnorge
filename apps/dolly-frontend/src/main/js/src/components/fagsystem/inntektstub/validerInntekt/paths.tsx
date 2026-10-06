@@ -13,4 +13,4 @@ const tilleggsinformasjonPaths = {
 	inntjeningsforhold: 'tilleggsinformasjon.inntjeningsforhold.inntjeningsforhold',
 }
 
-export default (key) => (tilleggsinformasjonPaths[key] ? tilleggsinformasjonPaths[key] : key)
+export default (key: string) => tilleggsinformasjonPaths[key] ?? key

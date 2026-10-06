@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import { ifPresent, messages, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
+import { finnUgyldigeFelter } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
 
 const unikOrgMndTest = (unikValidation: Yup.StringSchema<string, Yup.AnyObject>) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
@@ -73,23 +74,25 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 }
 
 const inntektsliste = Yup.array().of(
-	Yup.object().shape(
-		{
+	Yup.object()
+		.shape({
 			beloep: requiredNumber.typeError(messages.required),
 			inntektstype: requiredString,
+			beskrivelse: requiredString,
 			startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
 			sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
-			inngaarIGrunnlagForTrekk: Yup.boolean().required(messages.required),
-			utloeserArbeidsgiveravgift: Yup.boolean().required(messages.required),
-			fordel: ifPresent('fordel', requiredString),
-			antall: ifPresent('$antall', requiredString),
-			beskrivelse: ifPresent('beskrivelse', requiredString),
-		},
-		[
-			['fordel', 'fordel'],
-			['beskrivelse', 'beskrivelse'],
-		],
-	),
+		})
+		.test('gyldigeVerdier', messages.required, function (inntekt) {
+			const ugyldigeFelter = finnUgyldigeFelter(inntekt)
+			if (ugyldigeFelter.length === 0) {
+				return true
+			}
+			return new Yup.ValidationError(
+				ugyldigeFelter.map((feltPath) =>
+					this.createError({ path: `${this.path}.${feltPath}`, message: messages.required }),
+				),
+			)
+		}),
 )
 
 const fradragsliste = Yup.array().of(
