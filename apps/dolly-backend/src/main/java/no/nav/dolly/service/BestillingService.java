@@ -552,6 +552,7 @@ public class BestillingService {
                                     .dokarkiv(request2.getDokarkiv())
                                     .etterlatteYtelser(request2.getEtterlatteYtelser())
                                     .fullmakt(request2.getFullmakt())
+                                    .henvendelse(request2.getHenvendelse())
                                     .histark(request2.getHistark())
                                     .inntektsmelding(request2.getInntektsmelding())
                                     .inntektstub(request2.getInntektstub())

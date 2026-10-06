@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
@@ -74,6 +75,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
+                .field("henvendelse", "henvendelse")
                 .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
@@ -276,6 +278,17 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulertDTO.getForventetLoeslatelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getForventetLoeslatelse(), RsInstdataKdi.ForventetLoeslatelse.class));
                         akkumulertDTO.getLoeslatelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getLoeslatelse(), RsInstdataKdi.Loeslatelse.class));
                         akkumulertDTO.getAnnullering().addAll(mapperFacade.mapAsList(rsInstdataKdi.getAnnullering(), RsInstdataKdi.Annullering.class));
+                    }
+                })
+                .register();
+
+        factory.classMap(RsHenvendelse.class, RsHenvendelse.class)
+                .mapNulls(false)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsHenvendelse henvendelse, RsHenvendelse akkumulertDTO, MappingContext context) {
+                        akkumulertDTO.getMeldinger().addAll(mapperFacade.mapAsList(henvendelse.getMeldinger(), RsHenvendelse.Melding.class));
+                        akkumulertDTO.getSamtalereferater().addAll(mapperFacade.mapAsList(henvendelse.getSamtalereferater(), RsHenvendelse.Samtalereferat.class));
                     }
                 })
                 .register();

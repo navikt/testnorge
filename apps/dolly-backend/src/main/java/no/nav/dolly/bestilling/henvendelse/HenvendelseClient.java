@@ -88,7 +88,7 @@ public class HenvendelseClient implements ClientRegister {
                 .flatMap(Flux::fromIterable)
                 .map(HenvendelseResponse.Info::getKjedeId)
                 .flatMap(henvendelseConsumer::deleteHenvendelse)
-                .subscribe(_ -> log.info("Slettet henvendelse i Salesforce"));
+                .subscribe(_ -> log.info("Lukket henvendelser i Salesforce"));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
