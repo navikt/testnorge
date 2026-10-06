@@ -139,23 +139,7 @@ export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
 				<BestillingTitle>A-ordningen (Inntektstub)</BestillingTitle>
 				<DollyFieldArray header="Inntektsinformasjon" data={inntektstub.inntektsinformasjon}>
 					{(inntektsinfo: any, idx: number) => (
-						<>
-							<Inntektsinformasjon inntektsinfo={inntektsinfo} idx={idx} />
-							<EkspanderbarVisning
-								vis={inntektsinfo?.historikk?.length > 0}
-								header="INNTEKTSENDRING (HISTORIKK)"
-							>
-								<DollyFieldArray data={inntektsinfo.historikk} nested>
-									{(historikk: any, idy: number) => (
-										<Inntektsinformasjon
-											inntektsinfo={historikk}
-											idx={idy}
-											whiteBackground={true}
-										/>
-									)}
-								</DollyFieldArray>
-							</EkspanderbarVisning>
-						</>
+						<Inntektsinformasjon inntektsinfo={inntektsinfo} idx={idx} />
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>

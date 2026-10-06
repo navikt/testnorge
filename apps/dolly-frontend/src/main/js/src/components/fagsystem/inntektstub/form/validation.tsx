@@ -130,13 +130,6 @@ export const validation = {
 					inntektsliste: inntektsliste,
 					fradragsliste: fradragsliste,
 					forskuddstrekksliste: forskuddstrekksliste,
-					historikk: Yup.array().of(
-						Yup.object({
-							inntektsliste: inntektsliste,
-							fradragsliste: fradragsliste,
-							forskuddstrekksliste: forskuddstrekksliste,
-						}),
-					),
 				}),
 			),
 		}),

@@ -9,7 +9,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDateTime } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 
 type InntekstubVisning = {
