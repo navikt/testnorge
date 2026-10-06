@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.henvendelse;
 
+import no.nav.dolly.bestilling.henvendelse.command.HenvendelseDeleteCommand;
+import no.nav.dolly.bestilling.henvendelse.command.HenvendelseGetCommand;
 import no.nav.dolly.bestilling.henvendelse.command.HenvendelsePostCommand;
 import no.nav.dolly.bestilling.henvendelse.dto.HenvendelseResponse;
 import no.nav.dolly.bestilling.henvendelse.dto.HenvendelseSamtalereferatRequest;
@@ -36,5 +38,17 @@ public class HenvendelseConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new HenvendelsePostCommand(webClient, melding, token.getTokenValue()).call());
+    }
+
+    public Mono<HenvendelseResponse> getHenvendelse(String aktorid) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new HenvendelseGetCommand(webClient, aktorid, token.getTokenValue()).call());
+    }
+
+    public Mono<HenvendelseResponse> deleteHenvendelse(String kjedeId) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMap(token -> new HenvendelseDeleteCommand(webClient, kjedeId, token.getTokenValue()).call());
     }
 }
