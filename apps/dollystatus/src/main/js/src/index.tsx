@@ -9,6 +9,12 @@ if (!container) {
 	throw new Error('Fant ikke rotnoden for applikasjonen')
 }
 
-const root = createRoot(container)
+const enableMocking = async () => {
+	if (import.meta.env.MODE !== 'mock') {
+		return
+	}
+	const { worker } = await import('@/mocks/browser')
+	await worker.start({ onUnhandledRequest: 'bypass' })
+}
 
-root.render(<App />)
+enableMocking().then(() => createRoot(container).render(<App />))
