@@ -22,6 +22,10 @@
 	color: var(--ax-text-neutral-subtle);
 }
 
+.status-page-mock-notice {
+	margin-top: var(--ax-space-12);
+}
+
 .status-page-live-region {
 	position: absolute;
 	width: 1px;
@@ -48,9 +52,19 @@
 }
 
 .fagsystem-card {
+	display: flex;
+	flex-direction: column;
 	padding: var(--ax-space-20);
 	border: 1px solid var(--ax-border-neutral-subtle);
 	background: var(--ax-bg-raised);
+}
+
+.fagsystem-card-content {
+	flex: 1;
+}
+
+.fagsystem-card-actions {
+	margin-top: auto;
 }
 
 .fagsystem-environments {
@@ -85,7 +99,7 @@
 	color: var(--ax-text-neutral-subtle);
 }
 
-.fagsystem-card button[aria-disabled='true'] {
+.fagsystem-panel button[aria-disabled='true'] {
 	cursor: not-allowed;
 	opacity: 0.65;
 }

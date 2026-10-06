@@ -8,6 +8,7 @@
 - Både vellykkede og feilede resultater caches for å ikke spamme endepunkt. 
 - Dersom to eller flere besøkende går inn samtidig, vil de dele pågående kjøring i samme appinstans istedenfor å starte en hver. 
 - Manuell omkjøring er tilgjengelig fem minutter etter forrige sjekk.
+- Panelene «Funksjonstester» og «Interne sjekker» har hver sin «Kjør alle på nytt». Knappen kjører alle sjekkene i panelet og er sperret i fem minutter etter at en av dem sist ble startet. PDL hører til funksjonstestene, men kjøres også med de interne sjekkene når MEDL krever det. Sperren ligger i minnet og nullstilles ved ny deploy eller restart.
 - Frontend poller hvert andre sekund og viser fremdrift og resultat per fagsystem og miljø, med Q1/Q2 der systemet støtter det. SSE er et mulig forbedringspunkt her, men ble sløyfet for enklere oppsett i første omgang.
 - PDL klargjøres først. Deretter kjøres Tags, Kontoregister, Pensjon, AAREG og Inntektstub før øvrige systemer. PDL-opprydding kjøres sist.
 - Innen hver fase kjører opptil fire uavhengige grupper samtidig, inkludert tekniske sjekker. Hver gruppe venter på opprydding før neste test starter. Miljøene i samme fagsystem kjøres etter hverandre.
@@ -44,15 +45,29 @@ Kjøringshistorikk beholdes i 24 timer etter at kjøringen er ferdig. Utløpte k
 
 ## Lokal kjøring
 
-Du trenger Java 25, Node.js, pnpm og tilgang til interne Nav-tjenester. Private npm-pakker krever GitHub-token i brukerens `.npmrc`.
+Du trenger Node.js og pnpm. Private npm-pakker krever GitHub-token i brukerens `.npmrc`.
+
+### Frontend med mockdata
+
+Start frontend fra `apps/dollystatus/src/main/js`:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm start
+```
+
+Åpne `http://localhost:3000`. Siden viser alle fagsystemene med mockdata fra MSW i nettleseren, uten backend eller innlogging. Bruk denne modusen til designarbeid. «Kjør på nytt» og «Kjør alle på nytt» viser «Kjører» i fire sekunder og deretter OK. Mockene ligger i `src/mocks/` og er ikke med i produksjonsbygget.
+
+### Funksjonell kjøring mot backend
+
+Funksjonell kjøring krever i tillegg Java 25 og tilgang til interne Nav-tjenester.
 
 Start backend fra `apps/dollystatus`:
 
 Start frontend i en annen terminal, fra `apps/dollystatus/src/main/js`:
 
 ```bash
-pnpm install --frozen-lockfile
-pnpm start
+pnpm start:functional
 ```
 
 Åpne `http://localhost:3000`. Vite videresender API- og innloggingskall til backend på port 8080. Lokal innlogging går via `dolly-auth-local`.

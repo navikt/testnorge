@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ApiError } from '@/services/api'
-import statusApi, { FagsystemStatus } from '@/services/statusApi'
+import statusApi, { FagsystemStatus, RunAccepted } from '@/services/statusApi'
+
+export type StatusPanel = 'functional' | 'technical'
 
 const POLLING_INTERVAL_MILLISECONDS = 2_000
 
@@ -39,6 +41,7 @@ export const useFagsystemStatuses = () => {
 	const [initialLoading, setInitialLoading] = useState(true)
 	const [activeRunId, setActiveRunId] = useState<string | null>(null)
 	const [startingSystemId, setStartingSystemId] = useState<string | null>(null)
+	const [startingPanel, setStartingPanel] = useState<StatusPanel | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
 	const refreshStatuses = useCallback(async () => {
@@ -98,12 +101,11 @@ export const useFagsystemStatuses = () => {
 		return () => window.clearInterval(intervalId)
 	}, [activeRunId, refreshStatuses])
 
-	const rerun = useCallback(
-		async (systemId: string) => {
-			setStartingSystemId(systemId)
+	const startRun = useCallback(
+		async (start: () => Promise<RunAccepted>, failureMessage: string) => {
 			setErrorMessage(null)
 			try {
-				const run = await statusApi.startSystemTest(systemId)
+				const run = await start()
 				setActiveRunId(run.runId)
 				await refreshStatuses()
 			} catch (error) {
@@ -113,12 +115,42 @@ export const useFagsystemStatuses = () => {
 					const runningStatus = updatedStatuses.find((status) => isRunning(status.state))
 					setActiveRunId(runningStatus?.runId ?? null)
 				}
-				setErrorMessage(problem?.message ?? 'Vi kunne ikke starte testen. Prøv igjen senere.')
+				setErrorMessage(problem?.message ?? failureMessage)
+			}
+		},
+		[refreshStatuses],
+	)
+
+	const rerun = useCallback(
+		async (systemId: string) => {
+			setStartingSystemId(systemId)
+			try {
+				await startRun(
+					() => statusApi.startSystemTest(systemId),
+					'Vi kunne ikke starte testen. Prøv igjen senere.',
+				)
 			} finally {
 				setStartingSystemId(null)
 			}
 		},
-		[refreshStatuses],
+		[startRun],
+	)
+
+	const rerunPanel = useCallback(
+		async (panel: StatusPanel) => {
+			setStartingPanel(panel)
+			try {
+				await startRun(
+					panel === 'functional'
+						? statusApi.startFunctionalTests
+						: statusApi.startTechnicalStatuses,
+					'Vi kunne ikke starte testene. Prøv igjen senere.',
+				)
+			} finally {
+				setStartingPanel(null)
+			}
+		},
+		[startRun],
 	)
 
 	const groupedStatuses = useMemo(
@@ -147,6 +179,8 @@ export const useFagsystemStatuses = () => {
 		groupedStatuses,
 		initialLoading,
 		rerun,
+		rerunPanel,
+		startingPanel,
 		startingSystemId,
 		technicalStatuses,
 	}

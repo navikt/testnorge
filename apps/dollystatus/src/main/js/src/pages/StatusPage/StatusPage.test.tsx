@@ -122,6 +122,66 @@ describe('StatusPage', () => {
 		},
 	)
 
+	it.each([
+		['Funksjonstester', '/api/v1/funksjonstester/testkjoringer'],
+		['Interne sjekker', '/api/v1/interne-sjekker/testkjoringer'],
+	])('should start all checks in the %s panel', async (panelName, endpoint) => {
+		let starts = 0
+		server.use(
+			http.get('/api/v1/fagsystem-statuser', () =>
+				HttpResponse.json([
+					status,
+					{ ...status, systemId: 'sigrun', displayName: 'Sigrun', environment: 'GLOBAL' },
+				]),
+			),
+			http.post('/api/v1/testkjoringer', () => new HttpResponse(null, { status: 404 })),
+			http.post(endpoint, () => {
+				starts += 1
+				return HttpResponse.json({ runId: 'aaf62d6f-eb87-49ce-bcef-b82ca3fd940d' }, { status: 202 })
+			}),
+		)
+
+		render(<StatusPage />)
+		await screen.findByRole('heading', { level: 2, name: panelName })
+		within(screen.getByRole('region', { name: panelName }))
+			.getByRole('button', { name: 'Kjør alle på nytt' })
+			.click()
+
+		await waitFor(() => expect(starts).toBe(1))
+	})
+
+	it('should block run all in a panel while one of its systems is in cooldown', async () => {
+		let starts = 0
+		server.use(
+			http.get('/api/v1/fagsystem-statuser', () =>
+				HttpResponse.json([
+					{ ...status, state: 'OK', startedAt: new Date().toISOString() },
+					{ ...status, systemId: 'sigrun', displayName: 'Sigrun', environment: 'GLOBAL' },
+				]),
+			),
+			http.post('/api/v1/testkjoringer', () => new HttpResponse(null, { status: 404 })),
+			http.post('/api/v1/funksjonstester/testkjoringer', () => {
+				starts += 1
+				return HttpResponse.json({ runId: 'aaf62d6f-eb87-49ce-bcef-b82ca3fd940d' }, { status: 202 })
+			}),
+		)
+
+		render(<StatusPage />)
+		await screen.findByRole('heading', { level: 2, name: 'Funksjonstester' })
+		const functionalPanel = within(screen.getByRole('region', { name: 'Funksjonstester' }))
+		const button = functionalPanel.getByRole('button', { name: 'Kjør alle på nytt' })
+
+		expect(button).toHaveAttribute('aria-disabled', 'true')
+		button.click()
+		expect(
+			within(screen.getByRole('region', { name: 'Interne sjekker' })).getByRole('button', {
+				name: 'Kjør alle på nytt',
+			}),
+		).toHaveAttribute('aria-disabled', 'false')
+		await new Promise((resolve) => setTimeout(resolve, 50))
+		expect(starts).toBe(0)
+	})
+
 	it('should show loading and start expired tests when the page opens', async () => {
 		let starts = 0
 		server.use(

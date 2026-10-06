@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import './StatusPage.less'
-import { Heading, LocalAlert, VStack } from '@navikt/ds-react'
+import { Heading, LocalAlert, Tag, VStack } from '@navikt/ds-react'
 
 import BlankHeader from '@/components/BlankHeader/BlankHeader'
 import Loading from '@/components/loading/Loading'
@@ -16,6 +16,8 @@ export default () => {
 		groupedStatuses,
 		initialLoading,
 		rerun,
+		rerunPanel,
+		startingPanel,
 		startingSystemId,
 		technicalStatuses,
 	} = useFagsystemStatuses()
@@ -67,6 +69,14 @@ export default () => {
 						<p className="status-page-introduction">
 							Statusene oppdateres automatisk når siden lastes. Resultatene lagres i én time.
 						</p>
+						{import.meta.env.MODE === 'mock' && (
+							<div className="status-page-mock-notice">
+								<Tag variant="moderate" size="small" data-color="warning">
+									NB: Kjører i lokal dev-modus med mockdata. Feil og blokkering er kun visuelt og
+									ingen av testene kjøres. Manuell omstart av testene vil også bli mocket.
+								</Tag>
+							</div>
+						)}
 					</div>
 					{errorMessage && (
 						<LocalAlert status="error" size="small">
@@ -100,6 +110,8 @@ export default () => {
 									startingSystemId={startingSystemId}
 									now={now}
 									onRerun={(systemId) => void rerun(systemId)}
+									startingAll={startingPanel === 'functional'}
+									onRerunAll={() => void rerunPanel('functional')}
 								/>
 							)}
 							{technicalStatuses.length > 0 && (
@@ -110,6 +122,8 @@ export default () => {
 									startingSystemId={startingSystemId}
 									now={now}
 									onRerun={(systemId) => void rerun(systemId)}
+									startingAll={startingPanel === 'technical'}
+									onRerunAll={() => void rerunPanel('technical')}
 								/>
 							)}
 						</>

@@ -392,6 +392,51 @@ class FunctionalTestCoordinatorTest {
     }
 
     @Test
+    void shouldRunEachPanelSeparatelyWithItsOwnCooldown() {
+        var events = new CopyOnWriteArrayList<String>();
+        var pdlLifecycle = new RecordingPdlLifecycle(events, false);
+        var definition = new CountingDefinition();
+        var registry = new FunctionalTestRegistry(
+                List.of(definition),
+                List.of(new OrderedTechnicalStatus(events, "medl")));
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                registry,
+                new FunctionalTestCache(clock),
+                clock,
+                List.of(pdlLifecycle),
+                List.of(listener));
+
+        var functionalRun = coordinator.startFunctionalTests().block(Duration.ofSeconds(1));
+
+        assertThat(functionalRun).isNotNull();
+        awaitCompleted(coordinator, functionalRun);
+        assertThat(definition.createAttempts).hasValue(1);
+        assertThat(pdlLifecycle.createAttempts).hasValue(1);
+        assertThat(events).doesNotContain("medl");
+        assertThatThrownBy(() -> coordinator.startFunctionalTests().block(Duration.ofSeconds(1)))
+                .isInstanceOf(FunctionalTestCooldownException.class);
+
+        var technicalRun = coordinator.startTechnicalStatuses().block(Duration.ofSeconds(1));
+
+        assertThat(technicalRun).isNotNull();
+        awaitCompleted(coordinator, technicalRun);
+        assertThat(events).contains("medl");
+        assertThat(definition.createAttempts).hasValue(1);
+        assertThat(pdlLifecycle.createAttempts).hasValue(2);
+        assertThatThrownBy(() -> coordinator.startTechnicalStatuses().block(Duration.ofSeconds(1)))
+                .isInstanceOf(FunctionalTestCooldownException.class);
+
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+        var secondFunctionalRun = coordinator.startFunctionalTests().block(Duration.ofSeconds(1));
+
+        assertThat(secondFunctionalRun).isNotNull();
+        awaitCompleted(coordinator, secondFunctionalRun);
+        assertThat(definition.createAttempts).hasValue(2);
+        verify(listener, after(100).never()).onFullRunCompleted(any());
+    }
+
+    @Test
     void shouldReleaseRunBeforeFullRunListenerCompletes() throws InterruptedException {
         var definition = new CountingDefinition();
         var clock = new MutableClock(STARTED_AT);
