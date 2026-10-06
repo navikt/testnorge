@@ -40,7 +40,7 @@ public class HenvendelseGetCommand implements Callable<Mono<HenvendelseResponse>
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
-                    log.error("Lukking av henvendelse mot Salesforce feilet: {}", description.getMessage(), throwable);
+                    log.error("Henting av henvendelse fra (Salesforce) feilet: {}", description.getMessage(), throwable);
                     return Mono.just(HenvendelseResponse.builder()
                             .status(description.getStatus())
                             .melding(description.getMessage())

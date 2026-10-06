@@ -40,7 +40,7 @@ public class HenvendelseDeleteCommand implements Callable<Mono<HenvendelseRespon
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
-                    log.error("Lagring av data til (Salesforce) henvendelse feilet: {}", description.getMessage(), throwable);
+                    log.error("Lukking av henvendelse mot Salesforce feilet: {}", description.getMessage(), throwable);
                     return Mono.just(HenvendelseResponse.builder()
                             .status(description.getStatus())
                             .melding(description.getMessage())
