@@ -34,6 +34,7 @@ spec:
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
+        - application: testnav-dollystatus
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
     outbound:
