@@ -51,7 +51,8 @@ public class InntektstubClient implements ClientRegister {
                     if (dollyPerson.isTestnorgeIdent()) {
                         return importFraTenor(dollyPerson, progress);
                     } else {
-                        return nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty() ?
+                        return !bestilling.getInntekter().isEmpty() ||
+                               nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty() ?
                                 oppdaterStatus(progress, getInfoVenter(INNTK.getBeskrivelse()))
                                         .then(Mono.just("")) :
                                 Mono.just("");
@@ -131,8 +132,8 @@ public class InntektstubClient implements ClientRegister {
                                     log.info("Inntektstub respons {}", inntekter);
                                     return inntekter.stream()
                                             .map(Inntektsinformasjon::getFeilmelding)
-                                            .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                                            "Feil= " + inntekter.stream()
+                                            .noneMatch(StringUtils::isNotBlank) ? "Oppretting: OK" :
+                                            "Oppretting: " + inntekter.stream()
                                                     .map(Inntektsinformasjon::getFeilmelding)
                                                     .filter(StringUtils::isNotBlank)
                                                     .map(ErrorStatusDecoder::encodeStatus)
@@ -151,12 +152,12 @@ public class InntektstubClient implements ClientRegister {
                                         .flatMap(importResponse -> {
                                             if (importResponse.getStatus().is2xxSuccessful()) {
                                                 log.info("Import av inntektsdata fra Tenor for {} utført", dollyPerson.getIdent());
-                                                return Mono.just("OK");
+                                                return Mono.just("Import: OK");
                                             } else {
                                                 log.error("Import av inntektsdata fra Tenor for {} feilet: {}",
                                                         dollyPerson.getIdent(), importResponse.getMessage());
-                                                return Mono.just("Feil= " + ErrorStatusDecoder.encodeStatus(
-                                                        "Import av inntektsdata feilet: " + importResponse.getMessage()));
+                                                return Mono.just("Import: " + ErrorStatusDecoder.encodeStatus(
+                                                        "Henting av inntektsdata fra Skatt feilet: " + importResponse.getMessage()));
                                             }
                                         }));
                     } else {

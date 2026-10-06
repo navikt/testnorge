@@ -5,15 +5,13 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -23,24 +21,67 @@ public final class BestillingInntektstubStatusMapper {
 
     public static List<RsStatusRapport> buildInntektstubStatusMap(List<BestillingProgress> progressList) {
 
-        Map<String, Set<String>> statusMap = new HashMap<>();
+        // type    // status   // ident
+        Map<String, Map<String, Set<String>>> meldStatusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getInntektstubStatus())) {
-                Arrays.stream(progress.getInntektstubStatus().split(","))
-                        .filter(melding -> statusMap.keySet().stream().noneMatch(status -> status.contains(melding)))
-                        .forEach(melding -> statusMap.computeIfAbsent(melding, _ -> new HashSet<>()).add(progress.getIdent()));
+                List.of(progress.getInntektstubStatus().split(",")).forEach(
+                        entry -> {
+                            if (isNotBlank(entry)) {
+                                var typeStatus = entry.split(":");
+                                var type = typeStatus[0];
+                                var status = decodeMsg(typeStatus.length > 1 ? typeStatus[typeStatus.length - 1] : "");
+                                insertArtifact(meldStatusIdents, type, status, progress.getIdent());
+                            }
+                        });
             }
         });
 
-        return statusMap.isEmpty() ? emptyList() :
-                singletonList(RsStatusRapport.builder().id(INNTK).navn(INNTK.getBeskrivelse())
-                        .statuser(statusMap.entrySet().stream()
-                                .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(decodeMsg(entry.getKey()))
-                                        .identer(entry.getValue().stream().toList())
-                                        .build())
-                                .toList())
-                        .build());
+        List<RsStatusRapport.Status> statusRapporter = new ArrayList<>();
+        statusRapporter.addAll(extractOKStatus(meldStatusIdents));
+        statusRapporter.addAll(extractErrorStatus(meldStatusIdents));
+
+        return List.of(RsStatusRapport.builder()
+                .id(INNTK)
+                .navn(INNTK.getBeskrivelse())
+                .statuser(statusRapporter)
+                .build());
+    }
+
+    private static void insertArtifact(Map<String, Map<String, Set<String>>> msgStatusIdents,
+                                       String type, String status, String ident) {
+
+        msgStatusIdents.computeIfAbsent(type, _ -> new HashMap<>())
+                .computeIfAbsent(status, _ -> new HashSet<>())
+                .add(ident);
+    }
+
+    private static List<RsStatusRapport.Status> extractOKStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
+
+        return typeStatusIdents.entrySet().stream()
+                .map(typeEntry -> typeEntry.getValue().entrySet().stream()
+                        .filter(statusEntry -> "OK".equals(statusEntry.getKey()))
+                        .map(statusEntry -> RsStatusRapport.Status.builder()
+                                .melding("OK")
+                                .identer(statusEntry.getValue().stream().toList())
+                                .build())
+                        .toList())
+                .flatMap(List::stream)
+                .toList();
+    }
+
+    private static List<RsStatusRapport.Status> extractErrorStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
+
+        return typeStatusIdents.entrySet().stream()
+                .map(typeEntry -> typeEntry.getValue().entrySet().stream()
+                        .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
+                        .map(statusEntry -> RsStatusRapport.Status.builder()
+                                .melding("Feil: %s: %s".formatted(typeEntry.getKey(), statusEntry.getKey()))
+                                .identer(statusEntry.getValue().stream().toList())
+                                .build())
+                        .toList())
+                .flatMap(List::stream)
+                .toList();
     }
 }
