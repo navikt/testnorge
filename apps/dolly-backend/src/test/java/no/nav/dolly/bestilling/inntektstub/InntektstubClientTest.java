@@ -74,7 +74,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK,");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK");
                 })
                 .verifyComplete();
     }
@@ -99,7 +99,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Import av inntektsdata feilet= Blah,");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Import av inntektsdata feilet= Blah");
                 })
                 .verifyComplete();
     }

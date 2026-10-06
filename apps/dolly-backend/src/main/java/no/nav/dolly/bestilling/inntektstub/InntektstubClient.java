@@ -28,6 +28,7 @@ import java.util.stream.LongStream;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
 @Slf4j
@@ -68,7 +69,13 @@ public class InntektstubClient implements ClientRegister {
                     }
                     return Mono.just("").zipWith(Mono.just(status));
                 })
-                .map(tuple -> "%s,%s".formatted(tuple.getT2(), tuple.getT1()))
+                .map(tuple -> {
+                    if (isNotBlank(tuple.getT1())) {
+                        return "%s,%s".formatted(tuple.getT2(), tuple.getT1());
+                    } else {
+                        return tuple.getT2();
+                    }
+                })
                 .flatMap(status -> status.length() > 1 ? oppdaterStatus(progress, status) : Mono.empty());
     }
 
