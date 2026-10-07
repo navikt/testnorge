@@ -5,7 +5,7 @@ import {
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 	useMalbestillingBruker,
 } from '@/utils/hooks/useMaler'
-import { Tabs } from '@navikt/ds-react'
+import { Heading, HStack, Tabs, VStack } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Buildings3Icon, MagnifyingGlassIcon, PersonGroupIcon } from '@navikt/aksel-icons'
@@ -48,17 +48,18 @@ export default ({ brukerId }: { brukerId: string }) => {
 	const antallEgneTenorsoekMaler = egneTenorsoekMaler?.length
 
 	return (
-		<div className="maloversikt">
-			<hr />
-			<div className="flexbox--align-center--space">
-				<h2>Mine maler</h2>
+		<VStack gap="space-16" className="maloversikt">
+			<HStack justify="space-between" align="center" gap="space-16">
+				<Heading level="2" size="medium">
+					Mine maler
+				</Heading>
 				<SearchField
 					placeholder={`Søk etter mal (${shortcutKey})`}
 					setText={setSearchText}
 					ref={searchInputRef}
 					data-testid={TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL}
 				/>
-			</div>
+			</HStack>
 			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 && antallEgneTenorsoekMaler === 0 ? (
 				<StyledAlert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
@@ -132,6 +133,6 @@ export default ({ brukerId }: { brukerId: string }) => {
 					</Tabs.Panel>
 				</Tabs>
 			)}
-		</div>
+		</VStack>
 	)
 }

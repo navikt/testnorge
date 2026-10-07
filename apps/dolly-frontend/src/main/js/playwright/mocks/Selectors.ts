@@ -27,6 +27,8 @@ export enum TestComponentSelectors {
 	TOGGLE_HAR_VERGE = 'toggle-har-verge',
 	TOGGLE_MIN_SIDE_ORGANISASJON_MALER = 'toggle-min-side-organisasjon-maler',
 	TOGGLE_MIN_SIDE_PERSONER_MALER = 'toggle-min-side-personer-maler',
+	TOGGLE_MIN_SIDE_MALER = 'toggle-min-side-maler',
+	TOGGLE_MIN_SIDE_STATISTIKK = 'toggle-min-side-statistikk',
 	TITLE_VISNING = 'title-visning',
 	TITLE_SEND_KOMMENTAR = 'title-send-kommentar',
 	TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET = 'title-tenor-organisasjoner-foretaksregisteret',
