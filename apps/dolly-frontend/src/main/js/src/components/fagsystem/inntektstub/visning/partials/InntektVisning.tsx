@@ -1,7 +1,7 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, formatStringDates } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
@@ -49,11 +49,11 @@ export const InntektFelter = ({ data }: { data: any }) => {
 						<React.Fragment>
 							<TitleValue
 								title="Etterbetaling start"
-								value={formatStringDates(data.tilleggsinformasjon.etterbetalingsperiode.startdato)}
+								value={formatDate(data.tilleggsinformasjon.etterbetalingsperiode.startdato)}
 							/>
 							<TitleValue
 								title="Etterbetaling slutt"
-								value={formatStringDates(data.tilleggsinformasjon.etterbetalingsperiode.sluttdato)}
+								value={formatDate(data.tilleggsinformasjon.etterbetalingsperiode.sluttdato)}
 							/>
 						</React.Fragment>
 					)}
@@ -74,11 +74,11 @@ export const InntektFelter = ({ data }: { data: any }) => {
 							/>
 							<TitleValue
 								title="Startdato"
-								value={formatStringDates(data.tilleggsinformasjon.pensjon.tidsrom?.startdato)}
+								value={formatDate(data.tilleggsinformasjon.pensjon.tidsrom?.startdato)}
 							/>
 							<TitleValue
 								title="Sluttdato"
-								value={formatStringDates(data.tilleggsinformasjon.pensjon.tidsrom?.sluttdato)}
+								value={formatDate(data.tilleggsinformasjon.pensjon.tidsrom?.sluttdato)}
 							/>
 							<TitleValue
 								title="Tilleggspensjonsbeløp"

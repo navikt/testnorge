@@ -6,6 +6,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDateTime } from '@/utils/DataFormatter'
 import { InntektstubKodeverk } from '@/config/kodeverk'
 import { InntektFelter } from '@/components/fagsystem/inntektstub/visning/partials/InntektVisning'
+import { tilNestedInntekt } from '@/components/fagsystem/inntektstub/validerInntekt/tilleggsinformasjon'
 
 type InntektstubTypes = {
 	inntektstub: {
@@ -37,7 +38,9 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 					whiteBackground={whiteBackground}
 					nested
 				>
-					{(inntekt: any, idy: number) => <InntektFelter data={inntekt} key={`inntekt_${idy}`} />}
+					{(inntekt: any, idy: number) => (
+						<InntektFelter data={tilNestedInntekt(inntekt)} key={`inntekt_${idy}`} />
+					)}
 				</DollyFieldArray>
 			)}
 			{inntektsinfo?.fradragsliste?.length > 0 && (
