@@ -43,7 +43,7 @@ public class FagsystemQueryUtils {
             case DOKARKIV -> mustExistQuery(queryBuilder, "dokarkiv");
             case ETTERLATTE -> mustExistQuery(queryBuilder, "etterlatteYtelser");
             case FULLMAKT -> mustExistQuery(queryBuilder, "fullmakt");
-            case HENDELSE -> mustExistQuery(queryBuilder, "hendelse");
+            case HENVENDELSE -> mustExistQuery(queryBuilder, "henvendelse");
             case HISTARK -> mustExistQuery(queryBuilder, "histark");
             case INNTK -> shouldExistQuery(queryBuilder, "inntekter","inntektstub");
             case INNTKMELD -> mustExistQuery(queryBuilder, "inntektsmelding");

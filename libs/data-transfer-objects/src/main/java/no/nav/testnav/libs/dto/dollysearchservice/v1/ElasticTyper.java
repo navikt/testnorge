@@ -23,7 +23,7 @@ public enum ElasticTyper {
     DOKARKIV("Dokumentarkiv (JOARK)", true),
     ETTERLATTE("Etterlatte ytelse", false),
     FULLMAKT("Fullmakt (Representasjon)", false),
-    HENDELSE("Hendelse (Salesforce)", false),
+    HENVENDELSE("Henvendelse (Salesforce)", false),
     HISTARK("Historisk arkiv (HISTARK)", false),
     INNTK("Inntektskomponenten/stub (INNTK)", false),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)", true),
