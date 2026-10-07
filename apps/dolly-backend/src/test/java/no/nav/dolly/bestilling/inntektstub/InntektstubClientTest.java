@@ -74,7 +74,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("OK,");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Import: OK");
                 })
                 .verifyComplete();
     }
@@ -99,7 +99,7 @@ class InntektstubClientTest {
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(false));
                     verify(inntektstubConsumer).sjekkImporterInntekt(eq(TESTNORGE_IDENT), eq(true));
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Feil= Import av inntektsdata feilet= Blah,");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo("Import: Henting av inntektsdata fra Skatt feilet= Blah");
                 })
                 .verifyComplete();
     }
@@ -145,7 +145,7 @@ class InntektstubClientTest {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(",OK");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(",Oppretting: OK");
                 })
                 .verifyComplete();
 
@@ -181,7 +181,7 @@ class InntektstubClientTest {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo("Info= Oppretting startet mot Inntektstub (INNTK) ...");
-                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(",Feil= Feil ved lagring");
+                    assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(",Oppretting: Feil= Feil ved lagring");
                 })
                 .verifyComplete();
     }
@@ -213,8 +213,10 @@ class InntektstubClientTest {
                 .assertNext(_ -> {
                     verify(inntektstubConsumer).getInntekter(DOLLY_IDENT);
                     verify(inntektstubConsumer).postInntekter(any());
-                    verify(transactionHelperService).persister(any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getValue()).isEqualTo(",OK");
+                    verify(transactionHelperService, times(2)).persister(any(), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues()).containsExactly(
+                            "Info= Oppretting startet mot Inntektstub (INNTK) ...",
+                            ",Oppretting: OK");
                 })
                 .verifyComplete();
 
@@ -258,6 +260,33 @@ class InntektstubClientTest {
         verify(inntektstubConsumer, never()).postInntekter(any());
         verify(transactionHelperService).persister(any(), any(),
                 eq("Info= Oppretting startet mot Inntektstub (INNTK) ..."));
+    }
+
+    @Test
+    void shouldPrefixEachDistinctCreationErrorAndIgnoreBlankMessages() {
+
+        val bestilling = new RsDollyUtvidetBestilling();
+        bestilling.setInntektstub(buildInntektsinformasjon());
+        val statusCaptor = ArgumentCaptor.forClass(String.class);
+        when(transactionHelperService.persister(any(), any(), anyString()))
+                .thenReturn(Mono.just(new BestillingProgress()));
+        stubInntektsinformasjonMapping();
+        when(inntektstubConsumer.getInntekter(DOLLY_IDENT)).thenReturn(Flux.empty());
+        when(inntektstubConsumer.postInntekter(any())).thenReturn(Flux.just(
+                Inntektsinformasjon.builder().feilmelding("First: error, details").build(),
+                Inntektsinformasjon.builder().feilmelding("Second error").build(),
+                Inntektsinformasjon.builder().feilmelding("First: error, details").build(),
+                Inntektsinformasjon.builder().feilmelding(" ").build(),
+                Inntektsinformasjon.builder().build()));
+
+        StepVerifier.create(inntektstubClient.gjenopprett(
+                        bestilling, DollyPerson.builder().ident(DOLLY_IDENT).build(), new BestillingProgress(), true))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        verify(transactionHelperService, times(2)).persister(any(), any(), statusCaptor.capture());
+        assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(
+                ",Oppretting: Feil= First= error; details,Oppretting: Feil= Second error");
     }
 
     private void stubInntektsinformasjonMapping() {
