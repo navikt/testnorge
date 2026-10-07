@@ -64,16 +64,22 @@ public final class BestillingHenvendelseStatusMapper {
 
     private static List<RsStatusRapport.Status> extractOKStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
 
-        return typeStatusIdents.entrySet().stream()
-                .map(typeEntry -> typeEntry.getValue().entrySet().stream()
-                        .filter(statusEntry -> "OK".equals(statusEntry.getKey()))
-                        .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding("OK")
-                                .identer(statusEntry.getValue().stream().toList())
-                                .build())
-                        .toList())
-                .flatMap(List::stream)
-                .toList();
+        if (typeStatusIdents.entrySet().stream()
+                .allMatch(typeEntry -> typeEntry.getValue().entrySet().stream()
+                        .allMatch(statusEntry -> "OK".equals(statusEntry.getKey())))) {
+
+            return List.of(RsStatusRapport.Status.builder()
+                    .melding("OK")
+                    .identer(typeStatusIdents.values().stream()
+                            .flatMap(typeEntry -> typeEntry.entrySet().stream())
+                            .flatMap(statusEntry -> statusEntry.getValue().stream())
+                            .distinct()
+                            .toList())
+                    .build());
+
+        } else {
+            return emptyList();
+        }
     }
 
     private static List<RsStatusRapport.Status> extractErrorStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {

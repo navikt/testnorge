@@ -51,18 +51,15 @@ class BestillingHenvendelseStatusMapperTest {
     }
 
     @Test
-    void shouldGroupIdentifiersByTypeAndStatusWithoutDuplicates() {
+    void shouldGroupIdentifiersByErrorTypeAndStatusWithoutDuplicates() {
 
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of(
-                progress("IDENT_1", "melding:OK,melding:OK,samtalereferat:FEIL"),
-                progress("IDENT_2", "melding:OK,samtalereferat:FEIL"),
+                progress("IDENT_1", "samtalereferat:FEIL,samtalereferat:FEIL"),
+                progress("IDENT_2", "samtalereferat:FEIL"),
                 progress("IDENT_3", "melding:FEIL")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).hasSize(3);
-        assertThat(statuses.getFirst().getMelding()).isEqualTo("OK");
-        assertThat(findStatus(statuses, "OK").getIdenter())
-                .containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
+        assertThat(statuses).hasSize(2);
         assertThat(findStatus(statuses, "Feil: samtalereferat: FEIL").getIdenter())
                 .containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
         assertThat(findStatus(statuses, "Feil: melding: FEIL").getIdenter())
@@ -70,17 +67,32 @@ class BestillingHenvendelseStatusMapperTest {
     }
 
     @Test
-    void shouldKeepSuccessfulStatusesForDifferentTypesSeparate() {
+    void shouldCombineSuccessfulStatusesAcrossTypesAndDeduplicateIdentifiers() {
 
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of(
                 progress("IDENT_1", "melding:OK"),
+                progress("IDENT_1", "samtalereferat:OK"),
                 progress("IDENT_2", "samtalereferat:OK")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).hasSize(2);
-        assertThat(statuses).allSatisfy(status -> assertThat(status.getMelding()).isEqualTo("OK"));
-        assertThat(statuses).extracting(RsStatusRapport.Status::getIdenter)
-                .containsExactlyInAnyOrder(List.of("IDENT_1"), List.of("IDENT_2"));
+        assertThat(statuses).singleElement().satisfies(status -> {
+            assertThat(status.getMelding()).isEqualTo("OK");
+            assertThat(status.getIdenter()).containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
+        });
+    }
+
+    @Test
+    void shouldReportOnlyFailuresWhenStatusesContainBothSuccessAndFailure() {
+
+        var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of(
+                progress("IDENT_1", "melding:OK,samtalereferat:FEIL"),
+                progress("IDENT_2", "melding:OK")));
+
+        var statuses = reports.getFirst().getStatuser();
+        assertThat(statuses).singleElement().satisfies(status -> {
+            assertThat(status.getMelding()).isEqualTo("Feil: samtalereferat: FEIL");
+            assertThat(status.getIdenter()).containsExactly("IDENT_1");
+        });
     }
 
     @Test
