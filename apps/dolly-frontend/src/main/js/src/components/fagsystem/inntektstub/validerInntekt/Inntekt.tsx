@@ -1,12 +1,10 @@
 import { useEffect, useRef } from 'react'
-import * as _ from 'lodash-es'
 import { useWatch, UseFormReturn } from 'react-hook-form'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
-import tilleggsinformasjonPaths from '@/components/fagsystem/inntektstub/validerInntekt/paths'
 import { initialValues } from '@/components/fagsystem/inntektstub/form/partials/inntektsinformasjonLister/inntektForm'
 import {
 	FeltOptions,
@@ -64,11 +62,9 @@ const InntektFelt = ({
 	size = null,
 	isLoading = false,
 }: InntektFeltProps) => {
-	const fieldName = tilleggsinformasjonPaths(field)
-	const fieldPath = `${path}.${fieldName}`
+	const fieldPath = `${path}.${field}`
 
-	const inntektValue = useWatch({ control: formMethods.control, name: path })
-	const value = _.get(inntektValue, fieldName)
+	const value = useWatch({ control: formMethods.control, name: fieldPath })
 
 	const enesteValg = hentEnesteValg(options)
 

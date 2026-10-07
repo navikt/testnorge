@@ -1,5 +1,5 @@
 import * as _ from 'lodash-es'
-import tilleggsinformasjonPaths from '@/components/fagsystem/inntektstub/validerInntekt/paths'
+import { tilNestedInntekt } from '@/components/fagsystem/inntektstub/validerInntekt/tilleggsinformasjon'
 
 export const GYLDIGE_VERDIER = 'gyldigeVerdier'
 
@@ -36,19 +36,18 @@ export const finnUgyldigeFelter = (inntekt: Record<string, any>) => {
 		return []
 	}
 	return Object.entries(gyldigeVerdier)
-		.map(([felt, options]) => ({ felt, feltPath: tilleggsinformasjonPaths(felt), options }))
-		.filter(({ feltPath, options }) => erFeltUgyldig(options, _.get(inntekt, feltPath)))
-		.map(({ feltPath }) => feltPath)
+		.filter(([felt, options]) => erFeltUgyldig(options, inntekt[felt]))
+		.map(([felt]) => felt)
 }
 
-export const fjernGyldigeVerdier = (inntektstub: any) => ({
+export const klargjoerInntektstubForBestilling = (inntektstub: any) => ({
 	...inntektstub,
 	inntektsinformasjon: inntektstub.inntektsinformasjon.map((inntektsinformasjon: any) =>
 		inntektsinformasjon?.inntektsliste
 			? {
 					...inntektsinformasjon,
 					inntektsliste: inntektsinformasjon.inntektsliste.map((inntekt: any) =>
-						_.omit(inntekt, GYLDIGE_VERDIER),
+						tilNestedInntekt(_.omit(inntekt, GYLDIGE_VERDIER)),
 					),
 				}
 			: inntektsinformasjon,

@@ -1,4 +1,4 @@
-const tilleggsinformasjonPaths = {
+export const tilleggsinformasjonPaths: Record<string, string> = {
 	aaretUtbetalingenGjelderFor: 'tilleggsinformasjon.bonusFraForsvaret.aaretUtbetalingenGjelderFor',
 	etterbetalingsperiodeStart: 'tilleggsinformasjon.etterbetalingsperiode.startdato',
 	etterbetalingsperiodeSlutt: 'tilleggsinformasjon.etterbetalingsperiode.sluttdato',
@@ -13,4 +13,17 @@ const tilleggsinformasjonPaths = {
 	inntjeningsforhold: 'tilleggsinformasjon.inntjeningsforhold.inntjeningsforhold',
 }
 
-export default (key: string) => tilleggsinformasjonPaths[key] ?? key
+export const tilleggsinformasjonAttributter: Record<string, string> = {
+	BilOgBaat: 'bilOgBaat',
+	BonusFraForsvaret: 'bonusFraForsvaret',
+	DagmammaIEgenBolig: 'dagmammaIEgenBolig',
+	Periode: 'etterbetalingsperiode',
+	NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel',
+	Livrente: 'livrente',
+	LottOgPartInnenFiske: 'lottOgPart',
+	Nettoloennsordning: 'nettoloenn',
+	AldersUfoereEtterlatteAvtalefestetOgKrigspensjon: 'pensjon',
+	ReiseKostOgLosji: 'reiseKostOgLosji',
+	SpesielleInntjeningsforhold: 'inntjeningsforhold',
+	UtenlandskArtist: 'utenlandskArtist',
+}

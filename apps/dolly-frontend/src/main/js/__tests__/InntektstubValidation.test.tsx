@@ -5,12 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { validation } from '@/components/fagsystem/inntektstub/form/validation'
 import {
-	fjernGyldigeVerdier,
 	GYLDIGE_VERDIER,
+	klargjoerInntektstubForBestilling,
 } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
 
 const inntektPath = 'inntektstub.inntektsinformasjon.0.inntektsliste.0'
-const persontypePath = `${inntektPath}.tilleggsinformasjon.reiseKostOgLosji.persontype`
+const persontypePath = `${inntektPath}.persontype`
 
 const gyldigeVerdier = {
 	beskrivelse: ['fastloenn', 'bonus'],
@@ -27,7 +27,8 @@ const lagInntekt = (overstyring = {}) => ({
 	inntektstype: 'LOENNSINNTEKT',
 	beskrivelse: 'fastloenn',
 	inngaarIGrunnlagForTrekk: false,
-	tilleggsinformasjon: { reiseKostOgLosji: { persontype: 'kunde' } },
+	tilleggsinformasjonstype: 'ReiseKostOgLosji',
+	persontype: 'kunde',
 	[GYLDIGE_VERDIER]: gyldigeVerdier,
 	...overstyring,
 })
@@ -68,10 +69,8 @@ describe('Inntektstub validation of dynamic fields', () => {
 		expect(await validerSomVedNavigering()).toBe(true)
 	})
 
-	it('should block navigation when a nested tilleggsinformasjon field is missing', async () => {
-		const { form, validerSomVedNavigering } = setup(
-			lagInntekt({ tilleggsinformasjon: { reiseKostOgLosji: {} } }),
-		)
+	it('should block navigation when a tilleggsinformasjon field is missing', async () => {
+		const { form, validerSomVedNavigering } = setup(lagInntekt({ persontype: undefined }))
 
 		expect(await validerSomVedNavigering()).toBe(false)
 		expect(form.current.getFieldState(persontypePath).error?.message).toBe('Feltet er påkrevd')
@@ -100,9 +99,7 @@ describe('Inntektstub validation of dynamic fields', () => {
 	})
 
 	it('should clear the error once the field gets a valid value', async () => {
-		const { form, validerSomVedNavigering } = setup(
-			lagInntekt({ tilleggsinformasjon: { reiseKostOgLosji: {} } }),
-		)
+		const { form, validerSomVedNavigering } = setup(lagInntekt({ persontype: undefined }))
 		await validerSomVedNavigering()
 
 		act(() => form.current.setValue(persontypePath, 'ansatt'))
@@ -120,17 +117,22 @@ describe('Inntektstub validation of dynamic fields', () => {
 	})
 })
 
-describe('fjernGyldigeVerdier', () => {
-	it('should remove the valid values from every inntekt before submit', () => {
-		const renset = fjernGyldigeVerdier({
+describe('klargjoerInntektstubForBestilling', () => {
+	it('should remove valid values and nest tilleggsinformasjon before submit', () => {
+		const klargjort = klargjoerInntektstubForBestilling({
 			inntektsinformasjon: [
 				{ virksomhet: '1', inntektsliste: [lagInntekt()] },
 				{ virksomhet: '2' },
 			],
 		})
 
-		expect(renset.inntektsinformasjon[0].inntektsliste[0]).not.toHaveProperty(GYLDIGE_VERDIER)
-		expect(renset.inntektsinformasjon[0].inntektsliste[0].beskrivelse).toBe('fastloenn')
-		expect(renset.inntektsinformasjon[1]).toEqual({ virksomhet: '2' })
+		expect(klargjort.inntektsinformasjon[0].inntektsliste[0]).toEqual({
+			beloep: 1000,
+			inntektstype: 'LOENNSINNTEKT',
+			beskrivelse: 'fastloenn',
+			inngaarIGrunnlagForTrekk: false,
+			tilleggsinformasjon: { reiseKostOgLosji: { persontype: 'kunde' } },
+		})
+		expect(klargjort.inntektsinformasjon[1]).toEqual({ virksomhet: '2' })
 	})
 })

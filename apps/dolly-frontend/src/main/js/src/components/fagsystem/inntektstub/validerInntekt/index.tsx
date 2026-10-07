@@ -2,21 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import Inntekt from '@/components/fagsystem/inntektstub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import { GYLDIGE_VERDIER } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
+import { tilFlatInntekt } from '@/components/fagsystem/inntektstub/validerInntekt/tilleggsinformasjon'
 import * as _ from 'lodash-es'
 import { Form, useFormContext, useWatch } from 'react-hook-form'
-
-const tilleggsinformasjonAttributter = {
-	BilOgBaat: 'bilOgBaat',
-	DagmammaIEgenBolig: 'dagmammaIEgenBolig',
-	NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel',
-	Livrente: 'livrente',
-	LottOgPartInnenFiske: 'lottOgPart',
-	Nettoloennsordning: 'nettoloenn',
-	UtenlandskArtist: 'utenlandskArtist',
-	// BonusFraForsvaret: 'bonusFraForsvaret',
-	// ReiseKostOgLosji: 'reiseKostOgLosji',
-	// TODO: Trenger vi disse?
-}
 
 const InntektStub = ({ inntektPath }) => {
 	const formMethods = useFormContext()
@@ -24,19 +12,14 @@ const InntektStub = ({ inntektPath }) => {
 	const [isLoadingFields, setIsLoadingFields] = useState(false)
 	const sisteFieldsRequestId = useRef(0)
 	const inntektValues = useWatch({ name: inntektPath })
-	const {
-		beloep,
-		startOpptjeningsperiode,
-		sluttOpptjeningsperiode,
-		inntektstype,
-		tilleggsinformasjonstype,
-		tilleggsinformasjon,
-	} = inntektValues
+	const { beloep, startOpptjeningsperiode, sluttOpptjeningsperiode, inntektstype } = inntektValues
 	const inntektValuesJson = JSON.stringify(_.omit(inntektValues, GYLDIGE_VERDIER))
 
 	useEffect(() => {
-		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
-	}, [inntektstype])
+		if (inntektValues?.tilleggsinformasjon) {
+			formMethods.setValue(inntektPath, tilFlatInntekt(inntektValues))
+		}
+	}, [])
 
 	const getFields = (values) => {
 		const requestId = ++sisteFieldsRequestId.current
@@ -79,27 +62,6 @@ const InntektStub = ({ inntektPath }) => {
 			removeEmptyFieldsFromForm(entry)
 		})
 	}, [fields])
-
-	useEffect(() => {
-		if (!tilleggsinformasjonstype) {
-			clearTilleggsinformasjon()
-		} else
-			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
-				[`${tilleggsinformasjonAttributter[tilleggsinformasjonstype]}`]: {},
-			})
-	}, [tilleggsinformasjonstype])
-
-	useEffect(() => {
-		if (!tilleggsinformasjonstype) {
-			clearTilleggsinformasjon()
-		}
-	}, [tilleggsinformasjon])
-
-	const clearTilleggsinformasjon = () => {
-		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
-		formMethods.clearErrors(`manual.${inntektPath}.tilleggsinformasjon`)
-		formMethods.clearErrors(`${inntektPath}.tilleggsinformasjon`)
-	}
 
 	const setForm = (values) => {
 		const nullstiltInntekt = {
