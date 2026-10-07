@@ -30,6 +30,6 @@ class Henvendelse {
                 .path("/henvendelse/**")
                 .filters(f -> f.stripPrefix(1)
                         .filter(bearerAuthenticationFilter))
-                .uri(targets.getHenvendelse());
+                .uri(targets.getHenvendelse()+"/api");
     }
 }
