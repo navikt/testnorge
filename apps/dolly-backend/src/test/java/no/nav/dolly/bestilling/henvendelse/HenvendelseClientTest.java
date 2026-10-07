@@ -84,8 +84,8 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null)),
-                List.of(new RsHenvendelse.Samtalereferat("tema", "tema", null, "referattekst", true, null))));
+                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of(new RsHenvendelse.Samtalereferat("tema", "tema", null, "referattekst", null))));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(true, true)));
         when(norg2Consumer.getNorgEnhet("0301"))
@@ -119,7 +119,15 @@ class HenvendelseClientTest {
                     return request;
                 });
         when(henvendelseConsumer.sendHenvendelse(any()))
-                .thenReturn(Mono.just(HenvendelseResponse.builder().status(HttpStatus.OK).build()));
+                .thenReturn(
+                        Mono.just(HenvendelseResponse.builder()
+                                .status(HttpStatus.OK)
+                                .type("MELDING")
+                                .build()),
+                        Mono.just(HenvendelseResponse.builder()
+                                .status(HttpStatus.OK)
+                                .type("SAMTALEREFERAT")
+                                .build()));
         when(transactionHelperService.persister(eq(progress), any(), anyString()))
                 .thenReturn(Mono.just(progress));
 
@@ -143,7 +151,9 @@ class HenvendelseClientTest {
                 .extracting(HenvendelseSamtalereferatRequest::getType)
                 .containsExactlyInAnyOrder("melding", "samtalereferat");
         verify(transactionHelperService).persister(eq(progress), any(), statusCaptor.capture());
-        assertThat(statusCaptor.getValue()).isEqualTo("OK,OK");
+        assertThat(statusCaptor.getValue())
+                .contains("MELDING: OK")
+                .contains("SAMTALEREFERAT: OK");
     }
 
     @Test
@@ -152,7 +162,7 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null)),
+                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(true, false)));
@@ -168,7 +178,7 @@ class HenvendelseClientTest {
                 .thenReturn(Mono.just(HenvendelseResponse.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .type("MELDING")
-                        .melding("ugyldig: melding")
+                        .feilmelding("ugyldig: melding")
                         .build()));
         when(transactionHelperService.persister(eq(progress), any(), anyString()))
                 .thenReturn(Mono.just(progress));
@@ -187,7 +197,7 @@ class HenvendelseClientTest {
         assertThat(requestCaptor.getValue().getAktorId()).isEqualTo(AKTOR_ID);
         assertThat(requestCaptor.getValue().getEnhet()).isEqualTo("0315");
         verify(transactionHelperService).persister(eq(progress), any(), statusCaptor.capture());
-        assertThat(statusCaptor.getValue()).isEqualTo("Feil= MELDING:ugyldig= melding");
+        assertThat(statusCaptor.getValue()).isEqualTo("MELDING: Feil= ugyldig= melding");
     }
 
     @Test
@@ -196,7 +206,7 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null)),
+                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(false, false)));

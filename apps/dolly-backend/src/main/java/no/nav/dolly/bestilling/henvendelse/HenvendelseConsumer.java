@@ -37,7 +37,8 @@ public class HenvendelseConsumer {
     public Mono<HenvendelseResponse> sendHenvendelse(HenvendelseSamtalereferatRequest melding) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new HenvendelsePostCommand(webClient, melding, token.getTokenValue()).call());
+                .flatMap(token -> new HenvendelsePostCommand(webClient, melding, token.getTokenValue()).call())
+                .doOnNext(response -> System.out.println("Henvendelse sendt med respons: " + response));
     }
 
     public Mono<HenvendelseResponse> getHenvendelse(String aktorid) {

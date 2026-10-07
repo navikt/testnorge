@@ -5,13 +5,14 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.resultset.SystemTyper.HENVENDELSE;
 import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -22,7 +23,7 @@ public final class BestillingHenvendelseStatusMapper {
     public static List<RsStatusRapport> buildHenvendelseStatusMap(List<BestillingProgress> progressList) {
 
         // type    // status   // ident
-        Map<String, Map<String, Set<String>>> meldStatusIdents = new HashMap<>();
+        Map<String, Map<String, Set<String>>> typeStatusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getHenvendelseStatus())) {
@@ -32,27 +33,31 @@ public final class BestillingHenvendelseStatusMapper {
                                 var typeStatus = entry.split(":");
                                 var type = typeStatus[0];
                                 var status = decodeMsg(typeStatus.length > 1 ? typeStatus[typeStatus.length - 1] : "");
-                                insertArtifact(meldStatusIdents, type, status, progress.getIdent());
+                                insertArtifact(typeStatusIdents, type, status, progress.getIdent());
                             }
                         });
             }
         });
 
-        List<RsStatusRapport.Status> statusRapporter = new ArrayList<>();
-        statusRapporter.addAll(extractOKStatus(meldStatusIdents));
-        statusRapporter.addAll(extractErrorStatus(meldStatusIdents));
+        if (typeStatusIdents.isEmpty()) {
+            return emptyList();
 
-        return List.of(RsStatusRapport.builder()
-                .id(HENVENDELSE)
-                .navn(HENVENDELSE.getBeskrivelse())
-                .statuser(statusRapporter)
-                .build());
+        } else {
+            return List.of(RsStatusRapport.builder()
+                    .id(HENVENDELSE)
+                    .navn(HENVENDELSE.getBeskrivelse())
+                    .statuser(Stream.of(extractOKStatus(typeStatusIdents),
+                                    extractErrorStatus(typeStatusIdents))
+                            .flatMap(List::stream)
+                            .toList())
+                    .build());
+        }
     }
 
-    private static void insertArtifact(Map<String, Map<String, Set<String>>> msgStatusIdents,
+    private static void insertArtifact(Map<String, Map<String, Set<String>>> typeStatusIdents,
                                        String type, String status, String ident) {
 
-        msgStatusIdents.computeIfAbsent(type, _ -> new HashMap<>())
+        typeStatusIdents.computeIfAbsent(type, _ -> new HashMap<>())
                 .computeIfAbsent(status, _ -> new HashSet<>())
                 .add(ident);
     }

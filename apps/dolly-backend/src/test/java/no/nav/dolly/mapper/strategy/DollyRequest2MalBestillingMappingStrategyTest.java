@@ -1052,10 +1052,10 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                 not(sameInstance(source.getHenvendelse().getSamtalereferater().getFirst())));
 
         target.getHenvendelse().getMeldinger().getFirst().setFritekst("changed");
-        target.getHenvendelse().getSamtalereferater().getFirst().setTildelMeg(false);
+        target.getHenvendelse().getMeldinger().getFirst().setTildelMeg(false);
 
         assertThat(source.getHenvendelse().getMeldinger().getFirst().getFritekst(), equalTo("first"));
-        assertThat(source.getHenvendelse().getSamtalereferater().getFirst().isTildelMeg(), is(true));
+        assertThat(source.getHenvendelse().getMeldinger().getFirst().getTildelMeg(), is(true));
     }
 
     @Test
@@ -1099,9 +1099,9 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         return RsDollyUtvidetBestilling.builder()
                 .henvendelse(RsHenvendelse.builder()
                         .meldinger(List.of(new RsHenvendelse.Melding(
-                                "ARBD", "DAG", "0315", fritekst, "melding-" + fritekst)))
+                                "ARBD", "DAG", "0315", fritekst, tildelMeg, "melding-" + fritekst)))
                         .samtalereferater(List.of(new RsHenvendelse.Samtalereferat(
-                                "ARBD", "DAG", "0315", fritekst, tildelMeg, "referat-" + fritekst)))
+                                "ARBD", "DAG", "0315", fritekst, "referat-" + fritekst)))
                         .build())
                 .build();
     }

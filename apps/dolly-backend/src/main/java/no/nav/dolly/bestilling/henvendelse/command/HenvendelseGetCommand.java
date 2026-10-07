@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class HenvendelseGetCommand implements Callable<Mono<HenvendelseResponse>> {
 
-    private static final String HENVENDELSE_URL = "/henvendelse/henvendelseinfo/henvendelseliste/v2";
+    private static final String HENVENDELSE_URL = "/henvendelse/api/henvendelseinfo/henvendelseliste/v2";
 
     private final WebClient webClient;
     private final String aktorid;
@@ -43,7 +43,7 @@ public class HenvendelseGetCommand implements Callable<Mono<HenvendelseResponse>
                     log.error("Henting av henvendelse fra (Salesforce) feilet: {}", description.getMessage(), throwable);
                     return Mono.just(HenvendelseResponse.builder()
                             .status(description.getStatus())
-                            .melding(description.getMessage())
+                            .feilmelding(description.getMessage())
                             .build());
                 });
     }

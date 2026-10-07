@@ -36,7 +36,7 @@ class HenvendelseMappingStrategyTest {
     @Test
     void shouldMapMeldingAndPreserveExplicitEnhet() {
 
-        var source = new RsHenvendelse.Melding("ARBD", "DAG", EXPLICIT_ENHET, "message", "message-chain");
+        var source = new RsHenvendelse.Melding("ARBD", "DAG", EXPLICIT_ENHET, "message", true, "message-chain");
 
         var result = mapperFacade.map(source, HenvendelseMeldingRequest.class, context);
 
@@ -47,14 +47,14 @@ class HenvendelseMappingStrategyTest {
         assertThat(result.getEnhet()).isEqualTo(EXPLICIT_ENHET);
         assertThat(result.getFritekst()).isEqualTo(source.getFritekst());
         assertThat(result.getKjedeId()).isEqualTo(source.getKjedeId());
-        assertThat(result.isTildelMeg()).isFalse();
+        assertThat(result.getTildelMeg()).isTrue();
     }
 
     @Test
     void shouldMapSamtalereferatAndPreserveExplicitEnhet() {
 
         var source = new RsHenvendelse.Samtalereferat(
-                "ARBD", "DAG", EXPLICIT_ENHET, "call summary", true, "summary-chain");
+                "ARBD", "DAG", EXPLICIT_ENHET, "call summary", "summary-chain");
 
         var result = mapperFacade.map(source, HenvendelseSamtalereferatRequest.class, context);
 

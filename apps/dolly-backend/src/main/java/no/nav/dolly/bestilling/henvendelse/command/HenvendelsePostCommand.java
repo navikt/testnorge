@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class HenvendelsePostCommand implements Callable<Mono<HenvendelseResponse>> {
 
-    private static final String HENVENDELSE_URL = "/henvendelse/henvendelse/ny/{type}";
+    private static final String HENVENDELSE_URL = "/henvendelse/api/henvendelse/ny/{type}";
 
     private final WebClient webClient;
     private final HenvendelseSamtalereferatRequest henvendelse;
@@ -26,6 +26,9 @@ public class HenvendelsePostCommand implements Callable<Mono<HenvendelseResponse
 
     @Override
     public Mono<HenvendelseResponse> call() {
+
+        log.info("Lagrer henvendelse, request: {}", henvendelse);
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -37,17 +40,18 @@ public class HenvendelsePostCommand implements Callable<Mono<HenvendelseResponse
                 .bodyValue(henvendelse)
                 .retrieve()
                 .toBodilessEntity()
-                .map(response -> HenvendelseResponse.builder()
-                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
-                        .type(henvendelse.getType())
-                        .build())
+                .map(response ->
+                        HenvendelseResponse.builder()
+                                .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                                .type(henvendelse.getType())
+                                .build())
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     log.error("Lagring av data til (Salesforce) henvendelse feilet: {}", description.getMessage(), throwable);
                     return Mono.just(HenvendelseResponse.builder()
                             .status(description.getStatus())
-                            .melding(description.getMessage())
+                            .feilmelding(description.getMessage())
                             .type(henvendelse.getType())
                             .build());
                 });

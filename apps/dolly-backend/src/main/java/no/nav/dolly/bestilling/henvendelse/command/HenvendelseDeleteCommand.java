@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class HenvendelseDeleteCommand implements Callable<Mono<HenvendelseResponse>> {
 
-    private static final String HENVENDELSE_URL = "/henvendelse/meldingskjede/lukk";
+    private static final String HENVENDELSE_URL = "/henvendelse/api/meldingskjede/lukk";
 
     private final WebClient webClient;
     private final String kjedeId;
@@ -43,7 +43,7 @@ public class HenvendelseDeleteCommand implements Callable<Mono<HenvendelseRespon
                     log.error("Lukking av henvendelse mot Salesforce feilet: {}", description.getMessage(), throwable);
                     return Mono.just(HenvendelseResponse.builder()
                             .status(description.getStatus())
-                            .melding(description.getMessage())
+                            .feilmelding(description.getMessage())
                             .build());
                 });
     }

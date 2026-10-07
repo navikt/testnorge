@@ -72,9 +72,12 @@ public class HenvendelseClient implements ClientRegister {
                                     .map(referat -> mapperFacade.map(referat, HenvendelseSamtalereferatRequest.class, context)));
                 })
                 .flatMap(henvendelseConsumer::sendHenvendelse)
-                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" : "Feil= %s:%s".formatted(
-                        status.getType(), ErrorStatusDecoder.encodeStatus(status.getMelding())))
-                .collect(Collectors.joining(","))
+                .map(status -> status.getStatus().is2xxSuccessful() ?
+                        "%s: OK".formatted(status.getType()) :
+                        "%s: Feil= %s".formatted(
+                        status.getType(), ErrorStatusDecoder.encodeStatus(status.getFeilmelding())))
+                .distinct()
+                .collect(Collectors.joining(", "))
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
 

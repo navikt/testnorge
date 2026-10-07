@@ -33,6 +33,8 @@ public class RsHenvendelse {
         private String enhet;
         @Schema(description = "Meldingstekst")
         private String fritekst;
+        @Schema(description = "Indikerer om meldingen skal tildeles meg")
+        private Boolean tildelMeg;
 
         @Schema(description = "Referanse når dette er fortsettelse av en tidligere melding")
         private String kjedeId;
@@ -51,8 +53,6 @@ public class RsHenvendelse {
         private String enhet;
         @Schema(description = "Meldingstekst")
         private String fritekst;
-        @Schema(description = "Indikerer om meldingen skal tildeles meg")
-        private boolean tildelMeg;
 
         @Schema(description = "Referanse når dette er fortsettelse av en tidligere melding")
         private String kjedeId;

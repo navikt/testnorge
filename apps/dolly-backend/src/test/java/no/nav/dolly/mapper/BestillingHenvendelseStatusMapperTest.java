@@ -15,14 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BestillingHenvendelseStatusMapperTest {
 
     @Test
-    void shouldReturnEmptyHenvendelseReportWhenNoProgressExists() {
+    void shouldReturnNoReportsWhenNoProgressExists() {
 
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of());
 
-        assertThat(reports).hasSize(1);
-        assertThat(reports.getFirst().getId()).isEqualTo(HENVENDELSE);
-        assertThat(reports.getFirst().getNavn()).isEqualTo(HENVENDELSE.getBeskrivelse());
-        assertThat(reports.getFirst().getStatuser()).isEmpty();
+        assertThat(reports).isEmpty();
     }
 
     @ParameterizedTest
@@ -33,7 +30,24 @@ class BestillingHenvendelseStatusMapperTest {
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(
                 List.of(progress("IDENT_1", status)));
 
-        assertThat(reports.getFirst().getStatuser()).isEmpty();
+        assertThat(reports).isEmpty();
+    }
+
+    @Test
+    void shouldReturnReportForValidStatusAlongsideBlankStatuses() {
+
+        var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of(
+                progress("IDENT_1", null),
+                progress("IDENT_2", ""),
+                progress("IDENT_3", ",, ,"),
+                progress("IDENT_4", "melding:OK")));
+
+        assertThat(reports).hasSize(1);
+        assertThat(reports.getFirst().getId()).isEqualTo(HENVENDELSE);
+        assertThat(reports.getFirst().getNavn()).isEqualTo(HENVENDELSE.getBeskrivelse());
+        assertThat(reports.getFirst().getStatuser()).hasSize(1);
+        assertThat(reports.getFirst().getStatuser().getFirst().getMelding()).isEqualTo("OK");
+        assertThat(reports.getFirst().getStatuser().getFirst().getIdenter()).containsExactly("IDENT_4");
     }
 
     @Test

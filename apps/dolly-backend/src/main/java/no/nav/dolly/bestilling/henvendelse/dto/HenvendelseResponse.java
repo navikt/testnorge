@@ -17,8 +17,8 @@ import java.util.List;
 public class HenvendelseResponse {
 
     private HttpStatus status;
-    private String melding;
     private String type;
+    private String feilmelding;
 
     @Builder.Default
     private List<Info> data = new ArrayList<>();
