@@ -40,8 +40,8 @@ class BestillingInntektstubStatusMapperTest {
     void shouldGroupIdentifiersByTypeAndStatusWithoutDuplicates() {
 
         var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(List.of(
-                progress("IDENT_1", "Import: OK,Import: OK,Oppretting: Lagring feilet"),
-                progress("IDENT_2", "Import: OK,Oppretting: Lagring feilet"),
+                progress("IDENT_1", "Import: OK,Import: OK,Oppretting: Feil= Lagring feilet"),
+                progress("IDENT_2", "Import: OK,Oppretting: Feil= Lagring feilet"),
                 progress("IDENT_3", "Import: Henting feilet")));
 
         var statuses = reports.getFirst().getStatuser();
@@ -82,15 +82,41 @@ class BestillingInntektstubStatusMapperTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Import", "Import:"})
-    void shouldUseEmptyMessageWhenStatusIsMissing(String status) {
+    @ValueSource(strings = {"Feil= Lagring feilet", "Oppretting: Feil= Lagring feilet"})
+    void shouldMapLegacyAndTypedCreationErrors(String status) {
 
         var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(
                 List.of(progress("IDENT_1", status)));
 
         assertThat(reports.getFirst().getStatuser()).hasSize(1);
-        assertThat(reports.getFirst().getStatuser().getFirst().getMelding()).isEqualTo("Feil: Import: ");
+        assertThat(reports.getFirst().getStatuser().getFirst().getMelding()).isEqualTo("Feil: Oppretting: Lagring feilet");
         assertThat(reports.getFirst().getStatuser().getFirst().getIdenter()).containsExactly("IDENT_1");
+    }
+
+    @Test
+    void shouldMapLegacySuccessStatus() {
+
+        var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(
+                List.of(progress("IDENT_1", "OK")));
+
+        assertThat(reports.getFirst().getStatuser()).hasSize(1);
+        assertThat(reports.getFirst().getStatuser().getFirst().getMelding()).isEqualTo("OK");
+        assertThat(reports.getFirst().getStatuser().getFirst().getIdenter()).containsExactly("IDENT_1");
+    }
+
+    @Test
+    void shouldGroupEachCreationErrorWithAllAffectedIdentifiers() {
+
+        var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(List.of(
+                progress("IDENT_1", ",Oppretting: Feil= First= error; details,Oppretting: Feil= Second error"),
+                progress("IDENT_2", "Oppretting: Feil= Second error")));
+
+        var statuses = reports.getFirst().getStatuser();
+        assertThat(statuses).hasSize(2);
+        assertThat(findStatus(statuses, "Feil: Oppretting: First: error, details").getIdenter())
+                .containsExactly("IDENT_1");
+        assertThat(findStatus(statuses, "Feil: Oppretting: Second error").getIdenter())
+                .containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
     }
 
     private static BestillingProgress progress(String ident, String status) {

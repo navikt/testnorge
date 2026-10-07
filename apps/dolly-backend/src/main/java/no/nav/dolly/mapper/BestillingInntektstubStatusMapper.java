@@ -30,8 +30,8 @@ public final class BestillingInntektstubStatusMapper {
                         entry -> {
                             if (isNotBlank(entry)) {
                                 var typeStatus = entry.split(":");
-                                var type = typeStatus[0];
-                                var status = decodeMsg(typeStatus.length > 1 ? typeStatus[typeStatus.length - 1] : "");
+                                var type = typeStatus.length > 1 ? typeStatus[0] : "Oppretting";
+                                var status = decodeMsg(typeStatus.length > 1 ? typeStatus[1] : typeStatus[0]);
                                 insertArtifact(meldStatusIdents, type, status, progress.getIdent());
                             }
                         });
@@ -77,7 +77,8 @@ public final class BestillingInntektstubStatusMapper {
                 .map(typeEntry -> typeEntry.getValue().entrySet().stream()
                         .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
                         .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding("Feil: %s: %s".formatted(typeEntry.getKey(), statusEntry.getKey()))
+                                .melding("Feil: %s: %s".formatted(typeEntry.getKey(), statusEntry.getKey()
+                                        .replaceAll("Feil.\\s*", "")))
                                 .identer(statusEntry.getValue().stream().toList())
                                 .build())
                         .toList())

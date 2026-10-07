@@ -133,10 +133,11 @@ public class InntektstubClient implements ClientRegister {
                                     return inntekter.stream()
                                             .map(Inntektsinformasjon::getFeilmelding)
                                             .noneMatch(StringUtils::isNotBlank) ? "Oppretting: OK" :
-                                            "Oppretting: " + inntekter.stream()
+                                            inntekter.stream()
                                                     .map(Inntektsinformasjon::getFeilmelding)
                                                     .filter(StringUtils::isNotBlank)
                                                     .map(ErrorStatusDecoder::encodeStatus)
+                                                    .map("Oppretting: Feil= %s"::formatted)
                                                     .distinct()
                                                     .collect(Collectors.joining(","));
                                 }));
