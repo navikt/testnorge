@@ -51,7 +51,7 @@ class BestillingInntektstubStatusMapperTest {
     }
 
     @Test
-    void shouldGroupIdentifiersByTypeAndStatusWithoutDuplicates() {
+    void shouldGroupErrorsByTypeAndStatusWhenStatusesAreMixed() {
 
         var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(List.of(
                 progress("IDENT_1", "Import: OK,Import: OK,Oppretting: Feil= Lagring feilet"),
@@ -59,10 +59,7 @@ class BestillingInntektstubStatusMapperTest {
                 progress("IDENT_3", "Import: Henting feilet")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).hasSize(3);
-        assertThat(statuses.getFirst().getMelding()).isEqualTo("OK");
-        assertThat(findStatus(statuses, "OK").getIdenter())
-                .containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
+        assertThat(statuses).hasSize(2);
         assertThat(findStatus(statuses, "Feil: Oppretting: Lagring feilet").getIdenter())
                 .containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
         assertThat(findStatus(statuses, "Feil: Import: Henting feilet").getIdenter())
@@ -70,17 +67,18 @@ class BestillingInntektstubStatusMapperTest {
     }
 
     @Test
-    void shouldKeepSuccessfulImportAndOpprettingStatusesSeparate() {
+    void shouldCombineSuccessfulStatusesAcrossTypesAndDeduplicateIdentifiers() {
 
         var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(List.of(
                 progress("IDENT_1", "Import: OK"),
+                progress("IDENT_1", ",Oppretting: OK"),
                 progress("IDENT_2", ",Oppretting: OK")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).hasSize(2);
-        assertThat(statuses).allSatisfy(status -> assertThat(status.getMelding()).isEqualTo("OK"));
-        assertThat(statuses).extracting(RsStatusRapport.Status::getIdenter)
-                .containsExactlyInAnyOrder(List.of("IDENT_1"), List.of("IDENT_2"));
+        assertThat(statuses).singleElement().satisfies(status -> {
+            assertThat(status.getMelding()).isEqualTo("OK");
+            assertThat(status.getIdenter()).containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
+        });
     }
 
     @Test

@@ -108,7 +108,7 @@ class BestillingHenvendelseStatusMapperTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"melding", "melding:"})
+    @ValueSource(strings = {"melding: ", "melding:  "})
     void shouldUseEmptyMessageWhenStatusIsMissing(String status) {
 
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(

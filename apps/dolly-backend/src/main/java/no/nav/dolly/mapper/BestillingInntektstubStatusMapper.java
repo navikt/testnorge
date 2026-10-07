@@ -7,7 +7,6 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,12 +18,12 @@ import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BestillingInntektstubStatusMapper {
+public final class BestillingInntektstubStatusMapper extends TypeStatusIdenterUtility {
 
     public static List<RsStatusRapport> buildInntektstubStatusMap(List<BestillingProgress> progressList) {
 
         // type    // status   // ident
-        Map<String, Map<String, Set<String>>> meldStatusIdents = new HashMap<>();
+        Map<String, Map<String, Set<String>>> typeStatusIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getInntektstubStatus())) {
@@ -34,13 +33,13 @@ public final class BestillingInntektstubStatusMapper {
                                 var typeStatus = entry.split(":");
                                 var type = typeStatus.length > 1 ? typeStatus[0] : "Oppretting";
                                 var status = decodeMsg(typeStatus.length > 1 ? typeStatus[1] : typeStatus[0]);
-                                insertArtifact(meldStatusIdents, type, status, progress.getIdent());
+                                insertArtifact(typeStatusIdents, type, status, progress.getIdent());
                             }
                         });
             }
         });
 
-        if (meldStatusIdents.isEmpty()) {
+        if (typeStatusIdents.isEmpty()) {
             return emptyList();
 
         } else {
@@ -49,48 +48,11 @@ public final class BestillingInntektstubStatusMapper {
                     .id(INNTK)
                     .navn(INNTK.getBeskrivelse())
                     .statuser(Stream.of(
-                                    extractOKStatus(meldStatusIdents),
-                                    extractErrorStatus(meldStatusIdents))
+                                    extractOKStatus(typeStatusIdents),
+                                    extractErrorStatus(typeStatusIdents))
                             .flatMap(Collection::stream)
                             .toList())
                     .build());
         }
-    }
-
-    private static void insertArtifact(Map<String, Map<String, Set<String>>> msgStatusIdents,
-                                       String type, String status, String ident) {
-
-        msgStatusIdents.computeIfAbsent(type, _ -> new HashMap<>())
-                .computeIfAbsent(status, _ -> new HashSet<>())
-                .add(ident);
-    }
-
-    private static List<RsStatusRapport.Status> extractOKStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
-
-        return typeStatusIdents.entrySet().stream()
-                .map(typeEntry -> typeEntry.getValue().entrySet().stream()
-                        .filter(statusEntry -> "OK".equals(statusEntry.getKey()))
-                        .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding("OK")
-                                .identer(statusEntry.getValue().stream().toList())
-                                .build())
-                        .toList())
-                .flatMap(List::stream)
-                .toList();
-    }
-
-    private static List<RsStatusRapport.Status> extractErrorStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
-
-        return typeStatusIdents.entrySet().stream()
-                .map(typeEntry -> typeEntry.getValue().entrySet().stream()
-                        .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
-                        .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding("Feil: %s: %s".formatted(typeEntry.getKey(), statusEntry.getKey()
-                                        .replaceAll("Feil.\\s*", "")))
-                                .identer(statusEntry.getValue().stream().toList())
-                                .build())
-                        .toList())
-                .flatMap(List::stream)
-                .toList();
     }
 }
