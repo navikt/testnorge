@@ -1,12 +1,119 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatStringDates } from '@/utils/DataFormatter'
+import { formatDate, formatStringDates } from '@/utils/DataFormatter'
 import texts from '@/components/fagsystem/inntektstub/validerInntekt/texts'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
 
-export const InntektVisning = ({ data }) => {
+export const InntektFelter = ({ data }: { data: any }) => {
+	return (
+		<>
+			<TitleValue title="Beløp" value={data.beloep} />
+			<TitleValue title="Inntektstype" value={texts(data.inntektstype)} />
+			<TitleValue title="Beskrivelse" value={texts(data.beskrivelse)} />
+			<TitleValue
+				title="Inngår i grunnlag for trekk"
+				value={texts(data.inngaarIGrunnlagForTrekk)}
+			/>
+			<TitleValue
+				title="Utløser arbeidsgiveravgift"
+				value={texts(data.utloeserArbeidsgiveravgift)}
+			/>
+			<TitleValue title="Fordel" value={texts(data.fordel)} />
+			<TitleValue title="Skatte- og avgiftsregel" value={texts(data.skatteOgAvgiftsregel)} />
+			<TitleValue
+				title="Skattemessig bosatt i land"
+				value={data.skattemessigBosattILand}
+				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
+			/>
+			<TitleValue
+				title="Opptjeningsland"
+				value={data.opptjeningsland}
+				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
+			/>
+			<TitleValue title="Antall" value={data.antall} />
+			{data.tilleggsinformasjon && (
+				<React.Fragment>
+					<TitleValue
+						title="Tilleggsinformasjonstype"
+						value={texts([Object.keys(data.tilleggsinformasjon)[0]])}
+					/>
+					{data.tilleggsinformasjon.bonusFraForsvaret && (
+						<TitleValue
+							title="År for utbetaling"
+							value={data.tilleggsinformasjon.bonusFraForsvaret.aaretUtbetalingenGjelderFor}
+						/>
+					)}
+					{data.tilleggsinformasjon.etterbetalingsperiode && (
+						<React.Fragment>
+							<TitleValue
+								title="Etterbetaling start"
+								value={formatStringDates(data.tilleggsinformasjon.etterbetalingsperiode.startdato)}
+							/>
+							<TitleValue
+								title="Etterbetaling slutt"
+								value={formatStringDates(data.tilleggsinformasjon.etterbetalingsperiode.sluttdato)}
+							/>
+						</React.Fragment>
+					)}
+
+					{data.tilleggsinformasjon.pensjon && (
+						<React.Fragment>
+							<TitleValue
+								title="Grunnpensjonsbeløp"
+								value={data.tilleggsinformasjon.pensjon.grunnpensjonsbeloep}
+							/>
+							<TitleValue
+								title="Herav etterlattepensjon"
+								value={data.tilleggsinformasjon.pensjon.heravEtterlattepensjon}
+							/>
+							<TitleValue
+								title="Pensjonsgrad"
+								value={data.tilleggsinformasjon.pensjon.pensjonsgrad}
+							/>
+							<TitleValue
+								title="Startdato"
+								value={formatStringDates(data.tilleggsinformasjon.pensjon.tidsrom?.startdato)}
+							/>
+							<TitleValue
+								title="Sluttdato"
+								value={formatStringDates(data.tilleggsinformasjon.pensjon.tidsrom?.sluttdato)}
+							/>
+							<TitleValue
+								title="Tilleggspensjonsbeløp"
+								value={data.tilleggsinformasjon.pensjon.tilleggspensjonsbeloep}
+							/>
+							<TitleValue title="Uføregrad" value={data.tilleggsinformasjon.pensjon.ufoeregrad} />
+						</React.Fragment>
+					)}
+					{data.tilleggsinformasjon.reiseKostOgLosji && (
+						<TitleValue
+							title="Persontype"
+							value={texts(data.tilleggsinformasjon.reiseKostOgLosji.persontype)}
+						/>
+					)}
+					{data.tilleggsinformasjon.inntjeningsforhold && (
+						<TitleValue
+							title="Inntjeningsforhold"
+							value={texts(data.tilleggsinformasjon.inntjeningsforhold.inntjeningsforhold)}
+						/>
+					)}
+				</React.Fragment>
+			)}
+			<TitleValue
+				title="Start opptjeningsperiode"
+				value={formatDate(data.startOpptjeningsperiode)}
+			/>
+			<TitleValue
+				title="Slutt opptjeningsperiode"
+				value={formatDate(data.sluttOpptjeningsperiode)}
+			/>
+		</>
+	)
+}
+
+export const InntektVisning = ({ data }: { data: any }) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -16,115 +123,9 @@ export const InntektVisning = ({ data }) => {
 			<h4>Inntekter</h4>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
-					{(id, idx) => (
+					{(id: any, idx: string) => (
 						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Beløp" value={id.beloep} />
-							<TitleValue title="Inntektstype" value={texts(id.inntektstype)} />
-							<TitleValue title="Beskrivelse" value={texts(id.beskrivelse)} />
-							<TitleValue
-								title="Inngår i grunnlag for trekk"
-								value={texts(id.inngaarIGrunnlagForTrekk)}
-							/>
-							<TitleValue
-								title="Utløser arbeidsgiveravgift"
-								value={texts(id.utloeserArbeidsgiveravgift)}
-							/>
-							<TitleValue title="Fordel" value={texts(id.fordel)} />
-							<TitleValue title="Skatte- og avgiftsregel" value={texts(id.skatteOgAvgiftsregel)} />
-							<TitleValue
-								title="Skattemessig bosatt i land"
-								value={id.skattemessigBosattILand}
-								kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-							/>
-							<TitleValue
-								title="Opptjeningsland"
-								value={id.opptjeningsland}
-								kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-							/>
-							{id.tilleggsinformasjon && (
-								<React.Fragment>
-									<TitleValue
-										title="Tilleggsinformasjonstype"
-										value={texts([Object.keys(id.tilleggsinformasjon)[0]])}
-									/>
-									{id.tilleggsinformasjon.bonusFraForsvaret && (
-										<TitleValue
-											title="År for utbetaling"
-											value={id.tilleggsinformasjon.bonusFraForsvaret.aaretUtbetalingenGjelderFor}
-										/>
-									)}
-									{id.tilleggsinformasjon.etterbetalingsperiode && (
-										<React.Fragment>
-											<TitleValue
-												title="Etterbetaling start"
-												value={formatStringDates(
-													id.tilleggsinformasjon.etterbetalingsperiode.startdato,
-												)}
-											/>
-											<TitleValue
-												title="Etterbetaling slutt"
-												value={formatStringDates(
-													id.tilleggsinformasjon.etterbetalingsperiode.sluttdato,
-												)}
-											/>
-										</React.Fragment>
-									)}
-
-									{id.tilleggsinformasjon.pensjon && (
-										<React.Fragment>
-											<TitleValue
-												title="Grunnpensjonsbeløp"
-												value={id.tilleggsinformasjon.pensjon.grunnpensjonsbeloep}
-											/>
-											<TitleValue
-												title="Herav etterlattepensjon"
-												value={id.tilleggsinformasjon.pensjon.heravEtterlattepensjon}
-											/>
-											<TitleValue
-												title="Pensjonsgrad"
-												value={id.tilleggsinformasjon.pensjon.pensjonsgrad}
-											/>
-											<TitleValue
-												title="Startdato"
-												value={formatStringDates(id.tilleggsinformasjon.pensjon.tidsrom.startdato)}
-											/>
-											<TitleValue
-												title="Sluttdato"
-												value={formatStringDates(id.tilleggsinformasjon.pensjon.tidsrom.sluttdato)}
-											/>
-											<TitleValue
-												title="Tilleggspensjonsbeløp"
-												value={id.tilleggsinformasjon.pensjon.tilleggspensjonsbeloep}
-											/>
-											<TitleValue
-												title="Uføregrad"
-												value={id.tilleggsinformasjon.pensjon.ufoeregrad}
-											/>
-										</React.Fragment>
-									)}
-									{id.tilleggsinformasjon.reiseKostOgLosji && (
-										<TitleValue
-											title="Persontype"
-											value={texts(id.tilleggsinformasjon.reiseKostOgLosji.persontype)}
-										/>
-									)}
-									{id.tilleggsinformasjon.inntjeningsforhold && (
-										<TitleValue
-											title="Inntjeningsforhold"
-											value={texts(id.tilleggsinformasjon.inntjeningsforhold.inntjeningsforhold)}
-										/>
-									)}
-								</React.Fragment>
-							)}
-							<TitleValue title="Antall" value={id.antall} />
-							<TitleValue
-								title="Start opptjeningsperiode"
-								value={formatStringDates(id.startOpptjeningsperiode)}
-							/>
-							<TitleValue
-								title="Slutt opptjeningsperiode"
-								value={formatStringDates(id.sluttOpptjeningsperiode)}
-							/>
+							<InntektFelter data={id} />
 						</div>
 					)}
 				</DollyFieldArray>

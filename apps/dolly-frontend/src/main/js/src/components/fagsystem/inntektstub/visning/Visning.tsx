@@ -87,16 +87,16 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 						<div className="person-visning_content">
 							<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
 							<TitleValue
+								title="Rapporteringstidspunkt"
+								value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
+							/>
+							<TitleValue
 								title="Virksomhet"
 								value={`${inntektsinformasjon?.virksomhet} - ${virksomhetNavn}`}
 							/>
 							<TitleValue
 								title="Opplysningspliktig"
 								value={`${inntektsinformasjon.opplysningspliktig} - ${opplysningspliktigNavn}`}
-							/>
-							<TitleValue
-								title="Rapporteringstidspunkt"
-								value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
 							/>
 						</div>
 						<InntektVisning data={inntektsinformasjon.inntektsliste} />
