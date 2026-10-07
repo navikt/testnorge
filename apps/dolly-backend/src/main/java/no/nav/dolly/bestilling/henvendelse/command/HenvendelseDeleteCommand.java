@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class HenvendelseDeleteCommand implements Callable<Mono<HenvendelseResponse>> {
 
-    private static final String HENVENDELSE_URL = "/henvendelse/api/meldingskjede/lukk";
+    private static final String HENVENDELSE_URL = "/henvendelse/api/henvendelse/meldingskjede/lukk";
 
     private final WebClient webClient;
     private final String kjedeId;

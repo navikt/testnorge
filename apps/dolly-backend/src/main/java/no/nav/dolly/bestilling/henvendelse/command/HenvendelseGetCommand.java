@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @RequiredArgsConstructor
 public class HenvendelseGetCommand implements Callable<Mono<HenvendelseResponse>> {
@@ -33,10 +35,17 @@ public class HenvendelseGetCommand implements Callable<Mono<HenvendelseResponse>
                 .headers(WebClientHeader.bearer(token))
                 .header("x-correlation-id", "Dolly-" + UUID.randomUUID())
                 .retrieve()
-                .toBodilessEntity()
-                .map(response -> HenvendelseResponse.builder()
-                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
-                        .build())
+                .toEntity(HenvendelseResponse.class)
+                .map(response -> {
+                    if (nonNull(response.getBody())) {
+                        response.getBody().setStatus(HttpStatus.valueOf(response.getStatusCode().value()));
+                        return response.getBody();
+                    } else {
+                        return HenvendelseResponse.builder()
+                                .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                                .build();
+                    }
+                })
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
