@@ -79,7 +79,6 @@ public class UtledFagsystemUtil {
 
         if (isGjenopprett(bestilling)) {
             result.remove(PDL_FORVALTER);
-            result.add(PDLIMPORT);
             result.add(PDL_ORDRE);
             result.add(PDL_PERSONSTATUS);
         }

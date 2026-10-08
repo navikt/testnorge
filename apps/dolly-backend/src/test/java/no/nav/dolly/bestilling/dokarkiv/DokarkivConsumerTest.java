@@ -1,18 +1,11 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import io.netty.handler.timeout.ReadTimeoutException;
+import no.nav.dolly.bestilling.AbstractConsumerTest;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivPostCommand;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
-import no.nav.dolly.config.Consumers;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
@@ -20,51 +13,41 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.net.URI;
 import java.time.Duration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class DokarkivConsumerTest {
+class DokarkivConsumerTest extends AbstractConsumerTest {
 
-    @RegisterExtension
-    static WireMockExtension wireMock = WireMockExtension.newInstance()
-            .options(wireMockConfig().dynamicPort())
-            .build();
-
-    @Mock
-    private Consumers consumers;
-    @Mock
-    private ServerProperties serverProperties;
-    @Mock
-    private TokenExchange tokenExchange;
+    @Autowired
+    private DokarkivConsumer dokarkivConsumer;
 
     @Test
-    void shouldAcceptJournalpostResponseAfterOneMinute() {
-        var consumer = createConsumer();
-        wireMock.stubFor(post(urlPathEqualTo("/dokarkiv/api/q2/v1/journalpost"))
-                .willReturn(okJson("{\"journalpostId\":\"journalpost\",\"journalpostferdigstilt\":false}")
-                        .withFixedDelay(61_000)));
+    void shouldAcceptDelayedJournalpostResponse() {
+        stubFor(post(urlPathMatching("(.*)/dokarkiv/api/q2/v1/journalpost"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"journalpostId\":\"journalpost\",\"journalpostferdigstilt\":false}")
+                        .withFixedDelay(100)));
 
-        StepVerifier.create(consumer.postDokarkiv("q2", new DokarkivRequest()))
+        StepVerifier.create(dokarkivConsumer.postDokarkiv("q2", new DokarkivRequest()))
                 .assertNext(response -> {
                     assertThat(response.getFeilmelding()).isNull();
                     assertThat(response.getJournalpostId()).isEqualTo("journalpost");
                     assertThat(response.getMiljoe()).isEqualTo("q2");
                 })
                 .expectComplete()
-                .verify(Duration.ofSeconds(75));
+                .verify(Duration.ofSeconds(5));
     }
 
     @Test
@@ -82,12 +65,5 @@ class DokarkivConsumerTest {
                 .verify(Duration.ofSeconds(5));
 
         verify(exchangeFunction).exchange(any());
-    }
-
-    private DokarkivConsumer createConsumer() {
-        when(consumers.getTestnavDollyProxy()).thenReturn(serverProperties);
-        when(serverProperties.getUrl()).thenReturn(wireMock.baseUrl());
-        when(tokenExchange.exchange(serverProperties)).thenReturn(Mono.just(new AccessToken("test-token")));
-        return new DokarkivConsumer(consumers, tokenExchange, new JsonMapper(), WebClient.create());
     }
 }
