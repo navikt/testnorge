@@ -45,7 +45,7 @@ const booleanField = (options: FeltOptions) => {
 
 interface InntektFeltProps {
 	field: string
-	handleChange: () => void
+	handleChange: (value?: { value: string | boolean } | null) => void
 	formMethods: UseFormReturn
 	path: string
 	options?: FeltOptions
@@ -162,7 +162,15 @@ const Inntekt = ({
 				<InntektFelt
 					key={`${path}.beskrivelse`}
 					field="beskrivelse"
-					handleChange={onValidate}
+					handleChange={(val) => {
+						formMethods.setValue(path, {
+							...initialValues,
+							beloep: formMethods.getValues(`${path}.beloep`),
+							inntektstype: formMethods.getValues(`${path}.inntektstype`),
+							beskrivelse: val ? val.value : '',
+						})
+						onValidate()
+					}}
 					formMethods={formMethods}
 					path={path}
 					options={fields?.beskrivelse ?? []}
