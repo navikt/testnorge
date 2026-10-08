@@ -37,6 +37,7 @@ type TextInputProps = {
 	'data-testid'?: string
 	useOnChange?: boolean
 	useControlled?: boolean
+	updateFormOnBlur?: boolean
 	step?: number
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
@@ -61,6 +62,7 @@ export const TextInput = ({
 	style,
 	'data-testid': dataTestId,
 	useControlled = false,
+	updateFormOnBlur = false,
 	step = undefined,
 	...props
 }: TextInputProps) => {
@@ -111,6 +113,11 @@ export const TextInput = ({
 			const newValue = e.target.value
 			setFieldValue(newValue)
 
+			if (updateFormOnBlur) {
+				props.onChange?.(e)
+				return
+			}
+
 			// Update form without validation during typing
 			if (name && setValue) {
 				setValue(name, newValue, { shouldDirty: true, shouldValidate: false })
@@ -129,7 +136,7 @@ export const TextInput = ({
 				}
 			}, 400) // Validate after inactivity
 		},
-		[name, setValue, props.onChange],
+		[name, setValue, props.onChange, updateFormOnBlur],
 	)
 
 	const handleBlur = useCallback(
@@ -143,12 +150,15 @@ export const TextInput = ({
 			props.onBlur?.(e)
 
 			if (name && setValue) {
-				setValue(name, fieldValue, { shouldValidate: true })
+				setValue(name, fieldValue, {
+					shouldValidate: true,
+					...(updateFormOnBlur && { shouldDirty: true }),
+				})
 			}
 
 			props.afterChange?.(e)
 		},
-		[name, setValue, fieldValue, props.onBlur, props.afterChange],
+		[name, setValue, fieldValue, props.onBlur, props.afterChange, updateFormOnBlur],
 	)
 
 	useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import InntektStub from '@/components/inntektStub/validerInntekt'
+import InntektStub from '@/components/fagsystem/inntektstub/validerInntekt'
 import { useBoolean } from 'react-use'
 import { ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -14,7 +14,7 @@ export enum FormType {
 	FORENKLET = 'forenklet',
 }
 
-const initialValues = {
+export const initialValues = {
 	beloep: '',
 	startOpptjeningsperiode: '',
 	sluttOpptjeningsperiode: '',
@@ -94,7 +94,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 					defaultValue={formSimple ? FormType.FORENKLET : FormType.STANDARD}
 					onChange={(value: FormType) => changeFormType(value)}
 					size={'small'}
-					style={{ marginBottom: '10px' }}
+					style={{ margin: '10px 0 10px 0' }}
 				>
 					<ToggleGroup.Item value={FormType.STANDARD}>Standard</ToggleGroup.Item>
 					<ToggleGroup.Item value={FormType.FORENKLET}>Forenklet</ToggleGroup.Item>
@@ -107,18 +107,22 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 				tag={null}
 			>
 				{(path: string) => (
-					<>
+					<div className="flexbox--flex-wrap">
 						<FormTextInput name={`${path}.beloep`} label="Beløp" type="number" />
-						<FormDatepicker
-							name={`${path}.startOpptjeningsperiode`}
-							label="Start opptjeningsperiode"
-						/>
-						<FormDatepicker
-							name={`${path}.sluttOpptjeningsperiode`}
-							label="Slutt opptjeningsperiode"
-						/>
 						{!formSimple && <InntektStub inntektPath={path} />}
-					</>
+						{formMethods.watch(`${path}.beskrivelse`) && (
+							<>
+								<FormDatepicker
+									name={`${path}.startOpptjeningsperiode`}
+									label="Start opptjeningsperiode"
+								/>
+								<FormDatepicker
+									name={`${path}.sluttOpptjeningsperiode`}
+									label="Slutt opptjeningsperiode"
+								/>
+							</>
+						)}
+					</div>
 				)}
 			</FormDollyFieldArray>
 		</>
