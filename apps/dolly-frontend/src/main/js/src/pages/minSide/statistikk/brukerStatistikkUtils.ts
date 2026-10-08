@@ -169,6 +169,53 @@ export const toMaanedOptions = (aktivePerioder: MaanedPunkt[], year: number) =>
 		.filter((punkt) => punkt.year === year)
 		.map((punkt) => ({ value: punkt.key, label: maanedVisning(punkt) }))
 
+export type AarSammendrag = {
+	year: number
+	nyePersoner: number
+	nyeBestillinger: number
+	gjenopprettinger: number
+	aktiveMaaneder: number
+	mestAktiveMaaned: MaanedPunkt | null
+}
+
+const antallBestillinger = (punkt: MaanedPunkt) => punkt.nyeBestillinger + punkt.gjenopprettinger
+
+export const toAarSammendrag = (punkter: MaanedPunkt[]): Map<number, AarSammendrag> => {
+	const sammendragPerAar = new Map<number, AarSammendrag>()
+
+	for (const punkt of punkter) {
+		let sammendrag = sammendragPerAar.get(punkt.year)
+		if (!sammendrag) {
+			sammendrag = {
+				year: punkt.year,
+				nyePersoner: 0,
+				nyeBestillinger: 0,
+				gjenopprettinger: 0,
+				aktiveMaaneder: 0,
+				mestAktiveMaaned: null,
+			}
+			sammendragPerAar.set(punkt.year, sammendrag)
+		}
+		sammendrag.nyePersoner += punkt.nyePersoner
+		sammendrag.nyeBestillinger += punkt.nyeBestillinger
+		sammendrag.gjenopprettinger += punkt.gjenopprettinger
+		if (harAktivitet(punkt)) {
+			sammendrag.aktiveMaaneder += 1
+			if (
+				!sammendrag.mestAktiveMaaned ||
+				antallBestillinger(punkt) > antallBestillinger(sammendrag.mestAktiveMaaned)
+			) {
+				sammendrag.mestAktiveMaaned = punkt
+			}
+		}
+	}
+
+	return sammendragPerAar
+}
+
+export const aarSammendragTittel = (year: number, referanseDato: Date = new Date()) =>
+	year === referanseDato.getFullYear() ? `Hittil i ${year}` : `Hele ${year}`
+
 const synligeKriterier = (kriterier?: BrukeradferdKriterium[] | null) =>
 	(kriterier ?? []).filter((kriterium) => !SKJULTE_FAGSYSTEMER.has(kriterium.fagsystem))
 

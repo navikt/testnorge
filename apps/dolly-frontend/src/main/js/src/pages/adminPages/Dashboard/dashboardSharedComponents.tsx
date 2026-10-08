@@ -26,6 +26,7 @@ export const DashboardSelectButtons = ({
 					key={option.value}
 					variant={selected === option.value ? 'secondary' : 'tertiary'}
 					size="small"
+					aria-pressed={selected === option.value}
 					onClick={() => onSelect(option.value)}
 				>
 					{option.label}

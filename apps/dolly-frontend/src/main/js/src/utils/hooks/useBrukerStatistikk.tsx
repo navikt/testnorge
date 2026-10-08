@@ -19,14 +19,14 @@ export type MinSideBestillingerDTO = {
 
 const SWR_OPTIONS = {
 	revalidateOnFocus: false,
-	revalidateIfStale: false,
-	dedupingInterval: 60000,
 }
 
-export const useBrukerBestillingerOversikt = () => {
+const fetchMedEier = ([url]: [string, string]) => fetcher(url, null, 60000)
+
+export const useBrukerBestillingerOversikt = (eierId?: string) => {
 	const { data, isLoading, error } = useSWR<MinSideBestillingerDTO[], Error>(
-		DollyEndpoints.brukerBestillinger(),
-		(url: string) => fetcher(url, null, 60000),
+		eierId ? [DollyEndpoints.brukerBestillinger(), eierId] : null,
+		fetchMedEier,
 		SWR_OPTIONS,
 	)
 
@@ -37,11 +37,17 @@ export const useBrukerBestillingerOversikt = () => {
 	}
 }
 
-export const useBrukerBestillingerDetaljert = (year: number | null, month: string | null) => {
-	const shouldFetch = year !== null && Boolean(month)
+export const useBrukerBestillingerDetaljert = (
+	eierId: string | undefined,
+	year: number | null,
+	month: string | null,
+) => {
+	const shouldFetch = Boolean(eierId) && year !== null && Boolean(month)
 	const { data, isLoading, error } = useSWR<MinSideBestillingerDTO[], Error>(
-		shouldFetch ? DollyEndpoints.brukerBestillingerDetaljert(year, month as string) : null,
-		(url: string) => fetcher(url, null, 60000),
+		shouldFetch
+			? [DollyEndpoints.brukerBestillingerDetaljert(year, month as string), eierId as string]
+			: null,
+		fetchMedEier,
 		SWR_OPTIONS,
 	)
 

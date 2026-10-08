@@ -202,9 +202,13 @@ describe('Frontend telemetry', () => {
 
 			for (const [url, request] of fetchSpy.mock.calls) {
 				expect(url).toBe('https://telemetry.ekstern.dev.nav.no/collect')
-				const headers = new Headers(request?.headers)
-				expect(headers.has('Authorization')).toBe(false)
-				expect(headers.has('Idempotency-Key')).toBe(false)
+				const headerNames = [...new Headers(request?.headers).keys()]
+				expect(headerNames).not.toContain('authorization')
+				expect(
+					headerNames.every((name) =>
+						['content-type', 'idempotency-key', 'x-faro-session-id'].includes(name),
+					),
+				).toBe(true)
 			}
 			for (const body of payloads()) {
 				expect(body.meta.app).toMatchObject({

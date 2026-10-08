@@ -1,9 +1,11 @@
 import {
+	aarSammendragTittel,
 	filterMaanedPunkter,
 	harAktivitet,
 	parseDetaljNoekkel,
 	parsePeriode,
 	toAarOptions,
+	toAarSammendrag,
 	toDagFagsystemMatrise,
 	toFagsystemDetaljer,
 	toFagsystemerMedDetaljer,
@@ -108,6 +110,41 @@ describe('brukerStatistikkUtils', () => {
 
 		expect(toAarOptions(aktive)).toEqual(['2026', '2025'])
 		expect(toMaanedOptions(aktive, 2026)).toEqual([{ value: '2026-02', label: 'Februar' }])
+	})
+
+	it('should accumulate yearly totals in one pass and pick the most active month', () => {
+		const punkter = toMaanedPunkter(
+			[
+				{ periode: '2025-03', antallNyBestillinger: 1, antallNyePersoner: 5 },
+				{
+					periode: '2025-11',
+					antallNyBestillinger: 6,
+					antallGjenopprettinger: 1,
+					antallNyePersoner: 40,
+				},
+				{ periode: '2026-02', antallNyBestillinger: 2, antallGjenopprettinger: 3 },
+			],
+			new Date(2026, 9, 1),
+		)
+
+		const sammendrag = toAarSammendrag(punkter)
+
+		expect(sammendrag.get(2025)).toMatchObject({
+			nyePersoner: 45,
+			nyeBestillinger: 7,
+			gjenopprettinger: 1,
+			aktiveMaaneder: 2,
+		})
+		expect(sammendrag.get(2025)?.mestAktiveMaaned?.key).toBe('2025-11')
+		expect(sammendrag.get(2026)).toMatchObject({ gjenopprettinger: 3, aktiveMaaneder: 1 })
+		expect(sammendrag.get(2026)?.mestAktiveMaaned?.key).toBe('2026-02')
+	})
+
+	it('should title the current year as so far and earlier years as whole', () => {
+		const referanseDato = new Date(2026, 9, 7)
+
+		expect(aarSammendragTittel(2026, referanseDato)).toBe('Hittil i 2026')
+		expect(aarSammendragTittel(2025, referanseDato)).toBe('Hele 2025')
 	})
 
 	it('should sum fagsystemer and hide Beskrivelse', () => {

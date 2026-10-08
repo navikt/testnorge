@@ -17,6 +17,7 @@ enum MinSideVisning {
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
+	const statistikkEierId = currentBruker?.representererTeam?.brukerId ?? currentBruker?.brukerId
 
 	return (
 		<>
@@ -49,7 +50,11 @@ export default () => {
 						<Tabs.Panel value={MinSideVisning.STATISTIKK}>
 							<ErrorBoundary>
 								<Box paddingBlock="space-24 space-0">
-									<BrukerStatistikk />
+									<BrukerStatistikk
+										key={statistikkEierId}
+										eierId={statistikkEierId}
+										teamNavn={currentBruker?.representererTeam?.navn}
+									/>
 								</Box>
 							</ErrorBoundary>
 						</Tabs.Panel>

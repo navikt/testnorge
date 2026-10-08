@@ -1,6 +1,9 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { DashboardChartPanel } from '@/pages/adminPages/Dashboard/dashboardSharedComponents'
+import {
+	DashboardChartPanel,
+	DashboardSelectButtons,
+} from '@/pages/adminPages/Dashboard/dashboardSharedComponents'
 import { createPersonTrendChartOptions } from '@/pages/adminPages/Dashboard/dashboardTrendChartOptions'
 import type { PersonTrendPoint } from '@/pages/adminPages/Dashboard/dashboardUtils'
 
@@ -52,5 +55,24 @@ describe('DashboardChartPanel', () => {
 				/>,
 			),
 		).not.toThrow()
+	})
+})
+
+describe('DashboardSelectButtons', () => {
+	it('should expose the selected option with aria-pressed', () => {
+		render(
+			<DashboardSelectButtons
+				label="År"
+				selected="2026"
+				onSelect={() => undefined}
+				options={[
+					{ value: '2025', label: '2025' },
+					{ value: '2026', label: '2026' },
+				]}
+			/>,
+		)
+
+		expect(screen.getByRole('button', { name: '2026', pressed: true })).toBeInTheDocument()
+		expect(screen.getByRole('button', { name: '2025', pressed: false })).toBeInTheDocument()
 	})
 })

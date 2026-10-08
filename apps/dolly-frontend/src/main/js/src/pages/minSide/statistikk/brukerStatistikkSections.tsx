@@ -9,12 +9,19 @@ import {
 	type DashboardSelectOption,
 } from '@/pages/adminPages/Dashboard/dashboardSharedComponents'
 import { MONTH_SCOPE_ALL, MONTH_SCOPE_LAST_12 } from '@/pages/adminPages/Dashboard/dashboardUtils'
-import { type MaanedPunkt, type MonthScope } from './brukerStatistikkUtils'
+import {
+	type AarSammendrag,
+	maanedVisning,
+	type MaanedPunkt,
+	type MonthScope,
+} from './brukerStatistikkUtils'
 
 interface PeriodeSectionProps {
 	aarOptions: string[]
 	valgtAar: string
 	onAarChange: (aar: string) => void
+	aarSammendrag: AarSammendrag | null
+	aarSammendragTittel: string
 	maanedOptions: DashboardSelectOption[]
 	valgtPeriodeKey: string
 	onPeriodeChange: (periodeKey: string) => void
@@ -23,12 +30,15 @@ interface PeriodeSectionProps {
 	mestBrukteFagsystem: string | null
 	antallFagsystemer: number
 	isLoadingDetaljert: boolean
+	detaljerUtilgjengelige: boolean
 }
 
 export const PeriodeSection = ({
 	aarOptions,
 	valgtAar,
 	onAarChange,
+	aarSammendrag,
+	aarSammendragTittel,
 	maanedOptions,
 	valgtPeriodeKey,
 	onPeriodeChange,
@@ -37,40 +47,75 @@ export const PeriodeSection = ({
 	mestBrukteFagsystem,
 	antallFagsystemer,
 	isLoadingDetaljert,
-}: PeriodeSectionProps) => (
-	<DashboardSectionCard>
-		<VStack gap="space-16">
-			<Heading level="2" size="small">
-				Bestillinger i {valgtPeriodeVisning.toLowerCase()}
-			</Heading>
-			<DashboardSelectButtons
-				label="År"
-				selected={valgtAar}
-				onSelect={onAarChange}
-				options={aarOptions.map((aar) => ({ value: aar, label: aar }))}
-			/>
-			<DashboardSelectButtons
-				label="Måned"
-				selected={valgtPeriodeKey}
-				onSelect={onPeriodeChange}
-				options={maanedOptions}
-			/>
-			<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
-				<DashboardKpiCard label="Nye personer" value={valgtPunkt.nyePersoner} />
-				<DashboardKpiCard label="Nye bestillinger" value={valgtPunkt.nyeBestillinger} />
-				<DashboardKpiCard label="Gjenopprettinger" value={valgtPunkt.gjenopprettinger} />
-				<DashboardKpiCard
-					label="Fagsystem brukt"
-					value={isLoadingDetaljert ? '–' : antallFagsystemer}
-				/>
-				<DashboardKpiCard
-					label="Mest brukte fagsystem"
-					value={isLoadingDetaljert ? '–' : (mestBrukteFagsystem ?? 'Ingen')}
-				/>
-			</HGrid>
-		</VStack>
-	</DashboardSectionCard>
-)
+	detaljerUtilgjengelige,
+}: PeriodeSectionProps) => {
+	const skjulDetaljverdier = isLoadingDetaljert || detaljerUtilgjengelige
+
+	return (
+		<DashboardSectionCard>
+			<VStack gap="space-24">
+				<Heading level="2" size="small">
+					Bestillinger
+				</Heading>
+				<VStack gap="space-16">
+					<DashboardSelectButtons
+						label="År"
+						selected={valgtAar}
+						onSelect={onAarChange}
+						options={aarOptions.map((aar) => ({ value: aar, label: aar }))}
+					/>
+					{aarSammendrag && (
+						<VStack gap="space-8">
+							<Heading level="3" size="xsmall">
+								{aarSammendragTittel}
+							</Heading>
+							<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
+								<DashboardKpiCard label="Nye personer" value={aarSammendrag.nyePersoner} />
+								<DashboardKpiCard label="Nye bestillinger" value={aarSammendrag.nyeBestillinger} />
+								<DashboardKpiCard label="Gjenopprettinger" value={aarSammendrag.gjenopprettinger} />
+								<DashboardKpiCard label="Aktive måneder" value={aarSammendrag.aktiveMaaneder} />
+								<DashboardKpiCard
+									label="Mest aktive måned"
+									value={
+										aarSammendrag.mestAktiveMaaned
+											? maanedVisning(aarSammendrag.mestAktiveMaaned)
+											: 'Ingen'
+									}
+								/>
+							</HGrid>
+						</VStack>
+					)}
+				</VStack>
+				<VStack gap="space-16">
+					<DashboardSelectButtons
+						label="Måned"
+						selected={valgtPeriodeKey}
+						onSelect={onPeriodeChange}
+						options={maanedOptions}
+					/>
+					<VStack gap="space-8">
+						<Heading level="3" size="xsmall">
+							{valgtPeriodeVisning}
+						</Heading>
+						<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
+							<DashboardKpiCard label="Nye personer" value={valgtPunkt.nyePersoner} />
+							<DashboardKpiCard label="Nye bestillinger" value={valgtPunkt.nyeBestillinger} />
+							<DashboardKpiCard label="Gjenopprettinger" value={valgtPunkt.gjenopprettinger} />
+							<DashboardKpiCard
+								label="Fagsystem brukt"
+								value={skjulDetaljverdier ? '–' : antallFagsystemer}
+							/>
+							<DashboardKpiCard
+								label="Mest brukte fagsystem"
+								value={skjulDetaljverdier ? '–' : (mestBrukteFagsystem ?? 'Ingen')}
+							/>
+						</HGrid>
+					</VStack>
+				</VStack>
+			</VStack>
+		</DashboardSectionCard>
+	)
+}
 
 interface ChartSectionProps {
 	title: string
