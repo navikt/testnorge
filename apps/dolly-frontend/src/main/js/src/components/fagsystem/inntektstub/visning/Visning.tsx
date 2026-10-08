@@ -9,7 +9,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDateTime } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 
 type InntekstubVisning = {
@@ -87,16 +87,16 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 						<div className="person-visning_content">
 							<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
 							<TitleValue
+								title="Rapporteringstidspunkt"
+								value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
+							/>
+							<TitleValue
 								title="Virksomhet"
 								value={`${inntektsinformasjon?.virksomhet} - ${virksomhetNavn}`}
 							/>
 							<TitleValue
 								title="Opplysningspliktig"
 								value={`${inntektsinformasjon.opplysningspliktig} - ${opplysningspliktigNavn}`}
-							/>
-							<TitleValue
-								title="Rapporteringstidspunkt"
-								value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
 							/>
 						</div>
 						<InntektVisning data={inntektsinformasjon.inntektsliste} />
