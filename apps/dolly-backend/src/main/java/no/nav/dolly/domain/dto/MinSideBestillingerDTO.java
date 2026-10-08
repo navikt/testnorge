@@ -19,8 +19,8 @@ public class MinSideBestillingerDTO {
     private YearMonth periode;
     private LocalDate dato;
 
-    private Long antallNyBestillinger;
-    private Long antallGjenopprettinger;
+    private Long antallNyeBestillinger;
+    private Long antallGjenopprettedeBestillinger;
     private Integer antallNyePersoner;
     private Integer andelOpprettedeDollyPersoner;
     private Integer andelImporterteTestnorgePersoner;

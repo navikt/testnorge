@@ -17,4 +17,6 @@ public class AdferdFragment {
     private String bestkriterier;
     private LocalDate dato;
     private Integer antall;
+
+    private Integer antalltestnorge;
 }

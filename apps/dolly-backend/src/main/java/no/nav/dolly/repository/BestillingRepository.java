@@ -246,7 +246,6 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                       when b.opprettet_fra_id is not null then 'GJENOPPRETTING'
                       when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
                       when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
-                      when b.best_kriterier = '{}' then 'GJENOPPRETTING'
                       else 'NYBESTILLING'
                    END gjenopprettStatus
               FROM bestilling b
@@ -262,7 +261,11 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
             when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
             when b.opprett_fra_identer is not null then cardinality(string_to_array(b.opprett_fra_identer, ','))
             else b.antall_identer
-          end as antall
+          end as antall,
+          case
+            when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
+            else 0
+          end as antalltestnorge
           from bestilling b
           where to_char(b.sist_oppdatert, 'YYYY-MM') = :interval
           and b.opprettet_fra_id is null

@@ -74,16 +74,16 @@ class BrukerBestillingerServiceTest {
         StepVerifier.create(brukerBestillingerService.getBestillinger())
                 .assertNext(result -> {
                     assertThat(result.getPeriode()).isEqualTo(YearMonth.of(2026, 2));
-                    assertThat(result.getAntallNyBestillinger()).isEqualTo(2);
-                    assertThat(result.getAntallGjenopprettinger()).isEqualTo(1);
+                    assertThat(result.getAntallNyeBestillinger()).isEqualTo(2);
+                    assertThat(result.getAntallGjenopprettedeBestillinger()).isEqualTo(1);
                     assertThat(result.getAntallNyePersoner()).isEqualTo(5);
                     assertThat(result.getAndelImporterteTestnorgePersoner()).isEqualTo(3);
                     assertThat(result.getAndelOpprettedeDollyPersoner()).isEqualTo(2);
                 })
                 .assertNext(result -> {
                     assertThat(result.getPeriode()).isEqualTo(YearMonth.of(2026, 1));
-                    assertThat(result.getAntallNyBestillinger()).isZero();
-                    assertThat(result.getAntallGjenopprettinger()).isEqualTo(1);
+                    assertThat(result.getAntallNyeBestillinger()).isZero();
+                    assertThat(result.getAntallGjenopprettedeBestillinger()).isEqualTo(1);
                     assertThat(result.getAntallNyePersoner()).isZero();
                     assertThat(result.getAndelImporterteTestnorgePersoner()).isZero();
                     assertThat(result.getAndelOpprettedeDollyPersoner()).isZero();
@@ -104,8 +104,8 @@ class BrukerBestillingerServiceTest {
         StepVerifier.create(brukerBestillingerService.getBestillinger())
                 .assertNext(result -> {
                     assertThat(result.getPeriode()).isEqualTo(YearMonth.of(2026, 2));
-                    assertThat(result.getAntallNyBestillinger()).isEqualTo(1);
-                    assertThat(result.getAntallGjenopprettinger()).isEqualTo(1);
+                    assertThat(result.getAntallNyeBestillinger()).isEqualTo(1);
+                    assertThat(result.getAntallGjenopprettedeBestillinger()).isEqualTo(1);
                     assertThat(result.getAntallNyePersoner()).isEqualTo(4);
                     assertThat(result.getAndelImporterteTestnorgePersoner()).isEqualTo(1);
                     assertThat(result.getAndelOpprettedeDollyPersoner()).isEqualTo(3);
@@ -128,7 +128,7 @@ class BrukerBestillingerServiceTest {
         StepVerifier.create(brukerBestillingerService.getBestillingerDetaljert(2026, Month.FEBRUARY))
                 .assertNext(result -> {
                     assertThat(result.getDato()).isEqualTo(LocalDate.of(2026, 2, 10));
-                    assertThat(result.getAntallNyBestillinger()).isEqualTo(2);
+                    assertThat(result.getAntallNyeBestillinger()).isEqualTo(2);
                     assertThat(result.getAntallNyePersoner()).isEqualTo(8);
                     assertThat(result.getAndelImporterteTestnorgePersoner()).isEqualTo(3);
                     assertThat(result.getAndelOpprettedeDollyPersoner()).isEqualTo(5);

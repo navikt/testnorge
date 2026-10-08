@@ -156,7 +156,7 @@ public class BrukeradferdUtils {
             var register = (List) bestilling.getClass().getMethod("get%s".formatted(system))
                     .invoke(bestilling);
 
-            builder.append(",Array/matrise antall:")
+            builder.append(",Array-størrelse/antall:")
                     .append(register.size());
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.error("Feil ved henting av antall: {}", e.getMessage(), e);
