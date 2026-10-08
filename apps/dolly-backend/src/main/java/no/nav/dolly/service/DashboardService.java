@@ -94,7 +94,7 @@ public class DashboardService {
                                         .mapToLong(BestillingerFragment::getBestillingid)
                                         .distinct()
                                         .count())
-                                .antallGjenopprettinger(fragmentliste.stream()
+                                .antallGjenopprettedeBestillinger(fragmentliste.stream()
                                         .filter(fragment -> GJENOPPRETTING.equals(fragment.getGjenopprettstatus()))
                                         .mapToLong(BestillingerFragment::getBestillingid)
                                         .distinct()

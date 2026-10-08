@@ -146,7 +146,7 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getAntallNyeBestillinger()).isEqualTo(2L);
-                    assertThat(dto.getAntallGjenopprettinger()).isEqualTo(1L);
+                    assertThat(dto.getAntallGjenopprettedeBestillinger()).isEqualTo(1L);
                     assertThat(dto.getAntallNyePersoner()).isEqualTo(7L);
                     assertThat(dto.getAndelOpprettedeDollyPersoner()).isEqualTo(4L);
                     assertThat(dto.getAndelImporterteTestnorgePersoner()).isEqualTo(3L);
@@ -200,7 +200,7 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getAntallNyeBestillinger()).isZero();
-                    assertThat(dto.getAntallGjenopprettinger()).isZero();
+                    assertThat(dto.getAntallGjenopprettedeBestillinger()).isZero();
                     assertThat(dto.getAntallNyePersoner()).isZero();
                     assertThat(dto.getAndelOpprettedeDollyPersoner()).isZero();
                     assertThat(dto.getAndelImporterteTestnorgePersoner()).isZero();

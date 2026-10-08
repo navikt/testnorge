@@ -15,7 +15,7 @@ public class DashboardBestillingerDTO {
 
     private LocalDate dato;
     private Long antallNyeBestillinger;
-    private Long antallGjenopprettinger;
+    private Long antallGjenopprettedeBestillinger;
     private Long antallNyePersoner;
     private Long andelOpprettedeDollyPersoner;
     private Long andelImporterteTestnorgePersoner;
