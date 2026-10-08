@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.HENVENDELSE;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
@@ -55,8 +57,9 @@ public class HenvendelseClient implements ClientRegister {
             return Mono.empty();
         }
 
-        return personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
-                .next()
+        return oppdaterStatus(progress, getInfoVenter(HENVENDELSE.getBeskrivelse()))
+                .then(personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
+                        .next())
                 .flatMap(personbolk ->
                         Mono.zip(getAktorId(personbolk)
                                         .next(),
@@ -75,7 +78,7 @@ public class HenvendelseClient implements ClientRegister {
                 .map(status -> status.getStatus().is2xxSuccessful() ?
                         "%s: OK".formatted(status.getType()) :
                         "%s: Feil= %s".formatted(
-                        status.getType(), ErrorStatusDecoder.encodeStatus(status.getFeilmelding())))
+                                status.getType(), ErrorStatusDecoder.encodeStatus(status.getFeilmelding())))
                 .distinct()
                 .collect(Collectors.joining(", "))
                 .flatMap(status -> oppdaterStatus(progress, status));
@@ -89,9 +92,12 @@ public class HenvendelseClient implements ClientRegister {
                 .flatMap(henvendelseConsumer::getHenvendelse)
                 .map(HenvendelseResponse::getData)
                 .flatMap(Flux::fromIterable)
+                .filter(henvendelse -> "MELDINGSKJEDE".equals(henvendelse.getHenvendelseType()))
                 .map(HenvendelseResponse.Info::getKjedeId)
                 .flatMap(henvendelseConsumer::deleteHenvendelse)
-                .subscribe(_ -> log.info("Lukket henvendelser i Salesforce"));
+                .collectList()
+                .subscribe(henvendelser -> log.info("Lukket %d henvendelse(r) i Salesforce"
+                        .formatted(henvendelser.size())));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
