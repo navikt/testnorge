@@ -50,7 +50,7 @@ const texts = {
 		'Uregelmessige tillegg knyttet til ikke-arbeidet tid',
 	bonus: 'Bonus',
 	overtidsgodtgjoerelse: 'Overtidsgodtgjørelse',
-	styrehonorarOgGodtgjoerelseVerv: 'Styrehonorar og godtgjoerelse i forbindelse med verv',
+	styrehonorarOgGodtgjoerelseVerv: 'Styrehonorar og godtgjørelse i forbindelse med verv',
 	kommunalOmsorgsloennOgFosterhjemsgodtgjoerelse: 'Kommunal omsorgslønn og fosterhjemsgodtgjørelse',
 	sluttvederlag: 'Sluttvederlag',
 	feriepenger: 'Feriepenger',
@@ -98,7 +98,7 @@ const texts = {
 	reiseKostMedOvernattingTilLangtransportsjaafoerForKjoeringIUtlandet:
 		'Reise kost med overnatting, langtransportsjåfør i utlandet',
 	reiseKostMedOvernattingPaaPensjonat: 'Reise kost med overnatting på pensjonat',
-	besoeksreiserHjemmetKost: 'Besoeksreiser hjemmet kost',
+	besoeksreiserHjemmetKost: 'Besøksreiser hjemmet kost',
 	kilometergodtgjoerelseElBil: 'Kilometergodtgjørelse el-bil',
 	kilometergodtgjoerelsePassasjertillegg: 'Kilometergodtgjørelse passasjertillegg',
 	kilometergodtgjoerelseAndreFremkomstmidler: 'Kilometergodtgjørelse andre remkomstmidler',
@@ -144,7 +144,7 @@ const texts = {
 	skattefriStoenadTilBarnetilsyn: 'Skattefri stønad til barnetilsyn',
 	overgangsstoenadTilEnsligMorEllerFarSomBegynteAaLoepe1April2014EllerSenere:
 		'Overgangsstønad enslig mor eller far, fra 1. april 2014 eller senere',
-	ufoeretrygd: 'Ufoeretrygd',
+	ufoeretrygd: 'Uføretrygd',
 	ektefelletilleggUfoeretrygd: 'Ektefelletillegg uføretrygd',
 	ufoereytelseEtteroppgjoer: 'Uføreytelse etteroppgjør',
 	pleiepenger: 'Pleiepenger',
