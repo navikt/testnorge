@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -23,7 +24,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @UtilityClass
 public class BrukeradferdUtils {
 
-    private static final String NO_DATA = "Ingen data";
+    private static final String NO_DATA = "Uspesifisert";
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
 
     public record AkkumulertKriterium(String fagsystem, Integer antall, Map<String, Object> detaljer) {
@@ -72,13 +73,13 @@ public class BrukeradferdUtils {
         rader.forEach(rad -> rad.detaljer().forEach((key, value) -> {
             try {
                 antallsdetaljer.merge(key, Integer.parseInt(value) * rad.antall(), Integer::sum);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException _) {
                 kategoriskeDetaljer.merge("%s-%s".formatted(key, value), rad.antall(), Integer::sum);
             }
         }));
 
         if (kategoriskeDetaljer.isEmpty() && antallsdetaljer.isEmpty()) {
-            return null;
+            return emptyMap();
         }
 
         var detaljer = new HashMap<String, Object>(kategoriskeDetaljer);

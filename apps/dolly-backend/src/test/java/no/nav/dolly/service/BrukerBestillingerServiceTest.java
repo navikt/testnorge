@@ -66,8 +66,8 @@ class BrukerBestillingerServiceTest {
         when(userInfo.id()).thenReturn(BRUKER_ID);
         when(brukerRepository.findByBrukerId(BRUKER_ID)).thenReturn(Mono.just(bruker));
         when(bestillingRepository.findByBrukerIdOrderByIdDesc(BRUKER_ID)).thenReturn(Flux.just(
-                bestilling(LocalDate.of(2026, 2, 10), "NYBESTILLING", 2),
-                bestilling(LocalDate.of(2026, 2, 11), "NYBESTILLING", 3),
+                bestilling(LocalDate.of(2026, 2, 10), "NYBESTILLING", 2, 1),
+                bestilling(LocalDate.of(2026, 2, 11), "NYBESTILLING", 3, 2),
                 bestilling(LocalDate.of(2026, 2, 12), "GJENOPPRETTING", 4),
                 bestilling(LocalDate.of(2026, 1, 10), "GJENOPPRETTING", 1)));
 
@@ -77,12 +77,16 @@ class BrukerBestillingerServiceTest {
                     assertThat(result.getAntallNyBestillinger()).isEqualTo(2);
                     assertThat(result.getAntallGjenopprettinger()).isEqualTo(1);
                     assertThat(result.getAntallNyePersoner()).isEqualTo(5);
+                    assertThat(result.getAndelImporterteTestnorgePersoner()).isEqualTo(3);
+                    assertThat(result.getAndelOpprettedeDollyPersoner()).isEqualTo(2);
                 })
                 .assertNext(result -> {
                     assertThat(result.getPeriode()).isEqualTo(YearMonth.of(2026, 1));
                     assertThat(result.getAntallNyBestillinger()).isZero();
                     assertThat(result.getAntallGjenopprettinger()).isEqualTo(1);
                     assertThat(result.getAntallNyePersoner()).isZero();
+                    assertThat(result.getAndelImporterteTestnorgePersoner()).isZero();
+                    assertThat(result.getAndelOpprettedeDollyPersoner()).isZero();
                 })
                 .verifyComplete();
 
@@ -94,7 +98,7 @@ class BrukerBestillingerServiceTest {
 
         mockRepresentedTeam();
         when(bestillingRepository.findByBrukerIdOrderByIdDesc(TEAM_BRUKER_ID)).thenReturn(Flux.just(
-                bestilling(LocalDate.of(2026, 2, 10), "NYBESTILLING", 4),
+                bestilling(LocalDate.of(2026, 2, 10), "NYBESTILLING", 4, 1),
                 bestilling(LocalDate.of(2026, 2, 11), "GJENOPPRETTING", 1)));
 
         StepVerifier.create(brukerBestillingerService.getBestillinger())
@@ -103,6 +107,8 @@ class BrukerBestillingerServiceTest {
                     assertThat(result.getAntallNyBestillinger()).isEqualTo(1);
                     assertThat(result.getAntallGjenopprettinger()).isEqualTo(1);
                     assertThat(result.getAntallNyePersoner()).isEqualTo(4);
+                    assertThat(result.getAndelImporterteTestnorgePersoner()).isEqualTo(1);
+                    assertThat(result.getAndelOpprettedeDollyPersoner()).isEqualTo(3);
                 })
                 .verifyComplete();
 
@@ -115,9 +121,23 @@ class BrukerBestillingerServiceTest {
 
         mockRepresentedTeam();
         when(bestillingRepository.findKriterierByBrukerIdOrderByIdDesc(TEAM_BRUKER_ID, "2026-02"))
-                .thenReturn(Flux.empty());
+                .thenReturn(Flux.just(
+                        bestilling(LocalDate.of(2026, 2, 10), "", 5, 2),
+                        bestilling(LocalDate.of(2026, 2, 10), "", 3, 1)));
 
         StepVerifier.create(brukerBestillingerService.getBestillingerDetaljert(2026, Month.FEBRUARY))
+                .assertNext(result -> {
+                    assertThat(result.getDato()).isEqualTo(LocalDate.of(2026, 2, 10));
+                    assertThat(result.getAntallNyBestillinger()).isEqualTo(2);
+                    assertThat(result.getAntallNyePersoner()).isEqualTo(8);
+                    assertThat(result.getAndelImporterteTestnorgePersoner()).isEqualTo(3);
+                    assertThat(result.getAndelOpprettedeDollyPersoner()).isEqualTo(5);
+                    assertThat(result.getKriterier()).singleElement().satisfies(kriterium -> {
+                        assertThat(kriterium.getFagsystem()).isEqualTo("Uspesifisert");
+                        assertThat(kriterium.getAntall()).isEqualTo(8);
+                        assertThat(kriterium.getDetaljer()).isEmpty();
+                    });
+                })
                 .verifyComplete();
 
         verify(bestillingRepository).findKriterierByBrukerIdOrderByIdDesc(TEAM_BRUKER_ID, "2026-02");
@@ -149,10 +169,17 @@ class BrukerBestillingerServiceTest {
 
     private static BestillingBrukerFragment bestilling(LocalDate dato, String bestillingtype, int antall) {
 
+        return bestilling(dato, bestillingtype, antall, 0);
+    }
+
+    private static BestillingBrukerFragment bestilling(
+            LocalDate dato, String bestillingtype, int antall, int antallTestnorge) {
+
         return BestillingBrukerFragment.builder()
                 .dato(dato)
                 .bestillingtype(bestillingtype)
                 .antall(antall)
+                .antalltestnorge(antallTestnorge)
                 .build();
     }
 }

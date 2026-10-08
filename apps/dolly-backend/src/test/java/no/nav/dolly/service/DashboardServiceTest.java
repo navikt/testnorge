@@ -851,7 +851,7 @@ class DashboardServiceTest {
                     assertThat(dto.getDato()).isEqualTo(DATE_1);
                     var entry = kriterium(dto, "Krrstub");
                     assertThat(entry.getAntall()).isEqualTo(1);
-                    assertThat(entry.getDetaljer()).isNull();
+                    assertThat(entry.getDetaljer()).isEmpty();
                 })
                 .verifyComplete();
     }
@@ -876,15 +876,15 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldUseIngenDataForEmptyListFields() {
+    void shouldUseUnspecifiedForEmptyListFields() {
         stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[]}", 1));
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getKriterier()).hasSize(1);
-                    assertThat(dto.getKriterier().getFirst().getFagsystem()).isEqualTo("Ingen data");
+                    assertThat(dto.getKriterier().getFirst().getFagsystem()).isEqualTo("Uspesifisert");
                     assertThat(dto.getKriterier().getFirst().getAntall()).isEqualTo(1);
-                    assertThat(dto.getKriterier().getFirst().getDetaljer()).isNull();
+                    assertThat(dto.getKriterier().getFirst().getDetaljer()).isEmpty();
                 })
                 .verifyComplete();
     }

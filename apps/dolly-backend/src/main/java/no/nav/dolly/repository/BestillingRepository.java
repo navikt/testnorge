@@ -50,7 +50,11 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                   when b.gjenopprettet_fra_ident is not null then 'GJENOPPRETTING'
                   when b.opprett_fra_gruppe is not null then 'GJENOPPRETTING'
                   else 'NYBESTILLING'
-           end as bestillingtype
+           end as bestillingtype,
+           case
+                  when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
+                  else 0
+           end as antalltestnorge
            from bestilling b
            join bruker br on br.id = b.bruker_id
            where br.bruker_id = :brukerId
@@ -64,7 +68,11 @@ public interface BestillingRepository extends ReactiveSortingRepository<Bestilli
                   when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
                   when b.opprett_fra_identer is not null then cardinality(string_to_array(b.opprett_fra_identer, ','))
                   else b.antall_identer
-           end as antall
+           end as antall,
+           case
+                  when b.pdl_import is not null then cardinality(string_to_array(b.pdl_import, ','))
+                  else 0
+           end as antalltestnorge
            from bestilling b
            join bruker br on br.id = b.bruker_id
            where br.bruker_id = :brukerId

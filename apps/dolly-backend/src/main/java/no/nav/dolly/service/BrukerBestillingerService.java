@@ -57,6 +57,14 @@ public class BrukerBestillingerService {
                                 .filter(best -> NY_BESTILLING.equals(best.getBestillingtype()))
                                 .mapToInt(BestillingBrukerFragment::getAntall)
                                 .sum())
+                        .andelImporterteTestnorgePersoner(bestillinger.stream()
+                                .filter(best -> NY_BESTILLING.equals(best.getBestillingtype()))
+                                .mapToInt(BestillingBrukerFragment::getAntalltestnorge)
+                                .sum())
+                        .andelOpprettedeDollyPersoner(bestillinger.stream()
+                                .filter(best -> NY_BESTILLING.equals(best.getBestillingtype()))
+                                .mapToInt(bestilling -> bestilling.getAntall() - bestilling.getAntalltestnorge())
+                                .sum())
                         .build())
                 .sort(Comparator.comparing(MinSideBestillingerDTO::getPeriode).reversed());
     }
@@ -71,6 +79,16 @@ public class BrukerBestillingerService {
                 .map(adferd ->
                         MinSideBestillingerDTO.builder()
                                 .dato(adferd.getFirst().getDato())
+                                .antallNyBestillinger((long) adferd.size())
+                                .antallNyePersoner(adferd.stream()
+                                        .mapToInt(BestillingBrukerFragment::getAntall)
+                                        .sum())
+                                .andelOpprettedeDollyPersoner(adferd.stream()
+                                        .mapToInt(bestilling -> bestilling.getAntall() - bestilling.getAntalltestnorge())
+                                        .sum())
+                                .andelImporterteTestnorgePersoner(adferd.stream()
+                                        .mapToInt(BestillingBrukerFragment::getAntalltestnorge)
+                                        .sum())
                                 .kriterier(BrukeradferdUtils.getAkkumulerteKriterier(adferd,
                                                 BestillingBrukerFragment::getBestkriterier, BestillingBrukerFragment::getAntall, jsonMapper)
                                         .stream()
