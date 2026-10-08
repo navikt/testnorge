@@ -108,6 +108,7 @@ const InntektFelt = ({
 				name={fieldPath}
 				label={texts(field)}
 				onSubmit={handleChange}
+				updateFormOnBlur={true}
 				size={size ?? (numberFields.includes(field) ? 'medium' : 'large')}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
