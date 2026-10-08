@@ -32,8 +32,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static no.nav.dolly.domain.resultset.SystemTyper.HENVENDELSE;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -150,10 +153,15 @@ class HenvendelseClientTest {
                 })
                 .extracting(HenvendelseSamtalereferatRequest::getType)
                 .containsExactlyInAnyOrder("melding", "samtalereferat");
-        verify(transactionHelperService).persister(eq(progress), any(), statusCaptor.capture());
+        verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
+        assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo(getInfoVenter(HENVENDELSE.getBeskrivelse()));
         assertThat(statusCaptor.getValue())
                 .contains("MELDING: OK")
                 .contains("SAMTALEREFERAT: OK");
+        var inOrder = inOrder(transactionHelperService, personServiceConsumer);
+        inOrder.verify(transactionHelperService).persister(
+                eq(progress), any(), eq(getInfoVenter(HENVENDELSE.getBeskrivelse())));
+        inOrder.verify(personServiceConsumer).getPdlPersoner(List.of(IDENT));
     }
 
     @Test
@@ -196,7 +204,8 @@ class HenvendelseClientTest {
         verify(henvendelseConsumer).sendHenvendelse(requestCaptor.capture());
         assertThat(requestCaptor.getValue().getAktorId()).isEqualTo(AKTOR_ID);
         assertThat(requestCaptor.getValue().getEnhet()).isEqualTo("0315");
-        verify(transactionHelperService).persister(eq(progress), any(), statusCaptor.capture());
+        verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
+        assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo(getInfoVenter(HENVENDELSE.getBeskrivelse()));
         assertThat(statusCaptor.getValue()).isEqualTo("MELDING: Feil= ugyldig= melding");
     }
 
@@ -222,7 +231,8 @@ class HenvendelseClientTest {
                 .verifyComplete();
 
         verify(henvendelseConsumer, never()).sendHenvendelse(any());
-        verify(transactionHelperService).persister(eq(progress), any(), statusCaptor.capture());
+        verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
+        assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo(getInfoVenter(HENVENDELSE.getBeskrivelse()));
         assertThat(statusCaptor.getValue()).isEmpty();
     }
 
@@ -233,7 +243,15 @@ class HenvendelseClientTest {
                 .thenReturn(Flux.just(pdlPersonBolk(true, false)));
         when(henvendelseConsumer.getHenvendelse(AKTOR_ID))
                 .thenReturn(Mono.just(HenvendelseResponse.builder()
-                        .data(List.of(HenvendelseResponse.Info.builder().kjedeId(KJEDE_ID).build()))
+                        .data(List.of(
+                                HenvendelseResponse.Info.builder()
+                                        .henvendelseType("MELDINGSKJEDE")
+                                        .kjedeId(KJEDE_ID)
+                                        .build(),
+                                HenvendelseResponse.Info.builder()
+                                        .henvendelseType("MELDING")
+                                        .kjedeId("melding-id")
+                                        .build()))
                         .build()));
         when(henvendelseConsumer.deleteHenvendelse(KJEDE_ID))
                 .thenReturn(Mono.just(HenvendelseResponse.builder().status(HttpStatus.OK).build()));
@@ -243,6 +261,7 @@ class HenvendelseClientTest {
         verify(personServiceConsumer).getPdlPersoner(List.of(IDENT));
         verify(henvendelseConsumer).getHenvendelse(AKTOR_ID);
         verify(henvendelseConsumer).deleteHenvendelse(KJEDE_ID);
+        verify(henvendelseConsumer, never()).deleteHenvendelse("melding-id");
     }
 
     private static RsDollyUtvidetBestilling bestillingMedHenvendelse(RsHenvendelse henvendelse) {
