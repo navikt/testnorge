@@ -36,7 +36,14 @@ class HenvendelseMappingStrategyTest {
     @Test
     void shouldMapMeldingAndPreserveExplicitEnhet() {
 
-        var source = new RsHenvendelse.Melding("ARBD", "DAG", EXPLICIT_ENHET, "message", true, "message-chain");
+        var source = RsHenvendelse.Melding.builder()
+                .temagruppe("ARBD")
+                .tema("DAG")
+                .enhet(EXPLICIT_ENHET)
+                .fritekst("message")
+                .kjedeId("message-chain")
+                .tildelMeg(true)
+                .build();
 
         var result = mapperFacade.map(source, HenvendelseMeldingRequest.class, context);
 
@@ -72,8 +79,9 @@ class HenvendelseMappingStrategyTest {
     @ValueSource(strings = {" ", "\t"})
     void shouldUseContextEnhetWhenMeldingEnhetIsBlank(String enhet) {
 
-        var source = new RsHenvendelse.Melding();
-        source.setEnhet(enhet);
+        var source = RsHenvendelse.Melding.builder()
+                .enhet(enhet)
+                .build();
 
         var result = mapperFacade.map(source, HenvendelseMeldingRequest.class, context);
 

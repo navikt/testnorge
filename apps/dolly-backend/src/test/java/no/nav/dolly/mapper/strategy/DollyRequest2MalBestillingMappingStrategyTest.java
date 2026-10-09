@@ -1096,10 +1096,18 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
     private static RsDollyUtvidetBestilling buildHenvendelse(String fritekst, boolean tildelMeg) {
 
+        var melding = RsHenvendelse.Melding.builder()
+                .temagruppe("ARBD")
+                .tema("DAG")
+                .enhet("0315")
+                .fritekst(fritekst)
+                .tildelMeg(tildelMeg)
+                .kjedeId("melding-" + fritekst)
+                .build();
+
         return RsDollyUtvidetBestilling.builder()
                 .henvendelse(RsHenvendelse.builder()
-                        .meldinger(List.of(new RsHenvendelse.Melding(
-                                "ARBD", "DAG", "0315", fritekst, tildelMeg, "melding-" + fritekst)))
+                        .meldinger(List.of(melding))
                         .samtalereferater(List.of(new RsHenvendelse.Samtalereferat(
                                 "ARBD", "DAG", "0315", fritekst, "referat-" + fritekst)))
                         .build())

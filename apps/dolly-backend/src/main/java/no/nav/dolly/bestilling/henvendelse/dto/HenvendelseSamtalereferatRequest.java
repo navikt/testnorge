@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HenvendelseSamtalereferatRequest {
 
-    protected String aktorId;
-    protected String temagruppe;
-    protected String tema;
-    protected String enhet;
-    protected String fritekst;
+    private String aktorId;
+    private String temagruppe;
+    private String tema;
+    private String enhet;
+    private String fritekst;
 
     @JsonIgnore
-    protected String kjedeId;
+    private String kjedeId;
 
     @JsonIgnore
-    protected String type;
+    private String type;
 }

@@ -88,7 +88,7 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of(melding()),
                 List.of(new RsHenvendelse.Samtalereferat("tema", "tema", null, "referattekst", null))));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(true, true)));
@@ -171,7 +171,7 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of(melding()),
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(true, false)));
@@ -216,7 +216,7 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of(melding()),
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(false, false)));
@@ -241,7 +241,7 @@ class HenvendelseClientTest {
     void shouldSkipCreationWhenPersonIsNotTaggedForSalesforce() {
 
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of(melding()),
                 List.of()));
 
         StepVerifier.create(henvendelseClient.gjenopprett(
@@ -262,7 +262,7 @@ class HenvendelseClientTest {
         var progress = new BestillingProgress();
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
-                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of(melding()),
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(PdlPersonBolk.builder().build()));
@@ -316,6 +316,15 @@ class HenvendelseClientTest {
         var bestilling = new RsDollyUtvidetBestilling();
         bestilling.setHenvendelse(henvendelse);
         return bestilling;
+    }
+
+    private static RsHenvendelse.Melding melding() {
+
+        return RsHenvendelse.Melding.builder()
+                .temagruppe("tema")
+                .tema("tema")
+                .fritekst("meldingstekst")
+                .build();
     }
 
     private static DollyPerson salesforcePerson() {
