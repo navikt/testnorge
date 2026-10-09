@@ -268,6 +268,14 @@ describe('brukerStatistikkUtils', () => {
 			label: 'Brukertype: MED_SERVICEBEHOV',
 			type: 'valg',
 		})
+		expect(parseDetaljNoekkel('Array-størrelse/antall')).toEqual({
+			label: 'Antall oppføringer',
+			type: 'antall',
+		})
+		expect(parseDetaljNoekkel('Array/matrise antall')).toEqual({
+			label: 'Antall oppføringer',
+			type: 'antall',
+		})
 		expect(parseDetaljNoekkel('Antall arbeidsforhold')).toEqual({
 			label: 'Antall arbeidsforhold',
 			type: 'antall',

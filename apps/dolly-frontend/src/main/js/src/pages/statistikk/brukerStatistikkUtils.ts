@@ -15,6 +15,7 @@ import { detaljNoekkelLabel, fagsystemLabel } from './fagsystemLabels'
 const USPESIFISERTE_FAGSYSTEMER = new Set(['Uspesifisert', 'Ingen data'])
 const ANDRE_FAGSYSTEMER = 'Andre'
 const SKJULTE_FAGSYSTEMER = new Set(['Beskrivelse'])
+const ANTALL_NOEKLER = new Set(['Array-størrelse/antall', 'Array/matrise antall'])
 
 export type MonthScope = typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 
@@ -349,6 +350,9 @@ export const toDagFagsystemMatrise = (
 }
 
 export const parseDetaljNoekkel = (noekkel: string): { label: string; type: DetaljType } => {
+	if (ANTALL_NOEKLER.has(noekkel)) {
+		return { label: detaljNoekkelLabel(noekkel), type: 'antall' }
+	}
 	const skilletegnIndex = noekkel.lastIndexOf('-')
 	if (skilletegnIndex <= 0) {
 		return { label: detaljNoekkelLabel(noekkel), type: 'antall' }
