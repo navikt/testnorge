@@ -1,16 +1,9 @@
-export type VersjonInfo = {
-	underversjoner: Array<number>
-	path: string
-	gjeldendeInntektMedHistorikk: boolean
-}
-
 export type Inntektsinformasjon = {
-	sisteAarMaaned: string
-	antallMaaneder: string
+	perioder: Array<string>
+	rapporteringsdato?: Date | null
 	virksomhet: string
 	opplysningspliktig: string
-	rapporteringsdato: Date
-	versjon?: number
+	versjon?: number | null
 	inntektsliste: Array<Inntekt>
 	fradragsliste: Array<Fradrag>
 	forskuddstrekksliste: Array<Forskudd>
@@ -18,8 +11,8 @@ export type Inntektsinformasjon = {
 
 export type Inntekt = {
 	beloep: string
-	startOpptjeningsperiode: string
-	sluttOpptjeningsperiode: string
+	startOpptjeningsperiode?: string
+	sluttOpptjeningsperiode?: string
 	inntektstype: string
 	tilleggsinformasjonstype?: string
 }

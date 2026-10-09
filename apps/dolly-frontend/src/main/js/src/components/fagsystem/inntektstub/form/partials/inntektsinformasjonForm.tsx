@@ -36,17 +36,13 @@ export default ({ path }: InntektsinformasjonForm) => {
 	return (
 		<React.Fragment key={path}>
 			<div className="flexbox--flex-wrap">
-				<Monthpicker
-					name={`${path}.sisteAarMaaned`}
-					label="Siste måned/år"
-					date={date}
-					handleDateChange={handleDateChange}
-				/>
-				<FormTextInput
-					name={`${path}.antallMaaneder`}
-					label="Generer x mnd tilbake i tid"
-					type="number"
-				/>
+				{/*TODO: Lag en egen komponent for flervalg av maaneder*/}
+				{/*<Monthpicker*/}
+				{/*	name={`${path}.perioder`}*/}
+				{/*	label="Perioder"*/}
+				{/*	date={date}*/}
+				{/*	handleDateChange={handleDateChange}*/}
+				{/*/>*/}
 				<FormDatepicker
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringstidspunkt"

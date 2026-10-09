@@ -8,9 +8,8 @@ import { Inntektsinformasjon } from './partials/inntektstubTypes'
 import { useFormContext } from 'react-hook-form'
 
 export const initialValues: Inntektsinformasjon = {
-	sisteAarMaaned: '',
+	perioder: [''],
 	rapporteringsdato: null,
-	antallMaaneder: '',
 	virksomhet: '',
 	opplysningspliktig: '',
 	versjon: null,
@@ -26,8 +25,8 @@ export const initialValues: Inntektsinformasjon = {
 	forskuddstrekksliste: [],
 }
 
-export const inntektstubAttributt = 'inntektstub'
-const inntektstubPath = 'inntektstub.inntektsinformasjon'
+export const inntektstubAttributt = 'inntekter'
+const inntektstubPath = 'inntekter'
 
 const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'

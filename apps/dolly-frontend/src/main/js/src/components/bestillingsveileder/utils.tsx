@@ -67,7 +67,7 @@ export const rootPaths = [
 	sigrunstubPensjonsgivendeAttributt,
 	sigrunstubSummertSkattegrunnlagAttributt,
 	'pensjonforvalter',
-	'inntektstub',
+	'inntekter',
 	'instdata',
 	'instdataKdi',
 	'krrstub',
