@@ -9,8 +9,14 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
 import { Oppfoelgingsvedtak14aTypes } from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
 
-export const getOppfoelgingsvedtak14aLabel = (options: any, value: string) =>
-	options?.find((item: any) => item.value === value || item.gammelKode === value)?.label ?? value
+export const getOppfoelgingsvedtak14aLabel = (options: any, value: string) => {
+	if (!value) {
+		return null
+	}
+	return (
+		options?.find((item: any) => item.value === value || item.gammelKode === value)?.label ?? value
+	)
+}
 
 export const Oppfoelgingsvedtak14aVisning = ({
 	data,
