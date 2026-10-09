@@ -2,7 +2,7 @@ import { type Options, type SeriesSplineOptions } from 'highcharts'
 import { ROTATED_CATEGORY_LABELS, TOOLTIP_OPTIONS, withBaseChart } from './dashboardChartBase'
 import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
-const createLineTrendChartOptions = ({
+export const createLineTrendChartOptions = ({
 	description,
 	categories,
 	series,

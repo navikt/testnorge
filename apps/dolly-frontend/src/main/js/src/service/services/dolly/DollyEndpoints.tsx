@@ -83,6 +83,14 @@ export default class DollyEndpoints {
 		return `${brukerBase}/migrer?navIdenter=${ZIdenter}`
 	}
 
+	static brukerBestillinger() {
+		return `${brukerBase}/bestillinger/brukerid`
+	}
+
+	static brukerBestillingerDetaljert(year: number, month: string) {
+		return `${brukerBase}/bestillinger/brukerid/detaljert?year=${year}&month=${month}`
+	}
+
 	static kodeverkByNavn(kodeverkNavn) {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}

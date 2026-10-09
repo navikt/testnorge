@@ -1,4 +1,4 @@
-import { MalModal } from '@/pages/minSide/maler/MalModal'
+import { MalModal } from '@/pages/maler/MalModal'
 import React, { useState } from 'react'
 import { FileLoadingIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'

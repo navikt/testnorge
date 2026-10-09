@@ -5,8 +5,8 @@ import {
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 	useMalbestillingBruker,
 } from '@/utils/hooks/useMaler'
-import { Tabs } from '@navikt/ds-react'
-import { MalPanel } from '@/pages/minSide/maler/MalPanel'
+import { HStack, Tabs, VStack } from '@navikt/ds-react'
+import { MalPanel } from '@/pages/maler/MalPanel'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Buildings3Icon, MagnifyingGlassIcon, PersonGroupIcon } from '@navikt/aksel-icons'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
@@ -19,7 +19,7 @@ export enum MalType {
 	TENORSOEK = 'tenorsoek',
 }
 
-export default ({ brukerId }: { brukerId: string }) => {
+export default ({ brukerId }: { brukerId?: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
 	const searchInputRef = React.useRef(null)
@@ -48,17 +48,15 @@ export default ({ brukerId }: { brukerId: string }) => {
 	const antallEgneTenorsoekMaler = egneTenorsoekMaler?.length
 
 	return (
-		<div className="maloversikt">
-			<hr />
-			<div className="flexbox--align-center--space">
-				<h2>Mine maler</h2>
+		<VStack gap="space-16" className="maloversikt">
+			<HStack justify="end">
 				<SearchField
 					placeholder={`Søk etter mal (${shortcutKey})`}
 					setText={setSearchText}
 					ref={searchInputRef}
-					data-testid={TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL}
+					data-testid={TestComponentSelectors.INPUT_MALER_SOEK}
 				/>
-			</div>
+			</HStack>
 			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 && antallEgneTenorsoekMaler === 0 ? (
 				<StyledAlert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
@@ -68,13 +66,13 @@ export default ({ brukerId }: { brukerId: string }) => {
 				<Tabs defaultValue={MalType.PERSON}>
 					<Tabs.List>
 						<Tabs.Tab
-							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_PERSONER_MALER}
+							data-testid={TestComponentSelectors.TOGGLE_MALER_PERSONER}
 							value={MalType.PERSON}
 							label={'Personer'}
 							icon={<PersonGroupIcon aria-hidden />}
 						/>
 						<Tabs.Tab
-							data-testid={TestComponentSelectors.TOGGLE_MIN_SIDE_ORGANISASJON_MALER}
+							data-testid={TestComponentSelectors.TOGGLE_MALER_ORGANISASJONER}
 							value={MalType.ORGANISASJON}
 							label={'Organisasjoner'}
 							icon={<Buildings3Icon aria-hidden />}
@@ -132,6 +130,6 @@ export default ({ brukerId }: { brukerId: string }) => {
 					</Tabs.Panel>
 				</Tabs>
 			)}
-		</div>
+		</VStack>
 	)
 }
