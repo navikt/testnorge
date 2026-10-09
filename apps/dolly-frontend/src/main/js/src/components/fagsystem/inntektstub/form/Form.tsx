@@ -28,9 +28,6 @@ export const initialValues: Inntektsinformasjon = {
 export const inntektstubAttributt = 'inntekter'
 const inntektstubPath = 'inntekter'
 
-const infotekst =
-	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
-
 export const InntektstubForm = () => {
 	const formMethods = useFormContext()
 	return (
@@ -48,7 +45,6 @@ export const InntektstubForm = () => {
 						name={inntektstubPath}
 						header="Inntektsinformasjon"
 						newEntry={initialValues}
-						hjelpetekst={infotekst}
 						canBeEmpty={false}
 					>
 						{(path: string) => <InntektsinformasjonForm path={path} />}

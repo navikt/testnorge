@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import React from 'react'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
-import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { useFormContext } from 'react-hook-form'
 import { VirksomhetToggle } from '@/components/fagsystem/inntektstub/form/partials/virksomhetToggle'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { MonthCombobox } from '@/components/ui/form/inputs/monthsCombobox/MonthCombobox'
 
 interface InntektsinformasjonForm {
 	path: string
@@ -12,44 +11,21 @@ interface InntektsinformasjonForm {
 
 export default ({ path }: InntektsinformasjonForm) => {
 	const formMethods = useFormContext()
-	const [date, setDate] = useState(
-		formMethods.watch(`${path}.sisteAarMaaned`) !== ''
-			? Date.parse(formMethods.watch(`${path}.sisteAarMaaned`))
-			: null,
-	)
 
 	const rapporteringsdate =
 		formMethods.watch(`${path}.rapporteringsdato`) !== ''
 			? Date.parse(formMethods.watch(`${path}.rapporteringsdato`))
 			: null
 
-	const handleDateChange = (selectedDate: Date) => {
-		selectedDate?.setHours(6)
-		setDate(selectedDate)
-		formMethods.setValue(
-			`${path}.sisteAarMaaned`,
-			selectedDate ? selectedDate.toISOString().substring(0, 7) : '',
-		)
-		formMethods.trigger(`${path}.sisteAarMaaned`)
-	}
-
 	return (
 		<React.Fragment key={path}>
-			<div className="flexbox--flex-wrap">
-				{/*TODO: Lag en egen komponent for flervalg av maaneder*/}
-				{/*<Monthpicker*/}
-				{/*	name={`${path}.perioder`}*/}
-				{/*	label="Perioder"*/}
-				{/*	date={date}*/}
-				{/*	handleDateChange={handleDateChange}*/}
-				{/*/>*/}
-				<FormDatepicker
-					name={`${path}.rapporteringsdato`}
-					label="Rapporteringstidspunkt"
-					format={'DD.MM.YYYY HH:mm'}
-					date={rapporteringsdate}
-				/>
-			</div>
+			<MonthCombobox name={`${path}.perioder`} label="Perioder" />
+			<FormDatepicker
+				name={`${path}.rapporteringsdato`}
+				label="Rapporteringstidspunkt"
+				format={'DD.MM.YYYY HH:mm'}
+				date={rapporteringsdate}
+			/>
 			<VirksomhetToggle path={path} />
 			<InntektsinformasjonLister formMethods={formMethods} path={path} />
 		</React.Fragment>
