@@ -14,7 +14,6 @@ import { useKodeverkOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsv
 import { useEffect, useState } from 'react'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import * as _ from 'lodash-es'
-import { Option } from '@/service/SelectOptionsOppslag'
 
 export const Oppfoelgingsvedtak14aForm = () => {
 	const formMethods = useFormContext()
@@ -27,6 +26,13 @@ export const Oppfoelgingsvedtak14aForm = () => {
 
 	const veileder = formMethods.watch(`${oppfoelgingsvedtak14aPath}.veilederIdent`)
 	const innsatsgruppe = formMethods.watch(`${oppfoelgingsvedtak14aPath}.innsatsgruppe`)
+
+	useEffect(() => {
+		if (innsatsgruppe === 'LITEN_MULIGHET_TIL_A_JOBBE') {
+			formMethods.setValue(`${oppfoelgingsvedtak14aPath}.hovedmal`, null)
+			formMethods.clearErrors(`${oppfoelgingsvedtak14aPath}.hovedmal`)
+		}
+	}, [innsatsgruppe])
 
 	const { options: innsatsgruppeOptions, loading: innsatsgruppeLoading } =
 		useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
@@ -50,13 +56,6 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						isLoading={innsatsgruppeLoading}
 						size="xlarge"
 						isClearable={false}
-						onChange={(val: Option) => {
-							formMethods.setValue(`${oppfoelgingsvedtak14aPath}.innsatsgruppe`, val.value)
-							formMethods.clearErrors(`${oppfoelgingsvedtak14aPath}.hovedmal`)
-							if (val.value === 'LITEN_MULIGHET_TIL_A_JOBBE') {
-								formMethods.setValue(`${oppfoelgingsvedtak14aPath}.hovedmal`, null)
-							}
-						}}
 					/>
 					<FormSelect
 						name={`${oppfoelgingsvedtak14aPath}.hovedmal`}
