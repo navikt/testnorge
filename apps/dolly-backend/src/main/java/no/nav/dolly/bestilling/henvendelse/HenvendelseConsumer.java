@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.henvendelse;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.henvendelse.command.HenvendelseDeleteCommand;
 import no.nav.dolly.bestilling.henvendelse.command.HenvendelseGetCommand;
 import no.nav.dolly.bestilling.henvendelse.command.HenvendelsePostCommand;
@@ -12,10 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 public class HenvendelseConsumer {
-
-
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -38,7 +38,7 @@ public class HenvendelseConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new HenvendelsePostCommand(webClient, melding, token.getTokenValue()).call())
-                .doOnNext(response -> System.out.println("Henvendelse sendt med respons: " + response));
+                .doOnNext(response -> log.info("Henvendelse sendt med respons: {} ", response));
     }
 
     public Mono<HenvendelseResponse> getHenvendelse(String aktorid) {
