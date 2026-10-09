@@ -11,6 +11,7 @@ import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.service.TransactionHelperService;
@@ -71,7 +72,7 @@ class HenvendelseClientTest {
 
         StepVerifier.create(henvendelseClient.gjenopprett(
                         new RsDollyUtvidetBestilling(),
-                        DollyPerson.builder().ident(IDENT).build(),
+                        salesforcePerson(),
                         new BestillingProgress(),
                         true))
                 .verifyComplete();
@@ -136,7 +137,7 @@ class HenvendelseClientTest {
 
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
-                        DollyPerson.builder().ident(IDENT).build(),
+                        salesforcePerson(),
                         progress,
                         true))
                 .expectNext(progress)
@@ -193,7 +194,7 @@ class HenvendelseClientTest {
 
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
-                        DollyPerson.builder().ident(IDENT).build(),
+                        salesforcePerson(),
                         progress,
                         true))
                 .expectNext(progress)
@@ -224,7 +225,7 @@ class HenvendelseClientTest {
 
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
-                        DollyPerson.builder().ident(IDENT).build(),
+                        salesforcePerson(),
                         progress,
                         true))
                 .expectNext(progress)
@@ -234,6 +235,52 @@ class HenvendelseClientTest {
         verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
         assertThat(statusCaptor.getAllValues().getFirst()).isEqualTo(getInfoVenter(HENVENDELSE.getBeskrivelse()));
         assertThat(statusCaptor.getValue()).isEmpty();
+    }
+
+    @Test
+    void shouldSkipCreationWhenPersonIsNotTaggedForSalesforce() {
+
+        var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
+                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of()));
+
+        StepVerifier.create(henvendelseClient.gjenopprett(
+                        bestilling,
+                        DollyPerson.builder().ident(IDENT).build(),
+                        new BestillingProgress(),
+                        true))
+                .verifyComplete();
+
+        verify(personServiceConsumer, never()).getPdlPersoner(anyList());
+        verify(henvendelseConsumer, never()).sendHenvendelse(any());
+        verify(transactionHelperService, never()).persister(any(), any(), anyString());
+    }
+
+    @Test
+    void shouldPersistEmptyFinalStatusWhenPdlResponseHasNoData() {
+
+        var progress = new BestillingProgress();
+        var statusCaptor = ArgumentCaptor.forClass(String.class);
+        var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
+                List.of(new RsHenvendelse.Melding("tema", "tema", null, "meldingstekst", null, null)),
+                List.of()));
+        when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
+                .thenReturn(Flux.just(PdlPersonBolk.builder().build()));
+        when(transactionHelperService.persister(eq(progress), any(), anyString()))
+                .thenReturn(Mono.just(progress));
+
+        StepVerifier.create(henvendelseClient.gjenopprett(
+                        bestilling,
+                        salesforcePerson(),
+                        progress,
+                        true))
+                .expectNext(progress)
+                .verifyComplete();
+
+        verify(henvendelseConsumer, never()).sendHenvendelse(any());
+        verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
+        assertThat(statusCaptor.getAllValues())
+                .containsExactly(getInfoVenter(HENVENDELSE.getBeskrivelse()), "");
     }
 
     @Test
@@ -269,6 +316,14 @@ class HenvendelseClientTest {
         var bestilling = new RsDollyUtvidetBestilling();
         bestilling.setHenvendelse(henvendelse);
         return bestilling;
+    }
+
+    private static DollyPerson salesforcePerson() {
+
+        return DollyPerson.builder()
+                .ident(IDENT)
+                .tags(List.of(Tags.SALESFORCE))
+                .build();
     }
 
     private static PdlPersonBolk pdlPersonBolk(boolean hasCurrentAktorId, boolean hasGeography) {

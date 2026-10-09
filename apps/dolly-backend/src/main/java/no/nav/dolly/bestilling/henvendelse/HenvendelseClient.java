@@ -52,7 +52,8 @@ public class HenvendelseClient implements ClientRegister {
 
         if (isNull(bestilling.getHenvendelse()) ||
             bestilling.getHenvendelse().getMeldinger().isEmpty() &&
-            bestilling.getHenvendelse().getSamtalereferater().isEmpty()) {
+            bestilling.getHenvendelse().getSamtalereferater().isEmpty() ||
+            !dollyPerson.isSalesForce()) {
 
             return Mono.empty();
         }
@@ -60,6 +61,7 @@ public class HenvendelseClient implements ClientRegister {
         return oppdaterStatus(progress, getInfoVenter(HENVENDELSE.getBeskrivelse()))
                 .then(personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
                         .next())
+                .filter(personbolk -> nonNull(personbolk.getData()))
                 .flatMap(personbolk ->
                         Mono.zip(getAktorId(personbolk)
                                         .next(),
