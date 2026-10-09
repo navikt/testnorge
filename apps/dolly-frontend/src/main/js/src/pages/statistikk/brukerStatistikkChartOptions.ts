@@ -8,6 +8,7 @@ import {
 import { createLineTrendChartOptions } from '@/pages/adminPages/Dashboard/dashboardTrendChartOptions'
 import {
 	type DagFagsystemMatrise,
+	type DagPersonMatrise,
 	type DetaljPunkt,
 	type DetaljType,
 	type FagsystemSum,
@@ -102,6 +103,53 @@ export const createFagsystemFordelingChartOptions = (summer: FagsystemSum[]): Op
 		categories: summer.map((sum) => sum.label),
 		data: summer.map((sum) => sum.antall),
 	})
+
+export const createDagPersonerChartOptions = (matrise: DagPersonMatrise): Options => ({
+	...withBaseChart(
+		'Stablet søylediagram med nye personer per dag i valgt måned, fordelt på personer opprettet i Dolly og personer importert fra Testnorge.',
+		{ type: 'column', height: 320 },
+	),
+	xAxis: {
+		categories: matrise.dager,
+		...ROTATED_CATEGORY_LABELS,
+	},
+	yAxis: {
+		title: { text: undefined },
+		allowDecimals: false,
+		min: 0,
+	},
+	legend: {
+		enabled: true,
+		itemStyle: { fontSize: '12px' },
+	},
+	tooltip: {
+		...TOOLTIP_OPTIONS,
+		shared: true,
+		formatter: function () {
+			if (!this.points) return ''
+			const index = this.points[0]?.index ?? 0
+			const header = `<b>Dag ${this.points[0]?.key}</b><br/>`
+			const bestillinger = matrise.nyeBestillinger[index] ?? 0
+			if (bestillinger === 0) {
+				return header + 'Ingen bestillinger'
+			}
+			const lines = this.points
+				.filter((point) => (point.y ?? 0) > 0)
+				.map((point) => `${point.series.name}: <b>${point.y}</b>`)
+			return header + [`Nye bestillinger: <b>${bestillinger}</b>`, ...lines].join('<br/>')
+		},
+	},
+	plotOptions: {
+		column: {
+			...BAR_COLUMN_PLOT_OPTIONS,
+			stacking: 'normal',
+		},
+	},
+	series: [
+		{ type: 'column', name: 'Opprettet i Dolly', data: matrise.dollyPersoner },
+		{ type: 'column', name: 'Importert fra Testnorge', data: matrise.testnorgePersoner },
+	],
+})
 
 export const createFagsystemPerDagChartOptions = (matrise: DagFagsystemMatrise): Options => {
 	const series: SeriesColumnOptions[] = matrise.serier.map((serie) => ({

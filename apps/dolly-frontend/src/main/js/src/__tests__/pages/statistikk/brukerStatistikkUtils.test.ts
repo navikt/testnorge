@@ -7,16 +7,18 @@ import {
 	toAarOptions,
 	toAarSammendrag,
 	toDagFagsystemMatrise,
+	toDagPersonMatrise,
 	toFagsystemDetaljer,
 	toFagsystemerMedDetaljer,
 	toFagsystemSummer,
+	toFagsystemSummerUtenUspesifisert,
 	toMaanedOptions,
 	toMaanedPunkter,
-} from '@/pages/minSide/statistikk/brukerStatistikkUtils'
+} from '@/pages/statistikk/brukerStatistikkUtils'
 import { MONTH_SCOPE_ALL, MONTH_SCOPE_LAST_12 } from '@/pages/adminPages/Dashboard/dashboardUtils'
-import { type MinSideBestillingerDTO } from '@/utils/hooks/useBrukerStatistikk'
+import { type BrukerBestillingerDTO } from '@/utils/hooks/useBrukerStatistikk'
 
-const detaljert: MinSideBestillingerDTO[] = [
+const detaljert: BrukerBestillingerDTO[] = [
 	{
 		dato: '2026-09-02',
 		kriterier: [
@@ -138,6 +140,84 @@ describe('brukerStatistikkUtils', () => {
 		expect(sammendrag.get(2025)?.mestAktiveMaaned?.key).toBe('2025-11')
 		expect(sammendrag.get(2026)).toMatchObject({ gjenopprettinger: 3, aktiveMaaneder: 1 })
 		expect(sammendrag.get(2026)?.mestAktiveMaaned?.key).toBe('2026-02')
+	})
+
+	it('should accumulate persons created in Dolly and imported from Testnorge per month and year', () => {
+		const punkter = toMaanedPunkter(
+			[
+				{
+					periode: '2026-09',
+					antallNyBestillinger: 2,
+					antallNyePersoner: 5,
+					andelOpprettedeDollyPersoner: 4,
+					andelImporterteTestnorgePersoner: 1,
+				},
+				{
+					periode: '2026-10',
+					antallNyBestillinger: 1,
+					antallNyePersoner: 3,
+					andelOpprettedeDollyPersoner: 0,
+					andelImporterteTestnorgePersoner: 3,
+				},
+			],
+			new Date(2026, 9, 1),
+		)
+
+		expect(punkter[0]).toMatchObject({ dollyPersoner: 4, testnorgePersoner: 1 })
+		expect(toAarSammendrag(punkter).get(2026)).toMatchObject({
+			dollyPersoner: 4,
+			testnorgePersoner: 4,
+		})
+	})
+
+	it('should build new persons per day split by origin', () => {
+		const matrise = toDagPersonMatrise(
+			[
+				{
+					dato: '2026-10-02',
+					antallNyBestillinger: 3,
+					andelOpprettedeDollyPersoner: 3,
+					andelImporterteTestnorgePersoner: 0,
+				},
+				{
+					dato: '2026-10-31',
+					antallNyBestillinger: 5,
+					andelOpprettedeDollyPersoner: 10,
+					andelImporterteTestnorgePersoner: 3,
+				},
+				{ dato: '2026-10-06', kriterier: [] },
+			],
+			{ year: 2026, month: 10 },
+		)
+
+		expect(matrise.dager).toHaveLength(31)
+		expect(matrise.dollyPersoner[1]).toBe(3)
+		expect(matrise.dollyPersoner[30]).toBe(10)
+		expect(matrise.testnorgePersoner[30]).toBe(3)
+		expect(matrise.nyeBestillinger[30]).toBe(5)
+		expect(matrise.dollyPersoner[5]).toBe(0)
+	})
+
+	it('should leave out unspecified fagsystem and fagsystem with empty details', () => {
+		const detaljertMedTommeDetaljer: BrukerBestillingerDTO[] = [
+			{
+				dato: '2026-10-02',
+				kriterier: [
+					{ fagsystem: 'Uspesifisert', antall: 4, detaljer: {} },
+					{ fagsystem: 'Skattekort', antall: 2, detaljer: {} },
+					{ fagsystem: 'Pensjon', antall: 1, detaljer: { 'Uforetrygd-true': 1 } },
+				],
+			},
+		]
+
+		expect(
+			toFagsystemSummerUtenUspesifisert(toFagsystemSummer(detaljertMedTommeDetaljer)).map(
+				(sum) => sum.fagsystem,
+			),
+		).toEqual(['Skattekort', 'Pensjon'])
+		expect(toFagsystemerMedDetaljer(detaljertMedTommeDetaljer).map((sum) => sum.fagsystem)).toEqual(
+			['Pensjon'],
+		)
 	})
 
 	it('should title the current year as so far and earlier years as whole', () => {

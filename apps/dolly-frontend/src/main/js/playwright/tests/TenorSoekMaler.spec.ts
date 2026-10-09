@@ -1,11 +1,11 @@
 import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
-// Min side: Tenor-søk maler skal vises gruppert under overskrifter med formaterte verdier
-test('Tenor-søk mal vises gruppert og formatert på Min side', async ({ page }) => {
+// Mine maler: Tenor-søk maler skal vises gruppert under overskrifter med formaterte verdier
+test('Tenor-søk mal vises gruppert og formatert på Mine maler', async ({ page }) => {
 	await page.goto('')
 	await page.getByTestId(TestComponentSelectors.BUTTON_PROFIL).click()
-	await page.getByTestId(TestComponentSelectors.BUTTON_PROFIL_MINSIDE).click()
+	await page.getByTestId(TestComponentSelectors.BUTTON_PROFIL_MINE_MALER).click()
 
 	// Bytt til Tenor-søk-fanen og åpne malen
 	await page.getByRole('tab', { name: 'Tenor-søk' }).click()

@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import type { ReactNode } from 'react'
-import { BrukerStatistikk } from '@/pages/minSide/statistikk/BrukerStatistikk'
+import { BrukerStatistikk } from '@/pages/statistikk/BrukerStatistikk'
 import {
 	useBrukerBestillingerDetaljert,
 	useBrukerBestillingerOversikt,
@@ -111,8 +111,10 @@ describe('BrukerStatistikk', () => {
 		expect(screen.getAllByText('17')).toHaveLength(2)
 		expect(screen.getAllByText('–')).toHaveLength(2)
 		expect(screen.queryByText('Ingen')).toBeNull()
-		expect(screen.queryByRole('heading', { name: 'Fagsystem i valgt måned' })).toBeNull()
-		expect(screen.queryByRole('heading', { name: 'Detaljer per fagsystem' })).toBeNull()
+		expect(screen.queryByRole('heading', { name: 'Fagsystem i august 2026' })).toBeNull()
+		expect(
+			screen.queryByRole('heading', { name: 'Detaljer per fagsystem i august 2026' }),
+		).toBeNull()
 		expect(screen.getByRole('heading', { name: 'Utvikling over tid' })).toBeInTheDocument()
 	})
 
@@ -140,7 +142,20 @@ describe('BrukerStatistikk', () => {
 
 		expect(useBrukerBestillingerDetaljert).toHaveBeenLastCalledWith('bruker-1', 2026, 'AUGUST')
 		expect(useBrukerBestillingerOversikt).toHaveBeenLastCalledWith('bruker-1')
-		expect(screen.getByRole('heading', { name: 'August 2026' })).toBeInTheDocument()
+		const maanedRegion = within(screen.getByRole('region', { name: 'Bestillinger i august 2026' }))
+		const aarRegion = within(screen.getByRole('region', { name: 'Bestillinger per år' }))
+		expect(
+			aarRegion.getByRole('region', { name: 'Bestillinger i august 2026' }),
+		).toBeInTheDocument()
+		expect(aarRegion.queryByRole('heading', { name: 'Utvikling over tid' })).toBeNull()
+		expect(
+			maanedRegion.getByRole('heading', { name: 'Fagsystem i august 2026' }),
+		).toBeInTheDocument()
+		expect(
+			maanedRegion.getByRole('heading', { name: 'Detaljer per fagsystem i august 2026' }),
+		).toBeInTheDocument()
+		expect(maanedRegion.queryByRole('heading', { name: 'Utvikling over tid' })).toBeNull()
+		expect(maanedRegion.queryByRole('heading', { name: 'Bestillinger per år' })).toBeNull()
 		expect(screen.getAllByText('17')).toHaveLength(2)
 		expect(screen.getByText('Fagsystem brukt')).toBeInTheDocument()
 		expect(screen.getByText('3')).toBeInTheDocument()
@@ -155,6 +170,58 @@ describe('BrukerStatistikk', () => {
 			screen.getByRole('heading', { name: 'Oppføringer for Arbeidsforhold (Aareg)' }),
 		).toBeInTheDocument()
 		expect(screen.queryByRole('heading', { name: 'Valg for Arbeidsforhold (Aareg)' })).toBeNull()
+	})
+
+	it('should split new persons by origin and ignore unspecified fagsystem', () => {
+		mockOversikt([
+			{
+				periode: '2026-10',
+				antallNyBestillinger: 10,
+				antallGjenopprettinger: 0,
+				antallNyePersoner: 18,
+				andelOpprettedeDollyPersoner: 15,
+				andelImporterteTestnorgePersoner: 3,
+			},
+		])
+		mockDetaljert([
+			{
+				dato: '2026-10-02',
+				antallNyBestillinger: 3,
+				antallNyePersoner: 3,
+				andelOpprettedeDollyPersoner: 3,
+				andelImporterteTestnorgePersoner: 0,
+				kriterier: [
+					{ fagsystem: 'Uspesifisert', antall: 9, detaljer: {} },
+					{ fagsystem: 'Skattekort', antall: 1, detaljer: {} },
+					{ fagsystem: 'PdlData', antall: 3, detaljer: { 'Syntetisk-true': 3 } },
+				],
+			},
+			{
+				dato: '2026-10-06',
+				antallNyBestillinger: 7,
+				antallNyePersoner: 15,
+				andelOpprettedeDollyPersoner: 12,
+				andelImporterteTestnorgePersoner: 3,
+				kriterier: [{ fagsystem: 'Skattekort', antall: 3, detaljer: {} }],
+			},
+		])
+
+		render(<BrukerStatistikk eierId="bruker-1" />)
+
+		const maanedRegion = within(screen.getByRole('region', { name: 'Bestillinger i oktober 2026' }))
+		expect(maanedRegion.getByText('Opprettet i Dolly').nextSibling?.textContent).toBe('15')
+		expect(maanedRegion.getByText('Importert fra Testnorge').nextSibling?.textContent).toBe('3')
+		expect(
+			maanedRegion.getByRole('heading', { name: 'Nye personer per dag i oktober 2026' }),
+		).toBeInTheDocument()
+		expect(
+			maanedRegion.getByText(
+				'Nye personer per dag fordelt på opprettet i Dolly og importert fra Testnorge',
+			),
+		).toBeInTheDocument()
+		expect(maanedRegion.getByText('Skattekort')).toBeInTheDocument()
+		expect(maanedRegion.queryByRole('button', { name: 'Skattekort' })).toBeNull()
+		expect(maanedRegion.getByRole('button', { name: 'Persondata (PDL)' })).toBeInTheDocument()
 	})
 
 	it('should show yearly totals that follow the year and ignore the month selection', async () => {
@@ -202,7 +269,7 @@ describe('BrukerStatistikk', () => {
 
 		await userEvent.click(screen.getByRole('button', { name: 'Februar' }))
 
-		expect(screen.getByRole('heading', { name: 'Februar 2026' })).toBeInTheDocument()
+		expect(screen.getByRole('heading', { name: 'Bestillinger i februar 2026' })).toBeInTheDocument()
 		expect(aarPanel().getByText('18')).toBeInTheDocument()
 
 		await userEvent.click(screen.getByRole('button', { name: '2025' }))
@@ -211,7 +278,9 @@ describe('BrukerStatistikk', () => {
 		expect(aarPanel().getByText('45')).toBeInTheDocument()
 		expect(aarPanel().getByText('7')).toBeInTheDocument()
 		expect(aarPanel().getByText('November')).toBeInTheDocument()
-		expect(screen.getByRole('heading', { name: 'November 2025' })).toBeInTheDocument()
+		expect(
+			screen.getByRole('heading', { name: 'Bestillinger i november 2025' }),
+		).toBeInTheDocument()
 
 		vi.useRealTimers()
 	})

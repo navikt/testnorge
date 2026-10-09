@@ -9,30 +9,34 @@ import {
 } from '@/utils/hooks/useBrukerStatistikk'
 import {
 	createBrukerTrendChartOptions,
+	createDagPersonerChartOptions,
 	createFagsystemDetaljerChartOptions,
 	createFagsystemFordelingChartOptions,
 	createFagsystemPerDagChartOptions,
 } from './brukerStatistikkChartOptions'
 import {
+	AarSection,
 	ChartSection,
 	FagsystemDetaljerSection,
-	PeriodeSection,
+	MaanedSection,
 	TrendSection,
 } from './brukerStatistikkSections'
 import {
 	aarSammendragTittel,
 	filterMaanedPunkter,
 	harAktivitet,
+	harDagPersonData,
 	type MonthScope,
 	periodeTilMaanedNavn,
-	periodeVisningLang,
+	periodeVisningITekst,
 	toAarOptions,
 	toAarSammendrag,
 	toDagFagsystemMatrise,
+	toDagPersonMatrise,
 	toFagsystemDetaljer,
 	toFagsystemerMedDetaljer,
 	toFagsystemSummer,
-	toFagsystemSummerUtenIngenData,
+	toFagsystemSummerUtenUspesifisert,
 	toMaanedOptions,
 	toMaanedPunkter,
 } from './brukerStatistikkUtils'
@@ -66,7 +70,11 @@ export const BrukerStatistikk = ({ eierId, teamNavn }: BrukerStatistikkProps) =>
 		() => toFagsystemSummer(bestillingerDetaljert),
 		[bestillingerDetaljert],
 	)
-	const fagsystemerUtenIngenData = toFagsystemSummerUtenIngenData(fagsystemSummer)
+	const fagsystemerUtenUspesifisert = toFagsystemSummerUtenUspesifisert(fagsystemSummer)
+	const dagPersonMatrise = useMemo(
+		() => (valgtPunkt ? toDagPersonMatrise(bestillingerDetaljert, valgtPunkt) : null),
+		[bestillingerDetaljert, valgtPunkt],
+	)
 	const fagsystemerMedDetaljer = useMemo(
 		() => toFagsystemerMedDetaljer(bestillingerDetaljert),
 		[bestillingerDetaljert],
@@ -103,6 +111,7 @@ export const BrukerStatistikk = ({ eierId, teamNavn }: BrukerStatistikkProps) =>
 
 	const valgtAar = String(valgtPunkt.year)
 	const detaljerUtilgjengelige = Boolean(bestillingerDetaljertError)
+	const valgtMaanedTekst = periodeVisningITekst(valgtPunkt)
 	const valgDetaljer = fagsystemDetaljer.filter((detalj) => detalj.type === 'valg')
 	const antallDetaljer = fagsystemDetaljer.filter((detalj) => detalj.type === 'antall')
 
@@ -122,78 +131,92 @@ export const BrukerStatistikk = ({ eierId, teamNavn }: BrukerStatistikkProps) =>
 				Fordelingen på fagsystem gjelder bare nye bestillinger, ikke gjenopprettinger.
 			</BodyShort>
 
-			{bestillingerDetaljertError && (
-				<Alert variant="error">
-					Klarte ikke å hente detaljer for valgt måned: {bestillingerDetaljertError.message}
-				</Alert>
-			)}
-
-			<PeriodeSection
+			<AarSection
 				aarOptions={toAarOptions(aktivePerioder)}
 				valgtAar={valgtAar}
 				onAarChange={onAarChange}
 				aarSammendrag={aarSammendrag.get(valgtPunkt.year) ?? null}
 				aarSammendragTittel={aarSammendragTittel(valgtPunkt.year)}
-				maanedOptions={toMaanedOptions(aktivePerioder, valgtPunkt.year)}
-				valgtPeriodeKey={valgtPunkt.key}
-				onPeriodeChange={setValgtPeriodeKey}
-				valgtPunkt={valgtPunkt}
-				valgtPeriodeVisning={periodeVisningLang(valgtPunkt)}
-				mestBrukteFagsystem={fagsystemerUtenIngenData[0]?.label ?? null}
-				antallFagsystemer={fagsystemerUtenIngenData.length}
-				isLoadingDetaljert={loadingBestillingerDetaljert}
-				detaljerUtilgjengelige={detaljerUtilgjengelige}
-			/>
+			>
+				<MaanedSection
+					maanedOptions={toMaanedOptions(aktivePerioder, valgtPunkt.year)}
+					valgtPeriodeKey={valgtPunkt.key}
+					onPeriodeChange={setValgtPeriodeKey}
+					valgtPunkt={valgtPunkt}
+					valgtMaanedTekst={valgtMaanedTekst}
+					mestBrukteFagsystem={fagsystemerUtenUspesifisert[0]?.label ?? null}
+					antallFagsystemer={fagsystemerUtenUspesifisert.length}
+					isLoadingDetaljert={loadingBestillingerDetaljert}
+					detaljerFeil={bestillingerDetaljertError}
+				>
+					{!detaljerUtilgjengelige && (
+						<>
+							{dagPersonMatrise && (
+								<ChartSection
+									title={`Nye personer per dag i ${valgtMaanedTekst}`}
+									description="Personer fra nye bestillinger, delt på personer opprettet i Dolly og personer importert fra Testnorge."
+									ariaLabel="Nye personer per dag fordelt på opprettet i Dolly og importert fra Testnorge"
+									emptyStateMessage="Ingen nye personer i valgt måned."
+									harData={harDagPersonData(dagPersonMatrise)}
+									isLoading={loadingBestillingerDetaljert}
+									chartOptions={createDagPersonerChartOptions(dagPersonMatrise)}
+								/>
+							)}
 
-			{!detaljerUtilgjengelige && (
-				<>
-					<ChartSection
-						title="Fagsystem i valgt måned"
-						description="Antall identer bestilt mot hvert fagsystem."
-						ariaLabel="Fordeling av bestilte identer per fagsystem"
-						emptyStateMessage="Ingen nye bestillinger med fagsystemdata i valgt måned."
-						harData={fagsystemSummer.length > 0}
-						isLoading={loadingBestillingerDetaljert}
-						chartOptions={createFagsystemFordelingChartOptions(fagsystemSummer)}
-					/>
+							<ChartSection
+								title={`Fagsystem i ${valgtMaanedTekst}`}
+								description="Antall identer bestilt mot hvert fagsystem."
+								ariaLabel="Fordeling av bestilte identer per fagsystem"
+								emptyStateMessage="Ingen nye bestillinger med fagsystemdata i valgt måned."
+								harData={fagsystemSummer.length > 0}
+								isLoading={loadingBestillingerDetaljert}
+								chartOptions={createFagsystemFordelingChartOptions(fagsystemSummer)}
+							/>
 
-					<ChartSection
-						title="Fagsystem per dag"
-						ariaLabel="Bestilte identer per dag fordelt på fagsystem"
-						emptyStateMessage="Ingen nye bestillinger med fagsystemdata i valgt måned."
-						harData={fagsystemSummer.length > 0}
-						isLoading={loadingBestillingerDetaljert}
-						chartOptions={createFagsystemPerDagChartOptions(
-							toDagFagsystemMatrise(bestillingerDetaljert, valgtPunkt),
-						)}
-					/>
+							<ChartSection
+								title={`Fagsystem per dag i ${valgtMaanedTekst}`}
+								ariaLabel="Bestilte identer per dag fordelt på fagsystem"
+								emptyStateMessage="Ingen nye bestillinger med fagsystemdata i valgt måned."
+								harData={fagsystemSummer.length > 0}
+								isLoading={loadingBestillingerDetaljert}
+								chartOptions={createFagsystemPerDagChartOptions(
+									toDagFagsystemMatrise(bestillingerDetaljert, valgtPunkt),
+								)}
+							/>
 
-					<FagsystemDetaljerSection
-						fagsystemOptions={fagsystemerMedDetaljer.map((sum) => ({
-							value: sum.fagsystem,
-							label: sum.label,
-						}))}
-						valgtFagsystem={aktivtFagsystem?.fagsystem ?? null}
-						onFagsystemChange={setValgtFagsystem}
-						valgtFagsystemLabel={aktivtFagsystem?.label ?? ''}
-						valgChartOptions={
-							valgDetaljer.length > 0 && aktivtFagsystem
-								? createFagsystemDetaljerChartOptions(valgDetaljer, aktivtFagsystem.label, 'valg')
-								: null
-						}
-						antallChartOptions={
-							antallDetaljer.length > 0 && aktivtFagsystem
-								? createFagsystemDetaljerChartOptions(
-										antallDetaljer,
-										aktivtFagsystem.label,
-										'antall',
-									)
-								: null
-						}
-						isLoading={loadingBestillingerDetaljert}
-					/>
-				</>
-			)}
+							<FagsystemDetaljerSection
+								title={`Detaljer per fagsystem i ${valgtMaanedTekst}`}
+								fagsystemOptions={fagsystemerMedDetaljer.map((sum) => ({
+									value: sum.fagsystem,
+									label: sum.label,
+								}))}
+								valgtFagsystem={aktivtFagsystem?.fagsystem ?? null}
+								onFagsystemChange={setValgtFagsystem}
+								valgtFagsystemLabel={aktivtFagsystem?.label ?? ''}
+								valgChartOptions={
+									valgDetaljer.length > 0 && aktivtFagsystem
+										? createFagsystemDetaljerChartOptions(
+												valgDetaljer,
+												aktivtFagsystem.label,
+												'valg',
+											)
+										: null
+								}
+								antallChartOptions={
+									antallDetaljer.length > 0 && aktivtFagsystem
+										? createFagsystemDetaljerChartOptions(
+												antallDetaljer,
+												aktivtFagsystem.label,
+												'antall',
+											)
+										: null
+								}
+								isLoading={loadingBestillingerDetaljert}
+							/>
+						</>
+					)}
+				</MaanedSection>
+			</AarSection>
 
 			<TrendSection
 				monthScope={monthScope}

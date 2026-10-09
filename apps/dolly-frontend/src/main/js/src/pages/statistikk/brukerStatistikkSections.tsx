@@ -1,4 +1,5 @@
-import { Alert, BodyShort, Heading, HGrid, VStack } from '@navikt/ds-react'
+import { Alert, BodyShort, Box, Heading, HGrid, VStack } from '@navikt/ds-react'
+import { type ReactNode, useId } from 'react'
 import { type Options } from 'highcharts'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import {
@@ -11,53 +12,76 @@ import {
 import { MONTH_SCOPE_ALL, MONTH_SCOPE_LAST_12 } from '@/pages/adminPages/Dashboard/dashboardUtils'
 import {
 	type AarSammendrag,
+	harPersonFordeling,
 	maanedVisning,
 	type MaanedPunkt,
 	type MonthScope,
+	type PersonFordeling,
 } from './brukerStatistikkUtils'
 
-interface PeriodeSectionProps {
+const PersonKpiRad = ({ fordeling }: { fordeling: PersonFordeling & { nyePersoner: number } }) => (
+	<HGrid columns={{ xs: 1, sm: 3 }} gap="space-12">
+		<DashboardKpiCard label="Nye personer" value={fordeling.nyePersoner} />
+		{harPersonFordeling(fordeling) && (
+			<>
+				<DashboardKpiCard label="Opprettet i Dolly" value={fordeling.dollyPersoner} />
+				<DashboardKpiCard label="Importert fra Testnorge" value={fordeling.testnorgePersoner} />
+			</>
+		)}
+	</HGrid>
+)
+
+const PanelDel = ({ children }: { children: ReactNode }) => (
+	<Box
+		borderWidth="1 0 0 0"
+		borderColor="neutral-subtle"
+		paddingBlock="space-24 space-0"
+		minWidth="0"
+	>
+		{children}
+	</Box>
+)
+
+interface AarSectionProps {
 	aarOptions: string[]
 	valgtAar: string
 	onAarChange: (aar: string) => void
 	aarSammendrag: AarSammendrag | null
 	aarSammendragTittel: string
-	maanedOptions: DashboardSelectOption[]
-	valgtPeriodeKey: string
-	onPeriodeChange: (periodeKey: string) => void
-	valgtPunkt: MaanedPunkt
-	valgtPeriodeVisning: string
-	mestBrukteFagsystem: string | null
-	antallFagsystemer: number
-	isLoadingDetaljert: boolean
-	detaljerUtilgjengelige: boolean
+	children: ReactNode
 }
 
-export const PeriodeSection = ({
+export const AarSection = ({
 	aarOptions,
 	valgtAar,
 	onAarChange,
 	aarSammendrag,
 	aarSammendragTittel,
-	maanedOptions,
-	valgtPeriodeKey,
-	onPeriodeChange,
-	valgtPunkt,
-	valgtPeriodeVisning,
-	mestBrukteFagsystem,
-	antallFagsystemer,
-	isLoadingDetaljert,
-	detaljerUtilgjengelige,
-}: PeriodeSectionProps) => {
-	const skjulDetaljverdier = isLoadingDetaljert || detaljerUtilgjengelige
+	children,
+}: AarSectionProps) => {
+	const headingId = useId()
 
 	return (
-		<DashboardSectionCard>
+		<Box
+			as="section"
+			aria-labelledby={headingId}
+			background="default"
+			borderRadius="12"
+			borderWidth="1"
+			borderColor="neutral-subtle"
+			padding={{ xs: 'space-16', md: 'space-24' }}
+			minWidth="0"
+		>
 			<VStack gap="space-24">
-				<Heading level="2" size="small">
-					Bestillinger
-				</Heading>
 				<VStack gap="space-16">
+					<VStack gap="space-8">
+						<Heading id={headingId} level="2" size="small">
+							Bestillinger per år
+						</Heading>
+						<BodyShort size="small" textColor="subtle">
+							Året du velger styrer månedene under.
+						</BodyShort>
+					</VStack>
 					<DashboardSelectButtons
 						label="År"
 						selected={valgtAar}
@@ -69,8 +93,8 @@ export const PeriodeSection = ({
 							<Heading level="3" size="xsmall">
 								{aarSammendragTittel}
 							</Heading>
-							<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
-								<DashboardKpiCard label="Nye personer" value={aarSammendrag.nyePersoner} />
+							<PersonKpiRad fordeling={aarSammendrag} />
+							<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
 								<DashboardKpiCard label="Nye bestillinger" value={aarSammendrag.nyeBestillinger} />
 								<DashboardKpiCard label="Gjenopprettinger" value={aarSammendrag.gjenopprettinger} />
 								<DashboardKpiCard label="Aktive måneder" value={aarSammendrag.aktiveMaaneder} />
@@ -86,19 +110,75 @@ export const PeriodeSection = ({
 						</VStack>
 					)}
 				</VStack>
+				{children}
+			</VStack>
+		</Box>
+	)
+}
+
+interface MaanedSectionProps {
+	maanedOptions: DashboardSelectOption[]
+	valgtPeriodeKey: string
+	onPeriodeChange: (periodeKey: string) => void
+	valgtPunkt: MaanedPunkt
+	valgtMaanedTekst: string
+	mestBrukteFagsystem: string | null
+	antallFagsystemer: number
+	isLoadingDetaljert: boolean
+	detaljerFeil: Error | undefined
+	children: ReactNode
+}
+
+export const MaanedSection = ({
+	maanedOptions,
+	valgtPeriodeKey,
+	onPeriodeChange,
+	valgtPunkt,
+	valgtMaanedTekst,
+	mestBrukteFagsystem,
+	antallFagsystemer,
+	isLoadingDetaljert,
+	detaljerFeil,
+	children,
+}: MaanedSectionProps) => {
+	const headingId = useId()
+	const skjulDetaljverdier = isLoadingDetaljert || Boolean(detaljerFeil)
+
+	return (
+		<Box
+			as="section"
+			aria-labelledby={headingId}
+			borderWidth="1 0 0 0"
+			borderColor="neutral-subtle"
+			paddingBlock="space-24 space-0"
+			minWidth="0"
+		>
+			<VStack gap="space-24">
 				<VStack gap="space-16">
-					<DashboardSelectButtons
-						label="Måned"
-						selected={valgtPeriodeKey}
-						onSelect={onPeriodeChange}
-						options={maanedOptions}
-					/>
 					<VStack gap="space-8">
-						<Heading level="3" size="xsmall">
-							{valgtPeriodeVisning}
+						<Heading id={headingId} level="3" size="small">
+							Bestillinger i {valgtMaanedTekst}
 						</Heading>
-						<HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-12">
-							<DashboardKpiCard label="Nye personer" value={valgtPunkt.nyePersoner} />
+						<BodyShort size="small" textColor="subtle">
+							Tallene og grafene under gjelder måneden du velger.
+						</BodyShort>
+						<DashboardSelectButtons
+							label="Måned"
+							selected={valgtPeriodeKey}
+							onSelect={onPeriodeChange}
+							options={maanedOptions}
+							size="xsmall"
+							gap="space-4"
+						/>
+					</VStack>
+					{detaljerFeil && (
+						<Alert variant="error">
+							Klarte ikke å hente detaljer for valgt måned: {detaljerFeil.message}
+						</Alert>
+					)}
+					<VStack gap="space-8">
+						<PersonKpiRad fordeling={valgtPunkt} />
+						<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
 							<DashboardKpiCard label="Nye bestillinger" value={valgtPunkt.nyeBestillinger} />
 							<DashboardKpiCard label="Gjenopprettinger" value={valgtPunkt.gjenopprettinger} />
 							<DashboardKpiCard
@@ -112,8 +192,9 @@ export const PeriodeSection = ({
 						</HGrid>
 					</VStack>
 				</VStack>
+				{children}
 			</VStack>
-		</DashboardSectionCard>
+		</Box>
 	)
 }
 
@@ -136,9 +217,9 @@ export const ChartSection = ({
 	isLoading,
 	chartOptions,
 }: ChartSectionProps) => (
-	<DashboardSectionCard>
+	<PanelDel>
 		<VStack gap="space-16">
-			<Heading level="2" size="small">
+			<Heading level="4" size="xsmall">
 				{title}
 			</Heading>
 			{description && <BodyShort>{description}</BodyShort>}
@@ -152,10 +233,11 @@ export const ChartSection = ({
 				<DashboardChartPanel options={chartOptions} ariaLabel={ariaLabel} />
 			)}
 		</VStack>
-	</DashboardSectionCard>
+	</PanelDel>
 )
 
 interface FagsystemDetaljerSectionProps {
+	title: string
 	fagsystemOptions: DashboardSelectOption[]
 	valgtFagsystem: string | null
 	onFagsystemChange: (fagsystem: string) => void
@@ -166,6 +248,7 @@ interface FagsystemDetaljerSectionProps {
 }
 
 export const FagsystemDetaljerSection = ({
+	title,
 	fagsystemOptions,
 	valgtFagsystem,
 	onFagsystemChange,
@@ -174,10 +257,10 @@ export const FagsystemDetaljerSection = ({
 	antallChartOptions,
 	isLoading,
 }: FagsystemDetaljerSectionProps) => (
-	<DashboardSectionCard>
+	<PanelDel>
 		<VStack gap="space-16">
-			<Heading level="2" size="small">
-				Detaljer per fagsystem
+			<Heading level="4" size="xsmall">
+				{title}
 			</Heading>
 			<BodyShort>
 				Velg et fagsystem for å se hva som ble bestilt. «Personer» er antall personer med valget.
@@ -199,7 +282,7 @@ export const FagsystemDetaljerSection = ({
 					/>
 					{valgChartOptions && (
 						<VStack gap="space-8">
-							<Heading level="3" size="xsmall">
+							<Heading level="5" size="xsmall">
 								Valg for {valgtFagsystemLabel}
 							</Heading>
 							<DashboardChartPanel
@@ -210,7 +293,7 @@ export const FagsystemDetaljerSection = ({
 					)}
 					{antallChartOptions && (
 						<VStack gap="space-8">
-							<Heading level="3" size="xsmall">
+							<Heading level="5" size="xsmall">
 								Oppføringer for {valgtFagsystemLabel}
 							</Heading>
 							<DashboardChartPanel
@@ -222,7 +305,7 @@ export const FagsystemDetaljerSection = ({
 				</>
 			)}
 		</VStack>
-	</DashboardSectionCard>
+	</PanelDel>
 )
 
 interface TrendSectionProps {

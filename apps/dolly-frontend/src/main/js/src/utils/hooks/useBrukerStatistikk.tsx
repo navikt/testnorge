@@ -8,11 +8,13 @@ export type BrukeradferdKriterium = {
 	detaljer?: Record<string, number> | null
 }
 
-export type MinSideBestillingerDTO = {
+export type BrukerBestillingerDTO = {
 	periode?: string | number[] | null
 	antallNyBestillinger?: number | null
 	antallGjenopprettinger?: number | null
 	antallNyePersoner?: number | null
+	andelOpprettedeDollyPersoner?: number | null
+	andelImporterteTestnorgePersoner?: number | null
 	dato?: string | null
 	kriterier?: BrukeradferdKriterium[] | null
 }
@@ -24,7 +26,7 @@ const SWR_OPTIONS = {
 const fetchMedEier = ([url]: [string, string]) => fetcher(url, null, 60000)
 
 export const useBrukerBestillingerOversikt = (eierId?: string) => {
-	const { data, isLoading, error } = useSWR<MinSideBestillingerDTO[], Error>(
+	const { data, isLoading, error } = useSWR<BrukerBestillingerDTO[], Error>(
 		eierId ? [DollyEndpoints.brukerBestillinger(), eierId] : null,
 		fetchMedEier,
 		SWR_OPTIONS,
@@ -43,7 +45,7 @@ export const useBrukerBestillingerDetaljert = (
 	month: string | null,
 ) => {
 	const shouldFetch = Boolean(eierId) && year !== null && Boolean(month)
-	const { data, isLoading, error } = useSWR<MinSideBestillingerDTO[], Error>(
+	const { data, isLoading, error } = useSWR<BrukerBestillingerDTO[], Error>(
 		shouldFetch
 			? [DollyEndpoints.brukerBestillingerDetaljert(year, month as string), eierId as string]
 			: null,

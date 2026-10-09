@@ -8,11 +8,11 @@ import {
 } from '@/pages/adminPages/Dashboard/dashboardUtils'
 import {
 	type BrukeradferdKriterium,
-	type MinSideBestillingerDTO,
+	type BrukerBestillingerDTO,
 } from '@/utils/hooks/useBrukerStatistikk'
 import { detaljNoekkelLabel, fagsystemLabel } from './fagsystemLabels'
 
-export const INGEN_DATA = 'Ingen data'
+const USPESIFISERTE_FAGSYSTEMER = new Set(['Uspesifisert', 'Ingen data'])
 const ANDRE_FAGSYSTEMER = 'Andre'
 const SKJULTE_FAGSYSTEMER = new Set(['Beskrivelse'])
 
@@ -29,6 +29,13 @@ export type MaanedPunkt = Periode & {
 	nyeBestillinger: number
 	gjenopprettinger: number
 	nyePersoner: number
+	dollyPersoner: number
+	testnorgePersoner: number
+}
+
+export type PersonFordeling = {
+	dollyPersoner: number
+	testnorgePersoner: number
 }
 
 export type FagsystemSum = {
@@ -48,6 +55,13 @@ export type DagFagsystemMatrise = {
 	serier: DagFagsystemSerie[]
 }
 
+export type DagPersonMatrise = {
+	dager: string[]
+	dollyPersoner: number[]
+	testnorgePersoner: number[]
+	nyeBestillinger: number[]
+}
+
 export type DetaljType = 'valg' | 'antall'
 
 const DETALJ_TYPE_REKKEFOLGE: Record<DetaljType, number> = { valg: 0, antall: 1 }
@@ -62,7 +76,7 @@ export type DetaljPunkt = {
 const erGyldigPeriode = (year: number, month: number) =>
 	Number.isInteger(year) && Number.isInteger(month) && month >= 1 && month <= 12
 
-export const parsePeriode = (periode: MinSideBestillingerDTO['periode']): Periode | null => {
+export const parsePeriode = (periode: BrukerBestillingerDTO['periode']): Periode | null => {
 	if (Array.isArray(periode) && periode.length >= 2) {
 		const [year, month] = periode
 		return erGyldigPeriode(year, month) ? { year, month } : null
@@ -95,8 +109,8 @@ const storForbokstav = (tekst: string) => tekst.charAt(0).toUpperCase() + tekst.
 export const periodeVisning = (periode: Periode) =>
 	format(periodeTilDato(periode), 'MMM yyyy', { locale: nb })
 
-export const periodeVisningLang = (periode: Periode) =>
-	storForbokstav(format(periodeTilDato(periode), 'LLLL yyyy', { locale: nb }))
+export const periodeVisningITekst = (periode: Periode) =>
+	format(periodeTilDato(periode), 'LLLL yyyy', { locale: nb })
 
 export const maanedVisning = (periode: Periode) =>
 	storForbokstav(format(periodeTilDato(periode), 'LLLL', { locale: nb }))
@@ -111,10 +125,12 @@ const tomtMaanedPunkt = (periode: Periode): MaanedPunkt => ({
 	nyeBestillinger: 0,
 	gjenopprettinger: 0,
 	nyePersoner: 0,
+	dollyPersoner: 0,
+	testnorgePersoner: 0,
 })
 
 export const toMaanedPunkter = (
-	oversikt: MinSideBestillingerDTO[],
+	oversikt: BrukerBestillingerDTO[],
 	referanseDato: Date = new Date(),
 ): MaanedPunkt[] => {
 	const punktPerKey = new Map<string, MaanedPunkt>()
@@ -131,6 +147,8 @@ export const toMaanedPunkter = (
 			nyeBestillinger: punkt.nyeBestillinger + asNumber(rad.antallNyBestillinger),
 			gjenopprettinger: punkt.gjenopprettinger + asNumber(rad.antallGjenopprettinger),
 			nyePersoner: punkt.nyePersoner + asNumber(rad.antallNyePersoner),
+			dollyPersoner: punkt.dollyPersoner + asNumber(rad.andelOpprettedeDollyPersoner),
+			testnorgePersoner: punkt.testnorgePersoner + asNumber(rad.andelImporterteTestnorgePersoner),
 		})
 	})
 
@@ -172,6 +190,8 @@ export const toMaanedOptions = (aktivePerioder: MaanedPunkt[], year: number) =>
 export type AarSammendrag = {
 	year: number
 	nyePersoner: number
+	dollyPersoner: number
+	testnorgePersoner: number
 	nyeBestillinger: number
 	gjenopprettinger: number
 	aktiveMaaneder: number
@@ -189,6 +209,8 @@ export const toAarSammendrag = (punkter: MaanedPunkt[]): Map<number, AarSammendr
 			sammendrag = {
 				year: punkt.year,
 				nyePersoner: 0,
+				dollyPersoner: 0,
+				testnorgePersoner: 0,
 				nyeBestillinger: 0,
 				gjenopprettinger: 0,
 				aktiveMaaneder: 0,
@@ -197,6 +219,8 @@ export const toAarSammendrag = (punkter: MaanedPunkt[]): Map<number, AarSammendr
 			sammendragPerAar.set(punkt.year, sammendrag)
 		}
 		sammendrag.nyePersoner += punkt.nyePersoner
+		sammendrag.dollyPersoner += punkt.dollyPersoner
+		sammendrag.testnorgePersoner += punkt.testnorgePersoner
 		sammendrag.nyeBestillinger += punkt.nyeBestillinger
 		sammendrag.gjenopprettinger += punkt.gjenopprettinger
 		if (harAktivitet(punkt)) {
@@ -213,6 +237,9 @@ export const toAarSammendrag = (punkter: MaanedPunkt[]): Map<number, AarSammendr
 	return sammendragPerAar
 }
 
+export const harPersonFordeling = ({ dollyPersoner, testnorgePersoner }: PersonFordeling) =>
+	dollyPersoner + testnorgePersoner > 0
+
 export const aarSammendragTittel = (year: number, referanseDato: Date = new Date()) =>
 	year === referanseDato.getFullYear() ? `Hittil i ${year}` : `Hele ${year}`
 
@@ -222,7 +249,7 @@ const synligeKriterier = (kriterier?: BrukeradferdKriterium[] | null) =>
 const sorterSummer = (a: FagsystemSum, b: FagsystemSum) =>
 	b.antall - a.antall || a.label.localeCompare(b.label, 'nb')
 
-export const toFagsystemSummer = (detaljert: MinSideBestillingerDTO[]): FagsystemSum[] => {
+export const toFagsystemSummer = (detaljert: BrukerBestillingerDTO[]): FagsystemSum[] => {
 	const summer = new Map<string, number>()
 	detaljert.forEach((dag) =>
 		synligeKriterier(dag.kriterier).forEach((kriterium) =>
@@ -237,23 +264,56 @@ export const toFagsystemSummer = (detaljert: MinSideBestillingerDTO[]): Fagsyste
 		.sort(sorterSummer)
 }
 
-export const toFagsystemSummerUtenIngenData = (summer: FagsystemSum[]) =>
-	summer.filter((sum) => sum.fagsystem !== INGEN_DATA)
+export const toFagsystemSummerUtenUspesifisert = (summer: FagsystemSum[]) =>
+	summer.filter((sum) => !USPESIFISERTE_FAGSYSTEMER.has(sum.fagsystem))
 
 const dagIMaaned = (dato?: string | null) => {
 	const dag = Number(dato?.slice(8, 10))
 	return Number.isInteger(dag) && dag > 0 ? dag : null
 }
 
+const dagerIMaaned = (periode: Periode) =>
+	Array.from({ length: getDaysInMonth(periodeTilDato(periode)) }, (_, index) =>
+		String(index + 1).padStart(2, '0'),
+	)
+
+export const toDagPersonMatrise = (
+	detaljert: BrukerBestillingerDTO[],
+	periode: Periode,
+): DagPersonMatrise => {
+	const dager = dagerIMaaned(periode)
+	const matrise: DagPersonMatrise = {
+		dager,
+		dollyPersoner: new Array(dager.length).fill(0),
+		testnorgePersoner: new Array(dager.length).fill(0),
+		nyeBestillinger: new Array(dager.length).fill(0),
+	}
+
+	for (const dag of detaljert) {
+		const dagNummer = dagIMaaned(dag.dato)
+		if (!dagNummer || dagNummer > dager.length) {
+			continue
+		}
+		const index = dagNummer - 1
+		matrise.dollyPersoner[index] += asNumber(dag.andelOpprettedeDollyPersoner)
+		matrise.testnorgePersoner[index] += asNumber(dag.andelImporterteTestnorgePersoner)
+		matrise.nyeBestillinger[index] += asNumber(dag.antallNyBestillinger)
+	}
+
+	return matrise
+}
+
+export const harDagPersonData = (matrise: DagPersonMatrise) =>
+	matrise.dollyPersoner.some((antall) => antall > 0) ||
+	matrise.testnorgePersoner.some((antall) => antall > 0)
+
 export const toDagFagsystemMatrise = (
-	detaljert: MinSideBestillingerDTO[],
+	detaljert: BrukerBestillingerDTO[],
 	periode: Periode,
 	maksAntallSerier = 6,
 ): DagFagsystemMatrise => {
-	const antallDager = getDaysInMonth(periodeTilDato(periode))
-	const dager = Array.from({ length: antallDager }, (_, index) =>
-		String(index + 1).padStart(2, '0'),
-	)
+	const dager = dagerIMaaned(periode)
+	const antallDager = dager.length
 	const summer = toFagsystemSummer(detaljert)
 	const trengerAndre = summer.length > maksAntallSerier
 	const egneSerier = trengerAndre ? summer.slice(0, maksAntallSerier - 1) : summer
@@ -307,7 +367,7 @@ export const parseDetaljNoekkel = (noekkel: string): { label: string; type: Deta
 	return { label: `${navnLabel}: ${verdi}`, type: 'valg' }
 }
 
-export const toFagsystemerMedDetaljer = (detaljert: MinSideBestillingerDTO[]): FagsystemSum[] => {
+export const toFagsystemerMedDetaljer = (detaljert: BrukerBestillingerDTO[]): FagsystemSum[] => {
 	const medDetaljer = new Set<string>()
 	detaljert.forEach((dag) =>
 		synligeKriterier(dag.kriterier).forEach((kriterium) => {
@@ -320,7 +380,7 @@ export const toFagsystemerMedDetaljer = (detaljert: MinSideBestillingerDTO[]): F
 }
 
 export const toFagsystemDetaljer = (
-	detaljert: MinSideBestillingerDTO[],
+	detaljert: BrukerBestillingerDTO[],
 	fagsystem: string,
 ): DetaljPunkt[] => {
 	const summer = new Map<string, number>()

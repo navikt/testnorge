@@ -367,6 +367,8 @@ describe('dashboard sections', () => {
 		).toBeInTheDocument()
 		expect(screen.getByText('PDL Forvalter (1)')).toBeInTheDocument()
 		expect(screen.getByText('Aareg (1)')).toBeInTheDocument()
-		expect(screen.getByText('2 bestilling(er) med feil, fordelt over 2 fagsystem.')).toBeInTheDocument()
+		expect(
+			screen.getByText('2 bestilling(er) med feil, fordelt over 2 fagsystem.'),
+		).toBeInTheDocument()
 	})
 })

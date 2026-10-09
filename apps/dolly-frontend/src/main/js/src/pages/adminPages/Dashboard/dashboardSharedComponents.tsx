@@ -1,5 +1,15 @@
 import Highcharts, { type Options } from 'highcharts'
-import { Alert, Box, Button, Heading, HGrid, HStack, Label, VStack } from '@navikt/ds-react'
+import {
+	Alert,
+	BodyShort,
+	Box,
+	Button,
+	Heading,
+	HGrid,
+	HStack,
+	Label,
+	VStack,
+} from '@navikt/ds-react'
 import { HighchartsReact } from 'highcharts-react-official'
 import { type ReactNode, useEffect, useMemo, useRef } from 'react'
 
@@ -13,19 +23,23 @@ export const DashboardSelectButtons = ({
 	options,
 	selected,
 	onSelect,
+	size = 'small',
+	gap = 'space-8',
 }: {
 	label?: string
 	options: DashboardSelectOption[]
 	selected: string | null
 	onSelect: (value: string) => void
+	size?: 'small' | 'xsmall'
+	gap?: 'space-2' | 'space-4' | 'space-8'
 }) => {
 	const buttons = (
-		<HStack gap="space-8" wrap>
+		<HStack gap={gap} wrap>
 			{options.map((option) => (
 				<Button
 					key={option.value}
 					variant={selected === option.value ? 'secondary' : 'tertiary'}
-					size="small"
+					size={size}
 					aria-pressed={selected === option.value}
 					onClick={() => onSelect(option.value)}
 				>
@@ -70,9 +84,11 @@ export const DashboardKpiCard = ({ label, value }: { label: string; value: React
 		borderColor="neutral-subtle"
 	>
 		<VStack gap="space-4">
-			<Label size="small">{label}</Label>
+			<BodyShort size="small" textColor="subtle">
+				{label}
+			</BodyShort>
 			{typeof value === 'number' || typeof value === 'string' ? (
-				<Heading size="medium" level="3">
+				<Heading as="p" size={typeof value === 'number' ? 'large' : 'medium'}>
 					{value}
 				</Heading>
 			) : (

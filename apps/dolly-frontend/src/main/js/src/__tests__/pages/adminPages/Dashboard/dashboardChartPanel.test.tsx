@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import {
 	DashboardChartPanel,
+	DashboardKpiCard,
 	DashboardSelectButtons,
 } from '@/pages/adminPages/Dashboard/dashboardSharedComponents'
 import { createPersonTrendChartOptions } from '@/pages/adminPages/Dashboard/dashboardTrendChartOptions'
@@ -74,5 +75,29 @@ describe('DashboardSelectButtons', () => {
 
 		expect(screen.getByRole('button', { name: '2026', pressed: true })).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: '2025', pressed: false })).toBeInTheDocument()
+	})
+
+	it('should support compact buttons for long option lists', () => {
+		render(
+			<DashboardSelectButtons
+				selected="2026-01"
+				onSelect={() => undefined}
+				options={[{ value: '2026-01', label: 'Januar' }]}
+				size="xsmall"
+				gap="space-4"
+			/>,
+		)
+
+		expect(screen.getByRole('button', { name: 'Januar' })).toHaveClass('aksel-button--xsmall')
+	})
+})
+
+describe('DashboardKpiCard', () => {
+	it('should show the value as text, not as a heading', () => {
+		render(<DashboardKpiCard label="Nye personer" value={17} />)
+
+		expect(screen.getByText('Nye personer')).toBeInTheDocument()
+		expect(screen.getByText('17').tagName).toBe('P')
+		expect(screen.queryByRole('heading')).toBeNull()
 	})
 })

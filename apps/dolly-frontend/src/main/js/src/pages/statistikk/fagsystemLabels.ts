@@ -9,7 +9,7 @@ const FAGSYSTEM_LABELS: Record<string, string> = {
 	EtterlatteYtelser: 'Etterlatteytelser',
 	Fullmakt: 'Fullmakt',
 	Histark: 'Histark',
-	'Ingen data': 'Ingen data',
+	'Ingen data': 'Uspesifisert',
 	Inntektsmelding: 'Inntektsmelding',
 	Inntektstub: 'Inntekt (A-ordningen)',
 	Instdata: 'Institusjonsopphold',
@@ -28,6 +28,7 @@ const FAGSYSTEM_LABELS: Record<string, string> = {
 	Sykemelding: 'Sykmelding',
 	TpsMessaging: 'TPS-meldinger',
 	Udistub: 'UDI',
+	Uspesifisert: 'Uspesifisert',
 	Yrkesskader: 'Yrkesskader',
 }
 
