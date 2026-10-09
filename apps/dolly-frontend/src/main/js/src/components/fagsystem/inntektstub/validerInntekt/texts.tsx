@@ -1,3 +1,5 @@
+import { codeToNorskLabel } from '@/utils/DataFormatter'
+
 const texts = {
 	// INNTEKTSTYPE
 	inntektstype: 'Inntektstype',
@@ -48,7 +50,7 @@ const texts = {
 		'Uregelmessige tillegg knyttet til ikke-arbeidet tid',
 	bonus: 'Bonus',
 	overtidsgodtgjoerelse: 'Overtidsgodtgjørelse',
-	styrehonorarOgGodtgjoerelseVerv: 'Styrehonorar og godtgjoerelse i forbindelse med verv',
+	styrehonorarOgGodtgjoerelseVerv: 'Styrehonorar og godtgjørelse i forbindelse med verv',
 	kommunalOmsorgsloennOgFosterhjemsgodtgjoerelse: 'Kommunal omsorgslønn og fosterhjemsgodtgjørelse',
 	sluttvederlag: 'Sluttvederlag',
 	feriepenger: 'Feriepenger',
@@ -96,7 +98,7 @@ const texts = {
 	reiseKostMedOvernattingTilLangtransportsjaafoerForKjoeringIUtlandet:
 		'Reise kost med overnatting, langtransportsjåfør i utlandet',
 	reiseKostMedOvernattingPaaPensjonat: 'Reise kost med overnatting på pensjonat',
-	besoeksreiserHjemmetKost: 'Besoeksreiser hjemmet kost',
+	besoeksreiserHjemmetKost: 'Besøksreiser hjemmet kost',
 	kilometergodtgjoerelseElBil: 'Kilometergodtgjørelse el-bil',
 	kilometergodtgjoerelsePassasjertillegg: 'Kilometergodtgjørelse passasjertillegg',
 	kilometergodtgjoerelseAndreFremkomstmidler: 'Kilometergodtgjørelse andre remkomstmidler',
@@ -142,7 +144,7 @@ const texts = {
 	skattefriStoenadTilBarnetilsyn: 'Skattefri stønad til barnetilsyn',
 	overgangsstoenadTilEnsligMorEllerFarSomBegynteAaLoepe1April2014EllerSenere:
 		'Overgangsstønad enslig mor eller far, fra 1. april 2014 eller senere',
-	ufoeretrygd: 'Ufoeretrygd',
+	ufoeretrygd: 'Uføretrygd',
 	ektefelletilleggUfoeretrygd: 'Ektefelletillegg uføretrygd',
 	ufoereytelseEtteroppgjoer: 'Uføreytelse etteroppgjør',
 	pleiepenger: 'Pleiepenger',
@@ -267,7 +269,7 @@ const texts = {
 		'Lønn utbetalt fra den norske stat opptjent i utlandet',
 	loennVedArbeidsmarkedstiltak: 'Lønn ved arbeidsmarkedstiltak',
 	hyreTilMannskapPaaFiskeSmaahvalfangstOgSelfangstfartoey:
-		'Hyre til mannskap på fiske-, smaahvalfangst-, og selfangstfartøy',
+		'Hyre til mannskap på fiske-, småhvalfangst-, og selfangstfartøy',
 	skattefriArbeidsinntektBarnUnderTrettenAar: 'Skattefri arbeidsinntekt barn under tretten år',
 	loennOgAnnenGodtgjoerelseSomIkkeErSkattepliktig:
 		'Lønn og annen godtgjørelse som ikke er skattepliktig',
@@ -302,4 +304,4 @@ const texts = {
 	sluttOpptjeningsperiode: 'Slutt opptjeningsperiode',
 }
 
-export default (key) => (texts[key] ? texts[key] : key)
+export default (key) => (texts[key] ? texts[key] : codeToNorskLabel(key))

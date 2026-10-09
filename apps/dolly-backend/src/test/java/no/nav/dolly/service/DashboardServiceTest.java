@@ -110,7 +110,7 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldSumPersonerTotaltForSingleDate() {
+    void shouldSumNewPeopleForSingleDate() {
         var f1 = fragment(DATE_1, 5L, "NYBESTILLING");
         var f2 = fragment(DATE_1, 3L, "NYBESTILLING");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(f1, f2));
@@ -118,7 +118,7 @@ class DashboardServiceTest {
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getDato()).isEqualTo(DATE_1);
-                    assertThat(dto.getPersonerTotalt()).isEqualTo(8L);
+                    assertThat(dto.getAntallNyePersoner()).isEqualTo(8L);
                 })
                 .verifyComplete();
     }
@@ -131,34 +131,39 @@ class DashboardServiceTest {
         when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(f1, f2, f3));
 
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
-                .assertNext(dto -> assertThat(dto.getBestillinger()).isEqualTo(2L))
+                .assertNext(dto -> assertThat(dto.getAntallNyeBestillinger()).isEqualTo(2L))
                 .verifyComplete();
     }
 
     @Test
-    void shouldCountNyeAndGjenopprettede() {
-        var nybestilling = fragment(DATE_1, 4L, "NYBESTILLING");
-        var gjenoppretting = fragment(DATE_1, 2L, "GJENOPPRETTING");
-        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(nybestilling, gjenoppretting));
+    void shouldCountNewAndRestoredOrdersSeparatelyFromPeople() {
+        var nybestilling1 = fragment(DATE_1, 4L, 10L, "NYBESTILLING", "PDLF");
+        var nybestilling2 = fragment(DATE_1, 3L, 11L, "NYBESTILLING", "PDL");
+        var gjenoppretting = fragment(DATE_1, 2L, 12L, "GJENOPPRETTING", "PDLF");
+        when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01"))
+                .thenReturn(Flux.just(nybestilling1, nybestilling2, gjenoppretting));
 
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
-                    assertThat(dto.getNye()).isEqualTo(4L);
-                    assertThat(dto.getGjenopprettede()).isEqualTo(2L);
+                    assertThat(dto.getAntallNyeBestillinger()).isEqualTo(2L);
+                    assertThat(dto.getAntallGjenopprettedeBestillinger()).isEqualTo(1L);
+                    assertThat(dto.getAntallNyePersoner()).isEqualTo(7L);
+                    assertThat(dto.getAndelOpprettedeDollyPersoner()).isEqualTo(4L);
+                    assertThat(dto.getAndelImporterteTestnorgePersoner()).isEqualTo(3L);
                 })
                 .verifyComplete();
     }
 
     @Test
-    void shouldCountNavIdenterByMasterPDLF() {
+    void shouldCountCreatedAndImportedPeopleForNewOrders() {
         var pdlf = fragment(DATE_1, 3L, 1L, "NYBESTILLING", "PDLF");
         var pdl = fragment(DATE_1, 2L, 2L, "NYBESTILLING", "PDL");
         when(bestillingRepository.findBestillingerOrderBySistOppdatert("2024-01")).thenReturn(Flux.just(pdlf, pdl));
 
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
-                    assertThat(dto.getNavIdenter()).isEqualTo(3L);
-                    assertThat(dto.getTestnorgeIdenter()).isEqualTo(2L);
+                    assertThat(dto.getAndelOpprettedeDollyPersoner()).isEqualTo(3L);
+                    assertThat(dto.getAndelImporterteTestnorgePersoner()).isEqualTo(2L);
                 })
                 .verifyComplete();
     }
@@ -194,10 +199,11 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getBestillingerStatus(2024, Month.JANUARY))
                 .assertNext(dto -> {
-                    assertThat(dto.getNye()).isZero();
-                    assertThat(dto.getGjenopprettede()).isZero();
-                    assertThat(dto.getNavIdenter()).isZero();
-                    assertThat(dto.getTestnorgeIdenter()).isZero();
+                    assertThat(dto.getAntallNyeBestillinger()).isZero();
+                    assertThat(dto.getAntallGjenopprettedeBestillinger()).isZero();
+                    assertThat(dto.getAntallNyePersoner()).isZero();
+                    assertThat(dto.getAndelOpprettedeDollyPersoner()).isZero();
+                    assertThat(dto.getAndelImporterteTestnorgePersoner()).isZero();
                 })
                 .verifyComplete();
     }
@@ -851,7 +857,7 @@ class DashboardServiceTest {
                     assertThat(dto.getDato()).isEqualTo(DATE_1);
                     var entry = kriterium(dto, "Krrstub");
                     assertThat(entry.getAntall()).isEqualTo(1);
-                    assertThat(entry.getDetaljer()).isNull();
+                    assertThat(entry.getDetaljer()).isEmpty();
                 })
                 .verifyComplete();
     }
@@ -876,15 +882,15 @@ class DashboardServiceTest {
     }
 
     @Test
-    void shouldUseIngenDataForEmptyListFields() {
+    void shouldUseUnspecifiedForEmptyListFields() {
         stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[]}", 1));
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> {
                     assertThat(dto.getKriterier()).hasSize(1);
-                    assertThat(dto.getKriterier().getFirst().getFagsystem()).isEqualTo("Ingen data");
+                    assertThat(dto.getKriterier().getFirst().getFagsystem()).isEqualTo("Uspesifisert");
                     assertThat(dto.getKriterier().getFirst().getAntall()).isEqualTo(1);
-                    assertThat(dto.getKriterier().getFirst().getDetaljer()).isNull();
+                    assertThat(dto.getKriterier().getFirst().getDetaljer()).isEmpty();
                 })
                 .verifyComplete();
     }
@@ -911,6 +917,23 @@ class DashboardServiceTest {
     }
 
     @Test
+    void shouldIncludeOrderAndPersonCountsInAdferdSummary() {
+        stubAdferd(
+                adferdFragment(1L, DATE_1, "{\"krrstub\":{}}", 5, 2),
+                adferdFragment(1L, DATE_1, "{\"krrstub\":{}}", 5, 2),
+                adferdFragment(2L, DATE_1, "{\"krrstub\":{}}", 3, 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    assertThat(dto.getAntallNyeBestillinger()).isEqualTo(2L);
+                    assertThat(dto.getAntallNyePersoner()).isEqualTo(13);
+                    assertThat(dto.getAndelOpprettedeDollyPersoner()).isEqualTo(8);
+                    assertThat(dto.getAndelImporterteTestnorgePersoner()).isEqualTo(5);
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldDecodeAaregWithAntallArbeidsforhold() {
         stubAdferd(adferdFragment(DATE_1, "{\"aareg\":[{},{}]}", 1));
 
@@ -926,7 +949,7 @@ class DashboardServiceTest {
 
         StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
                 .assertNext(dto -> assertThat(kriterium(dto, "Dokarkiv").getDetaljer())
-                        .containsEntry("Array/matrise antall", 1))
+                        .containsEntry("Array-størrelse/antall", 1))
                 .verifyComplete();
     }
 
@@ -1265,6 +1288,18 @@ class DashboardServiceTest {
                 .dato(dato)
                 .bestkriterier(bestkriterier)
                 .antall(antall)
+                .antalltestnorge(0)
+                .build();
+    }
+
+    private static AdferdFragment adferdFragment(
+            Long id, LocalDate dato, String bestkriterier, Integer antall, Integer antalltestnorge) {
+        return AdferdFragment.builder()
+                .id(id)
+                .dato(dato)
+                .bestkriterier(bestkriterier)
+                .antall(antall)
+                .antalltestnorge(antalltestnorge)
                 .build();
     }
 

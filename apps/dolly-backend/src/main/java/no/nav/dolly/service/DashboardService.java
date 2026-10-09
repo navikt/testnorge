@@ -63,6 +63,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class DashboardService {
 
+    private static final String NYBESTILLING = "NYBESTILLING";
+    private static final String GJENOPPRETTING = "GJENOPPRETTING";
     private static final String INGEN_TEAM = "Tilhører ikke noe team";
     private static final Set<String> IDENTITETSFELT = Set.of("sistOppdatert", "bestillingId", "ident");
     private static final Pattern AAREG_KODE = Pattern.compile("BA\\d{2,3}");
@@ -87,16 +89,27 @@ public class DashboardService {
                 .map(fragmentliste ->
                         DashboardBestillingerDTO.builder()
                                 .dato(fragmentliste.getFirst().getDato())
-                                .bestillinger(fragmentliste.stream()
+                                .antallNyeBestillinger(fragmentliste.stream()
+                                        .filter(fragment -> NYBESTILLING.equals(fragment.getGjenopprettstatus()))
                                         .mapToLong(BestillingerFragment::getBestillingid)
                                         .distinct()
                                         .count())
-                                .personerTotalt(fragmentliste.stream()
-                                        .mapToLong(BestillingerFragment::getPersoner).sum())
-                                .nye(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "NYBESTILLING"))
-                                .gjenopprettede(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, "GJENOPPRETTING"))
-                                .navIdenter(sumByStatus(fragmentliste, BestillingerFragment::getMaster, "PDLF"))
-                                .testnorgeIdenter(sumByStatus(fragmentliste, BestillingerFragment::getMaster, "PDL"))
+                                .antallGjenopprettedeBestillinger(fragmentliste.stream()
+                                        .filter(fragment -> GJENOPPRETTING.equals(fragment.getGjenopprettstatus()))
+                                        .mapToLong(BestillingerFragment::getBestillingid)
+                                        .distinct()
+                                        .count())
+                                .antallNyePersoner(sumByStatus(fragmentliste, BestillingerFragment::getGjenopprettstatus, NYBESTILLING))
+                                .andelOpprettedeDollyPersoner(fragmentliste.stream()
+                                        .filter(fragment -> NYBESTILLING.equals(fragment.getGjenopprettstatus()))
+                                        .filter(fragment -> "PDLF".equals(fragment.getMaster()))
+                                        .mapToLong(BestillingerFragment::getPersoner)
+                                        .sum())
+                                .andelImporterteTestnorgePersoner(fragmentliste.stream()
+                                        .filter(fragment -> NYBESTILLING.equals(fragment.getGjenopprettstatus()))
+                                        .filter(fragment -> "PDL".equals(fragment.getMaster()))
+                                        .mapToLong(BestillingerFragment::getPersoner)
+                                        .sum())
                                 .build())
                 .sort(Comparator.comparing(DashboardBestillingerDTO::getDato));
     }
@@ -234,12 +247,12 @@ public class DashboardService {
                                     .mapToInt(Long::intValue)
                                     .sum())
                             .nye(fragmenter.stream()
-                                    .filter(fragment -> "NYBESTILLING".equals(fragment.getGjenopprettstatus()))
+                                    .filter(fragment -> NYBESTILLING.equals(fragment.getGjenopprettstatus()))
                                     .map(OversiktFragment::getAntall)
                                     .mapToInt(Long::intValue)
                                     .sum())
                             .gjenopprettede(fragmenter.stream()
-                                    .filter(fragment -> "GJENOPPRETTING".equals(fragment.getGjenopprettstatus()))
+                                    .filter(fragment -> GJENOPPRETTING.equals(fragment.getGjenopprettstatus()))
                                     .map(OversiktFragment::getAntall)
                                     .mapToInt(Long::intValue)
                                     .sum())
@@ -433,6 +446,19 @@ public class DashboardService {
                 .flatMap(Flux::collectList)
                 .map(adferd -> DashboardAdferdDTO.builder()
                         .dato(adferd.getFirst().getDato())
+                        .antallNyeBestillinger(adferd.stream()
+                                .map(AdferdFragment::getId)
+                                .distinct()
+                                .count())
+                        .antallNyePersoner(adferd.stream()
+                                .mapToInt(AdferdFragment::getAntall)
+                                .sum())
+                        .andelOpprettedeDollyPersoner(adferd.stream()
+                                .mapToInt(af -> af.getAntall() - af.getAntalltestnorge())
+                                .sum())
+                        .andelImporterteTestnorgePersoner(adferd.stream()
+                                .mapToInt(AdferdFragment::getAntalltestnorge)
+                                .sum())
                         .kriterier(BrukeradferdUtils.getAkkumulerteKriterier(adferd,
                                         AdferdFragment::getBestkriterier, AdferdFragment::getAntall, jsonMapper)
                                 .stream()
