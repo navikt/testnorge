@@ -67,32 +67,32 @@ class BestillingHenvendelseStatusMapperTest {
     }
 
     @Test
-    void shouldCombineSuccessfulStatusesAcrossTypesAndDeduplicateIdentifiers() {
+    void shouldIncludeOnlyIdentifiersSuccessfulForEveryType() {
 
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of(
                 progress("IDENT_1", "melding:OK"),
                 progress("IDENT_1", "samtalereferat:OK"),
+                progress("IDENT_2", "melding:OK,samtalereferat:FEIL"),
                 progress("IDENT_2", "samtalereferat:OK")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).singleElement().satisfies(status -> {
-            assertThat(status.getMelding()).isEqualTo("OK");
-            assertThat(status.getIdenter()).containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
-        });
+        assertThat(findStatus(statuses, "OK").getIdenter()).containsExactly("IDENT_1");
+        assertThat(findStatus(statuses, "Feil: samtalereferat: FEIL").getIdenter())
+                .containsExactly("IDENT_2");
     }
 
     @Test
-    void shouldReportOnlyFailuresWhenStatusesContainBothSuccessAndFailure() {
+    void shouldExcludeIdentifiersMissingSuccessForAnyObservedType() {
 
         var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(List.of(
                 progress("IDENT_1", "melding:OK,samtalereferat:FEIL"),
-                progress("IDENT_2", "melding:OK")));
+                progress("IDENT_2", "melding:OK"),
+                progress("IDENT_3", "melding:OK,samtalereferat:OK")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).singleElement().satisfies(status -> {
-            assertThat(status.getMelding()).isEqualTo("Feil: samtalereferat: FEIL");
-            assertThat(status.getIdenter()).containsExactly("IDENT_1");
-        });
+        assertThat(findStatus(statuses, "OK").getIdenter()).containsExactly("IDENT_3");
+        assertThat(findStatus(statuses, "Feil: samtalereferat: FEIL").getIdenter())
+                .containsExactly("IDENT_1");
     }
 
     @Test

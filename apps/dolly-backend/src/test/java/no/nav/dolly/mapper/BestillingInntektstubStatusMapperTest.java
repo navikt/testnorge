@@ -67,18 +67,18 @@ class BestillingInntektstubStatusMapperTest {
     }
 
     @Test
-    void shouldCombineSuccessfulStatusesAcrossTypesAndDeduplicateIdentifiers() {
+    void shouldIncludeOnlyIdentifiersSuccessfulForEveryType() {
 
         var reports = BestillingInntektstubStatusMapper.buildInntektstubStatusMap(List.of(
                 progress("IDENT_1", "Import: OK"),
                 progress("IDENT_1", ",Oppretting: OK"),
+                progress("IDENT_2", "Import: Feil= Import feilet"),
                 progress("IDENT_2", ",Oppretting: OK")));
 
         var statuses = reports.getFirst().getStatuser();
-        assertThat(statuses).singleElement().satisfies(status -> {
-            assertThat(status.getMelding()).isEqualTo("OK");
-            assertThat(status.getIdenter()).containsExactlyInAnyOrder("IDENT_1", "IDENT_2");
-        });
+        assertThat(findStatus(statuses, "OK").getIdenter()).containsExactly("IDENT_1");
+        assertThat(findStatus(statuses, "Feil: Import: Import feilet").getIdenter())
+                .containsExactly("IDENT_2");
     }
 
     @Test

@@ -22,20 +22,39 @@ public class TypeStatusIdenterUtility {
 
     protected static List<RsStatusRapport.Status> extractOKStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
 
-        return typeStatusIdents.entrySet().stream()
-                .allMatch(typeEntry -> typeEntry.getValue().entrySet().stream()
-                        .allMatch(statusEntry -> "OK".equals(statusEntry.getKey()))) ?
+        var successfulIdents = getIdenterWithOkForEveryType(typeStatusIdents);
 
-                List.of(RsStatusRapport.Status.builder()
-                        .melding("OK")
-                        .identer(typeStatusIdents.values().stream()
-                                .flatMap(typeEntry -> typeEntry.entrySet().stream())
-                                .flatMap(statusEntry -> statusEntry.getValue().stream())
-                                .distinct()
-                                .toList())
-                        .build()) :
+        return successfulIdents.isEmpty()
+                ? emptyList()
+                : List.of(RsStatusRapport.Status.builder()
+                .melding("OK")
+                .identer(successfulIdents.stream().toList())
+                .build());
+    }
 
-                emptyList();
+    private static Set<String> getIdenterWithOkForEveryType(
+            Map<String, Map<String, Set<String>>> typeStatusIdents) {
+
+        var successfulIdents = new HashSet<String>();
+        var firstType = true;
+
+        for (var statusIdents : typeStatusIdents.values()) {
+            var successfulForType = new HashSet<>(statusIdents.getOrDefault("OK", Set.of()));
+
+            statusIdents.entrySet().stream()
+                    .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
+                    .flatMap(statusEntry -> statusEntry.getValue().stream())
+                    .forEach(successfulForType::remove);
+
+            if (firstType) {
+                successfulIdents.addAll(successfulForType);
+                firstType = false;
+            } else {
+                successfulIdents.retainAll(successfulForType);
+            }
+        }
+
+        return successfulIdents;
     }
 
     protected static List<RsStatusRapport.Status> extractErrorStatus(Map<String, Map<String, Set<String>>> typeStatusIdents) {
@@ -44,7 +63,7 @@ public class TypeStatusIdenterUtility {
                 .map(typeEntry -> typeEntry.getValue().entrySet().stream()
                         .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
                         .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding("Feil: %s: %s".formatted(typeEntry.getKey(), statusEntry.getKey()
+                                .melding("Feil: %s: %s".formatted(typeEntry.getKey().trim(), statusEntry.getKey()
                                         .replaceAll("Feil.\\s*", "")))
                                 .identer(statusEntry.getValue().stream().toList())
                                 .build())
