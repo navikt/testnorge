@@ -52,7 +52,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						isClearable={false}
 						onChange={(val: Option) => {
 							formMethods.setValue(`${oppfoelgingsvedtak14aPath}.innsatsgruppe`, val.value)
-							formMethods.clearErrors(`${oppfoelgingsvedtak14aPath}.innsatsgruppe`)
+							formMethods.clearErrors(`${oppfoelgingsvedtak14aPath}.hovedmal`)
 							if (val.value === 'LITEN_MULIGHET_TIL_A_JOBBE') {
 								formMethods.setValue(`${oppfoelgingsvedtak14aPath}.hovedmal`, null)
 							}
@@ -103,7 +103,11 @@ Oppfoelgingsvedtak14aForm.validation = {
 		'$oppfoelgingsvedtak14a',
 		Yup.object({
 			innsatsgruppe: requiredString,
-			hovedmal: Yup.string().nullable(),
+			hovedmal: Yup.string().when('innsatsgruppe', {
+				is: 'LITEN_MULIGHET_TIL_A_JOBBE',
+				then: () => Yup.string().nullable(),
+				otherwise: () => requiredString,
+			}),
 			vedtakFattet: Yup.date().nullable(),
 			oppfolgingsEnhet: Yup.string().nullable(),
 			begrunnelse: Yup.string().nullable(),
