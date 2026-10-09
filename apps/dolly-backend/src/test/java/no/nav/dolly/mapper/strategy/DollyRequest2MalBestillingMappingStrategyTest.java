@@ -28,6 +28,7 @@ import no.nav.dolly.domain.resultset.breg.RsBregdata.PersonRolle;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.Inntektsmelding;
@@ -95,6 +96,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -1030,6 +1033,85 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         assertThat(target.getPdldata().getPerson().getNavn().size(), is(2));
         assertThat(target.getPdldata().getPerson().getStatsborgerskap().size(), is(1));
         assertThat(target.getPdldata().getPerson().getBostedsadresse().size(), is(1));
+    }
+
+    @Test
+    void shouldCopyHenvendelseWithoutSharingMutableObjects() {
+
+        var source = buildHenvendelse("first", true);
+
+        var target = mapperFacade.map(source, RsDollyUtvidetBestilling.class);
+
+        assertThat(target.getHenvendelse(), equalTo(source.getHenvendelse()));
+        assertThat(target.getHenvendelse(), not(sameInstance(source.getHenvendelse())));
+        assertThat(target.getHenvendelse().getMeldinger(), not(sameInstance(source.getHenvendelse().getMeldinger())));
+        assertThat(target.getHenvendelse().getSamtalereferater(), not(sameInstance(source.getHenvendelse().getSamtalereferater())));
+        assertThat(target.getHenvendelse().getMeldinger().getFirst(),
+                not(sameInstance(source.getHenvendelse().getMeldinger().getFirst())));
+        assertThat(target.getHenvendelse().getSamtalereferater().getFirst(),
+                not(sameInstance(source.getHenvendelse().getSamtalereferater().getFirst())));
+
+        target.getHenvendelse().getMeldinger().getFirst().setFritekst("changed");
+        target.getHenvendelse().getMeldinger().getFirst().setTildelMeg(false);
+
+        assertThat(source.getHenvendelse().getMeldinger().getFirst().getFritekst(), equalTo("first"));
+        assertThat(source.getHenvendelse().getMeldinger().getFirst().getTildelMeg(), is(true));
+    }
+
+    @Test
+    void shouldAccumulateHenvendelseMessagesAndSamtalereferater() {
+
+        var first = buildHenvendelse("first", true);
+        var second = buildHenvendelse("second", false);
+        var target = mapperFacade.map(first, RsDollyUtvidetBestilling.class);
+
+        mapperFacade.map(second, target);
+
+        assertThat(target.getHenvendelse().getMeldinger(), equalTo(List.of(
+                first.getHenvendelse().getMeldinger().getFirst(),
+                second.getHenvendelse().getMeldinger().getFirst())));
+        assertThat(target.getHenvendelse().getSamtalereferater(), equalTo(List.of(
+                first.getHenvendelse().getSamtalereferater().getFirst(),
+                second.getHenvendelse().getSamtalereferater().getFirst())));
+        assertThat(first.getHenvendelse().getMeldinger().size(), is(1));
+        assertThat(first.getHenvendelse().getSamtalereferater().size(), is(1));
+        assertThat(second.getHenvendelse().getMeldinger().size(), is(1));
+        assertThat(second.getHenvendelse().getSamtalereferater().size(), is(1));
+    }
+
+    @Test
+    void shouldPreserveHenvendelseWhenSourceIsNullOrEmpty() {
+
+        var source = buildHenvendelse("first", true);
+        var target = mapperFacade.map(source, RsDollyUtvidetBestilling.class);
+
+        mapperFacade.map(new RsDollyUtvidetBestilling(), target);
+        assertThat(target.getHenvendelse(), equalTo(source.getHenvendelse()));
+
+        mapperFacade.map(RsDollyUtvidetBestilling.builder()
+                .henvendelse(new RsHenvendelse())
+                .build(), target);
+        assertThat(target.getHenvendelse(), equalTo(source.getHenvendelse()));
+    }
+
+    private static RsDollyUtvidetBestilling buildHenvendelse(String fritekst, boolean tildelMeg) {
+
+        var melding = RsHenvendelse.Melding.builder()
+                .temagruppe("ARBD")
+                .tema("DAG")
+                .enhet("0315")
+                .fritekst(fritekst)
+                .tildelMeg(tildelMeg)
+                .kjedeId("melding-" + fritekst)
+                .build();
+
+        return RsDollyUtvidetBestilling.builder()
+                .henvendelse(RsHenvendelse.builder()
+                        .meldinger(List.of(melding))
+                        .samtalereferater(List.of(new RsHenvendelse.Samtalereferat(
+                                "ARBD", "DAG", "0315", fritekst, "referat-" + fritekst)))
+                        .build())
+                .build();
     }
 
     private static RsDollyUtvidetBestilling buildInntektstub(Double beloep, InntektType inntektstype, String beskrivelse) {

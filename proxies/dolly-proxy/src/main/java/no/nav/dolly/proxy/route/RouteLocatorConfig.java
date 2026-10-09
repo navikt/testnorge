@@ -19,6 +19,7 @@ class RouteLocatorConfig {
     private final Dokarkiv dokarkiv;
     private final Ereg ereg;
     private final Fullmakt fullmakt;
+    private final Henvendelse henvendelse;
     private final Histark histark;
     private final Inntektstub inntektstub;
     private final Inst inst;
@@ -61,6 +62,7 @@ class RouteLocatorConfig {
                 .route("ereg-q2", ereg.build(Ereg.SpecialCase.Q2))
                 .route("ereg-q4", ereg.build(Ereg.SpecialCase.Q4))
                 .route("fullmakt", fullmakt.build())
+                .route("henvendelse", henvendelse.build())
                 .route("histark", histark.build())
                 .route("inntektstub", inntektstub.build())
                 .route("inst", inst.build())

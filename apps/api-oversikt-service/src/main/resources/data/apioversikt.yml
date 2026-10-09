@@ -51,9 +51,15 @@ system:
         - https://saf-q4.dev.intern.nav.no/swagger-ui/index.html
   - register: fullmakt
     namespace: repr
-    kubernetes-name: repr-fullmakt
-    url: https://repr-fullmakt.intern.dev.nav.no/swagger-ui/index.html
-    cluster: dev
+    kubernetes-name: fullmakt
+    url: https://fullmakt.intern.dev.nav.no/swagger-ui/index.html
+    cluster: dev-gcp
+  - register: henvendelse
+    namespace: teamnks
+    kubernetes-name: sf-henvendelse-api-proxy
+    url: https://sf-henvendelse.intern.dev.nav.no
+    description: https://raw.githubusercontent.com/navikt/crm-henvendelse/refs/heads/main/Api/henvendelse_api.json
+    cluster: dev-gcp
   - register: histark
     namespace: histark
     kubernetes-name: histarkimport

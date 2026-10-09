@@ -38,4 +38,9 @@ public class DollyPerson {
     public boolean isTestnorgeIdent() {
         return TestnorgeIdentUtility.isTestnorgeIdent(ident);
     }
+
+    public boolean isSalesForce() {
+
+        return getTags().contains(Tags.SALESFORCE);
+    }
 }
