@@ -144,8 +144,8 @@ export const toMaanedPunkter = (
 		const punkt = punktPerKey.get(key) ?? tomtMaanedPunkt(periode)
 		punktPerKey.set(key, {
 			...punkt,
-			nyeBestillinger: punkt.nyeBestillinger + asNumber(rad.antallNyBestillinger),
-			gjenopprettinger: punkt.gjenopprettinger + asNumber(rad.antallGjenopprettinger),
+			nyeBestillinger: punkt.nyeBestillinger + asNumber(rad.antallNyeBestillinger),
+			gjenopprettinger: punkt.gjenopprettinger + asNumber(rad.antallGjenopprettedeBestillinger),
 			nyePersoner: punkt.nyePersoner + asNumber(rad.antallNyePersoner),
 			dollyPersoner: punkt.dollyPersoner + asNumber(rad.andelOpprettedeDollyPersoner),
 			testnorgePersoner: punkt.testnorgePersoner + asNumber(rad.andelImporterteTestnorgePersoner),
@@ -297,7 +297,7 @@ export const toDagPersonMatrise = (
 		const index = dagNummer - 1
 		matrise.dollyPersoner[index] += asNumber(dag.andelOpprettedeDollyPersoner)
 		matrise.testnorgePersoner[index] += asNumber(dag.andelImporterteTestnorgePersoner)
-		matrise.nyeBestillinger[index] += asNumber(dag.antallNyBestillinger)
+		matrise.nyeBestillinger[index] += asNumber(dag.antallNyeBestillinger)
 	}
 
 	return matrise

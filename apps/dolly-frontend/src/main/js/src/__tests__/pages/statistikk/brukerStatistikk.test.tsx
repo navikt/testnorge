@@ -81,7 +81,7 @@ describe('BrukerStatistikk', () => {
 		expect(screen.getByText(/Teamet Team Dolly har ingen bestillinger enda/)).toBeInTheDocument()
 		unmount()
 
-		mockOversikt([{ periode: '2026-08', antallNyBestillinger: 1, antallNyePersoner: 2 }])
+		mockOversikt([{ periode: '2026-08', antallNyeBestillinger: 1, antallNyePersoner: 2 }])
 		render(<BrukerStatistikk eierId="team-bruker" teamNavn="Team Dolly" />)
 
 		expect(
@@ -94,8 +94,8 @@ describe('BrukerStatistikk', () => {
 		mockOversikt([
 			{
 				periode: '2026-08',
-				antallNyBestillinger: 4,
-				antallGjenopprettinger: 2,
+				antallNyeBestillinger: 4,
+				antallGjenopprettedeBestillinger: 2,
 				antallNyePersoner: 17,
 			},
 		])
@@ -122,8 +122,8 @@ describe('BrukerStatistikk', () => {
 		mockOversikt([
 			{
 				periode: '2026-08',
-				antallNyBestillinger: 4,
-				antallGjenopprettinger: 2,
+				antallNyeBestillinger: 4,
+				antallGjenopprettedeBestillinger: 2,
 				antallNyePersoner: 17,
 			},
 		])
@@ -176,8 +176,8 @@ describe('BrukerStatistikk', () => {
 		mockOversikt([
 			{
 				periode: '2026-10',
-				antallNyBestillinger: 10,
-				antallGjenopprettinger: 0,
+				antallNyeBestillinger: 10,
+				antallGjenopprettedeBestillinger: 0,
 				antallNyePersoner: 18,
 				andelOpprettedeDollyPersoner: 15,
 				andelImporterteTestnorgePersoner: 3,
@@ -186,7 +186,7 @@ describe('BrukerStatistikk', () => {
 		mockDetaljert([
 			{
 				dato: '2026-10-02',
-				antallNyBestillinger: 3,
+				antallNyeBestillinger: 3,
 				antallNyePersoner: 3,
 				andelOpprettedeDollyPersoner: 3,
 				andelImporterteTestnorgePersoner: 0,
@@ -198,7 +198,7 @@ describe('BrukerStatistikk', () => {
 			},
 			{
 				dato: '2026-10-06',
-				antallNyBestillinger: 7,
+				antallNyeBestillinger: 7,
 				antallNyePersoner: 15,
 				andelOpprettedeDollyPersoner: 12,
 				andelImporterteTestnorgePersoner: 3,
@@ -230,26 +230,26 @@ describe('BrukerStatistikk', () => {
 		mockOversikt([
 			{
 				periode: '2025-03',
-				antallNyBestillinger: 1,
-				antallGjenopprettinger: 0,
+				antallNyeBestillinger: 1,
+				antallGjenopprettedeBestillinger: 0,
 				antallNyePersoner: 5,
 			},
 			{
 				periode: '2025-11',
-				antallNyBestillinger: 6,
-				antallGjenopprettinger: 1,
+				antallNyeBestillinger: 6,
+				antallGjenopprettedeBestillinger: 1,
 				antallNyePersoner: 40,
 			},
 			{
 				periode: '2026-02',
-				antallNyBestillinger: 2,
-				antallGjenopprettinger: 3,
+				antallNyeBestillinger: 2,
+				antallGjenopprettedeBestillinger: 3,
 				antallNyePersoner: 11,
 			},
 			{
 				periode: '2026-09',
-				antallNyBestillinger: 1,
-				antallGjenopprettinger: 0,
+				antallNyeBestillinger: 1,
+				antallGjenopprettedeBestillinger: 0,
 				antallNyePersoner: 7,
 			},
 		])

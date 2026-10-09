@@ -36,6 +36,7 @@ const DETALJ_LABELS: Record<string, string> = {
 	AAP115: 'AAP 11-5',
 	AfpOffentlig: 'AFP offentlig',
 	ArenaBrukertype: 'Brukertype',
+	'Array-størrelse/antall': 'Antall oppføringer',
 	'Array/matrise antall': 'Antall oppføringer',
 	DeltBosted: 'Delt bosted',
 	DoedfoedtBarn: 'Dødfødt barn',

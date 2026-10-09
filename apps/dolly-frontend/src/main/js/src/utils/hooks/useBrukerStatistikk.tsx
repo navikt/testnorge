@@ -10,8 +10,8 @@ export type BrukeradferdKriterium = {
 
 export type BrukerBestillingerDTO = {
 	periode?: string | number[] | null
-	antallNyBestillinger?: number | null
-	antallGjenopprettinger?: number | null
+	antallNyeBestillinger?: number | null
+	antallGjenopprettedeBestillinger?: number | null
 	antallNyePersoner?: number | null
 	andelOpprettedeDollyPersoner?: number | null
 	andelImporterteTestnorgePersoner?: number | null

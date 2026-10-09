@@ -62,14 +62,14 @@ describe('brukerStatistikkUtils', () => {
 			[
 				{
 					periode: '2026-07',
-					antallNyBestillinger: 3,
-					antallGjenopprettinger: 1,
+					antallNyeBestillinger: 3,
+					antallGjenopprettedeBestillinger: 1,
 					antallNyePersoner: 10,
 				},
 				{
 					periode: '2026-05',
-					antallNyBestillinger: 1,
-					antallGjenopprettinger: 0,
+					antallNyeBestillinger: 1,
+					antallGjenopprettedeBestillinger: 0,
 					antallNyePersoner: 2,
 				},
 			],
@@ -93,7 +93,7 @@ describe('brukerStatistikkUtils', () => {
 
 	it('should limit trend to last 12 months unless all history is selected', () => {
 		const punkter = toMaanedPunkter(
-			[{ periode: '2024-01', antallNyBestillinger: 1 }],
+			[{ periode: '2024-01', antallNyeBestillinger: 1 }],
 			new Date(2026, 0, 1),
 		)
 
@@ -104,8 +104,8 @@ describe('brukerStatistikkUtils', () => {
 	it('should build year and month options from active periods', () => {
 		const aktive = toMaanedPunkter(
 			[
-				{ periode: '2025-11', antallNyBestillinger: 1 },
-				{ periode: '2026-02', antallGjenopprettinger: 2 },
+				{ periode: '2025-11', antallNyeBestillinger: 1 },
+				{ periode: '2026-02', antallGjenopprettedeBestillinger: 2 },
 			],
 			new Date(2026, 1, 1),
 		).filter(harAktivitet)
@@ -117,14 +117,14 @@ describe('brukerStatistikkUtils', () => {
 	it('should accumulate yearly totals in one pass and pick the most active month', () => {
 		const punkter = toMaanedPunkter(
 			[
-				{ periode: '2025-03', antallNyBestillinger: 1, antallNyePersoner: 5 },
+				{ periode: '2025-03', antallNyeBestillinger: 1, antallNyePersoner: 5 },
 				{
 					periode: '2025-11',
-					antallNyBestillinger: 6,
-					antallGjenopprettinger: 1,
+					antallNyeBestillinger: 6,
+					antallGjenopprettedeBestillinger: 1,
 					antallNyePersoner: 40,
 				},
-				{ periode: '2026-02', antallNyBestillinger: 2, antallGjenopprettinger: 3 },
+				{ periode: '2026-02', antallNyeBestillinger: 2, antallGjenopprettedeBestillinger: 3 },
 			],
 			new Date(2026, 9, 1),
 		)
@@ -147,14 +147,14 @@ describe('brukerStatistikkUtils', () => {
 			[
 				{
 					periode: '2026-09',
-					antallNyBestillinger: 2,
+					antallNyeBestillinger: 2,
 					antallNyePersoner: 5,
 					andelOpprettedeDollyPersoner: 4,
 					andelImporterteTestnorgePersoner: 1,
 				},
 				{
 					periode: '2026-10',
-					antallNyBestillinger: 1,
+					antallNyeBestillinger: 1,
 					antallNyePersoner: 3,
 					andelOpprettedeDollyPersoner: 0,
 					andelImporterteTestnorgePersoner: 3,
@@ -175,13 +175,13 @@ describe('brukerStatistikkUtils', () => {
 			[
 				{
 					dato: '2026-10-02',
-					antallNyBestillinger: 3,
+					antallNyeBestillinger: 3,
 					andelOpprettedeDollyPersoner: 3,
 					andelImporterteTestnorgePersoner: 0,
 				},
 				{
 					dato: '2026-10-31',
-					antallNyBestillinger: 5,
+					antallNyeBestillinger: 5,
 					andelOpprettedeDollyPersoner: 10,
 					andelImporterteTestnorgePersoner: 3,
 				},
