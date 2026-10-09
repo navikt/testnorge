@@ -21,6 +21,9 @@ public class HenvendelseResponse {
     private String feilmelding;
 
     @Builder.Default
+    private List<Meldinger> meldinger = new ArrayList<>();
+
+    @Builder.Default
     private List<Info> data = new ArrayList<>();
 
     @Data
@@ -41,5 +44,13 @@ public class HenvendelseResponse {
         private String kjedeId;
         private String gjeldendeTemagruppe;
         private String gjeldendeTema;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Meldinger {
+
     }
 }

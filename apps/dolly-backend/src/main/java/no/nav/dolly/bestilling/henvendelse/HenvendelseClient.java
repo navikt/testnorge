@@ -52,10 +52,12 @@ public class HenvendelseClient implements ClientRegister {
 
         if (isNull(bestilling.getHenvendelse()) ||
             bestilling.getHenvendelse().getMeldinger().isEmpty() &&
-            bestilling.getHenvendelse().getSamtalereferater().isEmpty() ||
-            !dollyPerson.isSalesForce()) {
+            bestilling.getHenvendelse().getSamtalereferater().isEmpty()) {
 
             return Mono.empty();
+
+        } else if (!dollyPerson.isSalesForce()) {
+            return oppdaterStatus(progress, ErrorStatusDecoder.encodeStatus("Feil: Henvendelse ikke sendt; gruppe mangler tag SALESFORCE"));
         }
 
         return oppdaterStatus(progress, getInfoVenter(HENVENDELSE.getBeskrivelse()))
