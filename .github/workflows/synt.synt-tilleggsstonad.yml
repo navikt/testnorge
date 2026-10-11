@@ -1,0 +1,21 @@
+name: synt-tilleggsstonad
+
+on:
+  push:
+    paths:
+      - .github/workflows/synt.synt-tilleggsstonad.yml
+      - synt/synt-tilleggsstonad/**
+      - libs/testing/**
+      - libs/texas/**
+      - plugins/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "synt/synt-tilleggsstonad"
+      deploy-tag: "#deploy-synt-tilleggsstonad"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit

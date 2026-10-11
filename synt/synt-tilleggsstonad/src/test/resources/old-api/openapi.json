@@ -1,0 +1,514 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Syntetisering - Dagpenger",
+    "description": "Applikasjonen genererer syntetiske dagpengevedtak som kan settes inn i arena.",
+    "version": "1.0",
+    "termsOfService": "https://www.nav.no/",
+    "contact": {
+      "name": "Team Dolly",
+      "url": "slack://channel?id=CA3P9NGA2&team=T5LNAMWNA"
+    },
+    "license": {
+      "name": "Super Strict License",
+      "url": "https://opensource.org/licenses/super-strict-license"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Syntetisering",
+      "externalDocs": {
+        "description": "Dokumentasjon",
+        "url": "https://navikt.github.io/testnorge-syntetiseringspakker/apps/arena/synt_dagpenger/docs/Implementasjon.html"
+      }
+    }
+  ],
+  "paths": {
+    "/vedtak/{rettighet}": {
+      "post": {
+        "operationId": "provider.controller.generate_vedtak",
+        "security": [
+          {
+            "jwt": [
+              "secret"
+            ]
+          }
+        ],
+        "tags": [
+          "Syntetisering"
+        ],
+        "summary": "Trigger generering av dagpengevedtak",
+        "requestBody": {
+          "description": "Liste med startdatoer for vedtakene",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "2018-10-01",
+                  "2019-01-01"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rettighet",
+            "required": true,
+            "schema": {
+              "enum": [
+                "PERM",
+                "DAGO"
+              ],
+              "type": "string"
+            },
+            "description": "Rettighet for vedtakene som skal genereres"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returnerer liste med syntetiske vedtak.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "rettighetKode": {
+                        "type": "string"
+                      },
+                      "vedtaktypeKode": {
+                        "type": "string"
+                      },
+                      "datoMOttatt": {
+                        "type": "string"
+                      },
+                      "beregningsdato": {
+                        "type": "string"
+                      },
+                      "automatiseringsgrad": {
+                        "type": "string"
+                      },
+                      "begrunnelse": {
+                        "type": "string"
+                      },
+                      "vedtaksperiode": {
+                        "type": "object",
+                        "properties": {
+                          "fom": {
+                            "type": "string"
+                          },
+                          "tom": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "taptArbeidstid": {
+                        "type": "object",
+                        "properties": {
+                          "anvendtRegelKode": {
+                            "type": "string"
+                          },
+                          "fastsattArbeidstid": {
+                            "type": "number"
+                          },
+                          "naavaerendeArbeidstid": {
+                            "type": "number"
+                          }
+                        }
+                      },
+                      "dagpengeperiode": {
+                        "type": "object",
+                        "properties": {
+                          "antallUkerPermittering": {
+                            "type": "integer"
+                          },
+                          "justertFomDato": {
+                            "type": "string"
+                          },
+                          "antallUker": {
+                            "type": "integer"
+                          },
+                          "endringVentedagsteller": {
+                            "type": "string"
+                          },
+                          "endringPeriodeteller": {
+                            "type": "string"
+                          },
+                          "endringPermitteringsteller": {
+                            "type": "string"
+                          },
+                          "begrunnelseTellerendring": {
+                            "type": "string"
+                          },
+                          "nullstillPeriodeteller": {
+                            "type": "string"
+                          },
+                          "nullstillPermitteringsteller": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "godkjenningerReellArbeidssoker": {
+                        "type": "object",
+                        "properties": {
+                          "godkjentLokalArbeidssoker": {
+                            "type": "string"
+                          },
+                          "godkjentDeltidssoker": {
+                            "type": "string"
+                          },
+                          "godkjentUtdanning": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "beregningsregler": {
+                        "type": "object",
+                        "properties": {
+                          "oppfyllerKravTilFangstOgFiske": {
+                            "type": "string"
+                          },
+                          "harAvtjentVernepliktSiste3Av12Mnd": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "bruktInntektsperiode": {
+                        "type": "object",
+                        "properties": {
+                          "forsteManed": {
+                            "type": "string"
+                          },
+                          "sisteManed": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "vilkaar": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "kode": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "reellArbeidssoker": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "kode": {
+                              "type": "string"
+                            },
+                            "verdi": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "barnListe": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "barn": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "kode": {
+                                    "type": "string"
+                                  },
+                                  "verdi": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "permittering": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "kode": {
+                              "type": "string"
+                            },
+                            "verdi": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RettighetType": {
+        "enum": [
+          "PERM",
+          "DAGO"
+        ],
+        "type": "string"
+      },
+      "Vilkaar": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "KodeVerdi": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string"
+          },
+          "verdi": {
+            "type": "string"
+          }
+        }
+      },
+      "Barn": {
+        "type": "object",
+        "properties": {
+          "barn": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kode": {
+                  "type": "string"
+                },
+                "verdi": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Dagpengevedtak": {
+        "type": "object",
+        "properties": {
+          "rettighetKode": {
+            "type": "string"
+          },
+          "vedtaktypeKode": {
+            "type": "string"
+          },
+          "datoMOttatt": {
+            "type": "string"
+          },
+          "beregningsdato": {
+            "type": "string"
+          },
+          "automatiseringsgrad": {
+            "type": "string"
+          },
+          "begrunnelse": {
+            "type": "string"
+          },
+          "vedtaksperiode": {
+            "type": "object",
+            "properties": {
+              "fom": {
+                "type": "string"
+              },
+              "tom": {
+                "type": "string"
+              }
+            }
+          },
+          "taptArbeidstid": {
+            "type": "object",
+            "properties": {
+              "anvendtRegelKode": {
+                "type": "string"
+              },
+              "fastsattArbeidstid": {
+                "type": "number"
+              },
+              "naavaerendeArbeidstid": {
+                "type": "number"
+              }
+            }
+          },
+          "dagpengeperiode": {
+            "type": "object",
+            "properties": {
+              "antallUkerPermittering": {
+                "type": "integer"
+              },
+              "justertFomDato": {
+                "type": "string"
+              },
+              "antallUker": {
+                "type": "integer"
+              },
+              "endringVentedagsteller": {
+                "type": "string"
+              },
+              "endringPeriodeteller": {
+                "type": "string"
+              },
+              "endringPermitteringsteller": {
+                "type": "string"
+              },
+              "begrunnelseTellerendring": {
+                "type": "string"
+              },
+              "nullstillPeriodeteller": {
+                "type": "string"
+              },
+              "nullstillPermitteringsteller": {
+                "type": "string"
+              }
+            }
+          },
+          "godkjenningerReellArbeidssoker": {
+            "type": "object",
+            "properties": {
+              "godkjentLokalArbeidssoker": {
+                "type": "string"
+              },
+              "godkjentDeltidssoker": {
+                "type": "string"
+              },
+              "godkjentUtdanning": {
+                "type": "string"
+              }
+            }
+          },
+          "beregningsregler": {
+            "type": "object",
+            "properties": {
+              "oppfyllerKravTilFangstOgFiske": {
+                "type": "string"
+              },
+              "harAvtjentVernepliktSiste3Av12Mnd": {
+                "type": "string"
+              }
+            }
+          },
+          "bruktInntektsperiode": {
+            "type": "object",
+            "properties": {
+              "forsteManed": {
+                "type": "string"
+              },
+              "sisteManed": {
+                "type": "string"
+              }
+            }
+          },
+          "vilkaar": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kode": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "reellArbeidssoker": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kode": {
+                  "type": "string"
+                },
+                "verdi": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "barnListe": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "barn": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "kode": {
+                        "type": "string"
+                      },
+                      "verdi": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "permittering": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kode": {
+                  "type": "string"
+                },
+                "verdi": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "x-bearerInfoFunc": "libs.security.decode_token"
+      }
+    }
+  }
+}
