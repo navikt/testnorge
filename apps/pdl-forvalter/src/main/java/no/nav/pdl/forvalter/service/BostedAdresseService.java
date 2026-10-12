@@ -63,7 +63,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     adresse.setMaster(getMaster(adresse, dbPerson.getPerson()));
                 })
                 .collectList()
-                .doOnNext(adresser -> {
+                .doOnNext(_ -> {
                     oppdaterAdressedatoer(dbPerson.getPerson().getBostedsadresse(), dbPerson.getPerson());
                     setAngittFlyttedato(dbPerson.getPerson().getBostedsadresse());
                 })
@@ -134,7 +134,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 })
                 .flatMap(bostedadresse1 -> buildBoadresse(bostedadresse1, person))
                 .flatMap(this::genererCoNavn)
-                .doOnNext(adressseNavn -> {
+                .doOnNext(_ -> {
 
                     if (isNull(bostedadresse.getAngittFlyttedato())) {
                         bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
@@ -199,7 +199,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     private static void setAngittFlyttedato(List<BostedadresseDTO> bostedsadresse) {
 
-        bostedsadresse.forEach(adresse ->
-                adresse.setAngittFlyttedato(adresse.getGyldigFraOgMed()));
+        bostedsadresse.forEach(adresse -> {
+            if (isNull(adresse.getAngittFlyttedato())) {
+                adresse.setAngittFlyttedato(adresse.getGyldigFraOgMed());
+            }
+        });
     }
 }
