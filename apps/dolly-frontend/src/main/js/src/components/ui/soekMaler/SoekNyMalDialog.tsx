@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { MalModal } from '@/pages/minSide/maler/MalModal'
+import { MalModal } from '@/pages/maler/MalModal'
 
 interface SoekNyMalDialogProps {
 	verdier: Record<string, unknown>

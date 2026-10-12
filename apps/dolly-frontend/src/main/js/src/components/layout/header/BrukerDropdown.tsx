@@ -7,17 +7,23 @@ import {
 	useCurrentBruker,
 } from '@/utils/hooks/useBruker'
 import logoutBruker from '@/components/utlogging/logoutBruker'
-import { getDefaultImage } from '@/pages/minSide/Profil'
 import { ActionMenu } from '@navikt/ds-react'
+import { BarChartIcon, BookmarkIcon } from '@navikt/aksel-icons'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { ActionMenuWrapper, DropdownStyledIcon, DropdownStyledLink } from './ActionMenuWrapper'
 import { PreloadableActionMenuItem } from '@/utils/PreloadableActionMenuItem'
 import { DollyApi } from '@/service/Api'
 import dollyTeam from '@/assets/img/dollyTeam.png'
+// @ts-ignore
+import dolly from '@/favicon.ico'
+import playwright from '@/assets/img/playwright.png'
+import { runningE2ETest } from '@/service/services/Request'
 import { teamVarslingLocalStorageKey } from '@/components/layout/header/TeamVarsel'
 import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
 import { formatBrukerNavn } from '@/utils/DataFormatter'
+
+const getDefaultImage = () => (runningE2ETest() ? playwright : dolly)
 
 export const BrukerDropdown = () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -122,12 +128,20 @@ export const BrukerDropdown = () => {
 				<ActionMenu.Divider />
 				<ActionMenu.Group label="Administrasjon">
 					<PreloadableActionMenuItem
-						route="/minside"
+						route="/maler"
 						style={{ color: '#212529' }}
-						dataTestId={TestComponentSelectors.BUTTON_PROFIL_MINSIDE}
+						dataTestId={TestComponentSelectors.BUTTON_PROFIL_MINE_MALER}
 					>
-						<DropdownStyledIcon kind="person" fontSize="1.5rem" />
-						<DropdownStyledLink href="/minside">Min side</DropdownStyledLink>
+						<BookmarkIcon aria-hidden fontSize="1.5rem" />
+						<DropdownStyledLink href="/maler">Mine maler</DropdownStyledLink>
+					</PreloadableActionMenuItem>
+					<PreloadableActionMenuItem
+						route="/statistikk"
+						style={{ color: '#212529' }}
+						dataTestId={TestComponentSelectors.BUTTON_PROFIL_MIN_STATISTIKK}
+					>
+						<BarChartIcon aria-hidden fontSize="1.5rem" />
+						<DropdownStyledLink href="/statistikk">Min statistikk</DropdownStyledLink>
 					</PreloadableActionMenuItem>
 					{!bankIdBruker && (
 						<PreloadableActionMenuItem

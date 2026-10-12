@@ -191,7 +191,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 			</div>
 			<div className="mal-admin">
 				<Button kind="maler" fontSize={'1.2rem'}>
-					<NavLink to="/minside">Administrer maler</NavLink>
+					<NavLink to="/maler">Administrer maler</NavLink>
 				</Button>
 			</div>
 			{erUtdatertMal && (

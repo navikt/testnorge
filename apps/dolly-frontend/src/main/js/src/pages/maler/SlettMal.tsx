@@ -3,7 +3,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { TrashIcon } from '@navikt/aksel-icons'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
-import { MalType } from '@/pages/minSide/maler/Maloversikt'
+import { MalType } from '@/pages/maler/Maloversikt'
 import { tenorSlettPersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
 interface SlettMalProps {

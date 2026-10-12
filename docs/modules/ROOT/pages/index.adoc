@@ -216,7 +216,7 @@ image::dolly/bruk_mal.png[Bruk mal]
 
 Du kan endre verdier før innsending.
 
-Du vil også finne en oversikt over maler på "Min side" i menyen øverst til høyre.
+Du vil også finne en oversikt over maler på "Mine maler" i menyen øverst til høyre.
 
 image::dolly/minside.png[Min side]
 

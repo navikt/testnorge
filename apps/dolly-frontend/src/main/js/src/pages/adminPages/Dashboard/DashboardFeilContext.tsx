@@ -101,7 +101,7 @@ export const DashboardFeilProvider: React.FC<DashboardFeilProviderProps> = ({
 	// Switch to mock data when enabled
 	const activeFeilSummert = useMemo(
 		() => (mockModeEnabled ? (mockData?.feilByInterval[selectedFeilInterval] ?? []) : feilSummert),
-		[mockModeEnabled, mockData, selectedFeilInterval, feilSummert],
+		[mockModeEnabled, selectedFeilInterval, feilSummert, mockData?.feilByInterval],
 	)
 
 	const activeFeilDetaljert = useMemo(
@@ -113,7 +113,13 @@ export const DashboardFeilProvider: React.FC<DashboardFeilProviderProps> = ({
 							: ''
 					] ?? [])
 				: feilDetaljert,
-		[mockModeEnabled, mockData, selectedFeilInterval, selectedFeilDay, feilDetaljert],
+		[
+			mockModeEnabled,
+			selectedFeilInterval,
+			selectedFeilDay,
+			feilDetaljert,
+			mockData?.feilDetaljertByDate,
+		],
 	)
 
 	// Build views
@@ -185,7 +191,9 @@ export const DashboardFeilProvider: React.FC<DashboardFeilProviderProps> = ({
 
 		// Error groups
 		feilGrupper,
-		feilDetaljertCount: new Set(activeFeilDetaljert.map((rad) => rad.bestillingId)).size,
+		feilDetaljertCount: new Set(
+			activeFeilDetaljert.map((rad: { bestillingId: any }) => rad.bestillingId),
+		).size,
 		loadingFeilDetaljert: loadingFeilDetaljert && !mockModeEnabled,
 		feilDetaljertError: mockModeEnabled ? undefined : feilDetaljertError,
 	}

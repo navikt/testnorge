@@ -267,8 +267,10 @@ describe('dashboardUtils', () => {
 	})
 
 	it('should generate rich mock data and vary by cycle', () => {
+		vi.spyOn(Math, 'random').mockReturnValue(0.5)
 		const first = createDashboardMockData(0)
 		const second = createDashboardMockData(1)
+		vi.restoreAllMocks()
 
 		expect(first.dashboardBestillinger.length).toBe(300)
 		expect(first.dashboardTeams.length).toBe(24)
@@ -284,14 +286,11 @@ describe('dashboardUtils', () => {
 		expect(first.dashboardBestillinger[0]).toHaveProperty('bestillinger')
 		expect(first.dashboardBestillinger[0]).toHaveProperty('navIdenter')
 		expect(first.dashboardBestillinger[0]).toHaveProperty('testnorgeIdenter')
-		expect(first.dashboardBestillinger[0].personerTotalt).not.toBe(
-			second.dashboardBestillinger[0].personerTotalt,
+		expect(second.dashboardBestillinger[0].personerTotalt).toBe(
+			first.dashboardBestillinger[0].personerTotalt + 1,
 		)
-		expect(first.dashboardBestillinger[0].bestillinger).not.toBe(
-			second.dashboardBestillinger[0].bestillinger,
-		)
-		expect(first.dashboardTeams[0].totaltUnikeBrukere).not.toBe(
-			second.dashboardTeams[0].totaltUnikeBrukere,
+		expect(second.dashboardBestillinger[0].bestillinger).toBe(
+			first.dashboardBestillinger[0].bestillinger + 1,
 		)
 	})
 

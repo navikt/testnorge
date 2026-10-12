@@ -123,8 +123,8 @@ import { useOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a
 import { Oppfoelgingsvedtak14aVisning } from '@/components/fagsystem/oppfoelgingsvedtak14a/visning/Oppfoelgingsvedtak14aVisning'
 import { Button } from '@navikt/ds-react'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
-import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
-import { malTyper } from '@/pages/minSide/maler/MalModal'
+import { OpprettMal } from '@/pages/maler/OpprettMal'
+import { malTyper } from '@/pages/maler/MalModal'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {

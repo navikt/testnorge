@@ -56,6 +56,7 @@ public class ForwardAndRedirectController {
                 .andRoute(RequestPredicates.GET("/gruppe/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/minside/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/maler/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/statistikk/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/importer/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/testnorge/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/endringsmelding/**"), indexHandler)

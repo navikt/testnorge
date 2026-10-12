@@ -27,7 +27,7 @@ class ForwardAndRedirectControllerTest {
                 "https://telemetry.ekstern.dev.nav.no/collect");
         var client = WebTestClient.bindToRouterFunction(router).build();
 
-        for (var path : new String[]{"/", "/index.html", "/login", "/gruppe/123", "/oversikt"}) {
+        for (var path : new String[]{"/", "/index.html", "/login", "/gruppe/123", "/oversikt", "/maler", "/statistikk"}) {
             client.get().uri(path).exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML)

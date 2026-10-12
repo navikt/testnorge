@@ -6,14 +6,14 @@ import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
-import { SlettMal } from '@/pages/minSide/maler/SlettMal'
+import { SlettMal } from '@/pages/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import * as _ from 'lodash-es'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
-import { MalType } from '@/pages/minSide/maler/Maloversikt'
+import { MalType } from '@/pages/maler/Maloversikt'
 import { SoekMalVisning } from '@/components/ui/soekMaler/SoekMalVisning'
 
 type Props = {
@@ -92,7 +92,7 @@ export const MalPanel = ({
 					</Button>
 				) : (
 					<Button
-						data-testid={TestComponentSelectors.BUTTON_MINSIDE_ENDRE_MALNAVN}
+						data-testid={TestComponentSelectors.BUTTON_MALER_ENDRE_MALNAVN}
 						onClick={() => {
 							setUnderRedigering(underRedigering.concat([id]))
 						}}
