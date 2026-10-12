@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/form/inputs/label/Label'
 const VALUE_FORMAT = 'yyyy-MM'
 const DISPLAY_FORMAT = 'MM.yyyy'
 const MONTHS_PER_ROW = 4
+const NO_SELECTED_MONTH = new Date(NaN)
 
 interface MonthsComboboxProps {
 	name: string
@@ -30,6 +31,10 @@ interface MonthOption {
 }
 
 const SelectedMonthsWrapper = styled.div<{ $selectedMonthIndexes: number[] }>`
+	.aksel-date {
+		padding: 5px 0;
+	}
+
 	${({ $selectedMonthIndexes }) =>
 		$selectedMonthIndexes
 			.map(
@@ -153,12 +158,13 @@ export const MonthCombobox = ({ name, label, minDate, maxDate }: MonthsComboboxP
 								fromDate={minDate ?? defaultDateRange.fromDate}
 								toDate={maxDate ?? defaultDateRange.toDate}
 								year={visibleYear}
+								selected={NO_SELECTED_MONTH}
 								onYearChange={(year) => year && setVisibleYear(year)}
 								onMonthSelect={(month) => month && toggleMonth(format(month, VALUE_FORMAT))}
 							/>
 						</SelectedMonthsWrapper>
 						<HStack justify="end">
-							<Button type="button" size="small" onClick={() => setIsOpen(false)}>
+							<Button variant="secondary" size="small" onClick={() => setIsOpen(false)}>
 								Ferdig
 							</Button>
 						</HStack>
