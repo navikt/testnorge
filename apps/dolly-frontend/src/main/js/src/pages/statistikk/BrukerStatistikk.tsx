@@ -122,7 +122,7 @@ export const BrukerStatistikk = ({ eierId, teamNavn }: BrukerStatistikkProps) =>
 	}
 
 	return (
-		<VStack gap={{ xs: 'space-16', md: 'space-24' }}>
+		<VStack gap={{ xs: 'space-16', md: 'space-24' }} className="statistikk">
 			<BodyShort>
 				{teamNavn
 					? `Statistikk over bestillingene til teamet ${teamNavn}, som du representerer nå.`

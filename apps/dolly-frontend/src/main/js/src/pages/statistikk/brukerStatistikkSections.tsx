@@ -96,7 +96,7 @@ export const PeriodeSection = ({
 		>
 			<VStack gap="space-24">
 				<VStack gap="space-16">
-					<Heading id={headingId} level="2" size="small">
+					<Heading id={headingId} level="2" size="medium">
 						Bestillinger per år
 					</Heading>
 					<VStack gap="space-8">
@@ -192,7 +192,7 @@ export const ChartSection = ({
 }: ChartSectionProps) => (
 	<PanelDel>
 		<VStack gap="space-16">
-			<Heading level="3" size="xsmall">
+			<Heading level="3" size="small">
 				{title}
 			</Heading>
 			{description && <BodyShort>{description}</BodyShort>}
@@ -232,7 +232,7 @@ export const FagsystemDetaljerSection = ({
 }: FagsystemDetaljerSectionProps) => (
 	<PanelDel>
 		<VStack gap="space-16">
-			<Heading level="3" size="xsmall">
+			<Heading level="3" size="small">
 				{title}
 			</Heading>
 			<BodyShort>
@@ -294,7 +294,7 @@ export const TrendSection = ({
 }: TrendSectionProps) => (
 	<DashboardSectionCard>
 		<VStack gap="space-16">
-			<Heading level="2" size="small">
+			<Heading level="2" size="medium">
 				Utvikling over tid
 			</Heading>
 			<DashboardSelectButtons

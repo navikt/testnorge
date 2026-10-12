@@ -1,6 +1,7 @@
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BrukerStatistikk } from './BrukerStatistikk'
+import './Statistikk.less'
 
 export default () => {
 	const { currentBruker } = useCurrentBruker()
