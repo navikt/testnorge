@@ -9,11 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 public class TypeStatusIdenterUtility {
 
     protected static void insertArtifact(Map<String, Map<String, Set<String>>> typeStatusIdents,
-                                       String type, String status, String ident) {
+                                         String type, String status, String ident) {
 
         typeStatusIdents.computeIfAbsent(type, _ -> new HashMap<>())
                 .computeIfAbsent(status, _ -> new HashSet<>())
@@ -63,8 +64,10 @@ public class TypeStatusIdenterUtility {
                 .map(typeEntry -> typeEntry.getValue().entrySet().stream()
                         .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
                         .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding("Feil: %s: %s".formatted(typeEntry.getKey().trim(), statusEntry.getKey()
-                                        .replaceAll("Feil.\\s*", "")))
+                                .melding(isNotBlank(typeEntry.getKey().trim()) ?
+                                        "Feil: %s: %s".formatted(typeEntry.getKey().trim(), statusEntry.getKey()
+                                                .replaceAll("Feil.\\s*", "")) :
+                                        statusEntry.getKey())
                                 .identer(statusEntry.getValue().stream().toList())
                                 .build())
                         .toList())

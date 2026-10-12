@@ -119,6 +119,22 @@ class BestillingHenvendelseStatusMapperTest {
         assertThat(reports.getFirst().getStatuser().getFirst().getIdenter()).containsExactly("IDENT_1");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Feil= Henvendelse er kun støttet ved legg-til/endre",
+            "Feil= Henvendelse ikke sendt; gruppe mangler tag SALESFORCE"
+    })
+    void shouldDecodeUntypedErrorsWithoutAddingTypePrefix(String status) {
+
+        var reports = BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap(
+                List.of(progress("IDENT_1", status)));
+
+        assertThat(reports.getFirst().getStatuser()).singleElement().satisfies(result -> {
+            assertThat(result.getMelding()).isEqualTo(status.replace('=', ':').replace(';', ','));
+            assertThat(result.getIdenter()).containsExactly("IDENT_1");
+        });
+    }
+
     private static BestillingProgress progress(String ident, String status) {
 
         return BestillingProgress.builder()

@@ -35,15 +35,13 @@ public class HenvendelseResponse {
         private String henvendelseType;
         private String fnr;
         private String aktorId;
+        private String kjedeId;
         private LocalDateTime avsluttetDato;
         private LocalDateTime kasseringsDato;
         private String avsluttetAv;
-        private String sattTilSladdingAv;
-        private Boolean sladding;
-        private Boolean feilsendt;
-        private String kjedeId;
-        private String gjeldendeTemagruppe;
-        private String gjeldendeTema;
+
+        @Builder.Default
+        private List<Meldinger> meldinger = new ArrayList<>();
     }
 
     @Data
@@ -52,5 +50,6 @@ public class HenvendelseResponse {
     @AllArgsConstructor
     public static class Meldinger {
 
+        private String meldingsId;
     }
 }

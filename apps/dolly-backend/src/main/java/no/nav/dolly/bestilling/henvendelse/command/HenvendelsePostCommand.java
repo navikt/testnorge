@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @RequiredArgsConstructor
 public class HenvendelsePostCommand implements Callable<Mono<HenvendelseResponse>> {
@@ -39,12 +41,18 @@ public class HenvendelsePostCommand implements Callable<Mono<HenvendelseResponse
                 .header("x-correlation-id", "Dolly-" + UUID.randomUUID())
                 .bodyValue(henvendelse)
                 .retrieve()
-                .toBodilessEntity()
-                .map(response ->
-                        HenvendelseResponse.builder()
-                                .status(HttpStatus.valueOf(response.getStatusCode().value()))
-                                .type(henvendelse.getType())
-                                .build())
+                .toEntity(HenvendelseResponse.class)
+                .map(response -> {
+                    if (nonNull(response.getBody())) {
+                        response.getBody().setStatus(HttpStatus.valueOf(response.getStatusCode().value()));
+                        response.getBody().setType(henvendelse.getType());
+                        return response.getBody();
+                    }
+                    return HenvendelseResponse.builder()
+                            .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                            .type(henvendelse.getType())
+                            .build();
+                })
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);

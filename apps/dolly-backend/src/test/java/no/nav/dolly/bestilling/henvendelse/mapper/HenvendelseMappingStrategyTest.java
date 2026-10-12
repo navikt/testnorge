@@ -60,8 +60,13 @@ class HenvendelseMappingStrategyTest {
     @Test
     void shouldMapSamtalereferatAndPreserveExplicitEnhet() {
 
-        var source = new RsHenvendelse.Samtalereferat(
-                "ARBD", "DAG", EXPLICIT_ENHET, "call summary", "summary-chain");
+        var source = RsHenvendelse.Samtalereferat.builder()
+                .temagruppe("ARBD")
+                .tema("DAG")
+                .enhet(EXPLICIT_ENHET)
+                .fritekst("call summary")
+                .kjedeId("summary-chain")
+                .build();
 
         var result = mapperFacade.map(source, HenvendelseSamtalereferatRequest.class, context);
 

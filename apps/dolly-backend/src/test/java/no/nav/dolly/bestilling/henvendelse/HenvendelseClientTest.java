@@ -89,11 +89,16 @@ class HenvendelseClientTest {
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
                 List.of(melding()),
-                List.of(new RsHenvendelse.Samtalereferat("tema", "tema", null, "referattekst", null))));
+                List.of(RsHenvendelse.Samtalereferat.builder()
+                        .temagruppe("tema").tema("tema").fritekst("referattekst").build())));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(true, true)));
         when(norg2Consumer.getNorgEnhet("0301"))
                 .thenReturn(Mono.just(Norg2EnhetResponse.builder().enhetNr(ENHET).build()));
+        when(henvendelseConsumer.getHenvendelse(AKTOR_ID))
+                .thenReturn(Mono.just(HenvendelseResponse.builder().build()));
+        when(transactionHelperService.persister(progress.getBestillingId(), bestilling))
+                .thenReturn(Mono.empty());
         when(mapperFacade.map(any(RsHenvendelse.Melding.class), eq(HenvendelseMeldingRequest.class), any(MappingContext.class)))
                 .thenAnswer(invocation -> {
                     var melding = (RsHenvendelse.Melding) invocation.getArgument(0);
@@ -127,10 +132,12 @@ class HenvendelseClientTest {
                         Mono.just(HenvendelseResponse.builder()
                                 .status(HttpStatus.OK)
                                 .type("MELDING")
+                                .meldinger(List.of(new HenvendelseResponse.Meldinger("melding-id")))
                                 .build()),
                         Mono.just(HenvendelseResponse.builder()
                                 .status(HttpStatus.OK)
                                 .type("SAMTALEREFERAT")
+                                .meldinger(List.of(new HenvendelseResponse.Meldinger("referat-id")))
                                 .build()));
         when(transactionHelperService.persister(eq(progress), any(), anyString()))
                 .thenReturn(Mono.just(progress));
@@ -145,6 +152,9 @@ class HenvendelseClientTest {
 
         verify(personServiceConsumer).getPdlPersoner(List.of(IDENT));
         verify(norg2Consumer).getNorgEnhet("0301");
+        assertThat(bestilling.getHenvendelse().getMeldinger().getFirst().getMeldingsId()).isEqualTo("melding-id");
+        assertThat(bestilling.getHenvendelse().getSamtalereferater().getFirst().getMeldingsId()).isEqualTo("referat-id");
+        verify(transactionHelperService).persister(progress.getBestillingId(), bestilling);
         var requestCaptor = ArgumentCaptor.forClass(HenvendelseSamtalereferatRequest.class);
         verify(henvendelseConsumer, times(2)).sendHenvendelse(requestCaptor.capture());
         assertThat(requestCaptor.getAllValues())
@@ -175,6 +185,10 @@ class HenvendelseClientTest {
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(true, false)));
+        when(henvendelseConsumer.getHenvendelse(AKTOR_ID))
+                .thenReturn(Mono.just(HenvendelseResponse.builder().build()));
+        when(transactionHelperService.persister(progress.getBestillingId(), bestilling))
+                .thenReturn(Mono.empty());
         when(mapperFacade.map(any(RsHenvendelse.Melding.class), eq(HenvendelseMeldingRequest.class), any(MappingContext.class)))
                 .thenAnswer(invocation -> {
                     var context = (MappingContext) invocation.getArgument(2);
@@ -220,6 +234,8 @@ class HenvendelseClientTest {
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(pdlPersonBolk(false, false)));
+        when(transactionHelperService.persister(progress.getBestillingId(), bestilling))
+                .thenReturn(Mono.empty());
         when(transactionHelperService.persister(eq(progress), any(), anyString()))
                 .thenReturn(Mono.just(progress));
 
@@ -238,22 +254,27 @@ class HenvendelseClientTest {
     }
 
     @Test
-    void shouldSkipCreationWhenPersonIsNotTaggedForSalesforce() {
+    void shouldPersistErrorWhenPersonIsNotTaggedForSalesforce() {
 
         var bestilling = bestillingMedHenvendelse(new RsHenvendelse(
                 List.of(melding()),
                 List.of()));
 
+        var progress = new BestillingProgress();
+        when(transactionHelperService.persister(eq(progress), any(), anyString()))
+                .thenReturn(Mono.just(progress));
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
-                        DollyPerson.builder().ident(IDENT).build(),
-                        new BestillingProgress(),
+                        DollyPerson.builder().ident(IDENT).isLeggTil(true).build(),
+                        progress,
                         true))
+                .expectNext(progress)
                 .verifyComplete();
 
         verify(personServiceConsumer, never()).getPdlPersoner(anyList());
         verify(henvendelseConsumer, never()).sendHenvendelse(any());
-        verify(transactionHelperService, never()).persister(any(), any(), anyString());
+        verify(transactionHelperService).persister(eq(progress), any(),
+                eq("Feil= Henvendelse ikke sendt; gruppe mangler tag SALESFORCE"));
     }
 
     @Test
@@ -266,6 +287,8 @@ class HenvendelseClientTest {
                 List.of()));
         when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
                 .thenReturn(Flux.just(PdlPersonBolk.builder().build()));
+        when(transactionHelperService.persister(progress.getBestillingId(), bestilling))
+                .thenReturn(Mono.empty());
         when(transactionHelperService.persister(eq(progress), any(), anyString()))
                 .thenReturn(Mono.just(progress));
 
@@ -281,6 +304,64 @@ class HenvendelseClientTest {
         verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
         assertThat(statusCaptor.getAllValues())
                 .containsExactly(getInfoVenter(HENVENDELSE.getBeskrivelse()), "");
+    }
+
+    @Test
+    void shouldPersistErrorForNewPersonInsteadOfSendingHenvendelse() {
+
+        var progress = new BestillingProgress();
+        var bestilling = bestillingMedHenvendelse(RsHenvendelse.builder()
+                .meldinger(List.of(melding())).build());
+        var person = salesforcePerson();
+        person.setLeggTil(false);
+        when(transactionHelperService.persister(eq(progress), any(), anyString()))
+                .thenReturn(Mono.just(progress));
+
+        StepVerifier.create(henvendelseClient.gjenopprett(bestilling, person, progress, true))
+                .expectNext(progress)
+                .verifyComplete();
+
+        verify(personServiceConsumer, never()).getPdlPersoner(anyList());
+        verify(henvendelseConsumer, never()).sendHenvendelse(any());
+        verify(transactionHelperService).persister(eq(progress), any(),
+                eq("Feil= Henvendelse er kun støttet ved legg-til/endre"));
+    }
+
+    @Test
+    void shouldSkipSendingPreviouslyCreatedMessageOnRecreation() {
+
+        var progress = new BestillingProgress();
+        var melding = melding();
+        melding.setMeldingsId("existing-id");
+        var bestilling = bestillingMedHenvendelse(RsHenvendelse.builder()
+                .meldinger(List.of(melding)).build());
+        var request = new HenvendelseMeldingRequest();
+        request.setType("melding");
+        when(personServiceConsumer.getPdlPersoner(List.of(IDENT)))
+                .thenReturn(Flux.just(pdlPersonBolk(true, false)));
+        when(henvendelseConsumer.getHenvendelse(AKTOR_ID))
+                .thenReturn(Mono.just(HenvendelseResponse.builder()
+                        .data(List.of(HenvendelseResponse.Info.builder()
+                                .meldinger(List.of(new HenvendelseResponse.Meldinger("existing-id")))
+                                .build()))
+                        .build()));
+        when(mapperFacade.map(eq(melding), eq(HenvendelseMeldingRequest.class), any(MappingContext.class)))
+                .thenReturn(request);
+        when(transactionHelperService.persister(eq(progress), any(), anyString()))
+                .thenReturn(Mono.just(progress));
+        when(transactionHelperService.persister(progress.getBestillingId(), bestilling))
+                .thenReturn(Mono.empty());
+        var person = salesforcePerson();
+        person.setLeggTil(false);
+
+        StepVerifier.create(henvendelseClient.gjenopprett(bestilling, person, progress, false))
+                .expectNext(progress)
+                .verifyComplete();
+
+        verify(henvendelseConsumer, never()).sendHenvendelse(any());
+        verify(transactionHelperService).persister(eq(progress), any(), eq("melding: OK"));
+        verify(transactionHelperService).persister(progress.getBestillingId(), bestilling);
+        assertThat(melding.getMeldingsId()).isEqualTo("existing-id");
     }
 
     @Test
@@ -332,6 +413,7 @@ class HenvendelseClientTest {
         return DollyPerson.builder()
                 .ident(IDENT)
                 .tags(List.of(Tags.SALESFORCE))
+                .isLeggTil(true)
                 .build();
     }
 

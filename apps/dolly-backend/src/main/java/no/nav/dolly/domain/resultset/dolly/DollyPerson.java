@@ -26,6 +26,8 @@ public class DollyPerson {
     private Testident.Master master;
     private boolean isOrdre;
 
+    private boolean isLeggTil;
+
     private Bruker bruker;
 
     public List<Tags> getTags() {

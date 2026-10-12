@@ -56,6 +56,9 @@ public class HenvendelseClient implements ClientRegister {
 
             return Mono.empty();
 
+        } else if (isOpprettEndre && !dollyPerson.isLeggTil()) {
+            return oppdaterStatus(progress, ErrorStatusDecoder.encodeStatus("Feil: Henvendelse er kun støttet ved legg-til/endre"));
+
         } else if (!dollyPerson.isSalesForce()) {
             return oppdaterStatus(progress, ErrorStatusDecoder.encodeStatus("Feil: Henvendelse ikke sendt; gruppe mangler tag SALESFORCE"));
         }
@@ -68,23 +71,49 @@ public class HenvendelseClient implements ClientRegister {
                         Mono.zip(getAktorId(personbolk)
                                         .next(),
                                 getNorgEnhet(personbolk)))
+                .flatMap(tuple -> Mono.zip(
+                        Mono.just(tuple.getT1()),
+                        Mono.just(tuple.getT2()),
+                        henvendelseConsumer.getHenvendelse(tuple.getT1())))
                 .flatMapMany(tuple -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("aktorId", tuple.getT1());
                     context.setProperty("enhet", tuple.getT2());
                     return Flux.merge(
                             Flux.fromIterable(bestilling.getHenvendelse().getMeldinger())
-                                    .map(melding -> mapperFacade.map(melding, HenvendelseMeldingRequest.class, context)),
+                                    .flatMap(melding -> Mono.zip(
+                                            Mono.just(mapperFacade.map(melding, HenvendelseMeldingRequest.class, context)),
+                                            Mono.just(melding),
+                                            Mono.just(tuple.getT3()))),
                             Flux.fromIterable(bestilling.getHenvendelse().getSamtalereferater())
-                                    .map(referat -> mapperFacade.map(referat, HenvendelseSamtalereferatRequest.class, context)));
+                                    .flatMap(referat -> Mono.zip(
+                                            Mono.just(mapperFacade.map(referat, HenvendelseSamtalereferatRequest.class, context)),
+                                            Mono.just(referat),
+                                            Mono.just(tuple.getT3()))));
                 })
-                .flatMap(henvendelseConsumer::sendHenvendelse)
-                .map(status -> status.getStatus().is2xxSuccessful() ?
-                        "%s: OK".formatted(status.getType()) :
-                        "%s: Feil= %s".formatted(
-                                status.getType(), ErrorStatusDecoder.encodeStatus(status.getFeilmelding())))
+                .flatMap(tuple -> {
+
+                    if (tuple.getT3().getData().stream()
+                            .noneMatch(data -> data.getMeldinger().getFirst().getMeldingsId().equals(tuple.getT2().getMeldingsId()))) {
+
+                        return henvendelseConsumer.sendHenvendelse(tuple.getT1())
+                                .map(status -> {
+                                    if (status.getStatus().is2xxSuccessful()) {
+                                        tuple.getT2().setMeldingsId(status.getMeldinger().getFirst().getMeldingsId());
+                                        return "%s: OK".formatted(status.getType());
+                                    } else {
+                                        return "%s: Feil= %s".formatted(
+                                                status.getType(), ErrorStatusDecoder.encodeStatus(status.getFeilmelding()));
+                                    }
+                                });
+                    } else {
+                        return Mono.just("%s: OK".formatted(tuple.getT1().getType()));
+                    }
+                })
                 .distinct()
                 .collect(Collectors.joining(", "))
+                .flatMap(status -> transactionHelperService.persister(progress.getBestillingId(), bestilling)
+                        .thenReturn(status))
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
 

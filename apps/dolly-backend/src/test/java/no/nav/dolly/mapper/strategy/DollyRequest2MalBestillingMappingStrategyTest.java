@@ -1108,8 +1108,13 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         return RsDollyUtvidetBestilling.builder()
                 .henvendelse(RsHenvendelse.builder()
                         .meldinger(List.of(melding))
-                        .samtalereferater(List.of(new RsHenvendelse.Samtalereferat(
-                                "ARBD", "DAG", "0315", fritekst, "referat-" + fritekst)))
+                        .samtalereferater(List.of(RsHenvendelse.Samtalereferat.builder()
+                                .temagruppe("ARBD")
+                                .tema("DAG")
+                                .enhet("0315")
+                                .fritekst(fritekst)
+                                .kjedeId("referat-" + fritekst)
+                                .build()))
                         .build())
                 .build();
     }

@@ -99,7 +99,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                 .flatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
                 .flatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
-                .flatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                .flatMap(progress -> opprettDollyPersonLeggTil(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
                 .flatMap(tuple -> (!tuple.getT1().getIdent().equals(testident.getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))

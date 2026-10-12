@@ -52,5 +52,7 @@ public class RsHenvendelse {
 
         @Schema(description = "Referanse når dette er fortsettelse av en tidligere melding")
         private String kjedeId;
+
+        private String meldingsId;
     }
 }

@@ -30,11 +30,9 @@ public final class BestillingHenvendelseStatusMapper extends TypeStatusIdenterUt
                         entry -> {
                             if (isNotBlank(entry)) {
                                 var typeStatus = entry.split(":", 2);
-                                if (typeStatus.length == 2) {
-                                    var type = typeStatus[0].trim();
-                                    var status = decodeMsg(typeStatus[1]);
-                                    insertArtifact(typeStatusIdents, type, status, progress.getIdent());
-                                }
+                                var type = typeStatus.length > 1 ? typeStatus[0] : "";
+                                var status = decodeMsg(typeStatus.length > 1 ? typeStatus[1] : typeStatus[0]);
+                                insertArtifact(typeStatusIdents, type, status, progress.getIdent());
                             }
                         });
             }
