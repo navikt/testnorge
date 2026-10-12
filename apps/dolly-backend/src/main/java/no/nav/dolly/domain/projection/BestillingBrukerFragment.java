@@ -26,6 +26,8 @@ public class BestillingBrukerFragment {
     private Integer antall;
     private String bestillingtype;
 
+    private Integer antalltestnorge;
+
     private List<BestillingProgress> progresser;
     private Map<String, String> organisasjoner;
 }

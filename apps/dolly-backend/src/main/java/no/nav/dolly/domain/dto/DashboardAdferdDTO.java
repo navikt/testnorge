@@ -16,6 +16,13 @@ import java.util.Map;
 public class DashboardAdferdDTO {
 
     private LocalDate dato;
+
+    private Long antallNyeBestillinger;
+    private Integer antallNyePersoner;
+
+    private Integer andelOpprettedeDollyPersoner;
+    private Integer andelImporterteTestnorgePersoner;
+
     private List<Entry> kriterier;
 
     @Data

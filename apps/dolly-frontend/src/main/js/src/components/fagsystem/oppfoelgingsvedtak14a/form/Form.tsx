@@ -25,6 +25,14 @@ export const Oppfoelgingsvedtak14aForm = () => {
 	}, [])
 
 	const veileder = formMethods.watch(`${oppfoelgingsvedtak14aPath}.veilederIdent`)
+	const innsatsgruppe = formMethods.watch(`${oppfoelgingsvedtak14aPath}.innsatsgruppe`)
+
+	useEffect(() => {
+		if (innsatsgruppe === 'LITEN_MULIGHET_TIL_A_JOBBE') {
+			formMethods.setValue(`${oppfoelgingsvedtak14aPath}.hovedmal`, null)
+			formMethods.clearErrors(`${oppfoelgingsvedtak14aPath}.hovedmal`)
+		}
+	}, [innsatsgruppe])
 
 	const { options: innsatsgruppeOptions, loading: innsatsgruppeLoading } =
 		useKodeverkOppfoelgingsvedtak14a('innsatsgruppe')
@@ -54,7 +62,7 @@ export const Oppfoelgingsvedtak14aForm = () => {
 						label="Hovedmål"
 						options={hovedmalOptions}
 						isLoading={hovedmalLoading}
-						isClearable={false}
+						isDisabled={innsatsgruppe === 'LITEN_MULIGHET_TIL_A_JOBBE'}
 					/>
 					<FormDatepicker
 						name={`${oppfoelgingsvedtak14aPath}.vedtakFattet`}
@@ -94,7 +102,11 @@ Oppfoelgingsvedtak14aForm.validation = {
 		'$oppfoelgingsvedtak14a',
 		Yup.object({
 			innsatsgruppe: requiredString,
-			hovedmal: requiredString,
+			hovedmal: Yup.string().when('innsatsgruppe', {
+				is: 'LITEN_MULIGHET_TIL_A_JOBBE',
+				then: () => Yup.string().nullable(),
+				otherwise: () => requiredString,
+			}),
 			vedtakFattet: Yup.date().nullable(),
 			oppfolgingsEnhet: Yup.string().nullable(),
 			begrunnelse: Yup.string().nullable(),
