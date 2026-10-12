@@ -108,13 +108,11 @@ describe('BrukerStatistikk', () => {
 		render(<BrukerStatistikk eierId="bruker-1" />)
 
 		expect(screen.getByText(/Klarte ikke å hente detaljer for valgt måned/)).toBeInTheDocument()
-		expect(screen.getAllByText('17')).toHaveLength(2)
+		expect(screen.getAllByText('17')).toHaveLength(1)
 		expect(screen.getAllByText('–')).toHaveLength(2)
 		expect(screen.queryByText('Ingen')).toBeNull()
-		expect(screen.queryByRole('heading', { name: 'Fagsystem i august 2026' })).toBeNull()
-		expect(
-			screen.queryByRole('heading', { name: 'Detaljer per fagsystem i august 2026' }),
-		).toBeNull()
+		expect(screen.queryByRole('heading', { name: 'Fagsystem i aug. 2026' })).toBeNull()
+		expect(screen.queryByRole('heading', { name: 'Detaljer per fagsystem i aug. 2026' })).toBeNull()
 		expect(screen.getByRole('heading', { name: 'Utvikling over tid' })).toBeInTheDocument()
 	})
 
@@ -142,21 +140,18 @@ describe('BrukerStatistikk', () => {
 
 		expect(useBrukerBestillingerDetaljert).toHaveBeenLastCalledWith('bruker-1', 2026, 'AUGUST')
 		expect(useBrukerBestillingerOversikt).toHaveBeenLastCalledWith('bruker-1')
-		const maanedRegion = within(screen.getByRole('region', { name: 'Bestillinger i august 2026' }))
-		const aarRegion = within(screen.getByRole('region', { name: 'Bestillinger per år' }))
+		const periodeRegion = within(screen.getByRole('region', { name: 'Bestillinger per år' }))
 		expect(
-			aarRegion.getByRole('region', { name: 'Bestillinger i august 2026' }),
-		).toBeInTheDocument()
-		expect(aarRegion.queryByRole('heading', { name: 'Utvikling over tid' })).toBeNull()
-		expect(
-			maanedRegion.getByRole('heading', { name: 'Fagsystem i august 2026' }),
+			periodeRegion.getByRole('heading', { name: 'Fagsystem i aug. 2026' }),
 		).toBeInTheDocument()
 		expect(
-			maanedRegion.getByRole('heading', { name: 'Detaljer per fagsystem i august 2026' }),
+			periodeRegion.getByRole('heading', { name: 'Detaljer per fagsystem i aug. 2026' }),
 		).toBeInTheDocument()
-		expect(maanedRegion.queryByRole('heading', { name: 'Utvikling over tid' })).toBeNull()
-		expect(maanedRegion.queryByRole('heading', { name: 'Bestillinger per år' })).toBeNull()
-		expect(screen.getAllByText('17')).toHaveLength(2)
+		expect(periodeRegion.queryByRole('heading', { name: 'Utvikling over tid' })).toBeNull()
+		expect(screen.getByRole('radio', { name: 'aug. 2026' }).getAttribute('aria-checked')).toBe(
+			'true',
+		)
+		expect(screen.getAllByText('17')).toHaveLength(1)
 		expect(screen.getByText('Fagsystem brukt')).toBeInTheDocument()
 		expect(screen.getByText('3')).toBeInTheDocument()
 		expect(screen.getAllByText('Persondata (PDL)').length).toBeGreaterThan(0)
@@ -208,20 +203,20 @@ describe('BrukerStatistikk', () => {
 
 		render(<BrukerStatistikk eierId="bruker-1" />)
 
-		const maanedRegion = within(screen.getByRole('region', { name: 'Bestillinger i oktober 2026' }))
-		expect(maanedRegion.getByText('Opprettet i Dolly').nextSibling?.textContent).toBe('15')
-		expect(maanedRegion.getByText('Importert fra Testnorge').nextSibling?.textContent).toBe('3')
+		const periodeRegion = within(screen.getByRole('region', { name: 'Bestillinger per år' }))
+		expect(periodeRegion.getByText('Opprettet i Dolly').nextSibling?.textContent).toBe('15')
+		expect(periodeRegion.getByText('Importert fra Testnorge').nextSibling?.textContent).toBe('3')
 		expect(
-			maanedRegion.getByRole('heading', { name: 'Nye personer per dag i oktober 2026' }),
+			periodeRegion.getByRole('heading', { name: 'Nye personer per dag i okt. 2026' }),
 		).toBeInTheDocument()
 		expect(
-			maanedRegion.getByText(
+			periodeRegion.getByText(
 				'Nye personer per dag fordelt på opprettet i Dolly og importert fra Testnorge',
 			),
 		).toBeInTheDocument()
-		expect(maanedRegion.getByText('Skattekort')).toBeInTheDocument()
-		expect(maanedRegion.queryByRole('button', { name: 'Skattekort' })).toBeNull()
-		expect(maanedRegion.getByRole('button', { name: 'Persondata (PDL)' })).toBeInTheDocument()
+		expect(periodeRegion.getByText('Skattekort')).toBeInTheDocument()
+		expect(periodeRegion.queryByRole('button', { name: 'Skattekort' })).toBeNull()
+		expect(periodeRegion.getByRole('button', { name: 'Persondata (PDL)' })).toBeInTheDocument()
 	})
 
 	it('should show yearly totals that follow the year and ignore the month selection', async () => {
@@ -257,30 +252,37 @@ describe('BrukerStatistikk', () => {
 
 		render(<BrukerStatistikk eierId="bruker-1" />)
 
-		const aarPanel = () =>
-			within(
-				screen.getByRole('heading', { name: /^(Hittil i|Hele) \d{4}$/ })
-					.parentElement as HTMLElement,
-			)
+		const erValgt = (navn: string) =>
+			screen.getByRole('radio', { name: navn }).getAttribute('aria-checked') === 'true'
 
-		expect(screen.getByRole('heading', { name: 'Hittil i 2026' })).toBeInTheDocument()
-		expect(aarPanel().getByText('18')).toBeInTheDocument()
-		expect(aarPanel().getByText('Februar')).toBeInTheDocument()
+		expect(erValgt('sep. 2026')).toBe(true)
+		expect(screen.queryByText('Aktive måneder')).toBeNull()
 
-		await userEvent.click(screen.getByRole('button', { name: 'Februar' }))
+		await userEvent.click(screen.getByRole('radio', { name: 'Hittil i 2026' }))
 
-		expect(screen.getByRole('heading', { name: 'Bestillinger i februar 2026' })).toBeInTheDocument()
-		expect(aarPanel().getByText('18')).toBeInTheDocument()
+		expect(erValgt('Hittil i 2026')).toBe(true)
+		expect(screen.getByText('18')).toBeInTheDocument()
+		expect(screen.getByText('Februar')).toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'feb.' }))
+
+		expect(screen.getByRole('radio', { name: 'feb. 2026' })).toBeInTheDocument()
+		expect(erValgt('Hittil i 2026')).toBe(true)
+		expect(screen.getByText('18')).toBeInTheDocument()
 
 		await userEvent.click(screen.getByRole('button', { name: '2025' }))
 
-		expect(screen.getByRole('heading', { name: 'Hele 2025' })).toBeInTheDocument()
-		expect(aarPanel().getByText('45')).toBeInTheDocument()
-		expect(aarPanel().getByText('7')).toBeInTheDocument()
-		expect(aarPanel().getByText('November')).toBeInTheDocument()
-		expect(
-			screen.getByRole('heading', { name: 'Bestillinger i november 2025' }),
-		).toBeInTheDocument()
+		expect(erValgt('Hele 2025')).toBe(true)
+		expect(screen.getByText('45')).toBeInTheDocument()
+		expect(screen.getByText('7')).toBeInTheDocument()
+		expect(screen.getByText('November')).toBeInTheDocument()
+		expect(screen.getByRole('radio', { name: 'nov. 2025' })).toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('radio', { name: 'nov. 2025' }))
+
+		expect(erValgt('nov. 2025')).toBe(true)
+		expect(screen.getByText('40')).toBeInTheDocument()
+		expect(screen.queryByText('Aktive måneder')).toBeNull()
 
 		vi.useRealTimers()
 	})

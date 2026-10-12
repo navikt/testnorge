@@ -1,5 +1,5 @@
-import { Alert, BodyShort, Box, Heading, HGrid, VStack } from '@navikt/ds-react'
-import { type ReactNode, useId } from 'react'
+import { Alert, BodyShort, Box, Heading, HGrid, ToggleGroup, VStack } from '@navikt/ds-react'
+import { type ReactNode, useId, useState } from 'react'
 import { type Options } from 'highcharts'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import {
@@ -42,24 +42,46 @@ const PanelDel = ({ children }: { children: ReactNode }) => (
 	</Box>
 )
 
-interface AarSectionProps {
+type NoekkeltallVisning = 'aar' | 'maaned'
+
+interface PeriodeSectionProps {
 	aarOptions: string[]
 	valgtAar: string
 	onAarChange: (aar: string) => void
 	aarSammendrag: AarSammendrag | null
 	aarSammendragTittel: string
+	maanedOptions: DashboardSelectOption[]
+	valgtPeriodeKey: string
+	onPeriodeChange: (periodeKey: string) => void
+	valgtPunkt: MaanedPunkt
+	valgtMaanedTekst: string
+	mestBrukteFagsystem: string | null
+	antallFagsystemer: number
+	isLoadingDetaljert: boolean
+	detaljerFeil: Error | undefined
 	children: ReactNode
 }
 
-export const AarSection = ({
+export const PeriodeSection = ({
 	aarOptions,
 	valgtAar,
 	onAarChange,
 	aarSammendrag,
 	aarSammendragTittel,
+	maanedOptions,
+	valgtPeriodeKey,
+	onPeriodeChange,
+	valgtPunkt,
+	valgtMaanedTekst,
+	mestBrukteFagsystem,
+	antallFagsystemer,
+	isLoadingDetaljert,
+	detaljerFeil,
 	children,
-}: AarSectionProps) => {
+}: PeriodeSectionProps) => {
 	const headingId = useId()
+	const [noekkeltallVisning, setNoekkeltallVisning] = useState<NoekkeltallVisning>('maaned')
+	const skjulDetaljverdier = isLoadingDetaljert || Boolean(detaljerFeil)
 
 	return (
 		<Box
@@ -74,26 +96,42 @@ export const AarSection = ({
 		>
 			<VStack gap="space-24">
 				<VStack gap="space-16">
+					<Heading id={headingId} level="2" size="small">
+						Bestillinger per år
+					</Heading>
 					<VStack gap="space-8">
-						<Heading id={headingId} level="2" size="small">
-							Bestillinger per år
-						</Heading>
-						<BodyShort size="small" textColor="subtle">
-							Året du velger styrer månedene under.
-						</BodyShort>
+						<DashboardSelectButtons
+							label="År"
+							selected={valgtAar}
+							onSelect={onAarChange}
+							options={aarOptions.map((aar) => ({ value: aar, label: aar }))}
+						/>
+						<DashboardSelectButtons
+							label="Måned"
+							selected={valgtPeriodeKey}
+							onSelect={onPeriodeChange}
+							options={maanedOptions}
+						/>
 					</VStack>
-					<DashboardSelectButtons
-						label="År"
-						selected={valgtAar}
-						onSelect={onAarChange}
-						options={aarOptions.map((aar) => ({ value: aar, label: aar }))}
-					/>
-					{aarSammendrag && (
+					{detaljerFeil && (
+						<Alert variant="error">
+							Klarte ikke å hente detaljer for valgt måned: {detaljerFeil.message}
+						</Alert>
+					)}
+					<Box maxWidth="20rem">
+						<ToggleGroup
+							label="Vis nøkkeltall for"
+							size="small"
+							fill
+							value={noekkeltallVisning}
+							onChange={(verdi) => setNoekkeltallVisning(verdi as NoekkeltallVisning)}
+						>
+							<ToggleGroup.Item value="maaned" label={valgtMaanedTekst} />
+							<ToggleGroup.Item value="aar" label={aarSammendragTittel} />
+						</ToggleGroup>
+					</Box>
+					{noekkeltallVisning === 'aar' && aarSammendrag ? (
 						<VStack gap="space-8">
-							<Heading level="3" size="xsmall">
-								{aarSammendragTittel}
-							</Heading>
-							<PersonKpiRad fordeling={aarSammendrag} />
 							<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
 								<DashboardKpiCard label="Nye bestillinger" value={aarSammendrag.nyeBestillinger} />
 								<DashboardKpiCard label="Gjenopprettinger" value={aarSammendrag.gjenopprettinger} />
@@ -107,90 +145,25 @@ export const AarSection = ({
 									}
 								/>
 							</HGrid>
+							<PersonKpiRad fordeling={aarSammendrag} />
+						</VStack>
+					) : (
+						<VStack gap="space-8">
+							<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
+								<DashboardKpiCard label="Nye bestillinger" value={valgtPunkt.nyeBestillinger} />
+								<DashboardKpiCard label="Gjenopprettinger" value={valgtPunkt.gjenopprettinger} />
+								<DashboardKpiCard
+									label="Fagsystem brukt"
+									value={skjulDetaljverdier ? '–' : antallFagsystemer}
+								/>
+								<DashboardKpiCard
+									label="Mest brukte fagsystem"
+									value={skjulDetaljverdier ? '–' : (mestBrukteFagsystem ?? 'Ingen')}
+								/>
+							</HGrid>
+							<PersonKpiRad fordeling={valgtPunkt} />
 						</VStack>
 					)}
-				</VStack>
-				{children}
-			</VStack>
-		</Box>
-	)
-}
-
-interface MaanedSectionProps {
-	maanedOptions: DashboardSelectOption[]
-	valgtPeriodeKey: string
-	onPeriodeChange: (periodeKey: string) => void
-	valgtPunkt: MaanedPunkt
-	valgtMaanedTekst: string
-	mestBrukteFagsystem: string | null
-	antallFagsystemer: number
-	isLoadingDetaljert: boolean
-	detaljerFeil: Error | undefined
-	children: ReactNode
-}
-
-export const MaanedSection = ({
-	maanedOptions,
-	valgtPeriodeKey,
-	onPeriodeChange,
-	valgtPunkt,
-	valgtMaanedTekst,
-	mestBrukteFagsystem,
-	antallFagsystemer,
-	isLoadingDetaljert,
-	detaljerFeil,
-	children,
-}: MaanedSectionProps) => {
-	const headingId = useId()
-	const skjulDetaljverdier = isLoadingDetaljert || Boolean(detaljerFeil)
-
-	return (
-		<Box
-			as="section"
-			aria-labelledby={headingId}
-			borderWidth="1 0 0 0"
-			borderColor="neutral-subtle"
-			paddingBlock="space-24 space-0"
-			minWidth="0"
-		>
-			<VStack gap="space-24">
-				<VStack gap="space-16">
-					<VStack gap="space-8">
-						<Heading id={headingId} level="3" size="small">
-							Bestillinger i {valgtMaanedTekst}
-						</Heading>
-						<BodyShort size="small" textColor="subtle">
-							Tallene og grafene under gjelder måneden du velger.
-						</BodyShort>
-						<DashboardSelectButtons
-							label="Måned"
-							selected={valgtPeriodeKey}
-							onSelect={onPeriodeChange}
-							options={maanedOptions}
-							size="xsmall"
-							gap="space-4"
-						/>
-					</VStack>
-					{detaljerFeil && (
-						<Alert variant="error">
-							Klarte ikke å hente detaljer for valgt måned: {detaljerFeil.message}
-						</Alert>
-					)}
-					<VStack gap="space-8">
-						<PersonKpiRad fordeling={valgtPunkt} />
-						<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
-							<DashboardKpiCard label="Nye bestillinger" value={valgtPunkt.nyeBestillinger} />
-							<DashboardKpiCard label="Gjenopprettinger" value={valgtPunkt.gjenopprettinger} />
-							<DashboardKpiCard
-								label="Fagsystem brukt"
-								value={skjulDetaljverdier ? '–' : antallFagsystemer}
-							/>
-							<DashboardKpiCard
-								label="Mest brukte fagsystem"
-								value={skjulDetaljverdier ? '–' : (mestBrukteFagsystem ?? 'Ingen')}
-							/>
-						</HGrid>
-					</VStack>
 				</VStack>
 				{children}
 			</VStack>
@@ -219,7 +192,7 @@ export const ChartSection = ({
 }: ChartSectionProps) => (
 	<PanelDel>
 		<VStack gap="space-16">
-			<Heading level="4" size="xsmall">
+			<Heading level="3" size="xsmall">
 				{title}
 			</Heading>
 			{description && <BodyShort>{description}</BodyShort>}
@@ -259,7 +232,7 @@ export const FagsystemDetaljerSection = ({
 }: FagsystemDetaljerSectionProps) => (
 	<PanelDel>
 		<VStack gap="space-16">
-			<Heading level="4" size="xsmall">
+			<Heading level="3" size="xsmall">
 				{title}
 			</Heading>
 			<BodyShort>
@@ -282,7 +255,7 @@ export const FagsystemDetaljerSection = ({
 					/>
 					{valgChartOptions && (
 						<VStack gap="space-8">
-							<Heading level="5" size="xsmall">
+							<Heading level="4" size="xsmall">
 								Valg for {valgtFagsystemLabel}
 							</Heading>
 							<DashboardChartPanel
@@ -293,7 +266,7 @@ export const FagsystemDetaljerSection = ({
 					)}
 					{antallChartOptions && (
 						<VStack gap="space-8">
-							<Heading level="5" size="xsmall">
+							<Heading level="4" size="xsmall">
 								Oppføringer for {valgtFagsystemLabel}
 							</Heading>
 							<DashboardChartPanel

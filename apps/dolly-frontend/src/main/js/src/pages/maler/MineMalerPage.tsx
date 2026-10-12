@@ -7,11 +7,8 @@ export default () => {
 	const { currentBruker } = useCurrentBruker()
 
 	return (
-		<>
-			<h1>Mine maler</h1>
-			<ErrorBoundary>
-				<Maler brukerId={currentBruker?.brukerId} />
-			</ErrorBoundary>
-		</>
+		<ErrorBoundary>
+			<Maler brukerId={currentBruker?.brukerId} />
+		</ErrorBoundary>
 	)
 }

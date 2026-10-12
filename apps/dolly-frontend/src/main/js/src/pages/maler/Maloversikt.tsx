@@ -39,17 +39,21 @@ export default ({ brukerId }: { brukerId?: string }) => {
 		mutate: tenorsoekMutate,
 	} = useSoekMalerBruker(brukerId)
 
-	if (loading || orgLoading || tenorsoekLoading) {
-		return <Loading label="Loading" />
-	}
-
+	const isLoading = loading || orgLoading || tenorsoekLoading
 	const antallEgneMaler = egneMaler?.length
 	const antallEgneOrgMaler = egneOrgMaler?.length
 	const antallEgneTenorsoekMaler = egneTenorsoekMaler?.length
 
 	return (
 		<VStack gap="space-16" className="maloversikt">
-			<HStack justify="end">
+			<HStack
+				justify="space-between"
+				align="center"
+				gap="space-16"
+				wrap
+				className="maloversikt__header"
+			>
+				<h1>Mine maler</h1>
 				<SearchField
 					placeholder={`Søk etter mal (${shortcutKey})`}
 					setText={setSearchText}
@@ -57,7 +61,9 @@ export default ({ brukerId }: { brukerId?: string }) => {
 					data-testid={TestComponentSelectors.INPUT_MALER_SOEK}
 				/>
 			</HStack>
-			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 && antallEgneTenorsoekMaler === 0 ? (
+			{isLoading ? (
+				<Loading label="Loading" />
+			) : antallEgneMaler === 0 && antallEgneOrgMaler === 0 && antallEgneTenorsoekMaler === 0 ? (
 				<StyledAlert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.

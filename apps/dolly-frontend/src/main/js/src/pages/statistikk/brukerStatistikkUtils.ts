@@ -110,8 +110,8 @@ const storForbokstav = (tekst: string) => tekst.charAt(0).toUpperCase() + tekst.
 export const periodeVisning = (periode: Periode) =>
 	format(periodeTilDato(periode), 'MMM yyyy', { locale: nb })
 
-export const periodeVisningITekst = (periode: Periode) =>
-	format(periodeTilDato(periode), 'LLLL yyyy', { locale: nb })
+const maanedVisningKort = (periode: Periode) =>
+	format(periodeTilDato(periode), 'MMM', { locale: nb })
 
 export const maanedVisning = (periode: Periode) =>
 	storForbokstav(format(periodeTilDato(periode), 'LLLL', { locale: nb }))
@@ -180,13 +180,13 @@ export const filterMaanedPunkter = (punkter: MaanedPunkt[], scope: MonthScope) =
 
 export const toAarOptions = (aktivePerioder: MaanedPunkt[]): string[] =>
 	Array.from(new Set(aktivePerioder.map((punkt) => String(punkt.year)))).sort((a, b) =>
-		b.localeCompare(a),
+		a.localeCompare(b),
 	)
 
 export const toMaanedOptions = (aktivePerioder: MaanedPunkt[], year: number) =>
 	aktivePerioder
 		.filter((punkt) => punkt.year === year)
-		.map((punkt) => ({ value: punkt.key, label: maanedVisning(punkt) }))
+		.map((punkt) => ({ value: punkt.key, label: maanedVisningKort(punkt) }))
 
 export type AarSammendrag = {
 	year: number

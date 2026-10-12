@@ -110,8 +110,8 @@ describe('brukerStatistikkUtils', () => {
 			new Date(2026, 1, 1),
 		).filter(harAktivitet)
 
-		expect(toAarOptions(aktive)).toEqual(['2026', '2025'])
-		expect(toMaanedOptions(aktive, 2026)).toEqual([{ value: '2026-02', label: 'Februar' }])
+		expect(toAarOptions(aktive)).toEqual(['2025', '2026'])
+		expect(toMaanedOptions(aktive, 2026)).toEqual([{ value: '2026-02', label: 'feb.' }])
 	})
 
 	it('should accumulate yearly totals in one pass and pick the most active month', () => {
