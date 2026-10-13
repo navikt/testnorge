@@ -3,7 +3,6 @@ export type Inntektsinformasjon = {
 	rapporteringsdato?: Date | null
 	virksomhet: string
 	opplysningspliktig: string
-	versjon?: number | null
 	inntektsliste: Array<Inntekt>
 	fradragsliste: Array<Fradrag>
 	forskuddstrekksliste: Array<Forskudd>

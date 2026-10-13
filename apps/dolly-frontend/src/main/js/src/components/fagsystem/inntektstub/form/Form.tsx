@@ -8,11 +8,10 @@ import { Inntektsinformasjon } from './partials/inntektstubTypes'
 import { useFormContext } from 'react-hook-form'
 
 export const initialValues: Inntektsinformasjon = {
-	perioder: [''],
+	perioder: [],
 	rapporteringsdato: null,
 	virksomhet: '',
 	opplysningspliktig: '',
-	versjon: null,
 	inntektsliste: [
 		{
 			beloep: '',
