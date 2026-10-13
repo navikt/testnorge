@@ -28,6 +28,9 @@ const IdentValidatorPage = lazyWithPreload(
 	() => import('@/pages/identvalidator/IdentvalidatorPage'),
 )
 const DashboardPage = lazyWithPreload(() => import('@/pages/adminPages/Dashboard/DashboardPage'))
+const BrukeradferdPage = lazyWithPreload(
+	() => import('@/pages/adminPages/Brukeradferd/BrukeradferdPage'),
+)
 
 const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
@@ -134,6 +137,11 @@ const allRoutes = [
 		path: '/dashboard',
 		handle: { crumb: () => 'Dashboard' },
 		element: DashboardPage,
+	},
+	{
+		path: '/brukeradferd',
+		handle: { crumb: () => 'Brukeradferd' },
+		element: BrukeradferdPage,
 	},
 	{
 		path: '/nyansettelser',

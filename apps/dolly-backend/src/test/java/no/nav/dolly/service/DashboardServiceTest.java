@@ -911,6 +911,20 @@ class DashboardServiceTest {
     }
 
     @Test
+    void shouldCountBestKriterierWithLegacyStructureAsUnspecified() {
+        stubAdferd(adferdFragment(DATE_1,
+                        "{\"pdldata\":{\"person\":null},\"histark\":[{\"dokumenter\":[{\"tittel\":\"dokument.pdf\"}]}]}", 1),
+                adferdFragment(DATE_1, "{\"krrstub\":{}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    assertThat(kriterium(dto, "Uspesifisert").getAntall()).isEqualTo(1);
+                    assertThat(kriterium(dto, "Krrstub").getAntall()).isEqualTo(1);
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldGroupAdferdFragmentsByDateIntoSeparateDtos() {
         stubAdferd(adferdFragment(DATE_1, "{\"krrstub\":{}}", 1),
                 adferdFragment(DATE_2, "{\"krrstub\":{}}", 1));

@@ -4,6 +4,7 @@ import { vi } from 'vitest'
 import DollyEndpoints from '@/service/services/dolly/DollyEndpoints'
 import {
 	useBrukerBestillingerDetaljert,
+	useBrukerBestillingerDetaljertForMaaneder,
 	useBrukerBestillingerOversikt,
 } from '@/utils/hooks/useBrukerStatistikk'
 
@@ -33,6 +34,32 @@ describe('useBrukerStatistikk', () => {
 			DollyEndpoints.brukerBestillingerDetaljert(2026, 'AUGUST'),
 			'team-bruker',
 		])
+	})
+
+	it('should include the effective owner and every month in the year cache key', () => {
+		renderHook(() =>
+			useBrukerBestillingerDetaljertForMaaneder('team-bruker', [
+				{ year: 2025, month: 'MARCH' },
+				{ year: 2025, month: 'NOVEMBER' },
+			]),
+		)
+
+		expect(sisteSwrKall()[0]).toEqual([
+			'bruker-bestillinger-detaljert-maaneder',
+			'team-bruker',
+			DollyEndpoints.brukerBestillingerDetaljert(2025, 'MARCH'),
+			DollyEndpoints.brukerBestillingerDetaljert(2025, 'NOVEMBER'),
+		])
+	})
+
+	it('should not fetch year details without months or owner', () => {
+		renderHook(() => useBrukerBestillingerDetaljertForMaaneder('team-bruker', []))
+		expect(sisteSwrKall()[0]).toBeNull()
+
+		renderHook(() =>
+			useBrukerBestillingerDetaljertForMaaneder(undefined, [{ year: 2025, month: 'MARCH' }]),
+		)
+		expect(sisteSwrKall()[0]).toBeNull()
 	})
 
 	it('should not fetch before the owner is known', () => {

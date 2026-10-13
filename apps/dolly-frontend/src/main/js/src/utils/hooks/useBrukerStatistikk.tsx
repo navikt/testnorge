@@ -59,3 +59,29 @@ export const useBrukerBestillingerDetaljert = (
 		bestillingerDetaljertError: error,
 	}
 }
+
+const INGEN_DETALJER: BrukerBestillingerDTO[] = []
+
+export const useBrukerBestillingerDetaljertForMaaneder = (
+	eierId: string | undefined,
+	maaneder: { year: number; month: string }[],
+) => {
+	const urls = maaneder.map((maaned) =>
+		DollyEndpoints.brukerBestillingerDetaljert(maaned.year, maaned.month),
+	)
+	const shouldFetch = Boolean(eierId) && urls.length > 0
+	const { data, isLoading, error } = useSWR<BrukerBestillingerDTO[], Error>(
+		shouldFetch ? ['bruker-bestillinger-detaljert-maaneder', eierId as string, ...urls] : null,
+		() =>
+			Promise.all(urls.map((url) => fetcher(url, null, 60000))).then((resultater) =>
+				resultater.flatMap((rader) => rader ?? []),
+			),
+		SWR_OPTIONS,
+	)
+
+	return {
+		bestillingerDetaljert: data ?? INGEN_DETALJER,
+		loadingBestillingerDetaljert: isLoading,
+		bestillingerDetaljertError: error,
+	}
+}

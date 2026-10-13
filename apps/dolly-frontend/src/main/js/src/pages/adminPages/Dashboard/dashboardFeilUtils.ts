@@ -105,6 +105,11 @@ const maanedTilNummer = (maaned: string): number | null => {
 	return indexFraNavn === -1 ? null : indexFraNavn + 1
 }
 
+export const tilOversiktInterval = (rad: DashboardOversiktDTO): string | null => {
+	const maanedNum = maanedTilNummer(rad.maaned)
+	return maanedNum === null ? null : `${rad.aar}-${String(maanedNum).padStart(2, '0')}`
+}
+
 const tilOversiktListe = (oversikt: unknown): DashboardOversiktDTO[] => {
 	if (Array.isArray(oversikt)) {
 		return oversikt as DashboardOversiktDTO[]
@@ -148,6 +153,31 @@ export const toFeilPeriodeOptions = (oversikt: unknown): FeilPeriodeOption[] =>
 		})
 		.filter((option): option is FeilPeriodeOption => option !== null)
 		.sort((a, b) => a.interval.localeCompare(b.interval))
+
+export type FeilPeriodView = {
+	intervalOptions: { value: string; label: string }[]
+	yearOptions: string[]
+	selectedYear: string
+	monthOptions: { value: string; label: string }[]
+}
+
+export const buildFeilPeriodView = (
+	periodeOptions: FeilPeriodeOption[],
+	selectedInterval: string,
+): FeilPeriodView => {
+	const intervalOptions = periodeOptions.map((option) => ({
+		value: option.interval,
+		label: option.intervalVisning,
+	}))
+	const yearOptions = [...new Set(intervalOptions.map((option) => option.value.slice(0, 4)))].sort(
+		(a, b) => a.localeCompare(b),
+	)
+	const selectedYear = selectedInterval.slice(0, 4)
+	const monthOptions = intervalOptions
+		.filter((option) => option.value.startsWith(`${selectedYear}-`))
+		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
+	return { intervalOptions, yearOptions, selectedYear, monthOptions }
+}
 
 export type FeilDagPunkt = {
 	dag: number

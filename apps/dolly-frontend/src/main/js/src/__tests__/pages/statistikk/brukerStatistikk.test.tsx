@@ -5,12 +5,14 @@ import type { ReactNode } from 'react'
 import { BrukerStatistikk } from '@/pages/statistikk/BrukerStatistikk'
 import {
 	useBrukerBestillingerDetaljert,
+	useBrukerBestillingerDetaljertForMaaneder,
 	useBrukerBestillingerOversikt,
 } from '@/utils/hooks/useBrukerStatistikk'
 
 vi.mock('@/utils/hooks/useBrukerStatistikk', () => ({
 	useBrukerBestillingerOversikt: vi.fn(),
 	useBrukerBestillingerDetaljert: vi.fn(),
+	useBrukerBestillingerDetaljertForMaaneder: vi.fn(),
 }))
 
 vi.mock('@/pages/adminPages/Dashboard/dashboardSharedComponents', () => ({
@@ -62,7 +64,18 @@ const mockDetaljert = (bestillingerDetaljert: unknown[]) =>
 		bestillingerDetaljertError: undefined,
 	} as ReturnType<typeof useBrukerBestillingerDetaljert>)
 
+const mockDetaljertForAar = (bestillingerDetaljert: unknown[]) =>
+	vi.mocked(useBrukerBestillingerDetaljertForMaaneder).mockReturnValue({
+		bestillingerDetaljert,
+		loadingBestillingerDetaljert: false,
+		bestillingerDetaljertError: undefined,
+	} as ReturnType<typeof useBrukerBestillingerDetaljertForMaaneder>)
+
 describe('BrukerStatistikk', () => {
+	beforeEach(() => {
+		mockDetaljertForAar([])
+	})
+
 	it('should show empty state when user has no orders', () => {
 		mockOversikt([])
 		mockDetaljert([])
@@ -148,9 +161,9 @@ describe('BrukerStatistikk', () => {
 			periodeRegion.getByRole('heading', { name: 'Detaljer per fagsystem i aug. 2026' }),
 		).toBeInTheDocument()
 		expect(periodeRegion.queryByRole('heading', { name: 'Utvikling over tid' })).toBeNull()
-		expect(screen.getByRole('radio', { name: 'aug. 2026' }).getAttribute('aria-checked')).toBe(
-			'true',
-		)
+		expect(
+			screen.getByRole('radio', { name: 'Kun valgt måned' }).getAttribute('aria-checked'),
+		).toBe('true')
 		expect(screen.getAllByText('17')).toHaveLength(1)
 		expect(screen.getByText('Fagsystem brukt')).toBeInTheDocument()
 		expect(screen.getByText('3')).toBeInTheDocument()
@@ -219,7 +232,7 @@ describe('BrukerStatistikk', () => {
 		expect(periodeRegion.getByRole('button', { name: 'Persondata (PDL)' })).toBeInTheDocument()
 	})
 
-	it('should show yearly totals that follow the year and ignore the month selection', async () => {
+	it('should let the year view drive every panel and switch back on month selection', async () => {
 		vi.useFakeTimers({ toFake: ['Date'] })
 		vi.setSystemTime(new Date(2026, 9, 7))
 		mockOversikt([
@@ -255,7 +268,7 @@ describe('BrukerStatistikk', () => {
 		const erValgt = (navn: string) =>
 			screen.getByRole('radio', { name: navn }).getAttribute('aria-checked') === 'true'
 
-		expect(erValgt('sep. 2026')).toBe(true)
+		expect(erValgt('Kun valgt måned')).toBe(true)
 		expect(screen.queryByText('Aktive måneder')).toBeNull()
 
 		await userEvent.click(screen.getByRole('radio', { name: 'Hittil i 2026' }))
@@ -264,11 +277,23 @@ describe('BrukerStatistikk', () => {
 		expect(screen.getByText('18')).toBeInTheDocument()
 		expect(screen.getByText('Februar')).toBeInTheDocument()
 
-		await userEvent.click(screen.getByRole('button', { name: 'feb.' }))
+		expect(
+			screen.getByRole('heading', { name: 'Fagsystem per måned hittil i 2026' }),
+		).toBeInTheDocument()
+		expect(useBrukerBestillingerDetaljertForMaaneder).toHaveBeenLastCalledWith('bruker-1', [
+			{ year: 2026, month: 'FEBRUARY' },
+			{ year: 2026, month: 'SEPTEMBER' },
+		])
 
-		expect(screen.getByRole('radio', { name: 'feb. 2026' })).toBeInTheDocument()
-		expect(erValgt('Hittil i 2026')).toBe(true)
-		expect(screen.getByText('18')).toBeInTheDocument()
+		await userEvent.click(screen.getByRole('button', { name: 'feb., med i tidsrommet' }))
+
+		expect(erValgt('Kun valgt måned')).toBe(true)
+		expect(
+			screen.getByRole('heading', { name: 'Fagsystem per dag i feb. 2026' }),
+		).toBeInTheDocument()
+		expect(useBrukerBestillingerDetaljertForMaaneder).toHaveBeenLastCalledWith('bruker-1', [])
+
+		await userEvent.click(screen.getByRole('radio', { name: 'Hittil i 2026' }))
 
 		await userEvent.click(screen.getByRole('button', { name: '2025' }))
 
@@ -276,11 +301,19 @@ describe('BrukerStatistikk', () => {
 		expect(screen.getByText('45')).toBeInTheDocument()
 		expect(screen.getByText('7')).toBeInTheDocument()
 		expect(screen.getByText('November')).toBeInTheDocument()
-		expect(screen.getByRole('radio', { name: 'nov. 2025' })).toBeInTheDocument()
+		expect(erValgt('Kun valgt måned')).toBe(false)
+		expect(screen.getByRole('heading', { name: 'Fagsystem i 2025' })).toBeInTheDocument()
+		expect(
+			screen.getByRole('heading', { name: 'Detaljer per fagsystem i 2025' }),
+		).toBeInTheDocument()
+		expect(useBrukerBestillingerDetaljertForMaaneder).toHaveBeenLastCalledWith('bruker-1', [
+			{ year: 2025, month: 'MARCH' },
+			{ year: 2025, month: 'NOVEMBER' },
+		])
 
-		await userEvent.click(screen.getByRole('radio', { name: 'nov. 2025' }))
+		await userEvent.click(screen.getByRole('radio', { name: 'Kun valgt måned' }))
 
-		expect(erValgt('nov. 2025')).toBe(true)
+		expect(erValgt('Kun valgt måned')).toBe(true)
 		expect(screen.getByText('40')).toBeInTheDocument()
 		expect(screen.queryByText('Aktive måneder')).toBeNull()
 

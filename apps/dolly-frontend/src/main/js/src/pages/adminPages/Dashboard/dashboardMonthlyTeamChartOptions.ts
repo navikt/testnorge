@@ -8,6 +8,9 @@ const BAR_HEIGHT_PER_CATEGORY_COMPACT = 20
 const BAR_CHART_VERTICAL_PADDING = 80
 const BAR_CHART_MIN_HEIGHT = 320
 
+const escapeTekst = (tekst: string) =>
+	tekst.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+
 export const createMonthlyTeamDistributionChartOptions = (
 	teamDistributionData: TeamDistributionPoint[],
 	seriesName = 'Unike brukere',
@@ -33,7 +36,15 @@ export const createMonthlyTeamDistributionChartOptions = (
 			allowDecimals: false,
 		},
 		legend: { enabled: false },
-		tooltip: { ...TOOLTIP_OPTIONS, pointFormat: '<b>{point.y}</b>' },
+		tooltip: {
+			...TOOLTIP_OPTIONS,
+			formatter: function () {
+				const punkt = teamDistributionData[this.index]
+				if (!punkt) return ''
+				const beskrivelse = punkt.beskrivelse ? `<br/>${escapeTekst(punkt.beskrivelse)}` : ''
+				return `<b>${escapeTekst(punkt.team)}</b>${beskrivelse}<br/>${seriesName}: <b>${punkt.unikeBrukere}</b>`
+			},
+		},
 		plotOptions: {
 			bar: isCompact
 				? { ...BAR_COLUMN_PLOT_OPTIONS, pointPadding: 0.05, groupPadding: 0.07 }
