@@ -14,7 +14,6 @@ import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -34,7 +33,9 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended.SYNT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
@@ -54,9 +55,9 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                                                                    "enn fødtEtter";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
     private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
-            Identtype.NPID, 0,
-            Identtype.DNR, 1,
-            Identtype.FNR, 2
+            NPID, 0,
+            DNR, 1,
+            FNR, 2
     );
 
     private final AliasRepository aliasRepository;
@@ -74,13 +75,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
         var nyPerson = new AtomicReference<>(person);
         var nyeIdenter = mapperFacade.mapAsList(person.getPerson().getNyident(), IdentRequestDTO.class);
-        nyeIdenter.forEach(nyIdent -> {
-            nyIdent.setSyntetisk(SYNT.equals(nyIdent.getIdenttype()) || isSyntetisk(nyIdent, person.getIdent()));
-            nyIdent.setIdenttype(
-                    isNull(nyIdent.getIdenttype()) || SYNT.equals(nyIdent.getIdenttype()) ?
-                            mapperFacade.map(IdenttypeUtility.getIdenttype(person.getIdent()), IdenttypeExtended.class) :
-                            nyIdent.getIdenttype());
-        });
+        nyeIdenter.forEach(nyIdent -> nyIdent.setIdenttype(
+                nonNull(nyIdent.getIdenttype()) ? nyIdent.getIdenttype() : IdenttypeUtility.getIdenttype(person.getIdent())));
         nyeIdenter.sort(sortIdenter());
 
         return Flux.fromIterable(nyeIdenter)
@@ -139,12 +135,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
                         var nyRequest = PersonRequestDTO.builder()
                                 .eksisterendeIdent(request.getEksisterendeIdent())
-                                .identtype(mapperFacade.map(request.getIdenttype(), Identtype.class))
+                                .identtype(request.getIdenttype())
                                 .kjoenn(getKjoenn(request, person.getPerson()))
                                 .foedtEtter(getFoedtEtter(request, person.getPerson()))
                                 .foedtFoer(getFoedtFoer(request, person.getPerson()))
                                 .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
-                                .syntetisk(request.getSyntetisk())
+                                .syntetisk(isSyntetisk(request, person.getIdent()))
                                 .id2032(nonNull(request.getId2032()) ? request.getId2032() : person.getPerson().getId2032())
                                 .build();
 
@@ -219,6 +215,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private Comparator<IdentRequestDTO> sortIdenter() {
 
         return Comparator.comparingInt(identRequest ->
-                IDENT_PRIORITET.get(mapperFacade.map(identRequest.getIdenttype(), Identtype.class)));
+                IDENT_PRIORITET.get(identRequest.getIdenttype()));
     }
 }

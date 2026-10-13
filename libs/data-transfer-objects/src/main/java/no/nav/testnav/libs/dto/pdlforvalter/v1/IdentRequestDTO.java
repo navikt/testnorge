@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class IdentRequestDTO extends DbVersjonDTO {
 
     // All fields are optional
-    private IdenttypeExtended identtype;
+    private Identtype identtype;
     private KjoennDTO.Kjoenn kjoenn;
     private LocalDateTime foedtEtter;
     private LocalDateTime foedtFoer;
@@ -43,12 +43,5 @@ public class IdentRequestDTO extends DbVersjonDTO {
     @Override
     public String getIdentForRelasjon() {
         return eksisterendeIdent;
-    }
-
-    public enum IdenttypeExtended {
-        SYNT,
-        FNR,
-        DNR,
-        NPID
     }
 }

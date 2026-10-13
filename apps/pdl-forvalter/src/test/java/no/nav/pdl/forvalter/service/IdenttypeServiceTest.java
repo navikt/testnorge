@@ -8,7 +8,6 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavPersonIdentifikatorDTO;
@@ -39,7 +38,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -91,7 +89,7 @@ class IdenttypeServiceTest {
     void shouldRejectReversedDateInterval() {
 
         var request = IdentRequestDTO.builder()
-                .identtype(IdenttypeExtended.FNR)
+                .identtype(Identtype.FNR)
                 .foedtEtter(LocalDateTime.of(1980, 1, 1, 1, 0, 0))
                 .foedtFoer(LocalDateTime.of(1970, 1, 1, 0, 0))
                 .isNew(true)
@@ -167,7 +165,7 @@ class IdenttypeServiceTest {
     @ValueSource(booleans = {false})
     void shouldSkipIdentitiesNotMarkedAsNew(Boolean isNew) {
         var person = buildPerson(1L, Identtype.FNR);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR).isNew(isNew).build();
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(isNew).build();
         prepareMapping(person, request);
 
         StepVerifier.create(identtypeService.convert(person))
@@ -187,7 +185,7 @@ class IdenttypeServiceTest {
         var person = buildPerson(1L, originalType);
         var newPerson = buildPerson(2L, newType);
         var request = IdentRequestDTO.builder()
-                .identtype(IdenttypeExtended.valueOf(newType.name())).isNew(true).build();
+                .identtype(newType).isNew(true).build();
         prepareMapping(person, request);
         when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.just(newPerson));
         preparePersistence();
@@ -218,20 +216,24 @@ class IdenttypeServiceTest {
 
     @ParameterizedTest
     @CsvSource({
-            "FNR, SYNT, false, true",
-            "DNR, SYNT, false, true",
-            "NPID, SYNT, false, true",
             "FNR, , , true",
+            "DNR, , , true",
+            "NPID, , , true",
+            "FNR, , false, false",
+            "DNR, , false, false",
+            "NPID, , false, false",
             "FNR, DNR, false, false",
-            "FNR, DNR, true, true"
+            "FNR, DNR, true, true",
+            "FNR, NPID, , true",
+            "DNR, FNR, , true",
+            "NPID, DNR, , true"
     })
-    void shouldNormalizeIdentityTypeAndSyntheticFlag(Identtype originalType, IdenttypeExtended requestedType,
+    void shouldNormalizeIdentityTypeAndSyntheticFlag(Identtype originalType, Identtype requestedType,
                                                      Boolean synthetic, boolean expectedSynthetic) {
         var person = buildPerson(1L, originalType);
         var request = IdentRequestDTO.builder()
                 .identtype(requestedType).syntetisk(synthetic).isNew(true).build();
-        var expectedType = requestedType == null || requestedType == IdenttypeExtended.SYNT ?
-                originalType : Identtype.valueOf(requestedType.name());
+        var expectedType = requestedType == null ? originalType : requestedType;
         prepareMapping(person, request);
         when(createPersonService.execute(any(PersonRequestDTO.class)))
                 .thenReturn(Mono.just(buildPerson(2L, Identtype.NPID)));
@@ -245,29 +247,34 @@ class IdenttypeServiceTest {
         var createdRequest = capturePersonRequest();
         assertThat(createdRequest.getIdenttype()).isEqualTo(expectedType);
         assertThat(createdRequest.getSyntetisk()).isEqualTo(expectedSynthetic);
-        assertThat(request.getIdenttype()).isEqualTo(IdenttypeExtended.valueOf(expectedType.name()));
+        assertThat(request.getIdenttype()).isEqualTo(expectedType);
+        assertThat(request.getSyntetisk()).isEqualTo(synthetic);
         assertThat(request.getKilde()).isEqualTo("Dolly");
         assertThat(request.getMaster()).isEqualTo(originalType == Identtype.NPID ? PDL : FREG);
     }
 
-    @Test
-    void shouldInheritNonSyntheticFlagFromOriginalIdent() {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(booleans = {false, true})
+    void shouldUseExplicitSyntheticFlagOrInheritFromNonSyntheticIdent(Boolean synthetic) {
         var person = buildPerson(1L, Identtype.FNR);
         person.setIdent("01018012345");
         person.getPerson().setIdent(person.getIdent());
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR).isNew(true).build();
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR)
+                .syntetisk(synthetic).isNew(true).build();
         prepareCreation(person, request);
 
         StepVerifier.create(identtypeService.convert(person)).expectNextCount(1).verifyComplete();
 
-        assertThat(capturePersonRequest().getSyntetisk()).isFalse();
+        assertThat(capturePersonRequest().getSyntetisk()).isEqualTo(Boolean.TRUE.equals(synthetic));
+        assertThat(request.getSyntetisk()).isEqualTo(synthetic);
     }
 
     @Test
     void shouldUseExistingIdentityWithoutCreatingPerson() {
         var person = buildPerson(1L, Identtype.FNR);
         var existingPerson = buildPerson(2L, Identtype.DNR);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR)
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR)
                 .eksisterendeIdent(existingPerson.getIdent()).isNew(true).build();
         prepareMapping(person, request);
         when(personRepository.findByIdent(existingPerson.getIdent())).thenReturn(Mono.just(existingPerson));
@@ -286,7 +293,7 @@ class IdenttypeServiceTest {
     @Test
     void shouldFailWhenExistingIdentityIsMissing() {
         var person = buildPerson(1L, Identtype.FNR);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR)
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR)
                 .eksisterendeIdent(DNR_IDENT).isNew(true).build();
         prepareMapping(person, request);
         when(personRepository.findByIdent(DNR_IDENT)).thenReturn(Mono.empty());
@@ -309,7 +316,7 @@ class IdenttypeServiceTest {
         var end = start.plusDays(10);
         var name = IdentRequestDTO.NyttNavnDTO.builder().hasMellomnavn(true).build();
         var mappedName = PersonRequestDTO.NyttNavnDTO.builder().hasMellomnavn(true).build();
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR).isNew(true)
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(true)
                 .kjoenn(KVINNE).foedtEtter(start).foedtFoer(end).alder(40).id2032(true)
                 .nyttNavn(name).kilde("Test").master(PDL).build();
         prepareCreation(person, request);
@@ -335,7 +342,7 @@ class IdenttypeServiceTest {
     void shouldInheritGenderBirthDateAndId2032WhenNotSpecified(KjoennDTO.Kjoenn gender) {
         var person = buildPerson(1L, Identtype.FNR);
         person.getPerson().setId2032(true);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR)
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR)
                 .kjoenn(gender).isNew(true).build();
         prepareCreation(person, request);
 
@@ -352,7 +359,7 @@ class IdenttypeServiceTest {
     void shouldUseAgeForBirthDateBoundsAndAllowExplicitFalseId2032() {
         var person = buildPerson(1L, Identtype.FNR);
         person.getPerson().setId2032(true);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR)
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR)
                 .alder(30).id2032(false).isNew(true).build();
         prepareCreation(person, request);
         var earliest = LocalDateTime.now().minusYears(30);
@@ -370,7 +377,7 @@ class IdenttypeServiceTest {
     void shouldAdjustEndDateWhenInheritedBirthDatePrecedesExplicitStart() {
         var person = buildPerson(1L, Identtype.FNR);
         var start = LocalDateTime.of(1990, 1, 1, 0, 0);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR)
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR)
                 .foedtEtter(start).isNew(true).build();
         prepareCreation(person, request);
 
@@ -382,12 +389,14 @@ class IdenttypeServiceTest {
     @ParameterizedTest
     @CsvSource({"FNR, DNR, NPID", "DNR, NPID, FNR", "NPID, FNR, DNR"})
     void shouldProcessIdentitiesSequentiallyInPriorityOrderUsingUpdatedPerson(
-            IdenttypeExtended firstType, IdenttypeExtended secondType, IdenttypeExtended thirdType) {
+            Identtype firstType, Identtype secondType, Identtype thirdType) {
         var person = buildPerson(1L, Identtype.NPID);
         var npidPerson = buildPerson(4L, Identtype.NPID);
         npidPerson.setIdent("01658054321");
         npidPerson.getPerson().setIdent(npidPerson.getIdent());
         var dnrPerson = buildPerson(2L, Identtype.DNR);
+        dnrPerson.setIdent("41018012345");
+        dnrPerson.getPerson().setIdent(dnrPerson.getIdent());
         var fnrPerson = buildPerson(3L, Identtype.FNR);
         var requests = Stream.of(firstType, secondType, thirdType)
                 .map(type -> IdentRequestDTO.builder().identtype(type).isNew(true).build())
@@ -402,8 +411,8 @@ class IdenttypeServiceTest {
             });
         });
         when(swopIdentsService.execute(NPID_IDENT, npidPerson.getIdent())).thenReturn(Mono.just(npidPerson));
-        when(swopIdentsService.execute(npidPerson.getIdent(), DNR_IDENT)).thenReturn(Mono.just(dnrPerson));
-        when(swopIdentsService.execute(DNR_IDENT, FNR_IDENT)).thenReturn(Mono.just(fnrPerson));
+        when(swopIdentsService.execute(npidPerson.getIdent(), dnrPerson.getIdent())).thenReturn(Mono.just(dnrPerson));
+        when(swopIdentsService.execute(dnrPerson.getIdent(), FNR_IDENT)).thenReturn(Mono.just(fnrPerson));
         preparePersistence();
 
         StepVerifier.create(identtypeService.convert(person))
@@ -417,24 +426,26 @@ class IdenttypeServiceTest {
         order.verify(aliasRepository).save(any(DbAlias.class));
         order.verify(relasjonService).setRelasjoner(npidPerson.getIdent(), GAMMEL_IDENTITET, NPID_IDENT, NY_IDENTITET);
         order.verify(createPersonService).execute(requestCaptor.capture());
-        order.verify(swopIdentsService).execute(npidPerson.getIdent(), DNR_IDENT);
+        order.verify(swopIdentsService).execute(npidPerson.getIdent(), dnrPerson.getIdent());
         order.verify(aliasRepository).save(any(DbAlias.class));
-        order.verify(relasjonService).setRelasjoner(DNR_IDENT, GAMMEL_IDENTITET, npidPerson.getIdent(), NY_IDENTITET);
+        order.verify(relasjonService).setRelasjoner(dnrPerson.getIdent(), GAMMEL_IDENTITET, npidPerson.getIdent(), NY_IDENTITET);
         order.verify(createPersonService).execute(requestCaptor.capture());
-        order.verify(swopIdentsService).execute(DNR_IDENT, FNR_IDENT);
+        order.verify(swopIdentsService).execute(dnrPerson.getIdent(), FNR_IDENT);
         order.verify(aliasRepository).save(any(DbAlias.class));
-        order.verify(relasjonService).setRelasjoner(FNR_IDENT, GAMMEL_IDENTITET, DNR_IDENT, NY_IDENTITET);
+        order.verify(relasjonService).setRelasjoner(FNR_IDENT, GAMMEL_IDENTITET, dnrPerson.getIdent(), NY_IDENTITET);
         assertThat(requestCaptor.getAllValues()).extracting(PersonRequestDTO::getIdenttype)
                 .containsExactly(Identtype.NPID, Identtype.DNR, Identtype.FNR);
+        assertThat(requestCaptor.getAllValues()).extracting(PersonRequestDTO::getSyntetisk)
+                .containsExactly(true, true, false);
         for (var request : requests) {
-            assertThat(request.getMaster()).isEqualTo(request.getIdenttype() == IdenttypeExtended.FNR ? FREG : PDL);
+            assertThat(request.getMaster()).isEqualTo(request.getIdenttype() == Identtype.FNR ? FREG : PDL);
         }
     }
 
     @Test
     void shouldPropagateCreationFailureWithoutPersistingAliasOrRelations() {
         var person = buildPerson(1L, Identtype.FNR);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR).isNew(true).build();
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(true).build();
         prepareMapping(person, request);
         var error = new IllegalStateException("Creation failed");
         when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.error(error));
@@ -448,7 +459,7 @@ class IdenttypeServiceTest {
     @Test
     void shouldPropagateAliasFailureWithoutCreatingRelations() {
         var person = buildPerson(1L, Identtype.FNR);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR).isNew(true).build();
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(true).build();
         prepareMapping(person, request);
         when(createPersonService.execute(any(PersonRequestDTO.class)))
                 .thenReturn(Mono.just(buildPerson(2L, Identtype.DNR)));
@@ -465,7 +476,7 @@ class IdenttypeServiceTest {
     void shouldPropagateSwapFailureWithoutPersistingAliasOrRelations() {
         var person = buildPerson(1L, Identtype.DNR);
         var newPerson = buildPerson(2L, Identtype.FNR);
-        var request = IdentRequestDTO.builder().identtype(IdenttypeExtended.FNR).isNew(true).build();
+        var request = IdentRequestDTO.builder().identtype(Identtype.FNR).isNew(true).build();
         prepareMapping(person, request);
         when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.just(newPerson));
         var error = new IllegalStateException("Swap failed");
@@ -480,8 +491,8 @@ class IdenttypeServiceTest {
     @Test
     void shouldStopProcessingFurtherIdentitiesWhenRelationCreationFails() {
         var person = buildPerson(1L, Identtype.FNR);
-        var dnrRequest = IdentRequestDTO.builder().identtype(IdenttypeExtended.DNR).isNew(true).build();
-        var fnrRequest = IdentRequestDTO.builder().identtype(IdenttypeExtended.FNR).isNew(true).build();
+        var dnrRequest = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(true).build();
+        var fnrRequest = IdentRequestDTO.builder().identtype(Identtype.FNR).isNew(true).build();
         prepareMapping(person, dnrRequest, fnrRequest);
         when(createPersonService.execute(any(PersonRequestDTO.class)))
                 .thenReturn(Mono.just(buildPerson(2L, Identtype.DNR)));
@@ -502,17 +513,6 @@ class IdenttypeServiceTest {
         person.getPerson().getNyident().addAll(List.of(requests));
         when(mapperFacade.mapAsList(person.getPerson().getNyident(), IdentRequestDTO.class))
                 .thenReturn(new ArrayList<>(List.of(requests)));
-        if (requests.length > 1 || Stream.of(requests)
-                .anyMatch(request -> Boolean.TRUE.equals(request.getIsNew()) && isBlank(request.getEksisterendeIdent()))) {
-            when(mapperFacade.map(any(IdenttypeExtended.class), eq(Identtype.class)))
-                    .thenAnswer(invocation -> Identtype.valueOf(((IdenttypeExtended) invocation.getArgument(0)).name()));
-        }
-        for (var request : requests) {
-            if (request.getIdenttype() == null || request.getIdenttype() == IdenttypeExtended.SYNT) {
-                when(mapperFacade.map(person.getPerson().getIdenttype(), IdenttypeExtended.class))
-                        .thenReturn(IdenttypeExtended.valueOf(person.getPerson().getIdenttype().name()));
-            }
-        }
     }
 
     private void prepareCreation(DbPerson person, IdentRequestDTO request) {
