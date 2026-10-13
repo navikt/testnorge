@@ -896,6 +896,21 @@ class DashboardServiceTest {
     }
 
     @Test
+    void shouldCountUnreadableBestKriterierAsUnspecified() {
+        stubAdferd(adferdFragment(DATE_1,
+                        "{\"pdldata\":{\"person\":{\"foedselsdato\":[{\"foedselsdato\":\"+12345-12-12T00:00:00\"}]}}}", 2),
+                adferdFragment(DATE_1, "{\"krrstub\":{}}", 1));
+
+        StepVerifier.create(dashboardService.getAdferd(2024, Month.JANUARY))
+                .assertNext(dto -> {
+                    assertThat(dto.getAntallNyePersoner()).isEqualTo(3);
+                    assertThat(kriterium(dto, "Uspesifisert").getAntall()).isEqualTo(2);
+                    assertThat(kriterium(dto, "Krrstub").getAntall()).isEqualTo(1);
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldGroupAdferdFragmentsByDateIntoSeparateDtos() {
         stubAdferd(adferdFragment(DATE_1, "{\"krrstub\":{}}", 1),
                 adferdFragment(DATE_2, "{\"krrstub\":{}}", 1));
