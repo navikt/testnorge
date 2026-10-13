@@ -12,9 +12,9 @@ import {
 import { CalendarIcon } from '@navikt/aksel-icons'
 import { addYears, format, isValid, parse, subYears } from 'date-fns'
 import { Label } from '@/components/ui/form/inputs/label/Label'
+import { formatMonth } from '@/utils/DataFormatter'
 
 const VALUE_FORMAT = 'yyyy-MM'
-const DISPLAY_FORMAT = 'MM.yyyy'
 const MONTHS_PER_ROW = 4
 const NO_SELECTED_MONTH = new Date(NaN)
 
@@ -68,7 +68,7 @@ const parseMonth = (value: string) => parse(value, VALUE_FORMAT, new Date())
 
 const toMonthOption = (value: string): MonthOption => ({
 	value,
-	label: format(parseMonth(value), DISPLAY_FORMAT),
+	label: formatMonth(value),
 })
 
 const getValidMonths = (values: unknown): string[] =>
@@ -118,7 +118,6 @@ export const MonthCombobox = ({ name, label, minDate, maxDate }: MonthsComboboxP
 		setIsOpen(!isOpen)
 	}
 
-	// TODO: Bug naar man trykker paa samme maaned flere ganger, blir den ikke alltid avhuket.
 	return (
 		<Label name={name} label={label} containerClass="flexbox--full-width">
 			<ComboboxWrapper ref={anchorRef}>

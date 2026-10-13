@@ -1,4 +1,4 @@
-import { format, isDate } from 'date-fns'
+import { format, isDate, parse } from 'date-fns'
 import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
@@ -104,6 +104,9 @@ export const formatStringDates = (date) => {
 	const dateArray = date.split('-')
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
 }
+
+// Format month yyyy-MM to MM.yyyy
+export const formatMonth = (value: string) => format(parse(value, 'yyyy-MM', new Date()), 'MM.yyyy')
 
 export const formatKjonn = (kjonn, alder) => {
 	return formatKjonnToString(kjonn, alder < 18)
