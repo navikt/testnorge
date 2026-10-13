@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +51,7 @@ class IdenttypeServiceTest {
     void whenIllegalDatoIntervalIsProvided_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                .identtype(Identtype.FNR)
+                .identtype(IdenttypeExtended.FNR)
                 .foedtEtter(LocalDateTime.of(1980, 1, 1, 1, 0, 0))
                 .foedtFoer(LocalDateTime.of(1970, 1, 1, 0, 0))
                 .isNew(true)

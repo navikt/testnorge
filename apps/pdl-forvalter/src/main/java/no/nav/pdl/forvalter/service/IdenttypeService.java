@@ -14,6 +14,7 @@ import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -32,9 +33,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended.DNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended.NPID;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO.IdenttypeExtended.SYNT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
@@ -52,9 +54,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                                                           "er fødsel mellom 1.1.1900 og dagens dato";
     private static final String VALIDATION_DATO_INTERVAL_INVALID = "Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere " +
                                                                    "enn fødtEtter";
-    private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller NPID";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
-    private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
+    private static final Map<IdenttypeExtended, Integer> IDENT_PRIORITET = Map.of(
             NPID, 0,
             DNR, 1,
             FNR, 2
@@ -69,10 +70,19 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     public Mono<DbPerson> convert(DbPerson person) {
 
+        if (person.getPerson().getNyident().isEmpty()) {
+            return Mono.just(person);
+        }
+
         var nyPerson = new AtomicReference<>(person);
         var nyeIdenter = mapperFacade.mapAsList(person.getPerson().getNyident(), IdentRequestDTO.class);
-        nyeIdenter.forEach(nyIdent -> nyIdent.setIdenttype(
-                nonNull(nyIdent.getIdenttype()) ? nyIdent.getIdenttype() : IdenttypeUtility.getIdenttype(person.getIdent())));
+        nyeIdenter.forEach(nyIdent -> {
+            nyIdent.setSyntetisk(SYNT.equals(nyIdent.getIdenttype()) || isSyntetisk(nyIdent, person.getIdent()));
+            nyIdent.setIdenttype(
+                    isNull(nyIdent.getIdenttype()) || SYNT.equals(nyIdent.getIdenttype()) ?
+                            mapperFacade.map(IdenttypeUtility.getIdenttype(person.getIdent()), IdenttypeExtended.class) :
+                            nyIdent.getIdenttype());
+        });
         nyeIdenter.sort(sortIdenter());
 
         return Flux.fromIterable(nyeIdenter)
@@ -91,11 +101,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     @Override
     public Mono<Void> validate(IdentRequestDTO request) {
-
-        if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
-            DNR != request.getIdenttype() && NPID != request.getIdenttype()) {
-            return Mono.error(new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID));
-        }
 
         if (nonNull(request.getFoedtEtter()) && (START_OF_ERA.isAfter(request.getFoedtEtter()) ||
                                                  LocalDateTime.now().isBefore(request.getFoedtEtter()))) {
@@ -153,7 +158,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 })
                 .flatMap(nyPerson -> {
 
-                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <
+                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <=
                         IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
 
                         return swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
@@ -177,12 +182,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                                 .then(Mono.just(personer.getT1())));
     }
 
-    private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
+    private Identtype getIdenttype(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getIdenttype())) {
-            return request.getIdenttype();
+            return mapperFacade.map(request.getIdenttype(), Identtype.class);
         }
-        return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
+        return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : Identtype.FNR;
     }
 
     private static Kjoenn getKjoenn(IdentRequestDTO request, PersonDTO person) {
@@ -223,7 +228,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private Comparator<IdentRequestDTO> sortIdenter() {
 
-        return Comparator.comparingInt(ir ->
-                IDENT_PRIORITET.getOrDefault(ir.getIdenttype(), Integer.MAX_VALUE));
+        return Comparator.comparingInt(identRequest ->
+                IDENT_PRIORITET.get(identRequest.getIdenttype()));
     }
 }
