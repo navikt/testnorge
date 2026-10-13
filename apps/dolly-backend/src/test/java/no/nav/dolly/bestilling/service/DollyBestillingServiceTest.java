@@ -5,7 +5,10 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -27,6 +30,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -100,6 +104,28 @@ class DollyBestillingServiceTest {
                 testgruppeRepository,
                 transactionHelperService
         );
+    }
+
+    @Test
+    void shouldMarkDollyPersonAsLeggTilAndPreservePersonDetails() {
+
+        var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID).ident(IDENT).master(PDL).build();
+        var bruker = Bruker.builder().brukerId("bruker-id").build();
+        given(bestillingRepository.findById(BESTILLING_ID))
+                .willReturn(Mono.just(Bestilling.builder().gruppeId(GRUPPE_ID).build()));
+        given(testgruppeRepository.findById(GRUPPE_ID))
+                .willReturn(Mono.just(Testgruppe.builder().tags("SALESFORCE").build()));
+
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, bruker))
+                .assertNext(person -> {
+                    assertThat(person.isLeggTil()).isTrue();
+                    assertThat(person.getIdent()).isEqualTo(IDENT);
+                    assertThat(person.getMaster()).isEqualTo(PDL);
+                    assertThat(person.getBruker()).isSameAs(bruker);
+                    assertThat(person.getTags()).contains(Tags.SALESFORCE);
+                })
+                .verifyComplete();
     }
 
     @Test

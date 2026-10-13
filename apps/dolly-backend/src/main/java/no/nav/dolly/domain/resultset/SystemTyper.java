@@ -21,6 +21,7 @@ public enum SystemTyper {
     DOKARKIV("Dokumentarkiv (JOARK)"),
     ETTERLATTE("Etterlatte (Gjenny)"),
     FULLMAKT("Fullmakt (Representasjon)"),
+    HENVENDELSE("Henvendelse (Salesforce)"),
     HISTARK("Saksmappearkiv (HISTARK)"),
     INNTK("Inntektstub (INNTK)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),

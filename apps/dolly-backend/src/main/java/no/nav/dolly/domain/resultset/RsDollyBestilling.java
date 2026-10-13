@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -91,6 +92,8 @@ public class RsDollyBestilling {
     private List<EtterlatteYtelse> etterlatteYtelser;
     private RsKelvinAapRequestDTO kelvinAap;
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+    @Schema(description = "Henvendelse er kun støttet med legg-til/endre for personer tilhørende (tag) Salesforce")
+    private RsHenvendelse henvendelse;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

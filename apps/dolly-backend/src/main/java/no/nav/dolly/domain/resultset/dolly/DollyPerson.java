@@ -26,6 +26,8 @@ public class DollyPerson {
     private Testident.Master master;
     private boolean isOrdre;
 
+    private boolean isLeggTil;
+
     private Bruker bruker;
 
     public List<Tags> getTags() {
@@ -37,5 +39,10 @@ public class DollyPerson {
 
     public boolean isTestnorgeIdent() {
         return TestnorgeIdentUtility.isTestnorgeIdent(ident);
+    }
+
+    public boolean isSalesForce() {
+
+        return getTags().contains(Tags.SALESFORCE);
     }
 }
