@@ -238,6 +238,15 @@ public class DollyBestillingService {
                         .build()));
     }
 
+    protected Mono<DollyPerson> opprettDollyPersonLeggTil(BestillingProgress progress, Bruker bruker) {
+
+        return opprettDollyPerson(progress, bruker)
+                .map(dollyPerson -> {
+                    dollyPerson.setLeggTil(true);
+                    return dollyPerson;
+                });
+    }
+
     protected Mono<Bestilling> doFerdig(Bestilling bestilling) {
 
         return transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(), bestilling.getFeil())

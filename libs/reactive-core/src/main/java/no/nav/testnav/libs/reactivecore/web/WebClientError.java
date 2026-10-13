@@ -181,7 +181,8 @@ public class WebClientError {
         private static String resolveMessage(Throwable throwable) {
             switch (throwable) {
                 case WebClientResponseException e -> {
-                    return isNotBlank(e.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
+                    return e.getStatusCode().is4xxClientError() &&
+                           isNotBlank(e.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
                             e.getResponseBodyAsString(StandardCharsets.UTF_8) :
                             e.getStatusCode().value() + " " + e.getStatusText();
                 }

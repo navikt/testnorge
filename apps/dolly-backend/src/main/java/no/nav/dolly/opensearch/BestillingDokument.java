@@ -16,6 +16,7 @@ import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -118,6 +119,8 @@ public class BestillingDokument implements Persistable<Long> {
     private RsKelvinAapRequestDTO kelvinAap;
 
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+
+    private RsHenvendelse henvendelse;
 
     private Bruker.Brukertype brukerType;
     private String orgnr;
