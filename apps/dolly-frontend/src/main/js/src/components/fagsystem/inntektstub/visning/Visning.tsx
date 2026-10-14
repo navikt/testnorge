@@ -126,7 +126,7 @@ export const InntektstubVisning = ({
 	loading,
 	harInntektstubBestilling,
 }: InntekstubVisning) => {
-	if (loading) {
+	if (loading && !liste) {
 		return <Loading label="Laster Inntektstub-data" />
 	}
 	if ((!liste || liste.length < 1) && !harInntektstubBestilling) {
