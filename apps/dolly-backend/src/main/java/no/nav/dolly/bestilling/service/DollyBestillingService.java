@@ -332,11 +332,16 @@ public class DollyBestillingService {
                         return transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
                                         "Info: Ordre til PDL startet ...")
                                 .flatMap(progress2 -> pdlDataConsumer.sendOrdre(progress.getIdent(), false)
-                                        .flatMap(resultat ->
-                                                transactionHelperService.persister(progress2, BestillingProgress::setPdlOrdreStatus,
-                                                        resultat.getStatus().is2xxSuccessful() ?
-                                                                resultat.getJsonNode() :
-                                                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding()))))
+                                        .flatMap(resultat -> {
+                                            if (resultat.getStatus().is2xxSuccessful()) {
+                                                return transactionHelperService.persister(progress2, BestillingProgress::setPdlOrdreStatus,
+                                                        resultat.getJsonNode());
+                                            } else {
+                                                return transactionHelperService.persister(progress2, BestillingProgress::setPdlOrdreStatus,
+                                                        resultat.isFinnesIkke() ? null :
+                                                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding()));
+                                            }
+                                        }))
                                 .doOnNext(progress2 -> progress2.setOppdatertIdent(oppdatertIdent))
                                 .doOnNext(progress2 -> log.info("Sendt ordre til PDL for ident {} ", progress2.getIdent()));
 

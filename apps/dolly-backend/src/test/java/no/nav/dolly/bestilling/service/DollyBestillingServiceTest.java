@@ -367,6 +367,7 @@ class DollyBestillingServiceTest {
                 .build();
         var dollyPerson = DollyPerson.builder().ident(newIdent).build();
         given(identService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
+        given(bestillingProgressRepository.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         given(bestillingService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         stubPersister();
 
@@ -374,11 +375,12 @@ class DollyBestillingServiceTest {
                 .expectNext(newIdent)
                 .verifyComplete();
 
-        var order = inOrder(transactionHelperService, identService, bestillingService);
-        order.verify(transactionHelperService).persister(eq(progress), any(), eq(previousIdent));
+        var order = inOrder(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
+        order.verify(transactionHelperService).persister(eq(progress), any(), eq(newIdent));
         order.verify(identService).swapIdent(previousIdent, newIdent);
+        order.verify(bestillingProgressRepository).swapIdent(previousIdent, newIdent);
         order.verify(bestillingService).swapIdent(previousIdent, newIdent);
-        verifyNoInteractions(bestillingProgressRepository, bestillingRepository);
+        verifyNoInteractions(bestillingRepository);
     }
 
     @ParameterizedTest
@@ -397,6 +399,22 @@ class DollyBestillingServiceTest {
 
         StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
                 .expectNext(newIdent)
+                .verifyComplete();
+
+        verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
+    }
+
+    @Test
+    void shouldSkipIdentitySwapWhenPreviousAndNewIdentityMatch() {
+
+        var progress = BestillingProgress.builder()
+                .ident(IDENT)
+                .oppdatertIdent(IDENT)
+                .build();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+
+        StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
+                .expectNext(IDENT)
                 .verifyComplete();
 
         verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
