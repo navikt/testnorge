@@ -355,7 +355,7 @@ class DollyBestillingServiceTest {
     }
 
     @Test
-    void shouldSwapIdentitiesUsingIdentityCapturedBeforePdlUpdate() {
+    void shouldPersistUpdatedIdentityAndSwapRelatedRecords() {
 
         var previousIdent = "98765432109";
         var newIdent = "12345098765";
@@ -367,7 +367,6 @@ class DollyBestillingServiceTest {
                 .build();
         var dollyPerson = DollyPerson.builder().ident(newIdent).build();
         given(identService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
-        given(bestillingProgressRepository.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         given(bestillingService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         stubPersister();
 
@@ -375,12 +374,32 @@ class DollyBestillingServiceTest {
                 .expectNext(newIdent)
                 .verifyComplete();
 
-        var order = inOrder(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
-        order.verify(transactionHelperService).persister(eq(progress), any(), eq(newIdent));
+        var order = inOrder(transactionHelperService, identService, bestillingService);
+        order.verify(transactionHelperService).persister(eq(progress), any(), eq(previousIdent));
         order.verify(identService).swapIdent(previousIdent, newIdent);
-        order.verify(bestillingProgressRepository).swapIdent(previousIdent, newIdent);
         order.verify(bestillingService).swapIdent(previousIdent, newIdent);
-        verifyNoInteractions(bestillingRepository);
+        verifyNoInteractions(bestillingProgressRepository, bestillingRepository);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", " "})
+    void shouldReturnNewIdentityWithoutSwappingWhenNoPreviousIdentityIsRecorded(String previousIdent) {
+
+        var progress = BestillingProgress.builder()
+                .id(3L)
+                .bestillingId(BESTILLING_ID)
+                .ident(IDENT)
+                .oppdatertIdent(previousIdent)
+                .build();
+        var newIdent = "12345098765";
+        var dollyPerson = DollyPerson.builder().ident(newIdent).build();
+
+        StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
+                .expectNext(newIdent)
+                .verifyComplete();
+
+        verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
     }
 
     private void stubPersister() {

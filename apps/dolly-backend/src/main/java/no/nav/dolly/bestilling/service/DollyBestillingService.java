@@ -361,11 +361,13 @@ public class DollyBestillingService {
     protected Mono<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 
         var oppdatertIdent = progress.getOppdatertIdent();
-        return transactionHelperService.persister(progress, BestillingProgress::setIdent, dollyPerson.getIdent())
-                .flatMap(_ -> identService.swapIdent(oppdatertIdent, dollyPerson.getIdent())
-                        .then(bestillingProgressRepository.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
-                        .then(bestillingService.swapIdent(oppdatertIdent, dollyPerson.getIdent())))
-                .thenReturn(dollyPerson.getIdent());
+        if (isNotBlank(oppdatertIdent) && !oppdatertIdent.equals(dollyPerson.getIdent())) {
+            return transactionHelperService.persister(progress, BestillingProgress::setIdent, oppdatertIdent)
+                    .then(identService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
+                    .then(bestillingService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
+                    .thenReturn(dollyPerson.getIdent());
+        }
+        return Mono.just(dollyPerson.getIdent());
     }
 
     protected Mono<BestillingProgress> oppdaterPdlImportStatus(BestillingProgress progress) {
