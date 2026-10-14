@@ -142,6 +142,9 @@ public class BestillingProgress implements Serializable {
     @Transient
     private boolean pdlSync;
 
+    @Transient
+    private String oppdatertIdent;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident, Master master) {

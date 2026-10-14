@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -113,8 +112,8 @@ public class InstdataClient implements ClientRegister {
 
         instdataConsumer.deleteInstdata(identer)
                 .subscribe(
-                        _ -> log.info("Slettet identer fra Instdata (inst 2)"),
-                        throwable -> log.error("Feil ved sletting av identer fra Instdata (inst 2)", throwable));
+                        _ -> log.info("Slettet identer fra Inst2"),
+                        throwable -> log.error("Feil ved sletting av identer fra Inst2", throwable));
         instdataConsumer.deleteInstKdiData(identer)
                 .subscribe(
                         _ -> log.info("Slettet identer fra Institusjonsopphold fengsel (KDI)"),
