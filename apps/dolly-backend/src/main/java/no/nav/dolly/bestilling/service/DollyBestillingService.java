@@ -362,8 +362,9 @@ public class DollyBestillingService {
 
         var oppdatertIdent = progress.getOppdatertIdent();
         if (isNotBlank(oppdatertIdent) && !oppdatertIdent.equals(dollyPerson.getIdent())) {
-            return transactionHelperService.persister(progress, BestillingProgress::setIdent, oppdatertIdent)
+            return transactionHelperService.persister(progress, BestillingProgress::setIdent, dollyPerson.getIdent())
                     .then(identService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
+                    .then(bestillingProgressRepository.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
                     .then(bestillingService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
                     .thenReturn(dollyPerson.getIdent());
         }

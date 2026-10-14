@@ -42,6 +42,14 @@ public interface BestillingProgressRepository extends ReactiveCrudRepository<Bes
     Flux<BestillingProgress> findByIdent(String ident);
     Flux<BestillingProgress> findByIdentIn(List<String> identer);
 
+    @Modifying
+    @Query("""
+            update bestilling_progress
+                        set ident = :newIdent
+                        where ident = :oldIdent
+            """)
+    Mono<BestillingProgress> swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
+
     @Query(value = "select * from bestilling_progress where id = :id for update")
     Mono<BestillingProgress> findByIdAndLock(@Param("id") Long id);
 
