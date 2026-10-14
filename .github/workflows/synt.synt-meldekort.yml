@@ -1,0 +1,21 @@
+name: synt-meldekort
+
+on:
+  push:
+    paths:
+      - .github/workflows/synt.synt-meldekort.yml
+      - synt/synt-meldekort/**
+      - libs/testing/**
+      - libs/texas/**
+      - plugins/**
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "synt/synt-meldekort"
+      deploy-tag: "#deploy-synt-meldekort"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
