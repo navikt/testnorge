@@ -285,7 +285,7 @@ describe('BrukerStatistikk', () => {
 			{ year: 2026, month: 'SEPTEMBER' },
 		])
 
-		await userEvent.click(screen.getByRole('button', { name: 'feb., med i tidsrommet' }))
+		await userEvent.click(screen.getByRole('button', { name: /^feb\.\s*, med i tidsrommet$/ }))
 
 		expect(erValgt('Kun valgt måned')).toBe(true)
 		expect(

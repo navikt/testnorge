@@ -54,8 +54,8 @@ describe('PeriodeVelger', () => {
 		render(<PeriodeVelger {...props} valgtAar="2025" visning="aar" />)
 
 		expect(trykketInn('Måned')).toEqual(['false', 'false'])
-		expect(screen.getByRole('button', { name: 'feb., med i tidsrommet' })).toBeTruthy()
-		expect(screen.getByRole('button', { name: 'sep., med i tidsrommet' })).toBeTruthy()
+		expect(screen.getByRole('button', { name: /^feb\.\s*, med i tidsrommet$/ })).toBeTruthy()
+		expect(screen.getByRole('button', { name: /^sep\.\s*, med i tidsrommet$/ })).toBeTruthy()
 		expect(screen.getByRole('radio', { name: 'Hele 2025' }).getAttribute('aria-checked')).toBe(
 			'true',
 		)
