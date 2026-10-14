@@ -31,12 +31,11 @@ interface DashboardPersonContextType {
 	// Summary
 	filteredPersonerLength: number
 	summary: {
-		bestillinger: number
-		personerTotalt: number
-		nye: number
-		gjenopprettede: number
-		navIdenter: number
-		testnorgeIdenter: number
+		nyeBestillinger: number
+		gjenopprettedeBestillinger: number
+		nyePersoner: number
+		dollyPersoner: number
+		testnorgePersoner: number
 	}
 
 	// Chart
@@ -175,21 +174,19 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 		() =>
 			completeFilteredPersoner.reduce(
 				(acc, personData) => {
-					acc.bestillinger += asNumber(personData.bestillinger)
-					acc.personerTotalt += asNumber(personData.personerTotalt)
-					acc.nye += asNumber(personData.nye)
-					acc.gjenopprettede += asNumber(personData.gjenopprettede)
-					acc.navIdenter += asNumber(personData.navIdenter)
-					acc.testnorgeIdenter += asNumber(personData.testnorgeIdenter)
+					acc.nyeBestillinger += asNumber(personData.antallNyeBestillinger)
+					acc.gjenopprettedeBestillinger += asNumber(personData.antallGjenopprettedeBestillinger)
+					acc.nyePersoner += asNumber(personData.antallNyePersoner)
+					acc.dollyPersoner += asNumber(personData.andelOpprettedeDollyPersoner)
+					acc.testnorgePersoner += asNumber(personData.andelImporterteTestnorgePersoner)
 					return acc
 				},
 				{
-					bestillinger: 0,
-					personerTotalt: 0,
-					nye: 0,
-					gjenopprettede: 0,
-					navIdenter: 0,
-					testnorgeIdenter: 0,
+					nyeBestillinger: 0,
+					gjenopprettedeBestillinger: 0,
+					nyePersoner: 0,
+					dollyPersoner: 0,
+					testnorgePersoner: 0,
 				},
 			),
 		[completeFilteredPersoner],
@@ -208,19 +205,19 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 	const identerDonutChartOptions = useMemo(
 		() =>
 			createIdenterDonutChartOptions({
-				navIdenter: summary.navIdenter,
-				testnorgeIdenter: summary.testnorgeIdenter,
+				dollyPersoner: summary.dollyPersoner,
+				testnorgePersoner: summary.testnorgePersoner,
 			}),
-		[summary.navIdenter, summary.testnorgeIdenter],
+		[summary.dollyPersoner, summary.testnorgePersoner],
 	)
 
 	const nyeGjenopprettedeDonutChartOptions = useMemo(
 		() =>
 			createNyeGjenopprettedeDonutChartOptions({
-				nye: summary.nye,
-				gjenopprettede: summary.gjenopprettede,
+				nye: summary.nyeBestillinger,
+				gjenopprettede: summary.gjenopprettedeBestillinger,
 			}),
-		[summary.nye, summary.gjenopprettede],
+		[summary.nyeBestillinger, summary.gjenopprettedeBestillinger],
 	)
 
 	const value: DashboardPersonContextType = {
@@ -246,9 +243,9 @@ export const DashboardPersonProvider: React.FC<DashboardPersonProviderProps> = (
 		// Chart
 		personTrendDataLength: personTrendData.length,
 		personTrendChartOptions,
-		identerTotal: summary.navIdenter + summary.testnorgeIdenter,
+		identerTotal: summary.dollyPersoner + summary.testnorgePersoner,
 		identerDonutChartOptions,
-		nyeGjenopprettedeTotal: summary.nye + summary.gjenopprettede,
+		nyeGjenopprettedeTotal: summary.nyeBestillinger + summary.gjenopprettedeBestillinger,
 		nyeGjenopprettedeDonutChartOptions,
 	}
 

@@ -22,16 +22,18 @@ import {
 	toDisplayDate,
 	toMonthlyDollyTeamPoints,
 	toMonthlyOrganisasjonPoints,
+	toMonthlyPersonPoints,
 	toMonthlyTeamPoints,
 	toMonthlyTrendData,
 } from './dashboardUtils'
 import {
-	type FeilPeriodeOption,
+	buildFeilPeriodView,
 	monthNumberToName,
 	toFeilGrupper,
 	toFeilPeriodeOptions,
 } from './dashboardFeilUtils'
 import {
+	createMonthlyPersonTrendChartOptions,
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
 	createOpprettetGjenopprettetDonutChartOptions,
@@ -40,21 +42,6 @@ import { createDashboardMockData } from './dashboardMockData'
 
 const DAY_SCOPE_YESTERDAY = 'YESTERDAY'
 const DAY_SCOPE_TODAY = 'TODAY'
-
-const buildFeilPeriodView = (periodeOptions: FeilPeriodeOption[], selectedInterval: string) => {
-	const intervalOptions = periodeOptions.map((option) => ({
-		value: option.interval,
-		label: option.intervalVisning,
-	}))
-	const yearOptions = [...new Set(intervalOptions.map((option) => option.value.slice(0, 4)))].sort(
-		(a, b) => a.localeCompare(b),
-	)
-	const selectedYear = selectedInterval.slice(0, 4)
-	const monthOptions = intervalOptions
-		.filter((option) => option.value.startsWith(`${selectedYear}-`))
-		.map((option) => ({ ...option, label: option.label.replace(/\s+\d{4}$/, '') }))
-	return { intervalOptions, yearOptions, selectedYear, monthOptions }
-}
 
 const useAutoSelectLatestInterval = (
 	intervalOptions: { value: string }[],
@@ -113,6 +100,9 @@ export const useDashboardDataCore = () => {
 		typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 	>(MONTH_SCOPE_LAST_12)
 	const [dollyTeamsMonthScope, setDollyTeamsMonthScope] = useState<
+		typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
+	>(MONTH_SCOPE_LAST_12)
+	const [personMonthScope, setPersonMonthScope] = useState<
 		typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 	>(MONTH_SCOPE_LAST_12)
 	const [selectedInterval, setSelectedInterval] = useState('')
@@ -199,8 +189,8 @@ export const useDashboardDataCore = () => {
 
 	const previousDaySummary = previousDayPeriodData.reduce(
 		(acc, personData) => {
-			acc.nye += asNumber(personData.nye)
-			acc.gjenopprettede += asNumber(personData.gjenopprettede)
+			acc.nye += asNumber(personData.antallNyeBestillinger)
+			acc.gjenopprettede += asNumber(personData.antallGjenopprettedeBestillinger)
 			return acc
 		},
 		{
@@ -225,8 +215,9 @@ export const useDashboardDataCore = () => {
 		return month ? [{ year: parsed.getFullYear(), month, day: parsed.getDate() }] : []
 	})
 
-	const { feilForDager, loadingFeilForDager, feilForDagerError } =
-		useDashboardFeilForDager(mockModeEnabled ? [] : selectedDayFeilDager)
+	const { feilForDager, loadingFeilForDager, feilForDagerError } = useDashboardFeilForDager(
+		mockModeEnabled ? [] : selectedDayFeilDager,
+	)
 	const activeSelectedDayFeil = mockModeEnabled
 		? selectedDayDates.flatMap((dato) =>
 				tilListe<DashboardFeilDetaljertRad>(mockData.feilDetaljertByDate[dato]),
@@ -308,6 +299,21 @@ export const useDashboardDataCore = () => {
 		dollyTeamsView.intervalOptions,
 		selectedDollyTeamsInterval,
 		setSelectedDollyTeamsInterval,
+	)
+
+	const monthlyPersonPoints = useMemo(
+		() => toMonthlyPersonPoints(activeDashboardOversikt),
+		[activeDashboardOversikt],
+	)
+
+	const filteredMonthlyPersonPoints = useMemo(
+		() => filterMonthlyTeamPoints(monthlyPersonPoints, personMonthScope),
+		[monthlyPersonPoints, personMonthScope],
+	)
+
+	const monthlyPersonTrendChartOptions = useMemo(
+		() => createMonthlyPersonTrendChartOptions(filteredMonthlyPersonPoints),
+		[filteredMonthlyPersonPoints],
 	)
 
 	// --- Teams ---
@@ -429,6 +435,12 @@ export const useDashboardDataCore = () => {
 		selectedDollyTeamsPoint: dollyTeamsView.selectedPoint,
 		dollyTeamsDistribution: dollyTeamsView.distribution,
 		dollyTeamsDistributionChartOptions,
+
+		// Monthly persons section
+		filteredMonthlyPersonPointsLength: filteredMonthlyPersonPoints.length,
+		personMonthScope,
+		onPersonMonthScopeChange: setPersonMonthScope,
+		monthlyPersonTrendChartOptions,
 
 		// Teams section
 		filteredMonthlyTeamPointsLength: filteredMonthlyTeamPoints.length,

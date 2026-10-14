@@ -10,6 +10,7 @@ import {
 	toMonthlyDollyTeamPoints,
 	toMonthlyIntervalOptions,
 	toMonthlyOrganisasjonPoints,
+	toMonthlyPersonPoints,
 	toMonthlyTeamPoints,
 	toMonthlyTrendData,
 	toPersonTrendData,
@@ -109,22 +110,20 @@ describe('dashboardUtils', () => {
 		const trend = toPersonTrendData([
 			{
 				dato: '2026-05-01',
-				bestillinger: 12,
-				personerTotalt: 10,
-				nye: 4,
-				gjenopprettede: 1,
-				navIdenter: 7,
-				testnorgeIdenter: 5,
+				antallNyeBestillinger: 12,
+				antallGjenopprettedeBestillinger: 1,
+				antallNyePersoner: 10,
+				andelOpprettedeDollyPersoner: 7,
+				andelImporterteTestnorgePersoner: 5,
 			},
 		])
 
 		expect(trend).toHaveLength(1)
-		expect(trend[0].bestillinger).toBe(12)
-		expect(trend[0].personerTotalt).toBe(10)
-		expect(trend[0].nye).toBe(4)
-		expect(trend[0].gjenopprettede).toBe(1)
-		expect(trend[0].navIdenter).toBe(7)
-		expect(trend[0].testnorgeIdenter).toBe(5)
+		expect(trend[0].nyeBestillinger).toBe(12)
+		expect(trend[0].gjenopprettedeBestillinger).toBe(1)
+		expect(trend[0].nyePersoner).toBe(10)
+		expect(trend[0].dollyPersoner).toBe(7)
+		expect(trend[0].testnorgePersoner).toBe(5)
 	})
 
 	it('should fill missing days in selected period with zero values', () => {
@@ -132,21 +131,19 @@ describe('dashboardUtils', () => {
 			[
 				{
 					dato: '2026-05-01',
-					bestillinger: 8,
-					personerTotalt: 10,
-					nye: 4,
-					gjenopprettede: 1,
-					navIdenter: 6,
-					testnorgeIdenter: 2,
+					antallNyeBestillinger: 8,
+					antallGjenopprettedeBestillinger: 1,
+					antallNyePersoner: 10,
+					andelOpprettedeDollyPersoner: 6,
+					andelImporterteTestnorgePersoner: 2,
 				},
 				{
 					dato: '2026-05-03',
-					bestillinger: 4,
-					personerTotalt: 5,
-					nye: 2,
-					gjenopprettede: 0,
-					navIdenter: 3,
-					testnorgeIdenter: 1,
+					antallNyeBestillinger: 4,
+					antallGjenopprettedeBestillinger: 0,
+					antallNyePersoner: 5,
+					andelOpprettedeDollyPersoner: 3,
+					andelImporterteTestnorgePersoner: 1,
 				},
 			],
 			'2026-05-01',
@@ -156,30 +153,27 @@ describe('dashboardUtils', () => {
 		expect(completedDays).toEqual([
 			{
 				dato: '2026-05-01',
-				bestillinger: 8,
-				personerTotalt: 10,
-				nye: 4,
-				gjenopprettede: 1,
-				navIdenter: 6,
-				testnorgeIdenter: 2,
+				antallNyeBestillinger: 8,
+				antallGjenopprettedeBestillinger: 1,
+				antallNyePersoner: 10,
+				andelOpprettedeDollyPersoner: 6,
+				andelImporterteTestnorgePersoner: 2,
 			},
 			{
 				dato: '2026-05-02',
-				bestillinger: 0,
-				personerTotalt: 0,
-				nye: 0,
-				gjenopprettede: 0,
-				navIdenter: 0,
-				testnorgeIdenter: 0,
+				antallNyeBestillinger: 0,
+				antallGjenopprettedeBestillinger: 0,
+				antallNyePersoner: 0,
+				andelOpprettedeDollyPersoner: 0,
+				andelImporterteTestnorgePersoner: 0,
 			},
 			{
 				dato: '2026-05-03',
-				bestillinger: 4,
-				personerTotalt: 5,
-				nye: 2,
-				gjenopprettede: 0,
-				navIdenter: 3,
-				testnorgeIdenter: 1,
+				antallNyeBestillinger: 4,
+				antallGjenopprettedeBestillinger: 0,
+				antallNyePersoner: 5,
+				andelOpprettedeDollyPersoner: 3,
+				andelImporterteTestnorgePersoner: 1,
 			},
 		])
 	})
@@ -267,10 +261,8 @@ describe('dashboardUtils', () => {
 	})
 
 	it('should generate rich mock data and vary by cycle', () => {
-		vi.spyOn(Math, 'random').mockReturnValue(0.5)
 		const first = createDashboardMockData(0)
 		const second = createDashboardMockData(1)
-		vi.restoreAllMocks()
 
 		expect(first.dashboardBestillinger.length).toBe(300)
 		expect(first.dashboardTeams.length).toBe(24)
@@ -283,14 +275,15 @@ describe('dashboardUtils', () => {
 		expect(first.dashboardOrganisasjoner[0].organisasjoner[0]).toHaveProperty('organisasjonsform')
 		expect(first.dashboardDollyTeams[0].teams[0]).toHaveProperty('navn')
 		expect(first.dashboardDollyTeams[0].teams[0]).toHaveProperty('beskrivelse')
-		expect(first.dashboardBestillinger[0]).toHaveProperty('bestillinger')
-		expect(first.dashboardBestillinger[0]).toHaveProperty('navIdenter')
-		expect(first.dashboardBestillinger[0]).toHaveProperty('testnorgeIdenter')
-		expect(second.dashboardBestillinger[0].personerTotalt).toBe(
-			first.dashboardBestillinger[0].personerTotalt + 1,
+		expect(first.dashboardBestillinger[0]).toHaveProperty('antallNyeBestillinger')
+		expect(first.dashboardBestillinger[0]).toHaveProperty('andelOpprettedeDollyPersoner')
+		expect(first.dashboardBestillinger[0]).toHaveProperty('andelImporterteTestnorgePersoner')
+		expect(first.dashboardBestillinger[0].antallNyePersoner).toBe(
+			first.dashboardBestillinger[0].andelOpprettedeDollyPersoner +
+				first.dashboardBestillinger[0].andelImporterteTestnorgePersoner,
 		)
-		expect(second.dashboardBestillinger[0].bestillinger).toBe(
-			first.dashboardBestillinger[0].bestillinger + 1,
+		expect(first.dashboardTeams[0].totaltUnikeBrukere).not.toBe(
+			second.dashboardTeams[0].totaltUnikeBrukere,
 		)
 	})
 
@@ -325,6 +318,79 @@ describe('dashboardUtils', () => {
 		expect(dollyTeams[0].teams[0].team).toBe('Team X')
 	})
 
+	it('should describe organisasjoner and disambiguate duplicate names', () => {
+		const [punkt] = toMonthlyOrganisasjonPoints([
+			{
+				interval: '2026-05',
+				totaltUnikeBrukere: 3,
+				totaltAntallOrganisasjoner: 3,
+				organisasjoner: [
+					{
+						navn: 'Org A',
+						organisasjonsnummer: '111111111',
+						organisasjonsform: 'AS',
+						unikeBrukere: 3,
+					},
+					{
+						navn: 'Ukjent organisasjon',
+						organisasjonsnummer: '222222222',
+						organisasjonsform: 'Ukjent organisasjonsform',
+						unikeBrukere: 2,
+					},
+					{
+						navn: 'Ukjent organisasjon',
+						organisasjonsnummer: '333333333',
+						organisasjonsform: 'Ukjent organisasjonsform',
+						unikeBrukere: 1,
+					},
+				],
+			},
+		])
+
+		expect(punkt.teams).toEqual([
+			{ team: 'Org A', unikeBrukere: 3, beskrivelse: 'AS, org.nr. 111111111' },
+			{
+				team: 'Ukjent organisasjon (222222222)',
+				unikeBrukere: 2,
+				beskrivelse: 'Ukjent organisasjonsform, org.nr. 222222222',
+			},
+			{
+				team: 'Ukjent organisasjon (333333333)',
+				unikeBrukere: 1,
+				beskrivelse: 'Ukjent organisasjonsform, org.nr. 333333333',
+			},
+		])
+	})
+
+	it('should keep Dolly team descriptions and drop blank ones', () => {
+		const [punkt] = toMonthlyDollyTeamPoints([
+			{
+				interval: '2026-05',
+				totaltAntallMedlemmer: 5,
+				totaltAntallTeams: 2,
+				teams: [
+					{ navn: 'Team X', beskrivelse: 'Tester pensjon', antallMedlemmer: 3 },
+					{ navn: 'Team Y', beskrivelse: '  ', antallMedlemmer: 2 },
+				],
+			},
+		])
+
+		expect(punkt.teams.map((team) => team.beskrivelse)).toEqual(['Tester pensjon', undefined])
+		expect(toTeamDistributionForInterval([punkt], '2026-05')[0].beskrivelse).toBe('Tester pensjon')
+	})
+
+	it('should map oversikt to sorted monthly person points', () => {
+		const punkter = toMonthlyPersonPoints([
+			{ aar: 2026, maaned: 'JUNE', totaltAntallPersoner: 12, nye: 10, gjenopprettede: 2 },
+			{ aar: 2026, maaned: 'MAY', totaltAntallPersoner: 5, nye: 5, gjenopprettede: 0 },
+			{ aar: 2026, maaned: 'UKJENT', totaltAntallPersoner: 1, nye: 1, gjenopprettede: 0 },
+		])
+
+		expect(punkter.map((punkt) => punkt.interval)).toEqual(['2026-05', '2026-06'])
+		expect(punkter[1]).toMatchObject({ totalt: 12, nye: 10, gjenopprettede: 2 })
+		expect(filterMonthlyTeamPoints(punkter, MONTH_SCOPE_LAST_12)).toHaveLength(2)
+	})
+
 	it('should normalize date-interval values and filter to latest 12 months', () => {
 		const points = toMonthlyTeamPoints([
 			{
@@ -353,30 +419,27 @@ describe('dashboardUtils', () => {
 
 		const fridayData = {
 			dato: '2026-06-05',
-			bestillinger: 5,
-			personerTotalt: 4,
-			nye: 3,
-			gjenopprettede: 1,
-			navIdenter: 3,
-			testnorgeIdenter: 1,
+			antallNyeBestillinger: 3,
+			antallGjenopprettedeBestillinger: 1,
+			antallNyePersoner: 4,
+			andelOpprettedeDollyPersoner: 3,
+			andelImporterteTestnorgePersoner: 1,
 		}
 		const saturdayData = {
 			dato: '2026-06-06',
-			bestillinger: 0,
-			personerTotalt: 0,
-			nye: 0,
-			gjenopprettede: 0,
-			navIdenter: 0,
-			testnorgeIdenter: 0,
+			antallNyeBestillinger: 0,
+			antallGjenopprettedeBestillinger: 0,
+			antallNyePersoner: 0,
+			andelOpprettedeDollyPersoner: 0,
+			andelImporterteTestnorgePersoner: 0,
 		}
 		const sundayData = {
 			dato: '2026-06-07',
-			bestillinger: 0,
-			personerTotalt: 0,
-			nye: 0,
-			gjenopprettede: 0,
-			navIdenter: 0,
-			testnorgeIdenter: 0,
+			antallNyeBestillinger: 0,
+			antallGjenopprettedeBestillinger: 0,
+			antallNyePersoner: 0,
+			andelOpprettedeDollyPersoner: 0,
+			andelImporterteTestnorgePersoner: 0,
 		}
 
 		it('should return three dates covering friday, saturday and sunday', () => {
@@ -391,8 +454,8 @@ describe('dashboardUtils', () => {
 
 			const summary = periodData.reduce(
 				(acc, row) => {
-					acc.nye += asNumber(row.nye)
-					acc.gjenopprettede += asNumber(row.gjenopprettede)
+					acc.nye += asNumber(row.antallNyeBestillinger)
+					acc.gjenopprettede += asNumber(row.antallGjenopprettedeBestillinger)
 					return acc
 				},
 				{ nye: 0, gjenopprettede: 0 },
