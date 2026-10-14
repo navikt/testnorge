@@ -12,9 +12,11 @@ const makePoints = (count: number, base: number): PersonTrendPoint[] =>
 	Array.from({ length: count }, (_, index) => ({
 		dato: `2026-01-${String(index + 1).padStart(2, '0')}`,
 		datoVisning: `${index + 1}. jan`,
-		personerTotalt: base * 10 + index,
-		nye: base + index,
-		gjenopprettede: base + index + 1,
+		nyeBestillinger: base + index,
+		gjenopprettedeBestillinger: base + index + 1,
+		nyePersoner: base * 10 + index,
+		dollyPersoner: base * 8 + index,
+		testnorgePersoner: base * 2,
 	}))
 
 const visibilityOptions = {

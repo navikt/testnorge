@@ -52,12 +52,14 @@ export type DagFagsystemSerie = {
 }
 
 export type DagFagsystemMatrise = {
-	dager: string[]
+	kategorier: string[]
+	overskrifter: string[]
 	serier: DagFagsystemSerie[]
 }
 
 export type DagPersonMatrise = {
-	dager: string[]
+	kategorier: string[]
+	overskrifter: string[]
 	dollyPersoner: number[]
 	testnorgePersoner: number[]
 	nyeBestillinger: number[]
@@ -244,6 +246,26 @@ export const harPersonFordeling = ({ dollyPersoner, testnorgePersoner }: PersonF
 export const aarSammendragTittel = (year: number, referanseDato: Date = new Date()) =>
 	year === referanseDato.getFullYear() ? `Hittil i ${year}` : `Hele ${year}`
 
+export type PeriodeVisning = 'maaned' | 'aar'
+
+export const erPeriodeVisning = (verdi: string): verdi is PeriodeVisning =>
+	verdi === 'maaned' || verdi === 'aar'
+
+export const aarPeriodeTittel = (year: number, referanseDato: Date = new Date()) =>
+	year === referanseDato.getFullYear() ? `hittil i ${year}` : `i ${year}`
+
+export const toPeriodeTittel = (
+	visning: PeriodeVisning,
+	year: number,
+	maanedVisning: string,
+	referanseDato: Date = new Date(),
+): string => {
+	if (visning === 'aar') {
+		return aarPeriodeTittel(year, referanseDato)
+	}
+	return maanedVisning ? `i ${maanedVisning}` : ''
+}
+
 const synligeKriterier = (kriterier?: BrukeradferdKriterium[] | null) =>
 	(kriterier ?? []).filter((kriterium) => !SKJULTE_FAGSYSTEMER.has(kriterium.fagsystem))
 
@@ -268,53 +290,89 @@ export const toFagsystemSummer = (detaljert: BrukerBestillingerDTO[]): Fagsystem
 export const toFagsystemSummerUtenUspesifisert = (summer: FagsystemSum[]) =>
 	summer.filter((sum) => !USPESIFISERTE_FAGSYSTEMER.has(sum.fagsystem))
 
+export type Tidsakse = {
+	kategorier: string[]
+	overskrifter: string[]
+	indeksFor: (dato?: string | null) => number | null
+}
+
 const dagIMaaned = (dato?: string | null) => {
 	const dag = Number(dato?.slice(8, 10))
 	return Number.isInteger(dag) && dag > 0 ? dag : null
 }
 
-const dagerIMaaned = (periode: Periode) =>
-	Array.from({ length: getDaysInMonth(periodeTilDato(periode)) }, (_, index) =>
+export const dagAkse = (periode: Periode): Tidsakse => {
+	const kategorier = Array.from({ length: getDaysInMonth(periodeTilDato(periode)) }, (_, index) =>
 		String(index + 1).padStart(2, '0'),
 	)
+	return {
+		kategorier,
+		overskrifter: kategorier.map((dag) => `Dag ${dag}`),
+		indeksFor: (dato) => {
+			const dagNummer = dagIMaaned(dato)
+			return dagNummer && dagNummer <= kategorier.length ? dagNummer - 1 : null
+		},
+	}
+}
 
-export const toDagPersonMatrise = (
+export const maanedAkse = (year: number, referanseDato: Date = new Date()): Tidsakse => {
+	const antallMaaneder =
+		year === referanseDato.getFullYear() ? referanseDato.getMonth() + 1 : MONTH_NAMES.length
+	const perioder = Array.from({ length: antallMaaneder }, (_, index) => ({
+		year,
+		month: index + 1,
+	}))
+	return {
+		kategorier: perioder.map(maanedVisningKort),
+		overskrifter: perioder.map(periodeVisning),
+		indeksFor: (dato) => {
+			const periode = parsePeriode(dato)
+			return periode && periode.year === year && periode.month <= antallMaaneder
+				? periode.month - 1
+				: null
+		},
+	}
+}
+
+export const toPersonMatrise = (
 	detaljert: BrukerBestillingerDTO[],
-	periode: Periode,
+	akse: Tidsakse,
 ): DagPersonMatrise => {
-	const dager = dagerIMaaned(periode)
+	const antall = akse.kategorier.length
 	const matrise: DagPersonMatrise = {
-		dager,
-		dollyPersoner: new Array(dager.length).fill(0),
-		testnorgePersoner: new Array(dager.length).fill(0),
-		nyeBestillinger: new Array(dager.length).fill(0),
+		kategorier: akse.kategorier,
+		overskrifter: akse.overskrifter,
+		dollyPersoner: new Array(antall).fill(0),
+		testnorgePersoner: new Array(antall).fill(0),
+		nyeBestillinger: new Array(antall).fill(0),
 	}
 
-	for (const dag of detaljert) {
-		const dagNummer = dagIMaaned(dag.dato)
-		if (!dagNummer || dagNummer > dager.length) {
+	for (const rad of detaljert) {
+		const index = akse.indeksFor(rad.dato)
+		if (index === null) {
 			continue
 		}
-		const index = dagNummer - 1
-		matrise.dollyPersoner[index] += asNumber(dag.andelOpprettedeDollyPersoner)
-		matrise.testnorgePersoner[index] += asNumber(dag.andelImporterteTestnorgePersoner)
-		matrise.nyeBestillinger[index] += asNumber(dag.antallNyeBestillinger)
+		matrise.dollyPersoner[index] += asNumber(rad.andelOpprettedeDollyPersoner)
+		matrise.testnorgePersoner[index] += asNumber(rad.andelImporterteTestnorgePersoner)
+		matrise.nyeBestillinger[index] += asNumber(rad.antallNyeBestillinger)
 	}
 
 	return matrise
 }
 
+export const toDagPersonMatrise = (detaljert: BrukerBestillingerDTO[], periode: Periode) =>
+	toPersonMatrise(detaljert, dagAkse(periode))
+
 export const harDagPersonData = (matrise: DagPersonMatrise) =>
 	matrise.dollyPersoner.some((antall) => antall > 0) ||
 	matrise.testnorgePersoner.some((antall) => antall > 0)
 
-export const toDagFagsystemMatrise = (
+export const toFagsystemMatrise = (
 	detaljert: BrukerBestillingerDTO[],
-	periode: Periode,
+	akse: Tidsakse,
 	maksAntallSerier = 6,
 ): DagFagsystemMatrise => {
-	const dager = dagerIMaaned(periode)
-	const antallDager = dager.length
+	const antall = akse.kategorier.length
 	const summer = toFagsystemSummer(detaljert)
 	const trengerAndre = summer.length > maksAntallSerier
 	const egneSerier = trengerAndre ? summer.slice(0, maksAntallSerier - 1) : summer
@@ -323,31 +381,41 @@ export const toDagFagsystemMatrise = (
 	const serier: DagFagsystemSerie[] = egneSerier.map((sum) => ({
 		fagsystem: sum.fagsystem,
 		label: sum.label,
-		data: new Array(antallDager).fill(0),
+		data: new Array(antall).fill(0),
 	}))
 	const andreSerie: DagFagsystemSerie = {
 		fagsystem: ANDRE_FAGSYSTEMER,
 		label: ANDRE_FAGSYSTEMER,
-		data: new Array(antallDager).fill(0),
+		data: new Array(antall).fill(0),
 	}
 
-	detaljert.forEach((dag) => {
-		const dagNummer = dagIMaaned(dag.dato)
-		if (!dagNummer || dagNummer > antallDager) {
+	detaljert.forEach((rad) => {
+		const index = akse.indeksFor(rad.dato)
+		if (index === null) {
 			return
 		}
-		synligeKriterier(dag.kriterier).forEach((kriterium) => {
+		synligeKriterier(rad.kriterier).forEach((kriterium) => {
 			const serie = egneFagsystemer.has(kriterium.fagsystem)
 				? serier.find((egenSerie) => egenSerie.fagsystem === kriterium.fagsystem)
 				: andreSerie
 			if (serie) {
-				serie.data[dagNummer - 1] += asNumber(kriterium.antall)
+				serie.data[index] += asNumber(kriterium.antall)
 			}
 		})
 	})
 
-	return { dager, serier: trengerAndre ? [...serier, andreSerie] : serier }
+	return {
+		kategorier: akse.kategorier,
+		overskrifter: akse.overskrifter,
+		serier: trengerAndre ? [...serier, andreSerie] : serier,
+	}
 }
+
+export const toDagFagsystemMatrise = (
+	detaljert: BrukerBestillingerDTO[],
+	periode: Periode,
+	maksAntallSerier = 6,
+) => toFagsystemMatrise(detaljert, dagAkse(periode), maksAntallSerier)
 
 export const parseDetaljNoekkel = (noekkel: string): { label: string; type: DetaljType } => {
 	if (ANTALL_NOEKLER.has(noekkel)) {

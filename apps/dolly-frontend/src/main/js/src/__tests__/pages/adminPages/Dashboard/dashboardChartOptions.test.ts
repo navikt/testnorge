@@ -2,6 +2,7 @@ import {
 	createFeilPerFagsystemChartOptions,
 	createFeilSummertChartOptions,
 	createIdenterDonutChartOptions,
+	createMonthlyPersonTrendChartOptions,
 	createMonthlyTeamDistributionChartOptions,
 	createMonthlyTeamTrendChartOptions,
 	createNyeGjenopprettedeDonutChartOptions,
@@ -16,12 +17,11 @@ describe('dashboardChartOptions', () => {
 			{
 				dato: '2026-06-01',
 				datoVisning: '01.06.2026',
-				bestillinger: 12,
-				personerTotalt: 10,
-				nye: 5,
-				gjenopprettede: 2,
-				navIdenter: 7,
-				testnorgeIdenter: 5,
+				nyeBestillinger: 12,
+				gjenopprettedeBestillinger: 2,
+				nyePersoner: 10,
+				dollyPersoner: 7,
+				testnorgePersoner: 3,
 			},
 		])
 
@@ -37,15 +37,17 @@ describe('dashboardChartOptions', () => {
 		).toEqual([-45])
 		expect(options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.min : undefined).toBe(0)
 		const series = options.series as Highcharts.SeriesSplineOptions[]
-		expect(series).toHaveLength(6)
-		expect(series[0].name).toBe('Personer totalt')
-		expect(series[1].name).toBe('Nye')
-		expect(series[2].name).toBe('Gjenopprettede')
-		expect(series[3].name).toBe('NAV-identer')
-		expect(series[4].name).toBe('Testnorge-identer')
-		expect(series[5].name).toBe('Bestillinger')
-		expect(series[0].visible).toBe(true)
+		expect(series).toHaveLength(5)
+		expect(series[0].name).toBe('Nye personer')
+		expect(series[1].name).toBe('Opprettet i Dolly')
+		expect(series[2].name).toBe('Importert fra Testnorge')
+		expect(series[3].name).toBe('Nye bestillinger')
+		expect(series[4].name).toBe('Gjenopprettede bestillinger')
 		expect(series[0].data).toEqual([10])
+		expect(series[1].data).toEqual([7])
+		expect(series[2].data).toEqual([3])
+		expect(series[3].data).toEqual([12])
+		expect(series[4].data).toEqual([2])
 		expect(options.chart?.type).toBe('spline')
 	})
 
@@ -62,8 +64,8 @@ describe('dashboardChartOptions', () => {
 		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
 		expect(options.series).toHaveLength(1)
 		expect(series.data).toEqual([
-			{ name: 'Nye personer', y: 9, color: 'var(--ax-success-700)' },
-			{ name: 'Gjenopprettede', y: 3, color: 'var(--ax-accent-700)' },
+			{ name: 'Nye bestillinger', y: 9, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettede bestillinger', y: 3, color: 'var(--ax-accent-700)' },
 		])
 		expect(options.tooltip?.outside).toBe(true)
 	})
@@ -80,15 +82,15 @@ describe('dashboardChartOptions', () => {
 		expect(options.chart?.height).toBe(400)
 		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
 		expect(series.data).toEqual([
-			{ name: 'Nye personer', y: 14, color: 'var(--ax-success-700)' },
-			{ name: 'Gjenopprettede', y: 6, color: 'var(--ax-accent-700)' },
+			{ name: 'Nye bestillinger', y: 14, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettede bestillinger', y: 6, color: 'var(--ax-accent-700)' },
 		])
 	})
 
-	it('should create identer donut with NAV and Testnorge slices', () => {
+	it('should create identer donut with Dolly and Testnorge slices', () => {
 		const options = createIdenterDonutChartOptions({
-			navIdenter: 12,
-			testnorgeIdenter: 4,
+			dollyPersoner: 12,
+			testnorgePersoner: 4,
 		})
 
 		const series = options.series?.[0] as Highcharts.SeriesPieOptions
@@ -97,8 +99,8 @@ describe('dashboardChartOptions', () => {
 		expect(options.chart?.height).toBe(400)
 		expect(options.plotOptions?.pie?.innerSize).toBe('60%')
 		expect(series.data).toEqual([
-			{ name: 'NAV-identer', y: 12, color: 'var(--ax-accent-700)' },
-			{ name: 'Testnorge-identer', y: 4, color: 'var(--ax-success-700)' },
+			{ name: 'Opprettet i Dolly', y: 12, color: 'var(--ax-accent-700)' },
+			{ name: 'Importert fra Testnorge', y: 4, color: 'var(--ax-success-700)' },
 		])
 	})
 
@@ -212,5 +214,33 @@ describe('dashboardChartOptions', () => {
 			options.yAxis && !Array.isArray(options.yAxis) ? options.yAxis.title?.text : undefined,
 		).toBe('Unike brukere')
 		expect(series.data).toEqual([4, 2])
+	})
+
+	it('should show escaped description in team distribution tooltip', () => {
+		const options = createMonthlyTeamDistributionChartOptions(
+			[{ team: 'Team <A>', unikeBrukere: 4, beskrivelse: 'AS, org.nr. 123456789' }],
+			'Antall medlemmer',
+		)
+		const formatter = options.tooltip?.formatter as unknown as (this: { index: number }) => string
+
+		expect(formatter.call({ index: 0 })).toBe(
+			'<b>Team &lt;A&gt;</b><br/>AS, org.nr. 123456789<br/>Antall medlemmer: <b>4</b>',
+		)
+	})
+
+	it('should create monthly person trend with total, new and restored series', () => {
+		const options = createMonthlyPersonTrendChartOptions([
+			{ interval: '2026-05', intervalVisning: 'mai 2026', totalt: 12, nye: 10, gjenopprettede: 2 },
+		])
+
+		expect(options.chart?.type).toBe('spline')
+		expect(options.legend?.enabled).toBe(true)
+		expect(
+			options.series?.map((serie) => [serie.name, (serie as Highcharts.SeriesSplineOptions).data]),
+		).toEqual([
+			['Personer totalt', [12]],
+			['Fra nye bestillinger', [10]],
+			['Fra gjenopprettede bestillinger', [2]],
+		])
 	})
 })

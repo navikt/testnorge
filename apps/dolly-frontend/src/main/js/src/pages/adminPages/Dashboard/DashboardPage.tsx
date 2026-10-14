@@ -76,6 +76,18 @@ export default () => {
 							isLoading={coreData.loadingDashboardPersoner && !coreData.mockModeEnabled}
 						/>
 
+						<MonthlyTeamTrendSection
+							title="Personer per måned"
+							description="Antall personer bestilt hver måned, fordelt på nye og gjenopprettede bestillinger."
+							emptyStateMessage="Ingen månedsoversikt tilgjengelig."
+							filteredMonthlyTeamPointsLength={coreData.filteredMonthlyPersonPointsLength}
+							monthScope={coreData.personMonthScope}
+							onMonthScopeChange={coreData.onPersonMonthScopeChange}
+							monthlyTrendChartOptions={coreData.monthlyPersonTrendChartOptions}
+							ariaLabel="Månedlig utvikling i antall personer bestilt"
+							isLoading={coreData.loadingDashboardOversikt && !coreData.mockModeEnabled}
+						/>
+
 						<DashboardFeilSection
 							isLoading={coreData.loadingDashboardOversikt && !coreData.mockModeEnabled}
 						/>

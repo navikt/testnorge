@@ -1,5 +1,5 @@
-import { Alert, BodyShort, Box, Heading, HGrid, ToggleGroup, VStack } from '@navikt/ds-react'
-import { type ReactNode, useId, useState } from 'react'
+import { Alert, BodyShort, Box, Heading, HGrid, VStack } from '@navikt/ds-react'
+import { type ReactNode, useId } from 'react'
 import { type Options } from 'highcharts'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import {
@@ -16,8 +16,10 @@ import {
 	maanedVisning,
 	type MaanedPunkt,
 	type MonthScope,
+	type PeriodeVisning,
 	type PersonFordeling,
 } from './brukerStatistikkUtils'
+import { PeriodeVelger } from './PeriodeVelger'
 
 const PersonKpiRad = ({ fordeling }: { fordeling: PersonFordeling & { nyePersoner: number } }) => (
 	<HGrid columns={{ xs: 1, sm: 3 }} gap="space-12">
@@ -42,19 +44,17 @@ const PanelDel = ({ children }: { children: ReactNode }) => (
 	</Box>
 )
 
-type NoekkeltallVisning = 'aar' | 'maaned'
-
 interface PeriodeSectionProps {
 	aarOptions: string[]
 	valgtAar: string
 	onAarChange: (aar: string) => void
 	aarSammendrag: AarSammendrag | null
-	aarSammendragTittel: string
 	maanedOptions: DashboardSelectOption[]
 	valgtPeriodeKey: string
 	onPeriodeChange: (periodeKey: string) => void
 	valgtPunkt: MaanedPunkt
-	valgtMaanedTekst: string
+	visning: PeriodeVisning
+	onVisningChange: (visning: PeriodeVisning) => void
 	mestBrukteFagsystem: string | null
 	antallFagsystemer: number
 	isLoadingDetaljert: boolean
@@ -67,12 +67,12 @@ export const PeriodeSection = ({
 	valgtAar,
 	onAarChange,
 	aarSammendrag,
-	aarSammendragTittel,
 	maanedOptions,
 	valgtPeriodeKey,
 	onPeriodeChange,
 	valgtPunkt,
-	valgtMaanedTekst,
+	visning,
+	onVisningChange,
 	mestBrukteFagsystem,
 	antallFagsystemer,
 	isLoadingDetaljert,
@@ -80,7 +80,6 @@ export const PeriodeSection = ({
 	children,
 }: PeriodeSectionProps) => {
 	const headingId = useId()
-	const [noekkeltallVisning, setNoekkeltallVisning] = useState<NoekkeltallVisning>('maaned')
 	const skjulDetaljverdier = isLoadingDetaljert || Boolean(detaljerFeil)
 
 	return (
@@ -99,38 +98,23 @@ export const PeriodeSection = ({
 					<Heading id={headingId} level="2" size="medium">
 						Bestillinger per år
 					</Heading>
-					<VStack gap="space-8">
-						<DashboardSelectButtons
-							label="År"
-							selected={valgtAar}
-							onSelect={onAarChange}
-							options={aarOptions.map((aar) => ({ value: aar, label: aar }))}
-						/>
-						<DashboardSelectButtons
-							label="Måned"
-							selected={valgtPeriodeKey}
-							onSelect={onPeriodeChange}
-							options={maanedOptions}
-						/>
-					</VStack>
+					<PeriodeVelger
+						aarOptions={aarOptions}
+						valgtAar={valgtAar}
+						onAarChange={onAarChange}
+						maanedOptions={maanedOptions}
+						valgtMaaned={valgtPeriodeKey}
+						onMaanedChange={onPeriodeChange}
+						visning={visning}
+						onVisningChange={onVisningChange}
+					/>
 					{detaljerFeil && (
 						<Alert variant="error">
-							Klarte ikke å hente detaljer for valgt måned: {detaljerFeil.message}
+							Klarte ikke å hente detaljer for {visning === 'aar' ? 'valgt år' : 'valgt måned'}:{' '}
+							{detaljerFeil.message}
 						</Alert>
 					)}
-					<Box maxWidth="20rem">
-						<ToggleGroup
-							label="Vis nøkkeltall for"
-							size="small"
-							fill
-							value={noekkeltallVisning}
-							onChange={(verdi) => setNoekkeltallVisning(verdi as NoekkeltallVisning)}
-						>
-							<ToggleGroup.Item value="maaned" label={valgtMaanedTekst} />
-							<ToggleGroup.Item value="aar" label={aarSammendragTittel} />
-						</ToggleGroup>
-					</Box>
-					{noekkeltallVisning === 'aar' && aarSammendrag ? (
+					{visning === 'aar' && aarSammendrag ? (
 						<VStack gap="space-8">
 							<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
 								<DashboardKpiCard label="Nye bestillinger" value={aarSammendrag.nyeBestillinger} />

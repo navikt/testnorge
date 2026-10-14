@@ -272,6 +272,10 @@ export default class DollyEndpoints {
 		return `${uri}/dashboard/feil/detaljert?year=${year}&month=${month}&day=${day}`
 	}
 
+	static dashboardBrukeradferd(year: number, month: string) {
+		return `${uri}/dashboard/brukeradferd?year=${year}&month=${month}`
+	}
+
 	static hendelseId(ident: string, relatertIdent?: string) {
 		const base = `${uri}/hendelseid/ident/${ident}`
 		return relatertIdent ? `${base}?relatertIdent=${relatertIdent}` : base

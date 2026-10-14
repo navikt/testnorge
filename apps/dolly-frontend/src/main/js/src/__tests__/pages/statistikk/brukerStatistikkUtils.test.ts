@@ -1,4 +1,6 @@
 import {
+	aarPeriodeTittel,
+	erPeriodeVisning,
 	aarSammendragTittel,
 	filterMaanedPunkter,
 	harAktivitet,
@@ -14,6 +16,10 @@ import {
 	toFagsystemSummerUtenUspesifisert,
 	toMaanedOptions,
 	toMaanedPunkter,
+	maanedAkse,
+	toFagsystemMatrise,
+	toPeriodeTittel,
+	toPersonMatrise,
 } from '@/pages/statistikk/brukerStatistikkUtils'
 import { MONTH_SCOPE_ALL, MONTH_SCOPE_LAST_12 } from '@/pages/adminPages/Dashboard/dashboardUtils'
 import { type BrukerBestillingerDTO } from '@/utils/hooks/useBrukerStatistikk'
@@ -190,7 +196,7 @@ describe('brukerStatistikkUtils', () => {
 			{ year: 2026, month: 10 },
 		)
 
-		expect(matrise.dager).toHaveLength(31)
+		expect(matrise.kategorier).toHaveLength(31)
 		expect(matrise.dollyPersoner[1]).toBe(3)
 		expect(matrise.dollyPersoner[30]).toBe(10)
 		expect(matrise.testnorgePersoner[30]).toBe(3)
@@ -227,6 +233,72 @@ describe('brukerStatistikkUtils', () => {
 		expect(aarSammendragTittel(2025, referanseDato)).toBe('Hele 2025')
 	})
 
+	it('should title the year period in lower case for panel headings', () => {
+		const referanseDato = new Date(2026, 9, 7)
+
+		expect(aarPeriodeTittel(2026, referanseDato)).toBe('hittil i 2026')
+		expect(aarPeriodeTittel(2025, referanseDato)).toBe('i 2025')
+	})
+
+	it('should title panels by month or year', () => {
+		const referanseDato = new Date(2026, 9, 13)
+
+		expect(toPeriodeTittel('maaned', 2026, 'sep. 2026', referanseDato)).toBe('i sep. 2026')
+		expect(toPeriodeTittel('aar', 2026, 'sep. 2026', referanseDato)).toBe('hittil i 2026')
+		expect(toPeriodeTittel('aar', 2025, 'nov. 2025', referanseDato)).toBe('i 2025')
+		expect(toPeriodeTittel('maaned', 2026, '', referanseDato)).toBe('')
+		expect(erPeriodeVisning('aar')).toBe(true)
+		expect(erPeriodeVisning('SISTE_3')).toBe(false)
+	})
+
+	it('should cut the month axis at the current month for the current year', () => {
+		const referanseDato = new Date(2026, 9, 7)
+
+		expect(maanedAkse(2026, referanseDato).kategorier).toHaveLength(10)
+		expect(maanedAkse(2025, referanseDato).kategorier).toHaveLength(12)
+		expect(maanedAkse(2025, referanseDato).indeksFor('2025-11-30')).toBe(10)
+		expect(maanedAkse(2025, referanseDato).indeksFor('2026-01-02')).toBeNull()
+		expect(maanedAkse(2026, referanseDato).indeksFor('2026-11-01')).toBeNull()
+	})
+
+	it('should sum days into months on the month axis', () => {
+		const akse = maanedAkse(2026, new Date(2026, 9, 7))
+		const aarDetaljert: BrukerBestillingerDTO[] = [
+			{
+				dato: '2026-02-03',
+				antallNyeBestillinger: 1,
+				andelOpprettedeDollyPersoner: 2,
+				andelImporterteTestnorgePersoner: 1,
+				kriterier: [{ fagsystem: 'PdlData', antall: 2, detaljer: {} }],
+			},
+			{
+				dato: '2026-02-20',
+				antallNyeBestillinger: 2,
+				andelOpprettedeDollyPersoner: 4,
+				andelImporterteTestnorgePersoner: 0,
+				kriterier: [{ fagsystem: 'PdlData', antall: 3, detaljer: {} }],
+			},
+			{
+				dato: '2026-09-01',
+				antallNyeBestillinger: 1,
+				andelOpprettedeDollyPersoner: 1,
+				andelImporterteTestnorgePersoner: 0,
+				kriterier: [{ fagsystem: 'Aareg', antall: 1, detaljer: {} }],
+			},
+		]
+
+		const personer = toPersonMatrise(aarDetaljert, akse)
+		expect(personer.dollyPersoner[1]).toBe(6)
+		expect(personer.testnorgePersoner[1]).toBe(1)
+		expect(personer.nyeBestillinger[1]).toBe(3)
+		expect(personer.dollyPersoner[8]).toBe(1)
+
+		const fagsystemer = toFagsystemMatrise(aarDetaljert, akse)
+		expect(fagsystemer.kategorier).toEqual(akse.kategorier)
+		expect(fagsystemer.serier.find((serie) => serie.fagsystem === 'PdlData')?.data[1]).toBe(5)
+		expect(fagsystemer.serier.find((serie) => serie.fagsystem === 'Aareg')?.data[8]).toBe(1)
+	})
+
 	it('should sum fagsystemer and hide Beskrivelse', () => {
 		const summer = toFagsystemSummer(detaljert)
 
@@ -242,7 +314,7 @@ describe('brukerStatistikkUtils', () => {
 	it('should build a day by fagsystem matrix and group the rest into Andre', () => {
 		const matrise = toDagFagsystemMatrise(detaljert, { year: 2026, month: 9 }, 3)
 
-		expect(matrise.dager).toHaveLength(30)
+		expect(matrise.kategorier).toHaveLength(30)
 		expect(matrise.serier.map((serie) => serie.label)).toEqual([
 			'Persondata (PDL)',
 			'Kontakt- og reservasjonsregisteret',

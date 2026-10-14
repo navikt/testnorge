@@ -4,12 +4,11 @@ import DollyEndpoints from '@/service/services/dolly/DollyEndpoints'
 
 export type DashboardBestillingerDTO = {
 	dato: string
-	bestillinger: number
-	personerTotalt: number
-	nye: number
-	gjenopprettede: number
-	navIdenter: number
-	testnorgeIdenter: number
+	antallNyeBestillinger: number
+	antallGjenopprettedeBestillinger: number
+	antallNyePersoner: number
+	andelOpprettedeDollyPersoner: number
+	andelImporterteTestnorgePersoner: number
 }
 
 export type DashboardTeamEntryDTO = {
@@ -59,6 +58,7 @@ export type DashboardDollyTeamsDTO = {
 }
 
 export type DashboardOversiktDTO = {
+	aarManed?: string
 	aar: number
 	maaned: string
 	totaltAntallPersoner: number
@@ -77,6 +77,21 @@ export type DashboardFeilDetaljertRad = {
 	type: string
 	master?: string
 } & Record<string, FeilVerdi>
+
+export type DashboardBrukeradferdKriterium = {
+	fagsystem: string
+	antall: number
+	detaljer: Record<string, number | string> | null
+}
+
+export type DashboardBrukeradferdDTO = {
+	dato: string
+	antallNyeBestillinger?: number | null
+	antallNyePersoner?: number | null
+	andelOpprettedeDollyPersoner?: number | null
+	andelImporterteTestnorgePersoner?: number | null
+	kriterier: DashboardBrukeradferdKriterium[]
+}
 
 export const useDashboard = () => {
 	const currentDate = new Date()
@@ -288,4 +303,61 @@ export const useDashboardFeilForDager = (dager: { year: number; month: string; d
 	)
 
 	return { feilForDager: data ?? [], loadingFeilForDager, feilForDagerError, mutateFeilForDager }
+}
+
+const EMPTY_OVERSIKT: DashboardOversiktDTO[] = []
+
+export const useDashboardOversikt = (enabled = true) => {
+	const {
+		data,
+		isLoading: loadingDashboardOversikt,
+		error: dashboardOversiktError,
+	} = useSWR<DashboardOversiktDTO[], Error>(
+		enabled ? DollyEndpoints.dashboardOversikt() : null,
+		fetcher,
+		{
+			revalidateOnFocus: false,
+			revalidateIfStale: false,
+			dedupingInterval: 60000,
+		},
+	)
+
+	return {
+		dashboardOversikt: data ?? EMPTY_OVERSIKT,
+		loadingDashboardOversikt,
+		dashboardOversiktError,
+	}
+}
+
+const EMPTY_BRUKERADFERD: DashboardBrukeradferdDTO[] = []
+
+export const useDashboardBrukeradferdForMonths = (months: { year: number; month: string }[]) => {
+	const urls = months.map((maaned) =>
+		DollyEndpoints.dashboardBrukeradferd(maaned.year, maaned.month),
+	)
+	const shouldFetch = urls.length > 0
+	const {
+		data,
+		isLoading: loadingBrukeradferd,
+		error: brukeradferdError,
+		mutate: mutateBrukeradferd,
+	} = useSWR<DashboardBrukeradferdDTO[], Error>(
+		shouldFetch ? ['brukeradferd-for-months', ...urls] : null,
+		() =>
+			Promise.all(urls.map((url) => fetcher(url, null, 60000))).then((resultater) =>
+				resultater.flatMap((rader) => rader ?? []),
+			),
+		{
+			revalidateOnFocus: false,
+			revalidateIfStale: false,
+			dedupingInterval: 60000,
+		},
+	)
+
+	return {
+		brukeradferd: data ?? EMPTY_BRUKERADFERD,
+		loadingBrukeradferd,
+		brukeradferdError,
+		mutateBrukeradferd,
+	}
 }

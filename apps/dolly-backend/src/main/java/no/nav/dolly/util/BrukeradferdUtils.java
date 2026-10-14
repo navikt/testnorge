@@ -4,9 +4,11 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.DateTimeException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,7 @@ public class BrukeradferdUtils {
                     var antall = antallExtractor.applyAsInt(kriterium);
                     return StringUtils.isBlank(bestKriterier)
                             ? Map.of(NO_DATA, antall)
-                            : getAntallAdferd(jsonMapper.readValue(bestKriterier, RsDollyBestilling.class), antall);
+                            : getAntallAdferd(bestKriterier, antall, jsonMapper);
                 })
                 .flatMap(map -> map.entrySet().stream())
                 .map(entry -> new Kriteriumsrad(
@@ -63,6 +65,17 @@ public class BrukeradferdUtils {
                         entry.getValue().stream().mapToInt(Kriteriumsrad::antall).sum(),
                         slaSammenDetaljer(entry.getValue())))
                 .toList();
+    }
+
+    private static Map<String, Integer> getAntallAdferd(String bestKriterier, Integer antall, JsonMapper jsonMapper) {
+
+        try {
+            return getAntallAdferd(jsonMapper.readValue(bestKriterier, RsDollyBestilling.class), antall);
+        } catch (JacksonException | DateTimeException e) {
+            log.warn("Kunne ikke lese bestillingskriterier for brukeradferd, teller bestillingen som {}: {}",
+                    NO_DATA, e.getClass().getSimpleName());
+            return Map.of(NO_DATA, antall);
+        }
     }
 
     private static Map<String, Object> slaSammenDetaljer(List<Kriteriumsrad> rader) {

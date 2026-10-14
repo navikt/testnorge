@@ -18,6 +18,7 @@ export const MonthlyTeamTrendSection = ({
 	monthScope,
 	onMonthScopeChange,
 	monthlyTrendChartOptions,
+	ariaLabel = 'Månedlig trend for unike brukere og antall teams',
 	isLoading = false,
 }: {
 	title?: string
@@ -28,6 +29,7 @@ export const MonthlyTeamTrendSection = ({
 	monthScope: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL
 	onMonthScopeChange: (value: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL) => void
 	monthlyTrendChartOptions: Options
+	ariaLabel?: string
 	isLoading?: boolean
 }) => (
 	<DashboardSectionCard>
@@ -57,10 +59,7 @@ export const MonthlyTeamTrendSection = ({
 							]}
 						/>
 					)}
-					<DashboardChartPanel
-						options={monthlyTrendChartOptions}
-						ariaLabel="Månedlig trend for unike brukere og antall teams"
-					/>
+					<DashboardChartPanel options={monthlyTrendChartOptions} ariaLabel={ariaLabel} />
 				</>
 			)}
 		</VStack>
