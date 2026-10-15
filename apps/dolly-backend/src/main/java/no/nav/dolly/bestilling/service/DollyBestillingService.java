@@ -172,7 +172,8 @@ public class DollyBestillingService {
                             .thenReturn(response);
                 })
                 .flatMap(response -> transactionHelperService.persister(bestillingProgress,
-                        BestillingProgress::setIdent, response.getIdent()));
+                        BestillingProgress::setIdent, isNotBlank(response.getIdent()) ?
+                                response.getIdent() : bestillingProgress.getIdent()));
     }
 
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
