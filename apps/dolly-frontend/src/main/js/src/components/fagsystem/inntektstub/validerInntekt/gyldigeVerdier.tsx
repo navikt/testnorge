@@ -40,9 +40,8 @@ export const finnUgyldigeFelter = (inntekt: Record<string, any>) => {
 		.map(([felt]) => felt)
 }
 
-export const klargjoerInntektstubForBestilling = (inntektstub: any) => ({
-	...inntektstub,
-	inntektsinformasjon: inntektstub.inntektsinformasjon.map((inntektsinformasjon: any) =>
+export const klargjoerInntektstubForBestilling = (inntekter: any[]) =>
+	inntekter.map((inntektsinformasjon: any) =>
 		inntektsinformasjon?.inntektsliste
 			? {
 					...inntektsinformasjon,
@@ -51,5 +50,4 @@ export const klargjoerInntektstubForBestilling = (inntektstub: any) => ({
 					),
 				}
 			: inntektsinformasjon,
-	),
-})
+	)

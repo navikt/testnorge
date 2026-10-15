@@ -33,8 +33,9 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 			initialValuesMal.inntektsmelding.inntekter,
 		)
 	}
-	if (initialValuesMal.inntektstub) {
-		initialValuesMal.inntektstub = getUpdatedInntektstubData(initialValuesMal.inntektstub)
+	// TODO: Handle gamle Inntektstub-maler
+	if (initialValuesMal.inntekter) {
+		initialValuesMal.inntekter = getUpdatedInntektstubData(initialValuesMal.inntekter)
 	}
 	if (initialValuesMal.skattekort) {
 		initialValuesMal.skattekort = getUpdatedSkattekortData(initialValuesMal.skattekort)
@@ -184,13 +185,8 @@ const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
 	)
 }
 
-const getUpdatedInntektstubData = (inntektstubData: any) => {
-	const newInntektstubData = Object.assign({}, inntektstubData)
-	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon?.map(
-		(inntekt: any) => updateData(inntekt, initialValues.inntektstub),
-	)
-	return newInntektstubData
-}
+const getUpdatedInntektstubData = (inntekter: any[]) =>
+	inntekter?.map((inntekt: any) => updateData(inntekt, initialValues.inntekter))
 
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {

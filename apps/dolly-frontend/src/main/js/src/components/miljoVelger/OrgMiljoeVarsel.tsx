@@ -16,7 +16,7 @@ const extractOrgnummere = (formData: any): string[] => {
 		?.filter((orgnr: string | undefined) => orgnr?.length === 9)
 		?.forEach((orgnr: string) => orgnummere.push(orgnr))
 
-	formData?.inntektstub?.inntektsinformasjon
+	formData?.inntekter
 		?.map((info: any) => info?.virksomhet)
 		?.filter((orgnr: string | undefined) => orgnr?.length === 9)
 		?.forEach((orgnr: string) => orgnummere.push(orgnr))
@@ -28,10 +28,10 @@ export const OrgMiljoeVarsel = () => {
 	const { control } = useFormContext()
 	const aareg = useWatch({ name: 'aareg', control })
 	const inntektsmelding = useWatch({ name: 'inntektsmelding', control })
-	const inntektstub = useWatch({ name: 'inntektstub', control })
+	const inntektstub = useWatch({ name: 'inntekter', control })
 	const environments: string[] = useWatch({ name: 'environments', control }) || []
 
-	const uniqueOrgnummere = extractOrgnummere({ aareg, inntektsmelding, inntektstub })
+	const uniqueOrgnummere = extractOrgnummere({ aareg, inntektsmelding, inntekter: inntektstub })
 
 	const { organisasjoner, loading } = useOrganisasjonForvalter(uniqueOrgnummere)
 
