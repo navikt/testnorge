@@ -31,7 +31,7 @@ public class PdlMasterCleanerUtility {
                     .map(method -> {
                         try {
                             return method.invoke(persondata.getPerson());
-                        } catch (IllegalAccessException | InvocationTargetException e) {
+                        } catch (IllegalAccessException | InvocationTargetException _) {
                             throw new DollyFunctionalException("Feilet å filtrere bestilling på master = PDL");
                         }
                     })
@@ -39,8 +39,6 @@ public class PdlMasterCleanerUtility {
                     .filter(List.class::isInstance)
                     .map(data -> (List<? extends DbVersjonDTO>) data)
                     .forEach(PdlMasterCleanerUtility::filterOpplysning);
-
-            persondata.getPerson().setNyident(null);
         }
 
         return persondata;

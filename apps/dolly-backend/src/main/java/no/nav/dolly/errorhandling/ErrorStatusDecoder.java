@@ -86,14 +86,14 @@ public class ErrorStatusDecoder {
             try {
                 Map<String, Object> status = jsonMapper.readValue(json, Map.class);
                 if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
-                    builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
+                    builder.append(encodeStatus((String) status.get(MESSAGE)));
                 } else if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
-                    builder.append("error=").append(status.get(ERROR)).append("; ");
+                    builder.append(status.get(ERROR));
                 } else if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
                     builder.append(encodeStatus((String) status.get(MELDING)));
-                } else if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
+                } else if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List liste) {
                     StringBuilder meldinger = new StringBuilder("=");
-                    List<Map<String, String>> details = (List) status.get(DETAILS);
+                    List<Map<String, String>> details = liste;
                     details.forEach(entry ->
                             entry.forEach((key, value) ->
                                     meldinger.append(' ').append(key).append("= ").append(value)));
