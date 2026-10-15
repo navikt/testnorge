@@ -1,4 +1,4 @@
-package no.nav.dolly.synt.meldekort.onnx;
+package no.nav.dolly.synt.meldekort.generator;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -7,11 +7,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Profile("local")
 @Slf4j
-class OnnxLocalService implements OnnxService {
+class MeldekortLocalService implements MeldekortService {
 
     private MeldekortGenerator generator;
 
@@ -19,15 +20,14 @@ class OnnxLocalService implements OnnxService {
     void postConstruct() {
 
         var modelDirectory = LocalModels.get();
-        this.generator = new MeldekortGenerator(modelDirectory);
-        log.info("Successfully initialized ONNX models from folder {}", modelDirectory.toAbsolutePath());
+        this.generator = MeldekortGenerator.fromDirectory(modelDirectory);
+        log.info("Successfully initialized meldekort models from folder {}", modelDirectory.toAbsolutePath());
 
     }
 
     @Override
     public List<String> generateMeldekort(MeldekortType meldegruppe, int antallMeldekort, Double arbeidstimerOverride) {
-        return generator.generateMeldekort(meldegruppe, antallMeldekort, arbeidstimerOverride);
+        return generator.generateMeldekort(meldegruppe, antallMeldekort, arbeidstimerOverride, ThreadLocalRandom.current());
     }
 
 }
-

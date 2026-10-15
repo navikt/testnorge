@@ -19,6 +19,8 @@ import java.util.List;
 @Slf4j
 public class BucketModels {
 
+    private static final String MODEL_SUFFIX = ".json.gz";
+
     public static Path get(String bucket, List<String> models, String tempDirPrefix)
             throws Exception {
 
@@ -29,7 +31,7 @@ public class BucketModels {
         try (var storage = StorageOptions.getDefaultInstance().getService()) {
             var downloaded = downloadModelsToDirectory(bucket, models, storage, targetDir);
             if (downloaded == 0) {
-                throw new IllegalStateException("No ONNX model files found in GCS bucket: " + bucket);
+                throw new IllegalStateException("No meldekort model files found in GCS bucket: " + bucket);
             }
             var durationInMillis = Duration.between(started, Instant.now()).toMillis();
             log.info("Downloaded {} model(s) from GCS bucket {} to {} in {}ms", downloaded, bucket, targetDir, durationInMillis);
@@ -46,7 +48,7 @@ public class BucketModels {
         for (var model : models) {
             var prefixedBlobs = storage.list(bucket, Storage.BlobListOption.prefix(model));
             for (var blob : prefixedBlobs.iterateAll()) {
-                if (blob.getName().endsWith(".onnx")) {
+                if (blob.getName().endsWith(MODEL_SUFFIX)) {
                     downloadBlob(blob, targetDir);
                     matchedFiles++;
                 }

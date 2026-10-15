@@ -1,8 +1,8 @@
 package no.nav.dolly.synt.meldekort.api;
 
 import no.nav.dolly.libs.test.DollySpringBootTest;
-import no.nav.dolly.synt.meldekort.onnx.MeldekortType;
-import no.nav.dolly.synt.meldekort.onnx.OnnxService;
+import no.nav.dolly.synt.meldekort.generator.MeldekortService;
+import no.nav.dolly.synt.meldekort.generator.MeldekortType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -20,12 +20,12 @@ class MeldekortControllerTest {
     private WebTestClient webTestClient;
 
     @MockitoBean
-    private OnnxService onnxService;
+    private MeldekortService meldekortService;
 
     @Test
     void shouldReturn200WithGeneratedMeldekort() {
 
-        when(onnxService.generateMeldekort(MeldekortType.DAGP, 2, null))
+        when(meldekortService.generateMeldekort(MeldekortType.DAGP, 2, null))
                 .thenReturn(List.of("<xml-1/>", "<xml-2/>"));
 
         webTestClient
@@ -42,7 +42,7 @@ class MeldekortControllerTest {
     @Test
     void shouldUseArbeidstimerOverrideWhenProvided() {
 
-        when(onnxService.generateMeldekort(MeldekortType.ATTF, 1, 7.5))
+        when(meldekortService.generateMeldekort(MeldekortType.ATTF, 1, 7.5))
                 .thenReturn(List.of("<xml/>"));
 
         webTestClient
@@ -58,7 +58,7 @@ class MeldekortControllerTest {
     @Test
     void shouldIgnoreInvalidArbeidstimerValue() {
 
-        when(onnxService.generateMeldekort(MeldekortType.DAGP, 1, null))
+        when(meldekortService.generateMeldekort(MeldekortType.DAGP, 1, null))
                 .thenReturn(List.of("<xml/>"));
 
         webTestClient
@@ -80,7 +80,7 @@ class MeldekortControllerTest {
                 .exchange()
                 .expectStatus().isBadRequest();
 
-        verifyNoInteractions(onnxService);
+        verifyNoInteractions(meldekortService);
 
     }
 
@@ -95,7 +95,7 @@ class MeldekortControllerTest {
                 .expectBody()
                 .jsonPath("$.error").isEqualTo("Invalid request");
 
-        verifyNoInteractions(onnxService);
+        verifyNoInteractions(meldekortService);
 
     }
 
