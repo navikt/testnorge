@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class TypeStatusIdenterUtility {
 
@@ -64,14 +64,23 @@ public class TypeStatusIdenterUtility {
                 .map(typeEntry -> typeEntry.getValue().entrySet().stream()
                         .filter(statusEntry -> !"OK".equals(statusEntry.getKey()))
                         .map(statusEntry -> RsStatusRapport.Status.builder()
-                                .melding(isNotBlank(typeEntry.getKey().trim()) ?
-                                        "Feil: %s: %s".formatted(typeEntry.getKey().trim(), statusEntry.getKey()
-                                                .replaceAll("Feil.\\s*", "")) :
-                                        statusEntry.getKey())
+                                .melding(getTypeInfo(typeEntry, statusEntry))
                                 .identer(statusEntry.getValue().stream().toList())
                                 .build())
                         .toList())
                 .flatMap(List::stream)
                 .toList();
+    }
+
+    private static String getTypeInfo(Map.Entry<String, Map<String, Set<String>>> typeEntry, Map.Entry<String, Set<String>> statusEntry) {
+
+        if (isBlank(typeEntry.getKey())) {
+            return statusEntry.getKey();
+        } else if ("Info".equalsIgnoreCase(typeEntry.getKey().trim())) {
+            return "Info: %s".formatted(statusEntry.getKey());
+        } else {
+            return "Feil: %s: %s".formatted(typeEntry.getKey().trim(), statusEntry.getKey()
+                    .replaceAll("Feil.\\s*", ""));
+        }
     }
 }
