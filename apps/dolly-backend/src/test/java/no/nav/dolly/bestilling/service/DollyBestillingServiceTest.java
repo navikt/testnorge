@@ -369,18 +369,16 @@ class DollyBestillingServiceTest {
         given(identService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         given(bestillingProgressRepository.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         given(bestillingService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
-        stubPersister();
 
         StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
                 .expectNext(newIdent)
                 .verifyComplete();
 
-        var order = inOrder(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
-        order.verify(transactionHelperService).persister(eq(progress), any(), eq(newIdent));
+        var order = inOrder(identService, bestillingProgressRepository, bestillingService);
         order.verify(identService).swapIdent(previousIdent, newIdent);
         order.verify(bestillingProgressRepository).swapIdent(previousIdent, newIdent);
         order.verify(bestillingService).swapIdent(previousIdent, newIdent);
-        verifyNoInteractions(bestillingRepository);
+        verifyNoInteractions(transactionHelperService, bestillingRepository);
     }
 
     @ParameterizedTest

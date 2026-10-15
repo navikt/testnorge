@@ -10,7 +10,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @Builder

@@ -155,9 +155,9 @@ public class DollyBestillingService {
     private Mono<BestillingProgress> endrePerson(Supplier<Mono<PdlResponse>> operasjon, BestillingProgress bestillingProgress) {
 
         return transactionHelperService.persister(bestillingProgress, BestillingProgress::setPdlForvalterStatus,
-                        bestillingProgress.getPdlForvalterStatus())
+                        "Info: Oppretting av person startet ...")
                 .flatMap(_ -> operasjon.get())
-                .map(response -> {
+                .flatMap(response -> {
 
                     String status;
                     if (nonNull(response.getStatus()) && response.getStatus().is2xxSuccessful()) {
@@ -167,14 +167,12 @@ public class DollyBestillingService {
                     } else {
                         status = "Feil= Ingen respons fra PDL-forvalter";
                     }
-
-                    bestillingProgress.setPdlForvalterStatus(status);
-                    bestillingProgress.setIdent(response.getIdent());
-                    return status;
+                    return transactionHelperService.persister(bestillingProgress,
+                                    BestillingProgress::setPdlForvalterStatus, status)
+                            .thenReturn(response);
                 })
-                .flatMap(status -> transactionHelperService.persister(bestillingProgress,
-                                BestillingProgress::setPdlForvalterStatus, status)
-                        .thenReturn(bestillingProgress));
+                .flatMap(response -> transactionHelperService.persister(bestillingProgress,
+                        BestillingProgress::setIdent, response.getIdent()));
     }
 
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
@@ -295,7 +293,6 @@ public class DollyBestillingService {
 
     protected Mono<BestillingProgress> opprettPerson(OriginatorUtility.Originator originator, BestillingProgress bestillingProgress) {
 
-        bestillingProgress.setPdlForvalterStatus("Info: Oppretting av person startet ...");
         return endrePerson(() -> pdlDataConsumer.opprettPdl(originator.getPdlBestilling()), bestillingProgress)
                 .doOnNext(response -> log.info("Opprettet person med ident ... {}", response.getIdent()));
     }
@@ -304,12 +301,12 @@ public class DollyBestillingService {
 
         if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
 
-            progress.setPdlForvalterStatus("Info: Oppdatering av person startet ...");
-            progress.setOppdatertIdent(originator.getIdent());
+            var oppdatertIdent = originator.getIdent();
             return endrePerson(() -> pdlDataConsumer.oppdaterPdl(originator.getIdent(),
                     PersonUpdateRequestDTO.builder()
                             .person(originator.getPdlBestilling().getPerson())
                             .build()), progress)
+                    .doOnNext(response -> response.setOppdatertIdent(oppdatertIdent))
                     .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
 
         } else {
@@ -321,9 +318,6 @@ public class DollyBestillingService {
 
         var oppdatertIdent = bestillingProgress.getOppdatertIdent();
         return Mono.just(bestillingProgress)
-                .flatMap(progress -> isNotBlank(progress.getIdent()) ?
-                        transactionHelperService.persister(progress, BestillingProgress::setIdent, progress.getIdent()) :
-                        Mono.just(progress))
                 .flatMap(progress -> {
 
                     if ("OK".equals(progress.getPdlForvalterStatus()) ||
@@ -366,9 +360,9 @@ public class DollyBestillingService {
     protected Mono<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 
         var oppdatertIdent = progress.getOppdatertIdent();
+
         if (isNotBlank(oppdatertIdent) && !oppdatertIdent.equals(dollyPerson.getIdent())) {
-            return transactionHelperService.persister(progress, BestillingProgress::setIdent, dollyPerson.getIdent())
-                    .then(identService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
+            return identService.swapIdent(oppdatertIdent, dollyPerson.getIdent())
                     .then(bestillingProgressRepository.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
                     .then(bestillingService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
                     .thenReturn(dollyPerson.getIdent());
