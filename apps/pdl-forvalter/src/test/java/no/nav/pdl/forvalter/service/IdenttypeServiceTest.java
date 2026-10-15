@@ -52,6 +52,7 @@ class IdenttypeServiceTest {
     private static final String FNR_IDENT = "01458012345";
     private static final String DNR_IDENT = "41458012345";
     private static final String NPID_IDENT = "01658012345";
+    private static final String TESTNORGE_IDENT = "01858012345";
 
     @Mock
     private AliasRepository aliasRepository;
@@ -78,7 +79,7 @@ class IdenttypeServiceTest {
                 .foedtFoer(foedtEtter ? null : date)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
+        StepVerifier.create(identtypeService.validate(request, buildPerson(1L, Identtype.FNR).getPerson()))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable).isInstanceOf(InvalidRequestException.class)
                                 .hasMessage("400 Identtype ugyldig forespørsel: støttet datointervall " +
@@ -95,7 +96,7 @@ class IdenttypeServiceTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
+        StepVerifier.create(identtypeService.validate(request, buildPerson(1L, Identtype.FNR).getPerson()))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable).isInstanceOf(InvalidRequestException.class)
                                 .hasMessage("400 Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere enn fødtEtter"));
@@ -108,7 +109,7 @@ class IdenttypeServiceTest {
                 .alder(age)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
+        StepVerifier.create(identtypeService.validate(request, buildPerson(1L, Identtype.FNR).getPerson()))
                 .verifyErrorSatisfies(throwable ->
                         assertThat(throwable).isInstanceOf(InvalidRequestException.class)
                                 .hasMessage("400 Alder må være mellom 0 og 120 år"));
@@ -122,7 +123,7 @@ class IdenttypeServiceTest {
                 .alder(age)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request))
+        StepVerifier.create(identtypeService.validate(request, buildPerson(1L, Identtype.FNR).getPerson()))
                 .verifyComplete();
     }
 
@@ -135,7 +136,7 @@ class IdenttypeServiceTest {
                 .foedtFoer(foedtFoer ? date : null)
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request)).verifyComplete();
+        StepVerifier.create(identtypeService.validate(request, buildPerson(1L, Identtype.FNR).getPerson())).verifyComplete();
     }
 
     @Test
@@ -145,7 +146,26 @@ class IdenttypeServiceTest {
                 .foedtFoer(LocalDateTime.now().minusDays(1))
                 .build();
 
-        StepVerifier.create(identtypeService.validate(request)).verifyComplete();
+        StepVerifier.create(identtypeService.validate(request, buildPerson(1L, Identtype.FNR).getPerson())).verifyComplete();
+    }
+
+    @Test
+    void shouldRejectNewIdentForTestnorgePerson() {
+        var request = IdentRequestDTO.builder().build();
+        var person = PersonDTO.builder().ident(TESTNORGE_IDENT).build();
+
+        StepVerifier.create(identtypeService.validate(request, person))
+                .verifyErrorSatisfies(throwable ->
+                        assertThat(throwable).isInstanceOf(InvalidRequestException.class)
+                                .hasMessage("400 Ny ident er ikke støttet for personer fra Testnorge"));
+    }
+
+    @Test
+    void shouldAllowNewIdentForPersonOutsideTestnorge() {
+        var request = IdentRequestDTO.builder().build();
+        var person = PersonDTO.builder().ident(FNR_IDENT).build();
+
+        StepVerifier.create(identtypeService.validate(request, person)).verifyComplete();
     }
 
     @Test

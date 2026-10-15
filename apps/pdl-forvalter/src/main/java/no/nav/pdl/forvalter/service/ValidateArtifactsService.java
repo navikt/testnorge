@@ -72,7 +72,7 @@ public class ValidateArtifactsService {
                         validate(foreldreansvarService, person.getForeldreansvar(), person),
                         validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),
                         validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
-                        validate(identtypeService, person.getNyident())
+                        validate(identtypeService, person.getNyident(), person)
                 )
                 .then();
     }

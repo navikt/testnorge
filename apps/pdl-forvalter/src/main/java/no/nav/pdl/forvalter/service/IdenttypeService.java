@@ -33,6 +33,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
@@ -46,7 +47,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IdenttypeService implements Validation<IdentRequestDTO> {
+public class IdenttypeService implements BiValidation<IdentRequestDTO, PersonDTO> {
 
     private static final LocalDateTime START_OF_ERA = LocalDateTime.of(1900, Month.JANUARY, 1, 0, 0);
     private static final String VALIDATION_DATO_INVALID = "Identtype ugyldig forespørsel: støttet datointervall " +
@@ -54,6 +55,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private static final String VALIDATION_DATO_INTERVAL_INVALID = "Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere " +
                                                                    "enn fødtEtter";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
+    private static final String TESTNORGE_IDENT = "Ny ident er ikke støttet for personer fra Testnorge";
     private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
             NPID, 0,
             DNR, 1,
@@ -94,7 +96,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     }
 
     @Override
-    public Mono<Void> validate(IdentRequestDTO request) {
+    public Mono<Void> validate(IdentRequestDTO request, PersonDTO person) {
+
+        if (isTestnorgeIdent(person.getIdent())) {
+
+            return Mono.error(new InvalidRequestException(TESTNORGE_IDENT));
+        }
 
         if (nonNull(request.getFoedtEtter()) && (START_OF_ERA.isAfter(request.getFoedtEtter()) ||
                                                  LocalDateTime.now().isBefore(request.getFoedtEtter()))) {
