@@ -17,4 +17,5 @@ export type Inntekt = {
 }
 
 export type Fradrag = {}
+
 export type Forskudd = {}
