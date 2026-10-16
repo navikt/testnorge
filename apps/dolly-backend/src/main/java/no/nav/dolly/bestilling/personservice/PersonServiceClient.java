@@ -149,6 +149,7 @@ public class PersonServiceClient {
                     personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
                             .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                             .map(PdlPersonBolk::getData)
+                            .filter(data -> nonNull(data.getHentPersonBolk()))
                             .map(PdlPersonBolk.Data::getHentPersonBolk)
                             .flatMap(Flux::fromIterable)
                             .filter(personBolk -> nonNull(personBolk.getPerson()))
