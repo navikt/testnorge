@@ -1,4 +1,4 @@
-package no.nav.dolly.synt.meldekort.onnx;
+package no.nav.dolly.synt.meldekort.generator;
 
 public enum MeldekortType {
     ARBS,
@@ -7,4 +7,3 @@ public enum MeldekortType {
     DAGP,
     FY
 }
-

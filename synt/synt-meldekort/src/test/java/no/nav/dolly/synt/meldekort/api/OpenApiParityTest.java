@@ -1,8 +1,9 @@
-package no.nav.dolly.synt.meldekort.onnx;
+package no.nav.dolly.synt.meldekort.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.libs.test.DollySpringBootTest;
+import no.nav.dolly.synt.meldekort.generator.MeldekortService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -25,7 +26,7 @@ class OpenApiParityTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private OnnxService onnxService;
+    private MeldekortService meldekortService;
 
     @Test
     void shouldExposeLegacyCompatibleOpenApiContract() throws IOException {
