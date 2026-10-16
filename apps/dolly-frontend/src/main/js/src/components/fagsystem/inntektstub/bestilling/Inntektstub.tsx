@@ -7,6 +7,7 @@ import { formatDateTime, formatMonth } from '@/utils/DataFormatter'
 import { InntektstubKodeverk } from '@/config/kodeverk'
 import { InntektFelter } from '@/components/fagsystem/inntektstub/visning/partials/InntektVisning'
 import { tilNestedInntekt } from '@/components/fagsystem/inntektstub/validerInntekt/tilleggsinformasjon'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type InntektstubTypes = {
 	inntektstub: {
@@ -90,7 +91,7 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 }
 
 export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
-	if (!inntektstub) {
+	if (!inntektstub || isEmpty(inntektstub, ['inntektsliste'])) {
 		return null
 	}
 

@@ -33,9 +33,9 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 			initialValuesMal.inntektsmelding.inntekter,
 		)
 	}
-	// TODO: Handle gamle Inntektstub-maler
-	if (initialValuesMal.inntekter) {
-		initialValuesMal.inntekter = getUpdatedInntektstubData(initialValuesMal.inntekter)
+	if (initialValuesMal.inntektstub) {
+		initialValuesMal.inntekter = [initialValues.inntekter]
+		delete initialValuesMal.inntektstub
 	}
 	if (initialValuesMal.skattekort) {
 		initialValuesMal.skattekort = getUpdatedSkattekortData(initialValuesMal.skattekort)
@@ -184,9 +184,6 @@ const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
 		}),
 	)
 }
-
-const getUpdatedInntektstubData = (inntekter: any[]) =>
-	inntekter?.map((inntekt: any) => updateData(inntekt, initialValues.inntekter))
 
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
