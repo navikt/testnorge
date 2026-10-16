@@ -106,7 +106,10 @@ export const formatStringDates = (date) => {
 }
 
 // Format month yyyy-MM to MM.yyyy
-export const formatMonth = (value: string) => format(parse(value, 'yyyy-MM', new Date()), 'MM.yyyy')
+export const formatMonth = (value: string) => {
+	if (!value) return value
+	return format(parse(value, 'yyyy-MM', new Date()), 'MM.yyyy')
+}
 
 export const formatKjonn = (kjonn, alder) => {
 	return formatKjonnToString(kjonn, alder < 18)

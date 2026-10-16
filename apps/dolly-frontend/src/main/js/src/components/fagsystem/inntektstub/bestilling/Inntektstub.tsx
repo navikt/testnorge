@@ -28,7 +28,7 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 				title="Perioder"
 				value={inntektsinfo?.perioder?.map((periode: string) => formatMonth(periode))?.join(', ')}
 			/>
-			<TitleValue title="År/måned" value={inntektsinfo?.sisteAarMaaned} />
+			<TitleValue title="År/måned" value={formatMonth(inntektsinfo?.sisteAarMaaned)} />
 			<TitleValue title="Generer antall måneder" value={inntektsinfo?.antallMaaneder} />
 			<TitleValue
 				title="Rapporteringstidspunkt"

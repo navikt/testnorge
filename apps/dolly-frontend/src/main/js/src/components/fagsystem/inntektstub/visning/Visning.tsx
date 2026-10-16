@@ -6,7 +6,7 @@ import { InntektVisning } from './partials/InntektVisning'
 import { FradragVisning } from './partials/FradragVisning'
 import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { formatDateTime } from '@/utils/DataFormatter'
+import { formatDateTime, formatMonth } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
 import React, { useMemo, useState } from 'react'
@@ -36,7 +36,7 @@ type Inntektsinformasjon = {
 }
 
 const getHeader = (data: Inntektsinformasjon) => {
-	return `Inntektsinformasjon (${data.aarMaaned}) ${
+	return `Inntektsinformasjon (${formatMonth(data.aarMaaned)}) ${
 		data.versjon ? ` - historikk (versjon ${data.versjon})` : ' '
 	}`
 }
@@ -91,7 +91,7 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 					return (
 						<React.Fragment>
 							<div className="person-visning_content">
-								<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
+								<TitleValue title="År/måned" value={formatMonth(inntektsinformasjon.aarMaaned)} />
 								<TitleValue
 									title="Rapporteringstidspunkt"
 									value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
