@@ -97,7 +97,7 @@ const Steg2: React.FC = () => {
 			{getValues(sigrunstubSummertSkattegrunnlagAttributt) && (
 				<SigrunstubSummertSkattegrunnlagForm />
 			)}
-			{getValues('inntektstub') && <InntektstubForm />}
+			{getValues('inntekter') && <InntektstubForm />}
 			{getValues('inntektsmelding') && <InntektsmeldingForm />}
 			{getValues('skattekort') && <SkattekortForm />}
 			{getValues('arbeidssoekerregisteret') && <ArbeidssoekerregisteretForm />}

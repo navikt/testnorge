@@ -76,6 +76,7 @@ const getValgteAttributter = (values) => {
 		'fullmakt',
 		sigrunstubPensjonsgivendeAttributt,
 		sigrunstubSummertSkattegrunnlagAttributt,
+		'inntekter',
 		'inntektstub',
 		'inntektsmelding',
 		'skattekort',

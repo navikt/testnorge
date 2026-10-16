@@ -47,8 +47,8 @@ export default class Request {
 		return api.fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' } }, data)
 	}
 
-	static delete(url: string, headers: Record<string, string> = {}) {
-		return api.fetch(url, { headers, method: 'DELETE' })
+	static delete(url: string, headers: Record<string, string> = {}, body?: object) {
+		return api.fetch(url, { headers, method: 'DELETE' }, body)
 	}
 
 	private static logError(error: any, url: string) {

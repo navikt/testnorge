@@ -3,6 +3,7 @@ import cn from 'classnames'
 // @ts-ignore
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { DeleteButton } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 type NumberingProps = {
 	idx: number
@@ -14,6 +15,9 @@ interface ExpandableBlokkProps<T> {
 	data: T
 	getHeader: (data: T) => string
 	whiteBackground?: boolean
+	showDeleteButton?: boolean
+	handleRemove?: () => void | undefined
+	deleteButtonTitle?: string | undefined
 }
 
 const Numbering = ({ idx }: NumberingProps) => <span className="dfa-blokk-number">{idx + 1}</span>
@@ -24,7 +28,9 @@ export default function ExpandableBlokk<T>({
 	children,
 	data,
 	whiteBackground,
-}: ExpandableBlokkProps<T>) {
+	handleRemove = undefined,
+	deleteButtonTitle = undefined,
+}: Readonly<ExpandableBlokkProps<T>>) {
 	const [isExpanded, setIsExpanded] = useState(false)
 	const className = whiteBackground ? 'dfa-blokk-white' : 'dfa-blokk'
 	const headerClass = cn(`${className}_header`, { clickable: true })
@@ -39,6 +45,15 @@ export default function ExpandableBlokk<T>({
 					expanded={isExpanded}
 					onClick={() => setIsExpanded(!isExpanded)}
 				/>
+				{handleRemove && (
+					<DeleteButton
+						onClick={(event) => {
+							event.stopPropagation()
+							handleRemove()
+						}}
+						title={deleteButtonTitle}
+					/>
+				)}
 			</div>
 			{isExpanded && <div className={`${className}_content`}>{children}</div>}
 		</div>

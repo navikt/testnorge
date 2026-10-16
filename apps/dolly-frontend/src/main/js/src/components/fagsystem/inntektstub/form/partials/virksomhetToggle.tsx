@@ -54,11 +54,7 @@ export const VirksomhetToggle = ({ path }: ArbeidsforholdToggleProps) => {
 
 	useEffect(() => {
 		setTypeArbeidsgiver(getArbeidsgiverType())
-	}, [
-		fasteOrganisasjoner,
-		brukerOrganisasjoner,
-		formMethods.watch('inntektstub.inntektsinformasjon')?.length,
-	])
+	}, [fasteOrganisasjoner, brukerOrganisasjoner, formMethods.watch('inntekter')?.length])
 
 	const watchedOrgnr = formMethods.watch(virksomhetPath)
 	const isFritekst = typeArbeidsgiver === ArbeidsgiverTyper.fritekst

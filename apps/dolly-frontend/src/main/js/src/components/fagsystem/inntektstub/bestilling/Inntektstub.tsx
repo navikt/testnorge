@@ -3,15 +3,14 @@ import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/ste
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDateTime } from '@/utils/DataFormatter'
+import { formatDateTime, formatMonth } from '@/utils/DataFormatter'
 import { InntektstubKodeverk } from '@/config/kodeverk'
 import { InntektFelter } from '@/components/fagsystem/inntektstub/visning/partials/InntektVisning'
 import { tilNestedInntekt } from '@/components/fagsystem/inntektstub/validerInntekt/tilleggsinformasjon'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type InntektstubTypes = {
-	inntektstub: {
-		inntektsinformasjon: Array<any>
-	}
+	inntektstub: Array<any> | { inntektsinformasjon: Array<any> }
 }
 
 type InntektsinfoTypes = {
@@ -23,7 +22,11 @@ type InntektsinfoTypes = {
 const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: InntektsinfoTypes) => {
 	return (
 		<React.Fragment key={idx}>
-			<TitleValue title="År/måned" value={inntektsinfo?.sisteAarMaaned} />
+			<TitleValue
+				title="Perioder"
+				value={inntektsinfo?.perioder?.map((periode: string) => formatMonth(periode))?.join(', ')}
+			/>
+			<TitleValue title="År/måned" value={formatMonth(inntektsinfo?.sisteAarMaaned)} />
 			<TitleValue title="Generer antall måneder" value={inntektsinfo?.antallMaaneder} />
 			<TitleValue
 				title="Rapporteringstidspunkt"
@@ -86,7 +89,9 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 }
 
 export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
-	if (!inntektstub || inntektstub?.inntektsinformasjon?.length === 0) {
+	const data = Array.isArray(inntektstub) ? inntektstub : inntektstub?.inntektsinformasjon
+
+	if (!data || isEmpty(data, ['inntektsliste'])) {
 		return null
 	}
 
@@ -94,7 +99,7 @@ export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
 		<div className="bestilling-visning">
 			<ErrorBoundary>
 				<BestillingTitle>A-ordningen (Inntektstub)</BestillingTitle>
-				<DollyFieldArray header="Inntektsinformasjon" data={inntektstub.inntektsinformasjon}>
+				<DollyFieldArray header="Inntektsinformasjon" data={data}>
 					{(inntektsinfo: any, idx: number) => (
 						<Inntektsinformasjon inntektsinfo={inntektsinfo} idx={idx} />
 					)}
