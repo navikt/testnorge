@@ -1565,26 +1565,24 @@ export const backendBestillingerMock = [
 					tjeneste: 'BEREGNET_SKATT',
 				},
 			],
-			inntektstub: {
-				inntektsinformasjon: [
-					{
-						sisteAarMaaned: '2022-07',
-						opplysningspliktig: '963743254',
-						virksomhet: '947064649',
-						inntektsliste: [
-							{
-								inntektstype: 'LOENNSINNTEKT',
-								beloep: 13245,
-								inngaarIGrunnlagForTrekk: false,
-								utloeserArbeidsgiveravgift: false,
-								fordel: 'naturalytelse',
-								beskrivelse: 'losji',
-								antall: 2,
-							},
-						],
-					},
-				],
-			},
+			inntekter: [
+				{
+					perioder: ['2022-07'],
+					opplysningspliktig: '963743254',
+					virksomhet: '947064649',
+					inntektsliste: [
+						{
+							inntektstype: 'LOENNSINNTEKT',
+							beloep: 13245,
+							inngaarIGrunnlagForTrekk: false,
+							utloeserArbeidsgiveravgift: false,
+							fordel: 'naturalytelse',
+							beskrivelse: 'losji',
+							antall: 2,
+						},
+					],
+				},
+			],
 			arenaforvalter: {
 				arenaBrukertype: 'MED_SERVICEBEHOV',
 				kvalifiseringsgruppe: 'IKVAL',

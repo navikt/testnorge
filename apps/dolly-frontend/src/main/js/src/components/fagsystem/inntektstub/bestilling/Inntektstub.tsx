@@ -10,9 +10,7 @@ import { tilNestedInntekt } from '@/components/fagsystem/inntektstub/validerInnt
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type InntektstubTypes = {
-	inntektstub: {
-		inntektsinformasjon: Array<any>
-	}
+	inntektstub: Array<any> | { inntektsinformasjon: Array<any> }
 }
 
 type InntektsinfoTypes = {
@@ -91,11 +89,11 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 }
 
 export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
-	if (!inntektstub || isEmpty(inntektstub, ['inntektsliste'])) {
+	const data = Array.isArray(inntektstub) ? inntektstub : inntektstub?.inntektsinformasjon
+
+	if (!data || isEmpty(data, ['inntektsliste'])) {
 		return null
 	}
-
-	const data = inntektstub.inntektsinformasjon ?? inntektstub
 
 	return (
 		<div className="bestilling-visning">
