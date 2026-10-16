@@ -95,22 +95,27 @@ export const createBrukerTrendChartOptions = (punkter: MaanedPunkt[]): Options =
 		],
 	})
 
-export const createFagsystemFordelingChartOptions = (summer: FagsystemSum[]): Options =>
+export const createFagsystemFordelingChartOptions = (
+	summer: FagsystemSum[],
+	periode = 'valgt måned',
+): Options =>
 	createHorizontalBarChartOptions({
-		description:
-			'Stolpediagram med antall personer bestilt per fagsystem i valgt måned, sortert synkende.',
+		description: `Stolpediagram med antall personer bestilt per fagsystem i ${periode}, sortert synkende.`,
 		seriesName: 'Personer',
 		categories: summer.map((sum) => sum.label),
 		data: summer.map((sum) => sum.antall),
 	})
 
-export const createDagPersonerChartOptions = (matrise: DagPersonMatrise): Options => ({
+export const createDagPersonerChartOptions = (
+	matrise: DagPersonMatrise,
+	inndeling = 'per dag i valgt måned',
+): Options => ({
 	...withBaseChart(
-		'Stablet søylediagram med nye personer per dag i valgt måned, fordelt på personer opprettet i Dolly og personer importert fra Testnorge.',
+		`Stablet søylediagram med nye personer ${inndeling}, fordelt på personer opprettet i Dolly og personer importert fra Testnorge.`,
 		{ type: 'column', height: 320 },
 	),
 	xAxis: {
-		categories: matrise.dager,
+		categories: matrise.kategorier,
 		...ROTATED_CATEGORY_LABELS,
 	},
 	yAxis: {
@@ -128,7 +133,7 @@ export const createDagPersonerChartOptions = (matrise: DagPersonMatrise): Option
 		formatter: function () {
 			if (!this.points) return ''
 			const index = this.points[0]?.index ?? 0
-			const header = `<b>Dag ${this.points[0]?.key}</b><br/>`
+			const header = `<b>${matrise.overskrifter[index] ?? this.points[0]?.key}</b><br/>`
 			const bestillinger = matrise.nyeBestillinger[index] ?? 0
 			if (bestillinger === 0) {
 				return header + 'Ingen bestillinger'
@@ -151,7 +156,10 @@ export const createDagPersonerChartOptions = (matrise: DagPersonMatrise): Option
 	],
 })
 
-export const createFagsystemPerDagChartOptions = (matrise: DagFagsystemMatrise): Options => {
+export const createFagsystemPerDagChartOptions = (
+	matrise: DagFagsystemMatrise,
+	inndeling = 'per dag i valgt måned',
+): Options => {
 	const series: SeriesColumnOptions[] = matrise.serier.map((serie) => ({
 		type: 'column',
 		name: serie.label,
@@ -160,11 +168,11 @@ export const createFagsystemPerDagChartOptions = (matrise: DagFagsystemMatrise):
 
 	return {
 		...withBaseChart(
-			'Stablet søylediagram med antall personer bestilt per dag i valgt måned, fordelt på fagsystem.',
+			`Stablet søylediagram med antall personer bestilt ${inndeling}, fordelt på fagsystem.`,
 			{ type: 'column', height: 360 },
 		),
 		xAxis: {
-			categories: matrise.dager,
+			categories: matrise.kategorier,
 			...ROTATED_CATEGORY_LABELS,
 		},
 		yAxis: {
@@ -181,7 +189,8 @@ export const createFagsystemPerDagChartOptions = (matrise: DagFagsystemMatrise):
 			shared: true,
 			formatter: function () {
 				if (!this.points) return ''
-				const header = `<b>Dag ${this.points[0]?.key}</b><br/>`
+				const index = this.points[0]?.index ?? 0
+				const header = `<b>${matrise.overskrifter[index] ?? this.points[0]?.key}</b><br/>`
 				const lines = this.points
 					.filter((point) => (point.y ?? 0) > 0)
 					.map((point) => `${point.series.name}: <b>${point.y}</b>`)
@@ -208,12 +217,13 @@ export const createFagsystemDetaljerChartOptions = (
 	detaljer: DetaljPunkt[],
 	fagsystemLabel: string,
 	type: DetaljType,
+	periode = 'valgt måned',
 ): Options =>
 	createHorizontalBarChartOptions({
 		description:
 			type === 'valg'
-				? `Stolpediagram med antall personer per valg for ${fagsystemLabel} i valgt måned.`
-				: `Stolpediagram med antall oppføringer per opplysning for ${fagsystemLabel} i valgt måned.`,
+				? `Stolpediagram med antall personer per valg for ${fagsystemLabel} i ${periode}.`
+				: `Stolpediagram med antall oppføringer per opplysning for ${fagsystemLabel} i ${periode}.`,
 		seriesName: DETALJ_SERIES_NAVN[type],
 		categories: detaljer.map((detalj) => detalj.label),
 		data: detaljer.map((detalj) => detalj.antall),

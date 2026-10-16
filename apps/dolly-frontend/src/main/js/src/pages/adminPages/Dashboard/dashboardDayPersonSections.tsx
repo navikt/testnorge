@@ -16,12 +16,11 @@ import { QUICK_RANGE_OPTIONS } from './dashboardUtils'
 import dollyImg from '@/assets/img/dolly-sheep-confetti.svg'
 
 export type PersonSummary = {
-	bestillinger: number
-	personerTotalt: number
-	nye: number
-	gjenopprettede: number
-	navIdenter: number
-	testnorgeIdenter: number
+	nyeBestillinger: number
+	gjenopprettedeBestillinger: number
+	nyePersoner: number
+	dollyPersoner: number
+	testnorgePersoner: number
 }
 
 type PreviousDaySummary = {
@@ -120,13 +119,13 @@ export const PreviousDaySection = ({
 				<HGrid columns={{ xs: 1, sm: 2 }} gap="space-16" align="stretch">
 					<VStack gap="space-16">
 						<DashboardKpiCard
-							label="Personer nye/gjenopprettede"
+							label="Bestillinger nye/gjenopprettede"
 							value={previousDaySummary.nyeInklGjenopprettede}
 						/>
 						{previousDaySummary.nyeInklGjenopprettede > 0 && (
 							<DashboardChartPanel
 								options={previousDayChartOptions}
-								ariaLabel="Opprettet og gjenopprettet for valgt dag"
+								ariaLabel="Nye og gjenopprettede bestillinger for valgt dag"
 							/>
 						)}
 					</VStack>
@@ -248,14 +247,20 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 						</HGrid>
 						<HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="space-12">
 							<DashboardKpiCard label="Dager i periode" value={filteredPersonerLength} />
-							<DashboardKpiCard label="Personer totalt" value={summary.personerTotalt} />
-							<DashboardKpiCard label="Nye personer" value={summary.nye} />
-							<DashboardKpiCard label="Gjenopprettede" value={summary.gjenopprettede} />
+							<DashboardKpiCard label="Nye personer" value={summary.nyePersoner} />
+							<DashboardKpiCard label="Opprettet i Dolly" value={summary.dollyPersoner} />
+							<DashboardKpiCard label="Importert fra Testnorge" value={summary.testnorgePersoner} />
 						</HGrid>
 						<HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
-							<DashboardKpiCard label="Bestillinger" value={summary.bestillinger} />
-							<DashboardKpiCard label="NAV-identer" value={summary.navIdenter} />
-							<DashboardKpiCard label="Testnorge-identer" value={summary.testnorgeIdenter} />
+							<DashboardKpiCard
+								label="Bestillinger"
+								value={summary.nyeBestillinger + summary.gjenopprettedeBestillinger}
+							/>
+							<DashboardKpiCard label="Nye bestillinger" value={summary.nyeBestillinger} />
+							<DashboardKpiCard
+								label="Gjenopprettede bestillinger"
+								value={summary.gjenopprettedeBestillinger}
+							/>
 						</HGrid>
 						{personTrendDataLength === 0 ? (
 							<Alert variant="info" inline>
@@ -271,35 +276,35 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 									<VStack gap="space-8">
 										{nyeGjenopprettedeTotal === 0 ? (
 											<Alert variant="info" inline>
-												Ingen nye eller gjenopprettede personer i valgt periode.
+												Ingen nye eller gjenopprettede bestillinger i valgt periode.
 											</Alert>
 										) : (
 											<DashboardChartPanel
 												options={nyeGjenopprettedeDonutChartOptions}
-												ariaLabel="Fordeling av nye og gjenopprettede personer"
+												ariaLabel="Fordeling av nye og gjenopprettede bestillinger"
 											/>
 										)}
 									</VStack>
 									<VStack gap="space-8">
 										{identerTotal === 0 ? (
 											<Alert variant="info" inline>
-												Ingen identer i valgt periode.
+												Ingen nye personer i valgt periode.
 											</Alert>
 										) : (
 											<DashboardChartPanel
 												options={identerDonutChartOptions}
-												ariaLabel="Fordeling av NAV-identer og Testnorge-identer"
+												ariaLabel="Fordeling av nye personer opprettet i Dolly og importert fra Testnorge"
 											/>
 										)}
 									</VStack>
 								</HGrid>
 								<VStack gap="space-8">
 									<Heading level="3" size="xsmall">
-										Personer per dag
+										Personer og bestillinger per dag
 									</Heading>
 									<DashboardChartPanel
 										options={personTrendChartOptions}
-										ariaLabel="Personer per dag"
+										ariaLabel="Personer og bestillinger per dag"
 									/>
 								</VStack>
 							</VStack>

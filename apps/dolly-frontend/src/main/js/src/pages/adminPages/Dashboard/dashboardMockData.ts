@@ -152,21 +152,18 @@ export const createDashboardMockData = (
 	const dashboardBestillinger = Array.from({ length: 300 }, (_, index) => {
 		const dayOffset = 89 - index
 		const dato = format(subDays(new Date(), dayOffset), 'yyyy-MM-dd')
-		const nye = Math.floor(Math.random() * 60) + 10
-		const gjenopprettede = Math.floor(Math.random() * 40) + 5
-		const navIdenter = Math.floor(Math.random() * 90) + 10
-		const testnorgeIdenter = Math.floor(Math.random() * 45) + 5
-		const bestillinger = navIdenter + testnorgeIdenter + cycleOffset
-		const personerTotalt = nye + gjenopprettede + cycleOffset
+		const andelOpprettedeDollyPersoner = Math.floor(Math.random() * 90) + 10 + cycleOffset
+		const andelImporterteTestnorgePersoner = Math.floor(Math.random() * 45) + 5
+		const antallNyeBestillinger = Math.floor(Math.random() * 40) + 5
+		const antallGjenopprettedeBestillinger = Math.floor(Math.random() * 20) + 2
 
 		return {
 			dato,
-			bestillinger,
-			personerTotalt,
-			nye,
-			gjenopprettede,
-			navIdenter,
-			testnorgeIdenter,
+			antallNyeBestillinger,
+			antallGjenopprettedeBestillinger,
+			antallNyePersoner: andelOpprettedeDollyPersoner + andelImporterteTestnorgePersoner,
+			andelOpprettedeDollyPersoner,
+			andelImporterteTestnorgePersoner,
 		}
 	})
 

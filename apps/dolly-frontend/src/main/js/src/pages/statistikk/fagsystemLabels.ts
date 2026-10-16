@@ -11,6 +11,7 @@ const FAGSYSTEM_LABELS: Record<string, string> = {
 	Histark: 'Histark',
 	'Ingen data': 'Uspesifisert',
 	Inntektsmelding: 'Inntektsmelding',
+	Inntekter: 'Inntekter (A-ordningen)',
 	Inntektstub: 'Inntekt (A-ordningen)',
 	Instdata: 'Institusjonsopphold',
 	InstdataKdi: 'Institusjonsopphold (KDI)',

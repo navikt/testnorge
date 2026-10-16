@@ -70,11 +70,11 @@ export const createOpprettetGjenopprettetDonutChartOptions = ({
 	gjenopprettede: number
 }): Options =>
 	createDonutChartOptions(
-		'Sirkeldiagram som viser fordelingen mellom opprettede og gjenopprettede personer for valgt dag.',
-		'Personer',
+		'Sirkeldiagram som viser fordelingen mellom nye og gjenopprettede bestillinger for valgt dag.',
+		'Bestillinger',
 		[
-			{ name: 'Nye personer', y: nye, color: 'var(--ax-success-700)' },
-			{ name: 'Gjenopprettede', y: gjenopprettede, color: 'var(--ax-accent-700)' },
+			{ name: 'Nye bestillinger', y: nye, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettede bestillinger', y: gjenopprettede, color: 'var(--ax-accent-700)' },
 		],
 		400,
 		true,
@@ -88,29 +88,29 @@ export const createNyeGjenopprettedeDonutChartOptions = ({
 	gjenopprettede: number
 }): Options =>
 	createDonutChartOptions(
-		'Sirkeldiagram som viser fordelingen mellom nye og gjenopprettede personer som andel av personer totalt.',
-		'Personer',
+		'Sirkeldiagram som viser fordelingen mellom nye og gjenopprettede bestillinger i valgt periode.',
+		'Bestillinger',
 		[
-			{ name: 'Nye personer', y: nye, color: 'var(--ax-success-700)' },
-			{ name: 'Gjenopprettede', y: gjenopprettede, color: 'var(--ax-accent-700)' },
+			{ name: 'Nye bestillinger', y: nye, color: 'var(--ax-success-700)' },
+			{ name: 'Gjenopprettede bestillinger', y: gjenopprettede, color: 'var(--ax-accent-700)' },
 		],
 		400,
 		true,
 	)
 
 export const createIdenterDonutChartOptions = ({
-	navIdenter,
-	testnorgeIdenter,
+	dollyPersoner,
+	testnorgePersoner,
 }: {
-	navIdenter: number
-	testnorgeIdenter: number
+	dollyPersoner: number
+	testnorgePersoner: number
 }): Options =>
 	createDonutChartOptions(
-		'Sirkeldiagram som viser fordelingen mellom NAV-identer og Testnorge-identer som andel av personer totalt.',
-		'Identer',
+		'Sirkeldiagram som viser fordelingen av nye personer mellom personer opprettet i Dolly og personer importert fra Testnorge.',
+		'Nye personer',
 		[
-			{ name: 'NAV-identer', y: navIdenter, color: 'var(--ax-accent-700)' },
-			{ name: 'Testnorge-identer', y: testnorgeIdenter, color: 'var(--ax-success-700)' },
+			{ name: 'Opprettet i Dolly', y: dollyPersoner, color: 'var(--ax-accent-700)' },
+			{ name: 'Importert fra Testnorge', y: testnorgePersoner, color: 'var(--ax-success-700)' },
 		],
 		400,
 		true,
