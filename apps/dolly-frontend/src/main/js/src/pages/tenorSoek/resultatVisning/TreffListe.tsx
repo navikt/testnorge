@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { malTyper } from '@/pages/minSide/maler/MalModal'
+import { malTyper } from '@/pages/maler/MalModal'
 import { SoekNyMalDialog } from '@/components/ui/soekMaler/SoekNyMalDialog'
 
 const PersonNavn = styled.h3`

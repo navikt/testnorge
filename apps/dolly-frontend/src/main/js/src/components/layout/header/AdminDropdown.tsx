@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import {
+	BarChartIcon,
 	FingerButtonIcon,
 	InformationSquareIcon,
 	LineGraphIcon,
@@ -17,7 +18,8 @@ export const AdminDropdown = () => {
 			location?.pathname === '/orgtilgang' ||
 				location?.pathname === '/levendearbeidsforhold' ||
 				location?.pathname === '/infostriper' ||
-				location?.pathname === '/dashboard',
+				location?.pathname === '/dashboard' ||
+				location?.pathname === '/brukeradferd',
 		)
 	}, [location])
 
@@ -26,6 +28,10 @@ export const AdminDropdown = () => {
 			<PreloadableActionMenuItem route="/dashboard" style={{ color: '#212529' }}>
 				<LineGraphIcon title="a11y-title" fontSize="1.5rem" />
 				<DropdownStyledLink href="/dashboard">Dashboard</DropdownStyledLink>
+			</PreloadableActionMenuItem>
+			<PreloadableActionMenuItem route="/brukeradferd" style={{ color: '#212529' }}>
+				<BarChartIcon title="a11y-title" fontSize="1.5rem" />
+				<DropdownStyledLink href="/brukeradferd">Brukeradferd</DropdownStyledLink>
 			</PreloadableActionMenuItem>
 			<PreloadableActionMenuItem route="/orgtilgang" style={{ color: '#212529' }}>
 				<TenancyIcon title="a11y-title" fontSize="1.5rem" />

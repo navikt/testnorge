@@ -34,6 +34,7 @@ import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStub
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
 import static no.nav.dolly.mapper.BestillingEtterlatteStatusMapper.buildEtterlatteStatusMap;
 import static no.nav.dolly.mapper.BestillingFullmaktStatusMapper.buildFullmaktStatusMap;
+import static no.nav.dolly.mapper.BestillingHenvendelseStatusMapper.buildHenvendelseStatusMap;
 import static no.nav.dolly.mapper.BestillingHistarkStatusMapper.buildHistarkStatusMap;
 import static no.nav.dolly.mapper.BestillingImportFraPdlStatusMapper.buildImportFraPdlStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
@@ -126,6 +127,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildOppfoelgingsvedtak14aStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKelvinAapStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildHenvendelseStatusMap(progresser));
 
                         if (!bestilling.isFerdig()) {
                             utledFagsystemer(bestillingStatus, bestKriterierJson, bestilling);

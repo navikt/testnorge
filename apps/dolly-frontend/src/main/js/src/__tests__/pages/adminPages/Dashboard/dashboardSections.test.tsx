@@ -93,12 +93,11 @@ describe('dashboard sections', () => {
 			onQuickRangeClick: vi.fn(),
 			filteredPersonerLength: 12,
 			summary: {
-				bestillinger: 34,
-				personerTotalt: 20,
-				nye: 12,
-				gjenopprettede: 8,
-				navIdenter: 19,
-				testnorgeIdenter: 15,
+				nyeBestillinger: 26,
+				gjenopprettedeBestillinger: 8,
+				nyePersoner: 20,
+				dollyPersoner: 19,
+				testnorgePersoner: 15,
 			},
 			personTrendDataLength: 12,
 			personTrendChartOptions: {},
@@ -108,8 +107,10 @@ describe('dashboard sections', () => {
 
 		expect(screen.getByRole('heading', { name: 'Statistikk for perioder' })).toBeInTheDocument()
 		expect(screen.getByText('Bestillinger')).toBeInTheDocument()
-		expect(screen.getByText('NAV-identer')).toBeInTheDocument()
-		expect(screen.getByText('Testnorge-identer')).toBeInTheDocument()
+		expect(screen.getByText('34')).toBeInTheDocument()
+		expect(screen.getByText('Gjenopprettede bestillinger')).toBeInTheDocument()
+		expect(screen.getByText('Opprettet i Dolly')).toBeInTheDocument()
+		expect(screen.getByText('Importert fra Testnorge')).toBeInTheDocument()
 	})
 
 	it('should render person KPI and chart for the selected day period', () => {
@@ -123,30 +124,27 @@ describe('dashboard sections', () => {
 				previousDayPeriodData={[
 					{
 						dato: '2026-06-05',
-						bestillinger: 3,
-						personerTotalt: 2,
-						nye: 1,
-						gjenopprettede: 1,
-						navIdenter: 2,
-						testnorgeIdenter: 1,
+						antallNyeBestillinger: 1,
+						antallGjenopprettedeBestillinger: 1,
+						antallNyePersoner: 2,
+						andelOpprettedeDollyPersoner: 2,
+						andelImporterteTestnorgePersoner: 1,
 					},
 					{
 						dato: '2026-06-06',
-						bestillinger: 2,
-						personerTotalt: 1,
-						nye: 1,
-						gjenopprettede: 0,
-						navIdenter: 1,
-						testnorgeIdenter: 1,
+						antallNyeBestillinger: 1,
+						antallGjenopprettedeBestillinger: 0,
+						antallNyePersoner: 1,
+						andelOpprettedeDollyPersoner: 1,
+						andelImporterteTestnorgePersoner: 1,
 					},
 					{
 						dato: '2026-06-07',
-						bestillinger: 2,
-						personerTotalt: 1,
-						nye: 1,
-						gjenopprettede: 0,
-						navIdenter: 1,
-						testnorgeIdenter: 1,
+						antallNyeBestillinger: 1,
+						antallGjenopprettedeBestillinger: 0,
+						antallNyePersoner: 1,
+						andelOpprettedeDollyPersoner: 1,
+						andelImporterteTestnorgePersoner: 1,
 					},
 				]}
 				previousDaySummary={{
@@ -166,9 +164,9 @@ describe('dashboard sections', () => {
 			screen.getByRole('heading', { name: /Statistikk for siste hverdag \+ helg/ }),
 		).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: 'Siste hverdag + helg' })).toBeInTheDocument()
-		expect(screen.getByText('Personer nye/gjenopprettede')).toBeInTheDocument()
+		expect(screen.getByText('Bestillinger nye/gjenopprettede')).toBeInTheDocument()
 		expect(screen.getByText('Bestillinger med feil')).toBeInTheDocument()
-		expect(screen.getByText('Opprettet og gjenopprettet for valgt dag')).toBeInTheDocument()
+		expect(screen.getByText('Nye og gjenopprettede bestillinger for valgt dag')).toBeInTheDocument()
 		expect(screen.getByText('Ingen feil registrert for valgt periode.')).toBeInTheDocument()
 	})
 
@@ -183,12 +181,11 @@ describe('dashboard sections', () => {
 				previousDayPeriodData={[
 					{
 						dato: '2026-06-08',
-						bestillinger: 4,
-						personerTotalt: 4,
-						nye: 3,
-						gjenopprettede: 1,
-						navIdenter: 3,
-						testnorgeIdenter: 1,
+						antallNyeBestillinger: 3,
+						antallGjenopprettedeBestillinger: 1,
+						antallNyePersoner: 4,
+						andelOpprettedeDollyPersoner: 3,
+						andelImporterteTestnorgePersoner: 1,
 					},
 				]}
 				previousDaySummary={{
@@ -221,12 +218,11 @@ describe('dashboard sections', () => {
 				previousDayPeriodData={[
 					{
 						dato: '2026-06-08',
-						bestillinger: 4,
-						personerTotalt: 4,
-						nye: 3,
-						gjenopprettede: 1,
-						navIdenter: 3,
-						testnorgeIdenter: 1,
+						antallNyeBestillinger: 3,
+						antallGjenopprettedeBestillinger: 1,
+						antallNyePersoner: 4,
+						andelOpprettedeDollyPersoner: 3,
+						andelImporterteTestnorgePersoner: 1,
 					},
 				]}
 				previousDaySummary={{
@@ -290,9 +286,11 @@ describe('dashboard sections', () => {
 			/>,
 		)
 
-		expect(screen.getByText('Personer nye/gjenopprettede')).toBeInTheDocument()
+		expect(screen.getByText('Bestillinger nye/gjenopprettede')).toBeInTheDocument()
 		expect(screen.queryByText('Ingen data tilgjengelig for valgt dag.')).not.toBeInTheDocument()
-		expect(screen.queryByText('Opprettet og gjenopprettet for valgt dag')).not.toBeInTheDocument()
+		expect(
+			screen.queryByText('Nye og gjenopprettede bestillinger for valgt dag'),
+		).not.toBeInTheDocument()
 	})
 
 	it('should aggregate KPIs and feil list across friday, saturday and sunday on monday', () => {
@@ -306,12 +304,11 @@ describe('dashboard sections', () => {
 				previousDayPeriodData={[
 					{
 						dato: '2026-06-05',
-						bestillinger: 5,
-						personerTotalt: 4,
-						nye: 3,
-						gjenopprettede: 1,
-						navIdenter: 3,
-						testnorgeIdenter: 1,
+						antallNyeBestillinger: 3,
+						antallGjenopprettedeBestillinger: 1,
+						antallNyePersoner: 4,
+						andelOpprettedeDollyPersoner: 3,
+						andelImporterteTestnorgePersoner: 1,
 					},
 				]}
 				previousDaySummary={{ nye: 3, gjenopprettede: 1, nyeInklGjenopprettede: 4 }}
@@ -354,19 +351,21 @@ describe('dashboard sections', () => {
 			screen.getByRole('heading', { name: /Statistikk for siste hverdag \+ helg/ }),
 		).toBeInTheDocument()
 
-		expect(screen.getByText('Personer nye/gjenopprettede')).toBeInTheDocument()
+		expect(screen.getByText('Bestillinger nye/gjenopprettede')).toBeInTheDocument()
 		expect(screen.getByText('4')).toBeInTheDocument()
 		expect(screen.getByText('Bestillinger med feil')).toBeInTheDocument()
 		expect(screen.getByText('2')).toBeInTheDocument()
 
 		expect(screen.queryByText('Ingen data tilgjengelig for valgt dag.')).not.toBeInTheDocument()
-		expect(screen.getByText('Opprettet og gjenopprettet for valgt dag')).toBeInTheDocument()
+		expect(screen.getByText('Nye og gjenopprettede bestillinger for valgt dag')).toBeInTheDocument()
 
 		expect(
 			screen.getByRole('heading', { name: 'Feil registrert 05.06.2026–07.06.2026' }),
 		).toBeInTheDocument()
 		expect(screen.getByText('PDL Forvalter (1)')).toBeInTheDocument()
 		expect(screen.getByText('Aareg (1)')).toBeInTheDocument()
-		expect(screen.getByText('2 bestilling(er) med feil, fordelt over 2 fagsystem.')).toBeInTheDocument()
+		expect(
+			screen.getByText('2 bestilling(er) med feil, fordelt over 2 fagsystem.'),
+		).toBeInTheDocument()
 	})
 })

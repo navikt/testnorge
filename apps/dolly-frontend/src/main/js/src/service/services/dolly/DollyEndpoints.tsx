@@ -83,6 +83,14 @@ export default class DollyEndpoints {
 		return `${brukerBase}/migrer?navIdenter=${ZIdenter}`
 	}
 
+	static brukerBestillinger() {
+		return `${brukerBase}/bestillinger/brukerid`
+	}
+
+	static brukerBestillingerDetaljert(year: number, month: string) {
+		return `${brukerBase}/bestillinger/brukerid/detaljert?year=${year}&month=${month}`
+	}
+
 	static kodeverkByNavn(kodeverkNavn) {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}
@@ -262,6 +270,10 @@ export default class DollyEndpoints {
 
 	static dashboardFeilDetaljert(year: number, month: string, day: number) {
 		return `${uri}/dashboard/feil/detaljert?year=${year}&month=${month}&day=${day}`
+	}
+
+	static dashboardBrukeradferd(year: number, month: string) {
+		return `${uri}/dashboard/brukeradferd?year=${year}&month=${month}`
 	}
 
 	static hendelseId(ident: string, relatertIdent?: string) {

@@ -59,7 +59,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                     type.setMaster(getMaster(type, dbPerson.getPerson()));
                 })
                 .collectList()
-                .doOnNext(deltBosted -> {
+                .doOnNext(_ -> {
 
                     if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(dbPerson.getPerson()))) {
                         dbPerson.getPerson().setDeltBosted(null);
@@ -75,7 +75,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         }
 
         return Mono.just(TRUE)
-                .flatMap(type -> {
+                .flatMap(_ -> {
                     if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(hovedperson))) {
 
                         // DeltBosted for forelder, settes på barnet
@@ -85,7 +85,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                     if (deltBosted.countAdresser() > 0) {
                                         return prepAdresser(deltBosted)
                                                 .then(Mono.defer(() -> Mono.just(forelder)))
-                                                .doOnNext(type1 -> log.info("Forelder {} får delt bosted med adresse {}", forelder.getIdent(), deltBosted.getVegadresse()));
+                                                .doOnNext(_ -> log.info("Forelder {} får delt bosted med adresse {}", forelder.getIdent(), deltBosted.getVegadresse()));
 
                                     } else {
                                         if (!forelder.getIdent().equals(hovedperson.getIdent())) {
@@ -122,7 +122,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                     } else {
                         // DeltBosted for barn, settes på barnet
                         return Mono.just(TRUE)
-                                .flatMap(type1 -> {
+                                .flatMap(_ -> {
 
                                     if (deltBosted.countAdresser() > 0) {
                                         return prepAdresser(deltBosted)
@@ -136,7 +136,8 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                                 .doOnNext(dbPerson ->
                                                         dbPerson.getPerson().getBostedsadresse().forEach(boadresse -> {
                                                             if (!hovedperson.getBostedsadresse().isEmpty() &&
-                                                                !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse)) {
+                                                                !isEqualAdresse(hovedperson.getBostedsadresse().getFirst(), boadresse) &&
+                                                                deltBosted.countAdresser() == 0) {
 
                                                                 setAdresse(deltBosted, boadresse);
                                                             }
@@ -190,7 +191,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         var deltBosted = mapperFacade.map(deltBostedBestilling, DeltBostedDTO.class);
 
         return prepAdresser(deltBosted).thenReturn(deltBosted)
-                .flatMap(type -> {
+                .flatMap(_ -> {
 
                     if (deltBosted.countAdresser() == 0 &&
                         hovedperson.getSivilstand().stream()
@@ -225,7 +226,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                     return Mono.empty();
                 })
                 .thenReturn(deltBosted)
-                .flatMap(type -> {
+                .flatMap(_ -> {
                     if (deltBosted.countAdresser() > 0) {
                         return personRepository.findByIdent(barnIdent)
                                 .doOnNext(dbPerson -> {
@@ -283,7 +284,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         if (LocalDateTime.now().isAfter(FoedselsdatoUtility.getMyndighetsdato(person))) {
 
             foreldre = Stream.of(Stream.of(person.getIdent()), person.getSivilstand().stream()
-                            .filter(SivilstandDTO::isGiftOrSamboer)
+                            .filter(sivilstand -> sivilstand.isGiftOrSamboer() || sivilstand.isSeparert())
                             .map(SivilstandDTO::getRelatertVedSivilstand))
                     .flatMap(Function.identity())
                     .toList();

@@ -10,7 +10,8 @@ const OrganisasjonTenorSoekPage = lazyWithPreload(
 const NyansettelserPage = lazyWithPreload(() => import('@/pages/nyansettelser/NyansettelserPage'))
 const GruppeOversikt = lazyWithPreload(() => import('@/pages/gruppeOversikt/GruppeOversikt'))
 const Organisasjon = lazyWithPreload(() => import('@/pages/organisasjoner/Organisasjoner'))
-const MinSide = lazyWithPreload(() => import('@/pages/minSide/MinSide'))
+const MineMalerPage = lazyWithPreload(() => import('@/pages/maler/MineMalerPage'))
+const MinStatistikkPage = lazyWithPreload(() => import('@/pages/statistikk/MinStatistikkPage'))
 const Endringsmelding = lazyWithPreload(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazyWithPreload(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazyWithPreload(() => import('@/pages/tenorSoek/TenorSoekPage'))
@@ -27,6 +28,9 @@ const IdentValidatorPage = lazyWithPreload(
 	() => import('@/pages/identvalidator/IdentvalidatorPage'),
 )
 const DashboardPage = lazyWithPreload(() => import('@/pages/adminPages/Dashboard/DashboardPage'))
+const BrukeradferdPage = lazyWithPreload(
+	() => import('@/pages/adminPages/Brukeradferd/BrukeradferdPage'),
+)
 
 const GruppeBreadcrumb = (props: any) => <span>Gruppe #{props.params?.gruppeId}</span>
 
@@ -87,7 +91,13 @@ const allRoutes = [
 		},
 		element: Bestillingsveileder,
 	},
-	{ path: '/minside', handle: { crumb: () => 'Min side' }, element: MinSide },
+	{
+		path: '/minside',
+		handle: { crumb: () => 'Mine maler' },
+		element: () => <Navigate to="/maler" replace />,
+	},
+	{ path: '/maler', handle: { crumb: () => 'Mine maler' }, element: MineMalerPage },
+	{ path: '/statistikk', handle: { crumb: () => 'Min statistikk' }, element: MinStatistikkPage },
 	{
 		path: '/dollysoek',
 		handle: { crumb: () => 'Søk i Dolly' },
@@ -127,6 +137,11 @@ const allRoutes = [
 		path: '/dashboard',
 		handle: { crumb: () => 'Dashboard' },
 		element: DashboardPage,
+	},
+	{
+		path: '/brukeradferd',
+		handle: { crumb: () => 'Brukeradferd' },
+		element: BrukeradferdPage,
 	},
 	{
 		path: '/nyansettelser',

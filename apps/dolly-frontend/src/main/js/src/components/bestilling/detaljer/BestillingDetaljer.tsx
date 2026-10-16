@@ -2,12 +2,12 @@ import { BestillingSammendrag } from '@/components/bestilling/sammendrag/Bestill
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
-import { malTyper } from '@/pages/minSide/maler/MalModal'
+import { malTyper } from '@/pages/maler/MalModal'
 import * as _ from 'lodash-es'
 import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
-import { OpprettMal } from '@/pages/minSide/maler/OpprettMal'
+import { OpprettMal } from '@/pages/maler/OpprettMal'
 
 type BestillingDetaljerProps = {
 	bestilling: any

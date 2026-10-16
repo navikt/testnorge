@@ -17,11 +17,14 @@ import java.util.Map;
 public class MinSideBestillingerDTO {
 
     private YearMonth periode;
-    private Long antallNyBestillinger;
-    private Long antallGjenopprettinger;
-    private Integer antallNyePersoner;
-
     private LocalDate dato;
+
+    private Long antallNyeBestillinger;
+    private Long antallGjenopprettedeBestillinger;
+    private Integer antallNyePersoner;
+    private Integer andelOpprettedeDollyPersoner;
+    private Integer andelImporterteTestnorgePersoner;
+
     private List<Entry> kriterier;
 
     @Data

@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.personservice.consumer.v2.commad;
 
-import tools.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.v2.GraphQLRequest;
@@ -10,8 +9,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.JsonNode;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,7 +18,9 @@ import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.personservice.consumer.v2.PdlPersonConsumer.hentQueryResource;
 import static no.nav.testnav.apps.personservice.consumer.v2.TemaGrunnlag.GEN;
-import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.*;
+import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.DOLLY;
+import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -51,11 +52,10 @@ public class PdlBolkPersonCommand implements Callable<Mono<JsonNode>> {
                                 Map.of("identer", identer))))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .timeout(Duration.ofSeconds(5))
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty());
+                        _ -> Mono.empty());
     }
 
 }

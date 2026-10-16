@@ -4,9 +4,11 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.DateTimeException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -23,7 +26,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @UtilityClass
 public class BrukeradferdUtils {
 
-    private static final String NO_DATA = "Ingen data";
+    private static final String NO_DATA = "Uspesifisert";
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getId");
 
     public record AkkumulertKriterium(String fagsystem, Integer antall, Map<String, Object> detaljer) {
@@ -44,7 +47,7 @@ public class BrukeradferdUtils {
                     var antall = antallExtractor.applyAsInt(kriterium);
                     return StringUtils.isBlank(bestKriterier)
                             ? Map.of(NO_DATA, antall)
-                            : getAntallAdferd(jsonMapper.readValue(bestKriterier, RsDollyBestilling.class), antall);
+                            : getAntallAdferd(bestKriterier, antall, jsonMapper);
                 })
                 .flatMap(map -> map.entrySet().stream())
                 .map(entry -> new Kriteriumsrad(
@@ -64,6 +67,17 @@ public class BrukeradferdUtils {
                 .toList();
     }
 
+    private static Map<String, Integer> getAntallAdferd(String bestKriterier, Integer antall, JsonMapper jsonMapper) {
+
+        try {
+            return getAntallAdferd(jsonMapper.readValue(bestKriterier, RsDollyBestilling.class), antall);
+        } catch (JacksonException | DateTimeException e) {
+            log.warn("Kunne ikke lese bestillingskriterier for brukeradferd, teller bestillingen som {}: {}",
+                    NO_DATA, e.getClass().getSimpleName());
+            return Map.of(NO_DATA, antall);
+        }
+    }
+
     private static Map<String, Object> slaSammenDetaljer(List<Kriteriumsrad> rader) {
 
         var kategoriskeDetaljer = new HashMap<String, Integer>();
@@ -72,13 +86,13 @@ public class BrukeradferdUtils {
         rader.forEach(rad -> rad.detaljer().forEach((key, value) -> {
             try {
                 antallsdetaljer.merge(key, Integer.parseInt(value) * rad.antall(), Integer::sum);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException _) {
                 kategoriskeDetaljer.merge("%s-%s".formatted(key, value), rad.antall(), Integer::sum);
             }
         }));
 
         if (kategoriskeDetaljer.isEmpty() && antallsdetaljer.isEmpty()) {
-            return null;
+            return emptyMap();
         }
 
         var detaljer = new HashMap<String, Object>(kategoriskeDetaljer);
@@ -155,7 +169,7 @@ public class BrukeradferdUtils {
             var register = (List) bestilling.getClass().getMethod("get%s".formatted(system))
                     .invoke(bestilling);
 
-            builder.append(",Array/matrise antall:")
+            builder.append(",Array-størrelse/antall:")
                     .append(register.size());
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             log.error("Feil ved henting av antall: {}", e.getMessage(), e);

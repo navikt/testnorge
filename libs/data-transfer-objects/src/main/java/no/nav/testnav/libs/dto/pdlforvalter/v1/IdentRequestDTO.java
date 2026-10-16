@@ -40,6 +40,7 @@ public class IdentRequestDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    @Override
     public String getIdentForRelasjon() {
         return eksisterendeIdent;
     }

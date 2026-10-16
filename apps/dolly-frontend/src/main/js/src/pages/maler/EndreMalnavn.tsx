@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '@/service/Api'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Button, TextField } from '@navikt/ds-react'
-import { MalType } from '@/pages/minSide/maler/Maloversikt'
+import { MalType } from '@/pages/maler/Maloversikt'
 import { tenorEndrePersonMal } from '@/service/services/templatesearch/TemplateSearch'
 
 interface EndreMalnavnProps {
@@ -33,7 +33,7 @@ export const EndreMalnavn = ({ malNavn, id, type, avsluttRedigering }: EndreMaln
 		<ErrorBoundary>
 			<div className="endreMalnavn">
 				<TextField
-					data-testid={TestComponentSelectors.INPUT_MINSIDE_ENDRE_MALNAVN}
+					data-testid={TestComponentSelectors.INPUT_MALER_ENDRE_MALNAVN}
 					size={'small'}
 					label={'Skriv inn nytt malnavn'}
 					hideLabel
@@ -42,7 +42,7 @@ export const EndreMalnavn = ({ malNavn, id, type, avsluttRedigering }: EndreMaln
 					className="navnInput"
 				/>
 				<Button
-					data-testid={TestComponentSelectors.BUTTON_MINSIDE_LAGRE_MALNAVN}
+					data-testid={TestComponentSelectors.BUTTON_MALER_LAGRE_MALNAVN}
 					variant={'primary'}
 					size={'small'}
 					onClick={() => lagreEndring()}
