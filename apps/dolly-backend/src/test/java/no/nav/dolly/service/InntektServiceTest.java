@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -229,6 +230,42 @@ class InntektServiceTest {
                 .extracting(RsInntekter::getPerioder)
                 .containsExactly(List.of(YearMonth.of(2024, 1)));
         assertThat(updatedCriteria.getInntektstub().getInntektsinformasjon()).isEmpty();
+    }
+
+    @Test
+    void shouldHandleInntektstubPeriodsAtEdgesOutsideRangeAndWithoutMonthCount() {
+
+        var bestillingCriteria = RsDollyBestilling.builder()
+                .inntekter(List.of())
+                .inntektstub(InntektMultiplierWrapper.builder()
+                        .inntektsinformasjon(List.of(
+                                RsInntektsinformasjon.builder().sisteAarMaaned("2025-03").antallMaaneder(3).build(),
+                                RsInntektsinformasjon.builder().sisteAarMaaned("2025-05").antallMaaneder(3).build(),
+                                RsInntektsinformasjon.builder().sisteAarMaaned("2025-03").build(),
+                                RsInntektsinformasjon.builder().sisteAarMaaned("2024-12").antallMaaneder(2).build()))
+                        .build())
+                .build();
+        var bestilling = Bestilling.builder().bestKriterier(CRITERIA_JSON).build();
+
+        when(bestillingRepository.findBestillingerByIdent(IDENT)).thenReturn(Flux.just(bestilling));
+        when(jsonMapper.readValue(CRITERIA_JSON, RsDollyBestilling.class)).thenReturn(bestillingCriteria);
+        when(jsonMapper.writeValueAsString(any(RsDollyBestilling.class))).thenReturn(UPDATED_CRITERIA_JSON);
+        when(bestillingRepository.save(bestilling)).thenReturn(Mono.just(bestilling));
+        when(inntektstubConsumer.slettSpesifikkMaaned(any())).thenReturn(Mono.just(new ResponseDTO()));
+        when(mapperFacade.map(any(RsInntektsinformasjon.class), eq(RsInntektsinformasjon.class)))
+                .thenAnswer(invocation -> copyInntektsinformasjon(invocation.getArgument(0)));
+
+        StepVerifier.create(inntektService.deleteInntekt(IDENT, YearMonth.of(2025, 3)))
+                .verifyComplete();
+
+        var updatedCriteriaCaptor = ArgumentCaptor.forClass(RsDollyBestilling.class);
+        verify(jsonMapper).writeValueAsString(updatedCriteriaCaptor.capture());
+        assertThat(updatedCriteriaCaptor.getValue().getInntektstub().getInntektsinformasjon())
+                .extracting(RsInntektsinformasjon::getSisteAarMaaned, RsInntektsinformasjon::getAntallMaaneder)
+                .containsExactly(
+                        tuple("2025-02", 2),
+                        tuple("2025-05", 2),
+                        tuple("2024-12", 2));
     }
 
     private static RsInntektsinformasjon copyInntektsinformasjon(RsInntektsinformasjon source) {
