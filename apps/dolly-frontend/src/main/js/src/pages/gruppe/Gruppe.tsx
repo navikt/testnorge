@@ -9,7 +9,7 @@ import {
 	setVisning,
 } from '@/ducks/finnPerson'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { useGruppeById, useGruppeInfo } from '@/utils/hooks/useGruppe'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useIkkeFerdigBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import './Gruppe.less'
@@ -63,7 +63,7 @@ export default ({ sidetall, sorting, update }: GruppeProps) => {
 		update,
 	)
 
-	const { gruppeInfo, loading: loadingGruppeInfo } = useGruppeInfo(gruppeId)
+	const { gruppe: gruppeInfo, loading: loadingGruppeInfo } = useGruppeById(gruppeId)
 
 	const {
 		gruppe,

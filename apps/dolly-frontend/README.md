@@ -29,6 +29,14 @@ generate new token (må ha read:packages og repo tilgang)
 
 .npmrc filen skal ligge i brukermappen (cd ~) din, hvis den ikke finnes der må du opprette den.
 
+### TypeScript 6 og 7
+
+`typescript` peker på `@typescript/typescript6` (TypeScript 6-API-et med binærfilen `tsc6`), fordi typescript-eslint ennå
+ikke støtter TypeScript 7. `@typescript/native` er TypeScript 7 og gir `tsc`. Typesjekk kjøres med `pnpm run typecheck`.
+
+Fjern aliaset når typescript-eslint støtter TypeScript 7
+(se [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)).
+
 ### Kjøre Valkey lokalt
 
 Local profile bruker p.t. ikke Valkey for sessions, men dersom det er ønskelig er det mulig å
