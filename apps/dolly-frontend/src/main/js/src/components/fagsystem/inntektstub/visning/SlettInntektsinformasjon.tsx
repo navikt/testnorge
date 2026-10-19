@@ -1,9 +1,9 @@
 import { BodyLong, Button, Dialog, InlineMessage } from '@navikt/ds-react'
 import React, { useState } from 'react'
-import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import { useReduxDispatch } from '@/utils/hooks/useRedux'
 import { actions } from '@/ducks/fagsystem'
 import { formatMonth } from '@/utils/DataFormatter'
+import DollyService from '@/service/services/dolly/DollyService'
 
 interface SlettInntektsinformasjonProps {
 	open: boolean
@@ -35,11 +35,7 @@ export const SlettInntektsinformasjon = ({
 		setLoading(true)
 		setError(null)
 		try {
-			await InntektstubService.deleteInntektsinformasjon(
-				ident,
-				inntektsinformasjon?.aarMaaned,
-				inntektsinformasjon?.virksomhet,
-			)
+			await DollyService.slettInntekt(ident, inntektsinformasjon?.aarMaaned)
 		} catch (deleteError: any) {
 			setError(`Sletting av inntekt feilet: ${deleteError?.message ?? 'Ukjent feil'}`)
 			setLoading(false)
