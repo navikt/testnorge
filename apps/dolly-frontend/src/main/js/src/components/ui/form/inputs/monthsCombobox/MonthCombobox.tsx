@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { KeyboardEvent, MouseEvent, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import styled from 'styled-components'
 import {
@@ -17,6 +17,7 @@ import { formatMonth } from '@/utils/DataFormatter'
 const VALUE_FORMAT = 'yyyy-MM'
 const MONTHS_PER_ROW = 4
 const NO_SELECTED_MONTH = new Date(NaN)
+const OPEN_POPOVER_KEYS = ['Enter', ' ', 'ArrowDown']
 
 interface MonthsComboboxProps {
 	name: string
@@ -55,6 +56,12 @@ const ComboboxWrapper = styled.div`
 
 	.aksel-combobox__wrapper-inner.aksel-text-field__input {
 		padding-inline-end: 2.75rem;
+		cursor: pointer;
+	}
+
+	.aksel-combobox__input {
+		caret-color: transparent;
+		cursor: pointer;
 	}
 `
 
@@ -110,17 +117,30 @@ export const MonthCombobox = ({ name, label, minDate, maxDate }: MonthsComboboxP
 		updateMonths([...selectedMonths, month])
 	}
 
-	const togglePopover = () => {
-		if (!isOpen) {
-			const latestSelectedMonth = selectedMonths.at(-1)
-			setVisibleYear(latestSelectedMonth ? parseMonth(latestSelectedMonth) : new Date())
-		}
-		setIsOpen(!isOpen)
+	const openPopover = () => {
+		if (isOpen) return
+		const latestSelectedMonth = selectedMonths.at(-1)
+		setVisibleYear(latestSelectedMonth ? parseMonth(latestSelectedMonth) : new Date())
+		setIsOpen(true)
+	}
+
+	const togglePopover = () => (isOpen ? setIsOpen(false) : openPopover())
+
+	const handleFieldClick = (event: MouseEvent<HTMLDivElement>) => {
+		if ((event.target as HTMLElement).closest('button')) return
+		openPopover()
+	}
+
+	const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+		if (!OPEN_POPOVER_KEYS.includes(event.key)) return
+		event.preventDefault()
+		event.stopPropagation()
+		openPopover()
 	}
 
 	return (
 		<Label name={name} label={label} containerClass="flexbox--full-width">
-			<ComboboxWrapper ref={anchorRef}>
+			<ComboboxWrapper ref={anchorRef} onClick={handleFieldClick}>
 				<Combobox
 					id={name}
 					label={label}
@@ -133,6 +153,10 @@ export const MonthCombobox = ({ name, label, minDate, maxDate }: MonthsComboboxP
 					onToggleSelected={(month) => toggleMonth(month)}
 					placeholder={selectedOptions.length > 0 ? undefined : 'Velg måneder ...'}
 					error={!!errorMessage}
+					value=""
+					inputMode="none"
+					onBeforeInput={(event) => event.preventDefault()}
+					onKeyDownCapture={handleInputKeyDown}
 				/>
 				<CalendarButton
 					type="button"
