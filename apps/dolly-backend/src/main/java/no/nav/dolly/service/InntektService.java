@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.DeleteMonthDTO;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.repository.BestillingRepository;
 import org.springframework.stereotype.Service;
@@ -64,10 +63,12 @@ public class InntektService {
             RsDollyBestilling dollyBestilling,
             YearMonth periode) {
 
-        dollyBestilling.setInntekter(
-                dollyBestilling.getInntekter().stream()
-                        .flatMap(inntekt -> ekskluderPeriode(inntekt, periode).stream())
-                        .toList());
+        dollyBestilling.getInntekter()
+                .forEach(inntekt -> inntekt.setPerioder(
+                        inntekt.getPerioder().stream()
+                                .filter(currentPeriod -> !currentPeriod.equals(periode))
+                                .sorted()
+                                .toList()));
 
         if (nonNull(dollyBestilling.getInntektstub())) {
             dollyBestilling.getInntektstub().setInntektsinformasjon(
@@ -77,41 +78,6 @@ public class InntektService {
         }
 
         return dollyBestilling;
-    }
-
-    private List<RsInntekter> ekskluderPeriode(
-            RsInntekter inntekt,
-            YearMonth periode) {
-
-        if (!inntekt.getPerioder().contains(periode)) {
-            return List.of(inntekt);
-        }
-
-        var perioder = inntekt.getPerioder().stream()
-                .filter(currentPeriod -> !currentPeriod.equals(periode))
-                .sorted()
-                .toList();
-        var resultat = new ArrayList<RsInntekter>();
-        var sammenhengendePerioder = new ArrayList<YearMonth>();
-
-        for (var currentPeriod : perioder) {
-            if (!sammenhengendePerioder.isEmpty() &&
-                    !currentPeriod.equals(sammenhengendePerioder.getLast().plusMonths(1))) {
-                resultat.add(kopier(inntekt, sammenhengendePerioder));
-                sammenhengendePerioder = new ArrayList<>();
-            }
-            sammenhengendePerioder.add(currentPeriod);
-        }
-        if (!sammenhengendePerioder.isEmpty()) {
-            resultat.add(kopier(inntekt, sammenhengendePerioder));
-        }
-        return resultat;
-    }
-
-    private RsInntekter kopier(RsInntekter inntekt, List<YearMonth> perioder) {
-        var kopi = mapperFacade.map(inntekt, RsInntekter.class);
-        kopi.setPerioder(perioder);
-        return kopi;
     }
 
     private List<RsInntektsinformasjon> ekskluderPeriode(
