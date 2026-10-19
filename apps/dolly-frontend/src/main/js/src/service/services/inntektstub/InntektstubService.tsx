@@ -4,7 +4,7 @@ const baseUrl = '/testnav-dolly-proxy/inntektstub/api/v2'
 
 export default {
 	getInntektsinformasjon(ident) {
-		const endpoint = `${baseUrl}/inntektsinformasjon?historikk=true&norske-identer=${ident}`
+		const endpoint = `${baseUrl}/inntektsinformasjon?historikk=false&norske-identer=${ident}`
 		return Request.get(endpoint)
 	},
 	validate(values) {
