@@ -108,7 +108,7 @@ export const FlyttPersonForm = ({
 					{!gruppeOptions ||
 					gruppeOptions?.length < 1 ||
 					gruppeOptions.every((i: any) => i === undefined) ? (
-						pdlError && testnorgeError ? (
+						pdlError || testnorgeError ? (
 							<div className="error-message" style={{ marginBottom: '5px' }}>
 								Henting av personer feilet helt eller delvis
 							</div>

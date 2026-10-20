@@ -37,6 +37,11 @@ ikke støtter TypeScript 7. `@typescript/native` er TypeScript 7 og gir `tsc`. T
 Fjern aliaset når typescript-eslint støtter TypeScript 7
 (se [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)).
 
+### MSW i Vitest
+
+Vitest henter `mockServiceWorker.js` fra den installerte `msw`-pakken via `msw/vite`-pluginen i `vitest.config.ts`.
+Workeren skal ikke committes, og du trenger ikke kjøre `msw init` etter oppgradering av msw.
+
 ### Kjøre Valkey lokalt
 
 Local profile bruker p.t. ikke Valkey for sessions, men dersom det er ønskelig er det mulig å

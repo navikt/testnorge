@@ -13,20 +13,15 @@
 		],
 		"noEmit": true,
 		"target": "ESNext",
-		"useDefineForClassFields": true,
-		"allowJs": false,
 		"skipLibCheck": true,
-		"skipDefaultLibCheck": true,
-		"removeComments": true,
 		"esModuleInterop": true,
 		"noFallthroughCasesInSwitch": true,
 		"strict": true,
-		"allowSyntheticDefaultImports": true,
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx"
 	},
-	"include": ["src", "__tests__", "playwright"]
+	"include": ["src", "__tests__", "playwright", "vitest.config.ts", "vitest.setup.ts"]
 }
