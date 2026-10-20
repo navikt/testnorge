@@ -13,5 +13,6 @@ import org.springframework.http.HttpStatus;
 public class HentKontoResponseDTO {
 
     private HttpStatus status;
+    private String melding;
     private KontoDTO aktivKonto;
 }

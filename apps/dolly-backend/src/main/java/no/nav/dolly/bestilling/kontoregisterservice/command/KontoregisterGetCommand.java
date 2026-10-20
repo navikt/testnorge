@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.kontoregisterservice.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.KontoDTO;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
+@Slf4j
 @RequiredArgsConstructor
 public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseDTO>> {
 
@@ -39,12 +41,16 @@ public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseD
                         .aktivKonto(Objects.nonNull(response.getBody()) ? response.getBody() : null)
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
-
+                .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> Mono.just(HentKontoResponseDTO
-                        .builder()
-                        .status(WebClientError.describe(throwable).getStatus())
-                        .build()));
+                .onErrorResume(throwable -> {
+                    var error = WebClientError.describe(throwable);
+                    return Mono.just(HentKontoResponseDTO
+                            .builder()
+                            .status(error.getStatus())
+                            .melding(error.getMessage())
+                            .build());
+                });
     }
 
 }
