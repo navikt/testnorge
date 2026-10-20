@@ -26,6 +26,7 @@ import { NavAnsattPanel } from '@/components/bestillingsveileder/stegVelger/steg
 import { SalesforcePanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Salesforce'
 import { PanelFilterContext } from '@/components/ui/panel/PanelFilterContext'
 import { Search } from '@navikt/ds-react'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -40,6 +41,8 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	const testnorgeIdent = identFraTestnorge(opts)
 	const personFoerLeggTil = opts?.personFoerLeggTil
 	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
+	const { gruppe } = useGruppeById(leggTil ? opts?.gruppeId : null)
+	const visSalesforcePanel = leggTil && !!gruppe?.tags?.includes('SALESFORCE')
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -112,7 +115,9 @@ export const Steg1Person = ({ stateModifier }: any) => {
 					formValues={formValues}
 				/>
 				<DokarkivPanel stateModifier={stateModifier} formValues={formValues} />
-				<SalesforcePanel stateModifier={stateModifier} formValues={formValues} />
+				{visSalesforcePanel && (
+					<SalesforcePanel stateModifier={stateModifier} formValues={formValues} />
+				)}
 			</AttributtVelger>
 		</PanelFilterContext.Provider>
 	)
