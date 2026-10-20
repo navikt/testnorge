@@ -31,10 +31,11 @@ generate new token (må ha read:packages og repo tilgang)
 
 ### TypeScript 6 og 7
 
-`typescript` peker på `@typescript/typescript6` (TypeScript 6-API-et med binærfilen `tsc6`), fordi typescript-eslint ennå
-ikke støtter TypeScript 7. `@typescript/native` er TypeScript 7 og gir `tsc`. Typesjekk kjøres med `pnpm run typecheck`.
+`typescript` er TypeScript 6, fordi typescript-eslint og språktjenesten i IntelliJ ennå ikke støtter TypeScript 7.
+Ikke bytt den ut med `@typescript/typescript6`: den pakken mangler `tsserver.js` og lib-filene, og IntelliJ henger.
+`@typescript/native` er TypeScript 7. pnpm lenker `tsc` til den høyeste versjonen, så `pnpm run typecheck` bruker TypeScript 7.
 
-Fjern aliaset når typescript-eslint støtter TypeScript 7
+Fjern TypeScript 6 når typescript-eslint støtter TypeScript 7
 (se [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)).
 
 ### MSW i Vitest
