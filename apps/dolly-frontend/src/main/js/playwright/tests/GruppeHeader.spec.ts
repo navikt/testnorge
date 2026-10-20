@@ -30,9 +30,10 @@ test('Testing av forskjellige actions på gruppeheaderen', async ({ page }) => {
 	})
 
 	await page.getByTestId(TestComponentSelectors.BUTTON_TILKNYTT_TAGS).click()
-	await page.locator('.select__indicator').click()
-	await page.locator('.select__indicator').press('Enter')
-	await page.getByTestId(TestComponentSelectors.BUTTON_POST_TAGS).click()
+	await page.getByLabel('Velg hvilke tags du ønsker å legge til').click()
+	await page.getByRole('option', { name: 'Dummy' }).click()
+	await page.getByText('Legg til tags på gruppe').click()
+	await page.getByRole('button', { name: 'Tilknytt tags' }).click()
 	await expect(
 		page
 			.locator('h1')
@@ -90,7 +91,7 @@ test('Testing av laas gruppe funksjonalitet', async ({ page }) => {
 		.first()
 		.click()
 
-	await page.getByTestId(TestComponentSelectors.BUTTON_LAAS_GRUPPE).click()
+	await page.getByRole('button', { name: 'Lås' }).click()
 
 	await expect(page.getByText(/låse denne gruppen/)).toBeVisible()
 
@@ -102,7 +103,7 @@ test('Testing av laas gruppe funksjonalitet', async ({ page }) => {
 		})
 	})
 
-	await page.getByTestId(TestComponentSelectors.BUTTON_BEKREFT_LAAS).click()
+	await page.getByRole('button', { name: 'Ja, lås gruppe' }).click()
 
 	await expect(page.getByRole('img', { name: 'locked-group' })).toBeVisible()
 

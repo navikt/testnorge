@@ -12,36 +12,10 @@ import {
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { Alert, Box, VStack } from '@navikt/ds-react'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
-import Highcharts from 'highcharts'
-import HighchartsAccessibility from 'highcharts/modules/accessibility'
-import { CHART_TEXT_COLOR } from '@/pages/adminPages/Dashboard/dashboardChartBase'
+import '@/pages/adminPages/Dashboard/dashboardHighchartsSetup'
 import { DashboardFeilProvider } from './DashboardFeilContext'
 import { DashboardPersonProvider } from './DashboardPersonContext'
 import { useDashboardDataCore } from './useDashboardDataCore'
-
-const initAccessibilityModule =
-	typeof HighchartsAccessibility === 'function'
-		? HighchartsAccessibility
-		: (HighchartsAccessibility as { default?: (chartInstance: typeof Highcharts) => void }).default
-initAccessibilityModule?.(Highcharts)
-
-Highcharts.setOptions({
-	palette: { colorScheme: 'light' },
-	xAxis: {
-		labels: { style: { color: CHART_TEXT_COLOR, fontSize: '12px' } },
-		title: { style: { color: CHART_TEXT_COLOR } },
-	},
-	yAxis: {
-		labels: { style: { color: CHART_TEXT_COLOR, fontSize: '12px' } },
-		title: { style: { color: CHART_TEXT_COLOR } },
-	},
-	legend: {
-		itemStyle: { color: CHART_TEXT_COLOR },
-		itemHoverStyle: { color: CHART_TEXT_COLOR },
-	},
-	title: { style: { color: CHART_TEXT_COLOR } },
-	subtitle: { style: { color: CHART_TEXT_COLOR } },
-})
 
 export default () => {
 	const isAdmin = useErDollyAdmin()
@@ -100,6 +74,18 @@ export default () => {
 
 						<PersonAnalysisSection
 							isLoading={coreData.loadingDashboardPersoner && !coreData.mockModeEnabled}
+						/>
+
+						<MonthlyTeamTrendSection
+							title="Personer per måned"
+							description="Antall personer bestilt hver måned, fordelt på nye og gjenopprettede bestillinger."
+							emptyStateMessage="Ingen månedsoversikt tilgjengelig."
+							filteredMonthlyTeamPointsLength={coreData.filteredMonthlyPersonPointsLength}
+							monthScope={coreData.personMonthScope}
+							onMonthScopeChange={coreData.onPersonMonthScopeChange}
+							monthlyTrendChartOptions={coreData.monthlyPersonTrendChartOptions}
+							ariaLabel="Månedlig utvikling i antall personer bestilt"
+							isLoading={coreData.loadingDashboardOversikt && !coreData.mockModeEnabled}
 						/>
 
 						<DashboardFeilSection

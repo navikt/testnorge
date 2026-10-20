@@ -1,33 +1,28 @@
 import React, { useState } from 'react';
-
-import {
-  ErrorAlertstripe,
-  Form,
-  Knapp,
-  Line,
-  SuccessAlertstripe,
-  WarningAlertstripe,
-} from '@navikt/dolly-komponenter';
+import { Button, LocalAlert } from '@navikt/ds-react';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
-import { Handling } from '@/pages/endringsmelding-page/form/dodsmelding-form/DodsmeldingForm';
+import type { Handling } from '@/pages/endringsmelding-page/form/dodsmelding-form/DodsmeldingForm';
 import { Search } from '@/components/search/SearchDiv';
+import { ActionRow, AlertStack, FormRoot } from '@/pages/endringsmelding-page/form/FormLayout';
 
-type Props<T> = {
+type SubmitHandling = Handling | null;
+
+type Props = {
   children: React.ReactNode;
   labels: {
     search: string;
     submit: string;
     delete?: string;
   };
-  getSuccessMessage: (value?: string, handling?: Handling) => string;
+  getSuccessMessage: (value?: string, handling?: SubmitHandling) => string;
   getErrorMessage?: () => string;
-  onSend: (handling: Handling) => Promise<any>;
-  valid: (handling: Handling) => boolean;
+  onSend: (handling: SubmitHandling) => Promise<any>;
+  valid: (handling: SubmitHandling) => boolean;
   setIdent: (value: string) => void;
   setMiljoer: (value: string[]) => void;
 };
 
-export const EndringsmeldingForm = <T extends {}>({
+export const EndringsmeldingForm = ({
   children,
   onSend,
   valid,
@@ -36,21 +31,20 @@ export const EndringsmeldingForm = <T extends {}>({
   setIdent,
   getSuccessMessage,
   getErrorMessage = () => 'Noe gikk galt.',
-}: Props<T>) => {
-  const [loading, setLoading] = useState(null);
+}: Props) => {
+  const [loading, setLoading] = useState<Handling | null>(null);
   const [show, setShow] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [warningMessages, setWarningMessages] = useState<string[]>([]);
 
-  if (warningMessages && warningMessages.length > 0) {
-    console.log(warningMessages);
-  }
+  const onSubmit = (handling: SubmitHandling) => {
+    setSuccessMessage('');
+    setErrorMessage('');
+    setWarningMessages([]);
 
-  const onSubmit = (event: React.MouseEvent<HTMLButtonElement>, handling: Handling) => {
-    event.preventDefault();
     if (valid(handling)) {
-      setLoading(handling || 'SETTE_DOEDSDATO');
+      setLoading(handling ?? 'SETTE_DOEDSDATO');
       onSend(handling)
         .then((response) => {
           setLoading(null);
@@ -68,8 +62,9 @@ export const EndringsmeldingForm = <T extends {}>({
         });
     }
   };
+
   return (
-    <Form>
+    <FormRoot>
       <Search
         onChange={(value) => {
           setSuccessMessage('');
@@ -81,7 +76,6 @@ export const EndringsmeldingForm = <T extends {}>({
         setMiljoer={setMiljoer}
         labels={{
           label: labels.search,
-          delete: 'Slett dødsmelding',
           button: 'Søk etter person',
           onFound: 'Person funnet',
           onNotFound: 'Person ikke funnet',
@@ -92,36 +86,56 @@ export const EndringsmeldingForm = <T extends {}>({
       {show && (
         <>
           {children}
-          <Line reverse={true}>
-            <Knapp
-              variant={'primary'}
-              onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-                onSubmit(event, null)
-              }
-              disabled={loading}
+          <ActionRow>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => onSubmit(null)}
+              disabled={Boolean(loading)}
               loading={loading === 'SETTE_DOEDSDATO'}
             >
               {labels.submit}
-            </Knapp>
+            </Button>
             {labels.delete && (
-              <Knapp
-                variant={'danger'}
-                onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-                  onSubmit(event, 'ANNULLERE_DOEDSDATO')
-                }
-                disabled={loading}
+              <Button
+                type="button"
+                variant="primary"
+                data-color="danger"
+                onClick={() => onSubmit('ANNULLERE_DOEDSDATO')}
+                disabled={Boolean(loading)}
                 loading={loading === 'ANNULLERE_DOEDSDATO'}
               >
                 {labels.delete}
-              </Knapp>
+              </Button>
             )}
-          </Line>
+          </ActionRow>
         </>
       )}
-      {!!successMessage && <SuccessAlertstripe label={successMessage} />}
-      {!!errorMessage && <ErrorAlertstripe label={errorMessage} />}
-      {!!warningMessages &&
-        warningMessages.map((warning, index) => <WarningAlertstripe key={index} label={warning} />)}
-    </Form>
+      {(successMessage || errorMessage || warningMessages.length > 0) && (
+        <AlertStack>
+          {!!successMessage && (
+            <LocalAlert status="success" size="small">
+              <LocalAlert.Header>
+                <LocalAlert.Title as="div">{successMessage}</LocalAlert.Title>
+              </LocalAlert.Header>
+            </LocalAlert>
+          )}
+          {!!errorMessage && (
+            <LocalAlert status="error" size="small">
+              <LocalAlert.Header>
+                <LocalAlert.Title as="div">{errorMessage}</LocalAlert.Title>
+              </LocalAlert.Header>
+            </LocalAlert>
+          )}
+          {warningMessages.map((warning, index) => (
+            <LocalAlert key={index} status="warning" size="small">
+              <LocalAlert.Header>
+                <LocalAlert.Title as="div">{warning}</LocalAlert.Title>
+              </LocalAlert.Header>
+            </LocalAlert>
+          ))}
+        </AlertStack>
+      )}
+    </FormRoot>
   );
 };

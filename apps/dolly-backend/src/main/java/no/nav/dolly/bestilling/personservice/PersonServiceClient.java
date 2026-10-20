@@ -16,6 +16,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,7 +73,7 @@ public class PersonServiceClient {
                             .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
                                     new PersonServiceResponse(), status))
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
-                            .onErrorResume(error -> getError(error, dollyPerson))
+                            .onErrorResume(error -> doError(error, dollyPerson))
                             .doOnNext(status -> logStatus(status, startTime))
                             .collectList()
                             .flatMap(status -> oppdaterStatus(dollyPerson, progress, status))
@@ -79,21 +81,12 @@ public class PersonServiceClient {
                 });
     }
 
-    private Flux<PersonServiceResponse> getError(Throwable throwable, DollyPerson person) {
-        log.error("PersonServiceClient.getError: Feil for ident {}, exceptionType={}, message={}", 
-                person.getIdent(), throwable.getClass().getName(), throwable.getMessage());
-        if (throwable.getCause() != null) {
-            log.error("PersonServiceClient.getError: Caused by: exceptionType={}, message={}", 
-                    throwable.getCause().getClass().getName(), throwable.getCause().getMessage());
-        }
-        log.error("PersonServiceClient.getError: Full stacktrace:", throwable);
-        
-        var description = WebClientError.describe(throwable);
-        return Flux.just(PersonServiceResponse
-                .builder()
+    private Flux<PersonServiceResponse> doError(Throwable error, DollyPerson person) {
+
+        return Flux.just(PersonServiceResponse.builder()
                 .ident(person.getIdent())
-                .formattertMelding("Feil= %s".formatted(ErrorStatusDecoder.encodeStatus(description.getMessage())))
-                .status(description.getStatus())
+                .status(error instanceof TimeoutException ? HttpStatus.OK : WebClientError.describe(error).getStatus())
+                .feilmelding(error instanceof TimeoutException ? null : WebClientError.describe(error).getMessage())
                 .exists(false)
                 .build());
     }
@@ -221,7 +214,7 @@ public class PersonServiceClient {
                                                          Map.Entry<String, Set<String>> ident) {
 
         if (isTrue(response.getExists()) || tidNaa.isAfter(tidSlutt) ||
-                nonNull(response.getStatus()) && !response.getStatus().is2xxSuccessful()) {
+            nonNull(response.getStatus()) && !response.getStatus().is2xxSuccessful()) {
             return Flux.just(response);
 
         } else {

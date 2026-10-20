@@ -2,6 +2,14 @@ plugins {
     id "dolly-apps"
 }
 
+tasks.named("bootRun") {
+    systemProperty "org.apache.avro.SERIALIZABLE_PACKAGES", "no.nav.testnav.libs.avro.organisasjon.v1"
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty "org.apache.avro.SERIALIZABLE_PACKAGES", "no.nav.testnav.libs.avro.organisasjon.v1"
+}
+
 sonarqube {
     properties {
         property "sonar.projectKey", "testnav-organisasjon-mottak-service"

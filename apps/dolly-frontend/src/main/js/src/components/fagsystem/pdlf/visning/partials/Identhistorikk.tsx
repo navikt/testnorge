@@ -20,7 +20,7 @@ export const IdenthistorikkVisning = ({ relasjoner }: IdenthistorikkData) => {
 			<SubOverskrift label="Identhistorikk" iconKind="identhistorikk" />
 			<DollyFieldArray data={historiskeIdenter} nested>
 				{(ident: Relasjon) => (
-					<RelatertPerson data={ident?.relatertPerson} tittel={'Gammel ident'} />
+					<RelatertPerson data={ident?.relatertPerson} tittel={'Gammel ident'} visIdenttype />
 				)}
 			</DollyFieldArray>
 		</div>

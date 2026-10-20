@@ -31,19 +31,21 @@ export const OrganisasjonForvalterSelect = ({
 				label={'Organisasjonsnummer'}
 				onBlur={onTextBlur}
 			/>
-			{loading && (
-				<div className={'flexbox--align-center'}>
-					<Loading label="Leter etter organisasjon" />
-				</div>
-			)}
-			{success && !loading && (
-				<div className={'flexbox--align-center'}>
-					<Icon kind="feedback-check-circle" style={{ marginRight: '5px' }} />
-					{miljoer?.length
-						? `Organisasjon funnet i miljø: ${miljoer.map((m) => m.toUpperCase()).join(', ')}`
-						: 'Organisasjon funnet'}
-				</div>
-			)}
+			<div style={{ margin: '-5px 0 5px 0' }}>
+				{loading && (
+					<div className={'flexbox--align-center'}>
+						<Loading label="Leter etter organisasjon" />
+					</div>
+				)}
+				{success && !loading && (
+					<div className={'flexbox--align-center'}>
+						<Icon kind="feedback-check-circle" style={{ marginRight: '5px' }} />
+						{miljoer?.length
+							? `Organisasjon funnet i miljø: ${miljoer.map((m) => m.toUpperCase()).join(', ')}`
+							: 'Organisasjon funnet'}
+					</div>
+				)}
+			</div>
 		</div>
 	)
 }

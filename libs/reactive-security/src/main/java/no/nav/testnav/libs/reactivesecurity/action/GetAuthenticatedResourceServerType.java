@@ -33,7 +33,6 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                     if (token.getToken().getIssuer() == null) {
                         log.error("Token.getToken().getIssuer() is null");
                     }
-                    log.info("Configured issuer, token issuer: {}, {}", properties.getIssuerUri(), token.getToken().getIssuer().toString());
                     return properties
                             .getIssuerUri()
                             .equalsIgnoreCase(token.getToken().getIssuer().toString());

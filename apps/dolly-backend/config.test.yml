@@ -20,6 +20,7 @@ spec:
         - application: dolly-auth-local
         - application: dolly-frontend-dev
         - application: dolly-idporten
+        - application: testnav-template-search-service-dev
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend

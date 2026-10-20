@@ -3,11 +3,10 @@ import { BestillingTitle } from '@/components/bestillingsveileder/stegVelger/ste
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, formatDateTime } from '@/utils/DataFormatter'
-import { AdresseKodeverk, InntektstubKodeverk } from '@/config/kodeverk'
-import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
-import texts from '@/components/inntektStub/texts'
-import * as _ from 'lodash-es'
+import { formatDateTime } from '@/utils/DataFormatter'
+import { InntektstubKodeverk } from '@/config/kodeverk'
+import { InntektFelter } from '@/components/fagsystem/inntektstub/visning/partials/InntektVisning'
+import { tilNestedInntekt } from '@/components/fagsystem/inntektstub/validerInntekt/tilleggsinformasjon'
 
 type InntektstubTypes = {
 	inntektstub: {
@@ -19,46 +18,6 @@ type InntektsinfoTypes = {
 	inntektsinfo: any
 	idx: number
 	whiteBackground?: boolean
-}
-
-function genererTitleValueFelter(data: any) {
-	return Object.entries(data)?.map(([key, value]) => {
-		const erDato = !isNaN(Date.parse(value))
-		if (
-			erDato &&
-			(key.includes('Dato') ||
-				key.includes('dato') ||
-				key.includes('Periode') ||
-				key.includes('periode'))
-		) {
-			return <TitleValue key={key} title={texts(key)} value={formatDate(value)} />
-		}
-		if (key.includes('land') || key.includes('Land')) {
-			return (
-				<TitleValue
-					key={key}
-					title={texts(key)}
-					value={value}
-					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-				/>
-			)
-		}
-		if (_.get(value, key) && key === 'tilleggsinformasjon' && !data.tilleggsinformasjon) {
-			return Object?.entries(value)?.map(([innerKey, innerValue]) => {
-				return (
-					<TitleValue
-						key={`${key}-${innerKey}`}
-						title="Tilleggsinformasjonstype"
-						value={texts(innerKey)}
-					/>
-				)
-			})
-		}
-		if (typeof value === 'object') {
-			return
-		}
-		return <TitleValue key={key} title={texts(key)} value={texts(value)} />
-	})
 }
 
 const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: InntektsinfoTypes) => {
@@ -80,9 +39,7 @@ const Inntektsinformasjon = ({ inntektsinfo, idx, whiteBackground = false }: Inn
 					nested
 				>
 					{(inntekt: any, idy: number) => (
-						<React.Fragment key={`inntekt_${idy}`}>
-							{genererTitleValueFelter(inntekt)}
-						</React.Fragment>
+						<InntektFelter data={tilNestedInntekt(inntekt)} key={`inntekt_${idy}`} />
 					)}
 				</DollyFieldArray>
 			)}
@@ -139,23 +96,7 @@ export const Inntektstub = ({ inntektstub }: InntektstubTypes) => {
 				<BestillingTitle>A-ordningen (Inntektstub)</BestillingTitle>
 				<DollyFieldArray header="Inntektsinformasjon" data={inntektstub.inntektsinformasjon}>
 					{(inntektsinfo: any, idx: number) => (
-						<>
-							<Inntektsinformasjon inntektsinfo={inntektsinfo} idx={idx} />
-							<EkspanderbarVisning
-								vis={inntektsinfo?.historikk?.length > 0}
-								header="INNTEKTSENDRING (HISTORIKK)"
-							>
-								<DollyFieldArray data={inntektsinfo.historikk} nested>
-									{(historikk: any, idy: number) => (
-										<Inntektsinformasjon
-											inntektsinfo={historikk}
-											idx={idy}
-											whiteBackground={true}
-										/>
-									)}
-								</DollyFieldArray>
-							</EkspanderbarVisning>
-						</>
+						<Inntektsinformasjon inntektsinfo={inntektsinfo} idx={idx} />
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>

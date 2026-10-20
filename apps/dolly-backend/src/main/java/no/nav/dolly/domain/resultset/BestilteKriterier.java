@@ -8,6 +8,8 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
@@ -24,7 +26,6 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
@@ -51,7 +52,6 @@ public class BestilteKriterier {
     private List<RsAareg> aareg;
     private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
-    private List<RsLignetInntekt> sigrunstub;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private Arenadata arenaforvalter;
@@ -59,6 +59,7 @@ public class BestilteKriterier {
     private List<RsInstdata> instdata;
     private RsInstdataKdi instdataKdi;
     private InntektMultiplierWrapper inntektstub;
+    private List<RsInntekter> inntekter;
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
@@ -78,4 +79,5 @@ public class BestilteKriterier {
     private RsNomData nomdata;
     private RsKelvinAapRequestDTO kelvinAap;
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+    private RsHenvendelse henvendelse;
 }

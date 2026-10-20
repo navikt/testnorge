@@ -12,5 +12,4 @@ public class StatusFrontendApplicationStarter {
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
     }
-
 }

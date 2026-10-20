@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
-
+import { Button, HStack, InlineMessage, TextField, VStack } from '@navikt/ds-react';
 import styled from 'styled-components';
-import { Input as NavInput } from 'nav-frontend-skjema';
-import { ErrorAlert, Knapp, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
-import { NotFoundError } from '@navikt/dolly-lib';
+import isNotFoundError from '@/isNotFoundError';
 
 const GruppeSearch = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const Input = styled(NavInput)`
-  width: 50%;
+  width: 100%;
 `;
 
 type Props<T> = {
@@ -26,58 +19,88 @@ type Props<T> = {
   onChange?: (value: string) => void;
 };
 
-const Alert = styled.div`
-  width: 25%;
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 5px;
-  padding-left: 7px;
-`;
-
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
-  const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
-  const [success, setSuccess] = useState(undefined);
-  const [error, setError] = useState(false);
+  const [status, setStatus] = useState<'error' | 'loading' | 'not-found' | 'success' | null>(
+    null
+  );
 
   const _onSearch = (search: string) => {
-    setLoading(true);
-    setSuccess(undefined);
-    setError(false);
+    if (search.trim() === '') {
+      setStatus(null);
+      return Promise.resolve(undefined);
+    }
+
+    setStatus('loading');
     return onSearch(search)
       .then((response) => {
-        setSuccess(true);
+        setStatus('success');
         return response;
       })
-      .catch((e) => {
-        setSuccess(false);
-        if (!(e instanceof NotFoundError)) {
-          setError(true);
+      .catch((error) => {
+        if (isNotFoundError(error)) {
+          setStatus('not-found');
+        } else {
+          setStatus('error');
         }
-      })
-      .finally(() => setLoading(false));
+      });
+  };
+
+  const renderStatus = () => {
+    switch (status) {
+      case 'error':
+        return (
+          <InlineMessage status="error" size="small">
+            {labels.onError}
+          </InlineMessage>
+        );
+      case 'loading':
+        return (
+          <InlineMessage status="info" size="small">
+            Laster søk...
+          </InlineMessage>
+        );
+      case 'not-found':
+        return (
+          <InlineMessage status="warning" size="small">
+            {labels.onNotFound}
+          </InlineMessage>
+        );
+      case 'success':
+        return (
+          <InlineMessage status="success" size="small">
+            {labels.onFound}
+          </InlineMessage>
+        );
+    }
   };
 
   return (
     <GruppeSearch>
-      <Input
-        label={labels.label}
-        defaultValue=""
-        onChange={(e) => {
-          if (onChange) {
-            onChange(e.target.value);
-          }
-          setValue(e.target.value);
-        }}
-      />
-      <Knapp onClick={() => _onSearch(value)} disabled={loading}>
-        {labels.button}
-      </Knapp>
-      <Alert>
-        {success && <SuccessAlert label={labels.onFound} />}
-        {error && <ErrorAlert label={labels.onError} />}
-        {!(success && error) && <WarningAlert label={labels.onNotFound} />}
-      </Alert>
+      <VStack gap="space-8">
+        <HStack gap="space-8" align="end">
+          <TextField
+            label={labels.label}
+            onChange={(event) => {
+              if (onChange) {
+                onChange(event.target.value);
+              }
+              setValue(event.target.value);
+            }}
+            value={value}
+            style={{ flexGrow: 1 }}
+          />
+          <Button
+            disabled={status === 'loading'}
+            loading={status === 'loading'}
+            onClick={() => _onSearch(value)}
+            variant="secondary"
+          >
+            {labels.button}
+          </Button>
+        </HStack>
+        {renderStatus()}
+      </VStack>
     </GruppeSearch>
   );
 };

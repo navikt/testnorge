@@ -84,7 +84,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                        () -> saveBestillingToOpenSearchServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();
@@ -100,10 +100,13 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .map(_ -> OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                 .concatMap(originator -> opprettProgress(bestilling, originator.getMaster(), originator.getIdent())
                         .zipWith(Mono.just(originator)))
+                .concatMap(tuple -> (tuple.getT1().isPdl() ?
+                        oppdaterPdlImportStatus(tuple.getT1()) : Mono.just(tuple.getT1()))
+                        .zipWith(Mono.just(tuple.getT2())))
                 .concatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
-                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                .concatMap(progress -> opprettDollyPersonLeggTil(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
                 .concatMap(tuple -> (!tuple.getT1().getIdent().equals(testident.getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))

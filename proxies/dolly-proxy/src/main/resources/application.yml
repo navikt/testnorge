@@ -1,7 +1,7 @@
 spring:
   http:
     codecs:
-      max-in-memory-size: 50MB
+      max-in-memory-size: 100MB
   application:
     name: testnav-dolly-proxy
   cloud:
@@ -43,7 +43,8 @@ app:
     brregstub: http://brreg-stub.dolly
     dokarkiv: https://dokarkiv-%s.intern.dev.nav.no # Note replacement pattern.
     ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
-    fullmakt: http://repr-fullmakt.repr.svc.nais.local
+    fullmakt: https://fullmakt.intern.dev.nav.no
+    henvendelse: https://sf-henvendelse.intern.dev.nav.no
     histark: https://histarkimport.dev.intern.nav.no
     inntektstub: http://inntektstub.team-inntekt
     inst: http://opphold-testdata.team-rocket.svc.nais.local

@@ -63,5 +63,4 @@ public class ArbeidsplassenCVProxyApplicationStarter {
                 .route(createRoute(consumers.getArbeidsplassenCv().getUrl(), gatewayFilter))
                 .build();
     }
-
 }

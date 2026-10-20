@@ -8,16 +8,12 @@ import { FileObject, FileUpload, VStack } from '@navikt/ds-react'
 import { DisplayFormError } from '@/components/ui/toast/DisplayFormError'
 import React, { useEffect, useState } from 'react'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { StyledVedlegg } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
+import { Kodeverk, StyledVedlegg } from '@/components/fagsystem/dokarkiv/form/partials/Dokument'
 
 type Vedlegg = {
 	file: File
 	error: boolean
 	reasons: string[]
-}
-
-enum Kodeverk {
-	TEMA = 'TemaHistark',
 }
 
 export const HistarkDokument = ({ path, formMethods }) => {
@@ -66,7 +62,7 @@ export const HistarkDokument = ({ path, formMethods }) => {
 					<FormSelect
 						name={`${path}.temakoder`}
 						label="Temakoder"
-						kodeverk={Kodeverk.TEMA}
+						kodeverk={Kodeverk.ARKIVTEMAER}
 						size="full-width"
 						isClearable={false}
 						isMulti={true}

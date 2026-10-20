@@ -3,6 +3,19 @@ import svgr from 'vite-plugin-svgr'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { fileURLToPath } from 'url'
+import { readFileSync } from 'fs'
+import { createRequire } from 'module'
+
+const serveMockServiceWorker = () => ({
+	name: 'serve-mock-service-worker',
+	configureServer(server) {
+		const workerPath = createRequire(import.meta.url).resolve('msw/mockServiceWorker.js')
+		server.middlewares.use('/mockServiceWorker.js', (_request, response) => {
+			response.setHeader('Content-Type', 'text/javascript')
+			response.end(readFileSync(workerPath))
+		})
+	},
+})
 
 /** @type {import('vite').UserConfig} */
 
@@ -32,8 +45,29 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: mode === 'local-dev' && {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+			'/oauth2/authorization/aad': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+			'/login/oauth2/code/aad': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
+		},
 		port: 3000,
 		forwardConsole: true,
+	},
+	test: {
+		environment: 'jsdom',
+		setupFiles: ['./vitest.setup.ts'],
 	},
 	plugins: [
 		react(),
@@ -41,5 +75,6 @@ export default defineConfig(({ mode }) => ({
 			presets: [reactCompilerPreset()],
 		}),
 		svgr(),
+		mode === 'mock' && serveMockServiceWorker(),
 	],
 }))

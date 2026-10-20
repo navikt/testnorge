@@ -3,6 +3,8 @@ package no.nav.dolly.opensearch.utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.BrukerDTO;
 import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -19,9 +21,9 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Profile("!test")
@@ -31,11 +33,11 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
 
     private static final String INDEX_SETTING =
             "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}," +
-                    "\"number_of_shards\":4," +
-                    "\"number_of_replicas\":1}}}";
+            "\"number_of_shards\":4," +
+            "\"number_of_replicas\":1}}}";
     private static final String TOTAL_FIELDS_SETTING =
             "{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}}}";
-    private static final int EXISTS_CHECK_CONCURRENCY = 20;
+    private static final int EXISTS_CHECK_CONCURRENCY = 100;
     private static final String FEILET = "Feilet";
 
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -43,6 +45,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private final MapperFacade mapperFacade;
     private final OpenSearchService openSearchService;
     private final JsonMapper jsonMapper;
+    private final BrukerServiceConsumer brukerServiceConsumer;
 
     @Value("${open.search.total-fields}")
     private String totalFields;
@@ -105,27 +108,27 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
 
     private Flux<BulkResponse> importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
-        return bestillingRepository.findByOrderByIdDesc()
-                .doOnNext(_ -> antallLest.incrementAndGet())
-                .filter(bestilling -> isNotBlank(bestilling.getBestKriterier()) &&
-                        !"{}".equals(bestilling.getBestKriterier()))
-                .flatMap(bestilling -> openSearchService.exists(bestilling.getId())
-                        .zipWith(Mono.just(bestilling)), EXISTS_CHECK_CONCURRENCY)
-                .filter(tuple -> BooleanUtils.isNotTrue(tuple.getT1()))
-                .flatMap(tuple ->
-                        bestillingProgressRepository.findAllByBestillingId(tuple.getT2().getId())
-                                .collectList()
-                                .map(progress -> {
-                                    tuple.getT2().setProgresser(progress);
-                                    return tuple.getT2();
-                                }))
+        return brukerServiceConsumer.getAlleBrukere()
+                .collect(Collectors.toMap(BrukerDTO::getId, BrukerDTO::getOrganisasjonsnummer))
+                .flatMapMany(organisasjoner -> bestillingRepository.findByOrderByIdDesc()
+                        .doOnNext(_ -> antallLest.incrementAndGet())
+                        .flatMap(bestilling -> openSearchService.exists(bestilling.getId())
+                                .filter(BooleanUtils::isNotTrue)
+                                .flatMap(_ ->
+                                        bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
+                                                .collectList()
+                                                .map(progress -> {
+                                                    bestilling.setProgresser(progress);
+                                                    bestilling.setOrganisasjoner(organisasjoner);
+                                                    return bestilling;
+                                                })), EXISTS_CHECK_CONCURRENCY))
                 .map(bestilling ->
                         mapperFacade.map(bestilling, BestillingDokument.class))
                 .filter(bestilling -> !bestilling.isIgnore())
                 .buffer(100)
                 .flatMap(openSearchService::saveAll)
                 .doOnNext(response -> antallSkrevet.getAndSet(antallSkrevet.get() +
-                        response.items().size()))
+                                                              response.items().size()))
                 .doOnNext(_ -> {
                     if (antallSkrevet.get() % 1000 == 0) {
                         log.info("Skrevet {} bestillinger", antallSkrevet.get());

@@ -9,6 +9,7 @@ export const getDollySoekInitialValues = () => ({
 	seed: null,
 	registreRequest: [],
 	miljoer: [],
+	kilde: null,
 	personRequest: {
 		ident: null,
 		identtype: null,

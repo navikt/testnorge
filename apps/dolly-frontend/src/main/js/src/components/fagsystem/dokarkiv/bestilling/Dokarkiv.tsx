@@ -25,7 +25,7 @@ export const Dokarkiv = ({ dokarkivListe }: DokarkivProps) => {
 						<React.Fragment key={idx}>
 							<TitleValue title="Brevkode" value={dokarkiv.dokumenter?.[0]?.brevkode} />
 							<TitleValue title="Tittel" value={dokarkiv.tittel} />
-							<TitleValue title="Tema" value={dokarkiv.tema} kodeverk={Kodeverk.TEMA} />
+							<TitleValue title="Tema" value={dokarkiv.tema} kodeverk={Kodeverk.ARKIVTEMAER} />
 							<TitleValue
 								title="Behandlingstema"
 								value={dokarkiv.behandlingstema}

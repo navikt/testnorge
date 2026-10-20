@@ -9,8 +9,8 @@ export type Option = {
 	label: string
 	tema?: string
 	landkode?: string
-	alder?: number
-	sivilstand?: string
+	alder: number
+	sivilstand: string
 	vergemaal?: boolean
 	doedsfall?: boolean
 	foreldre?: Array<string>

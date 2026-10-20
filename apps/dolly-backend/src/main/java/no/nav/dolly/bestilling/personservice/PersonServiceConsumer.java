@@ -85,8 +85,6 @@ public class PersonServiceConsumer extends ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, AtomicInteger retry) {
 
-        log.info("PersonServiceConsumer.getPdlPersoner: Henter {} identer, retry={}", identer.size(), retry.get());
-        
         return tokenService.exchange(serverProperties)
                 .doOnError(error -> log.error("PersonServiceConsumer.getPdlPersoner: Token exchange feilet: {} - {}", 
                         error.getClass().getName(), error.getMessage(), error))

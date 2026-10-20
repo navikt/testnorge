@@ -2,6 +2,14 @@ plugins {
     id "dolly-apps"
 }
 
+tasks.named("bootRun") {
+    systemProperty "org.apache.avro.SERIALIZABLE_PACKAGES", "no.nav.person.pdl.leesah"
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty "org.apache.avro.SERIALIZABLE_PACKAGES", "no.nav.person.pdl.leesah"
+}
+
 sonarqube {
     properties {
         property "sonar.projectKey", "testnav-levende-arbeidsforhold-service"

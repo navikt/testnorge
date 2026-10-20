@@ -15,7 +15,8 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @EnableWebFlux
 @SpringBootApplication
 public class TenorSearchServiceApplicationStarter {
-    public static void main(String[] args) {
+
+    static void main(String[] args) {
         new SpringApplicationBuilder(TenorSearchServiceApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);

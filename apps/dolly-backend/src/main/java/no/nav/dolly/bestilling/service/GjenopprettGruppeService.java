@@ -105,6 +105,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 .filter(BooleanUtils::isFalse)
                 .doOnNext(_ -> counterIdentBestilling.put(testident.getIdent(), false))
                 .concatMap(_ -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent()))
+                .concatMap(progress -> progress.isPdl() ?
+                        oppdaterPdlImportStatus(progress) :
+                        Mono.just(progress))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())

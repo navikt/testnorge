@@ -1,6 +1,5 @@
 package no.nav.dolly.provider;
 
-import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
@@ -11,12 +10,10 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.YtelseType;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -32,12 +29,6 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @MockitoBean
-    private MiljoerConsumer miljoerConsumer;
-
-    @MockitoBean
-    private BrukerService brukerService;
 
     @Test
     @DisplayName("Returnerer opprettet Testgruppe med innlogget bruker som eier")

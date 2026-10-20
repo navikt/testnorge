@@ -10,6 +10,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  openSearch:
+    instance: bestillinger
+    access: read
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
@@ -58,6 +61,7 @@ spec:
       rules:
         - application: dolly-auth-local
         - application: testnav-oversikt-frontend
+        - application: testnav-dollystatus
         - application: dolly-backend
         - application: dolly-frontend
         - application: dolly-idporten

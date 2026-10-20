@@ -10,23 +10,24 @@ import lombok.experimental.SuperBuilder;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
@@ -52,8 +53,6 @@ import static java.util.Objects.nonNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDollyBestilling {
 
-    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata", "getId");
-
     @JsonIgnore
     private long id; // Ved gjenopprett vil denne ID ha verdi fra bestillingen som gjenopprettes
 
@@ -71,10 +70,10 @@ public class RsDollyBestilling {
     private List<RsInstdata> instdata;
     private RsInstdataKdi instdataKdi;
     private List<RsAareg> aareg;
-    private List<RsLignetInntekt> sigrunstub;
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     private InntektMultiplierWrapper inntektstub;
+    private List<RsInntekter> inntekter;
     private Arenadata arenaforvalter;
     private RsUdiPerson udistub;
     private PensjonData pensjonforvalter;
@@ -93,6 +92,8 @@ public class RsDollyBestilling {
     private List<EtterlatteYtelse> etterlatteYtelser;
     private RsKelvinAapRequestDTO kelvinAap;
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+    @Schema(description = "Henvendelse er kun støttet med legg-til/endre for personer tilhørende (tag) Salesforce")
+    private RsHenvendelse henvendelse;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -108,13 +109,6 @@ public class RsDollyBestilling {
         return environments;
     }
 
-    public List<RsLignetInntekt> getSigrunstub() {
-        if (isNull(sigrunstub)) {
-            sigrunstub = new ArrayList<>();
-        }
-        return sigrunstub;
-    }
-
     public List<RsSummertSkattegrunnlag> getSigrunstubSummertSkattegrunnlag() {
         if (isNull(sigrunstubSummertSkattegrunnlag)) {
             sigrunstubSummertSkattegrunnlag = new ArrayList<>();
@@ -127,6 +121,13 @@ public class RsDollyBestilling {
             sigrunstubPensjonsgivende = new ArrayList<>();
         }
         return sigrunstubPensjonsgivende;
+    }
+
+    public List<RsInntekter> getInntekter() {
+        if (isNull(inntekter)) {
+            inntekter = new ArrayList<>();
+        }
+        return inntekter;
     }
 
     public List<RsInstdata> getInstdata() {

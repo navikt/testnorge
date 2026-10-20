@@ -65,6 +65,11 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	if (initialValuesMal.arenaforvalter) {
 		initialValuesMal.arenaforvalter = getUpdatedArenaforvalterData(initialValuesMal.arenaforvalter)
 	}
+	if (initialValuesMal.oppfoelgingsvedtak14a) {
+		initialValuesMal.oppfoelgingsvedtak14a = getUpdatedOppfoelgingsvedtak14aData(
+			initialValuesMal.oppfoelgingsvedtak14a,
+		)
+	}
 	if (initialValuesMal.pensjonforvalter?.alderspensjon) {
 		initialValuesMal.pensjonforvalter.alderspensjon = getUpdatedAlderspensjonData(
 			initialValuesMal.pensjonforvalter.alderspensjon,
@@ -161,6 +166,10 @@ const getUpdatedArenaforvalterData = (arenaforvalterData) => {
 		delete filtrertArenaforvalterData.inaktiveringDato
 	}
 	return filtrertArenaforvalterData
+}
+
+const getUpdatedOppfoelgingsvedtak14aData = (oppfoelgingsvedtak14aData) => {
+	return { ...oppfoelgingsvedtak14aData, vedtakFattet: new Date() }
 }
 
 const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {

@@ -341,4 +341,16 @@ class UtledFagsystemUtilTest {
         var uniqueCount = result.stream().distinct().count();
         assertThat((long) result.size(), is(uniqueCount));
     }
+
+    @Test
+    void shouldNotIncludePdlImportForGjenopprett() {
+
+        var result = UtledFagsystemUtil.resolve(BestilteKriterier.builder().build(),
+                Bestilling.builder().opprettetFraId(1L).build());
+
+        assertThat(result, not(hasItem(SystemTyper.PDLIMPORT)));
+        assertThat(result, not(hasItem(SystemTyper.PDL_FORVALTER)));
+        assertThat(result, hasItem(SystemTyper.PDL_ORDRE));
+        assertThat(result, hasItem(SystemTyper.PDL_PERSONSTATUS));
+    }
 }

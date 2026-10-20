@@ -20,4 +20,10 @@ public class SearchRequest {
     private List<String> miljoer;
 
     private PersonRequest personRequest;
+    private Kilde kilde;
+
+    public enum Kilde {
+        DOLLY,
+        TESTNORGE
+    }
 }

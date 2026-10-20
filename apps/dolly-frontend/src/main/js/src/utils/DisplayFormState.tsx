@@ -1,6 +1,7 @@
 import { useToggle } from 'react-use'
 import { useFormContext } from 'react-hook-form'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { GYLDIGE_VERDIER } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
 
 const FormState = ({ values }: any) => (
 	<pre data-testid={TestComponentSelectors.VALUES_FORM_STATE}>
@@ -9,7 +10,7 @@ const FormState = ({ values }: any) => (
 )
 
 const replacer = (key: string, value: any) => {
-	const exludedProperties = ['fysiskDokument', 'base64']
+	const exludedProperties = ['fysiskDokument', 'base64', GYLDIGE_VERDIER]
 	if (exludedProperties.some((excludedKey) => excludedKey === key)) {
 		return '**Forkortet verdi**'
 	} else return value

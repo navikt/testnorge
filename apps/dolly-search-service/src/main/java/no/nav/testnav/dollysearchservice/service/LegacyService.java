@@ -4,23 +4,24 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.dollysearchservice.dto.SearchInternalResponse;
 import no.nav.testnav.dollysearchservice.dto.SearchRequest;
-import no.nav.testnav.dollysearchservice.utils.OpenSearchQueryBuilder;
+import no.nav.testnav.dollysearchservice.utils.OpenSearchBestillingerQueryBuilder;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonDTO;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.legacy.PersonSearch;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import tools.jackson.databind.JsonNode;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class LegacyService {
 
-    private final OpenSearchQueryService openSearchQueryService;
+    private final PdlPersonQueryService pdlPersonQueryService;
     private final MapperFacade mapperFacade;
 
-    public List<PersonDTO> searchPersoner(PersonSearch personSearch) {
+    public Flux<PersonDTO> searchPersoner(PersonSearch personSearch) {
 
         var personRequest = SearchRequest.builder()
                 .seed(personSearch.getRandomSeed())
@@ -31,16 +32,16 @@ public class LegacyService {
                 .mustNotHaveTags(Set.of("DOLLY", "ARENASYNT"))
                 .build();
 
-        var query = OpenSearchQueryBuilder.buildSearchQuery(personRequest);
+        var query = OpenSearchBestillingerQueryBuilder.buildSearchQuery(personRequest);
 
-        var response = openSearchQueryService.execQuery(personRequest, query);
-        return formatResponse(response);
+        return pdlPersonQueryService.execQuery(personRequest, query)
+                .map(SearchInternalResponse::getPersoner)
+                .flatMapMany(Flux::fromIterable)
+                .map(this::formatResponse);
     }
 
-    private List<PersonDTO> formatResponse(SearchInternalResponse response) {
+    private PersonDTO formatResponse(JsonNode jsonNode) {
 
-        return response.getPersoner().stream()
-                .map(person -> mapperFacade.map(person, PersonDTO.class))
-                .toList();
+        return mapperFacade.map(jsonNode, PersonDTO.class);
     }
 }

@@ -1,8 +1,8 @@
 import { type Options, type SeriesSplineOptions } from 'highcharts'
 import { ROTATED_CATEGORY_LABELS, TOOLTIP_OPTIONS, withBaseChart } from './dashboardChartBase'
-import { MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
+import { MonthlyPersonPoint, MonthlyTrendPoint, PersonTrendPoint } from './dashboardUtils'
 
-const createLineTrendChartOptions = ({
+export const createLineTrendChartOptions = ({
 	description,
 	categories,
 	series,
@@ -25,7 +25,7 @@ const createLineTrendChartOptions = ({
 export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[]): Options =>
 	createLineTrendChartOptions({
 		description:
-			'Linjediagram med daglig utvikling av bestillinger, identer og personer i valgt periode.',
+			'Linjediagram med daglig utvikling av nye personer og bestillinger i valgt periode.',
 		categories: personTrendData.map((point) => point.datoVisning),
 		legend: {
 			enabled: true,
@@ -37,33 +37,28 @@ export const createPersonTrendChartOptions = (personTrendData: PersonTrendPoint[
 		series: [
 			{
 				type: 'spline',
-				name: 'Personer totalt',
-				data: personTrendData.map((point) => point.personerTotalt),
-				visible: true,
-			},
-			{ type: 'spline', name: 'Nye', data: personTrendData.map((point) => point.nye) },
-			{
-				type: 'spline',
-				name: 'Gjenopprettede',
-				data: personTrendData.map((point) => point.gjenopprettede),
+				name: 'Nye personer',
+				data: personTrendData.map((point) => point.nyePersoner),
 			},
 			{
 				type: 'spline',
-				name: 'NAV-identer',
-				data: personTrendData.map((point) => point.navIdenter),
-				visible: true,
+				name: 'Opprettet i Dolly',
+				data: personTrendData.map((point) => point.dollyPersoner),
 			},
 			{
 				type: 'spline',
-				name: 'Testnorge-identer',
-				data: personTrendData.map((point) => point.testnorgeIdenter),
-				visible: true,
+				name: 'Importert fra Testnorge',
+				data: personTrendData.map((point) => point.testnorgePersoner),
 			},
 			{
 				type: 'spline',
-				name: 'Bestillinger',
-				data: personTrendData.map((point) => point.bestillinger),
-				visible: true,
+				name: 'Nye bestillinger',
+				data: personTrendData.map((point) => point.nyeBestillinger),
+			},
+			{
+				type: 'spline',
+				name: 'Gjenopprettede bestillinger',
+				data: personTrendData.map((point) => point.gjenopprettedeBestillinger),
 			},
 		],
 	})
@@ -90,6 +85,37 @@ export const createMonthlyTeamTrendChartOptions = (
 				type: 'spline',
 				name: options?.secondSeriesName || 'Antall teams',
 				data: teamTrendData.map((point) => point.totaltAntallTeams),
+			},
+		],
+	})
+
+export const createMonthlyPersonTrendChartOptions = (points: MonthlyPersonPoint[]): Options =>
+	createLineTrendChartOptions({
+		description:
+			'Linjediagram med antall personer bestilt per måned, fordelt på nye og gjenopprettede bestillinger.',
+		categories: points.map((point) => point.intervalVisning),
+		legend: {
+			enabled: true,
+			layout: 'horizontal',
+			align: 'left',
+			verticalAlign: 'top',
+			itemMarginBottom: 4,
+		},
+		series: [
+			{
+				type: 'spline',
+				name: 'Personer totalt',
+				data: points.map((point) => point.totalt),
+			},
+			{
+				type: 'spline',
+				name: 'Fra nye bestillinger',
+				data: points.map((point) => point.nye),
+			},
+			{
+				type: 'spline',
+				name: 'Fra gjenopprettede bestillinger',
+				data: points.map((point) => point.gjenopprettede),
 			},
 		],
 	})

@@ -69,7 +69,7 @@ test('mal pdldata leggTil på person ekskluderer opprettNyPerson', async ({ page
 		.click()
 	await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER).click()
 	await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_IDENT).click()
-	await page.getByText('LEGG TIL/ENDRE').click()
+	await page.getByText('Legg til / endre').click()
 	await page.getByTestId(TestComponentSelectors.TOGGLE_MAL).click()
 	await page.getByTestId(TestComponentSelectors.SELECT_MAL).click()
 	await page.getByText('Teste Playwright').click()

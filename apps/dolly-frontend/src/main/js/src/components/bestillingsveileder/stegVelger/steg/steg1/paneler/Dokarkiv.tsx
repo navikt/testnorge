@@ -18,6 +18,7 @@ export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 	const opts: any = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const dokarkiv = getTimeoutAttr('DOKARKIV', opts)
 	const histark = getTimeoutAttr('HISTARK', opts)
+
 	return (
 		<Panel
 			heading={DokarkivPanel.heading}

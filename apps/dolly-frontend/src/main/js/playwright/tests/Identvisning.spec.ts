@@ -35,7 +35,7 @@ test('Åpne bestilt ident med knytning mot alle fagsystem', async ({ page }) => 
 	await page.waitForTimeout(300)
 	await page.getByTestId(TestComponentSelectors.TITLE_VISNING).hover({ force: true })
 
-	await page.getByTestId(TestComponentSelectors.BUTTON_MODAL_CLOSE).click()
+	await page.getByRole('dialog').getByRole('button', { name: 'Lukk' }).click()
 
 	await page.waitForTimeout(1000)
 
@@ -79,7 +79,7 @@ test('skal disable AAREG checkbox ved legg til/endre når Aareg timeout oppstår
 
 	await expect(page.getByText('Laster Aareg-data')).toHaveCount(0)
 
-	await page.getByText('LEGG TIL/ENDRE').click()
+	await page.getByText('Legg til / endre').click()
 	await page.waitForURL(/\/gruppe\/.*\/bestilling\/.*$/)
 	await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 	await page.getByText('Arbeid og inntekt').click()

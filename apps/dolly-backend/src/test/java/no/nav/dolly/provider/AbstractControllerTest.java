@@ -1,18 +1,13 @@
 package no.nav.dolly.provider;
 
-import no.nav.dolly.config.TestDatabaseConfig;
-import no.nav.dolly.config.TestOpenSearchConfig;
+import no.nav.dolly.AbstractDollyTest;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -21,9 +16,7 @@ import java.util.UUID;
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
-@DollySpringBootTest
-@Import({TestDatabaseConfig.class, TestOpenSearchConfig.class})
-public abstract class AbstractControllerTest {
+public abstract class AbstractControllerTest extends AbstractDollyTest {
 
     @Autowired
     private BrukerRepository brukerRepository;
@@ -31,14 +24,6 @@ public abstract class AbstractControllerTest {
     private TestgruppeRepository testgruppeRepository;
     @Autowired
     private IdentRepository identRepository;
-
-    @DynamicPropertySource
-    static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.r2dbc.url", () -> "r2dbc:postgresql://localhost:" + TestDatabaseConfig.POSTGRES.getMappedPort(5432) + "/test");
-        registry.add("spring.r2dbc.username", TestDatabaseConfig.POSTGRES::getUsername);
-        registry.add("spring.r2dbc.password", TestDatabaseConfig.POSTGRES::getPassword);
-        registry.add("spring.flyway.enabled", () -> "false");
-    }
 
     Mono<Bruker> createBruker() {
 

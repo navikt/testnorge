@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
+import { Gruppevalg, VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import * as Yup from 'yup'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import {
@@ -12,11 +12,11 @@ import { ifPresent } from '@/utils/YupValidations'
 
 type VelgGruppeProps = {
 	formMethods: UseFormReturn
-	title: string
+	title?: string
 	fraGruppe?: number
 }
 
-export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeProps) => {
+export const VelgGruppe = ({ formMethods, title, fraGruppe = undefined }: VelgGruppeProps) => {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const gruppeId = formMethods.getValues('gruppeId') || opts?.gruppeId || opts?.gruppe?.id
 
@@ -27,6 +27,8 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 
 	const [valgtGruppe] = useState(gruppeId)
 
+	const errors = formMethods.formState.errors
+
 	useEffect(() => {
 		if (formMethods.watch('gruppeId') !== valgtGruppe) {
 			formMethods.setValue('gruppeId', valgtGruppe)
@@ -36,8 +38,15 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 
 	return (
 		<>
-			<h2>{title}</h2>
+			{title && <h2>{title}</h2>}
 			<VelgGruppeToggle fraGruppe={fraGruppe} grupper={grupper} loading={loading} />
+			<div className="flexbox--full-width">
+				{errors.gruppeId && formMethods.watch('gruppevalg') !== Gruppevalg.NY && (
+					<div className="error-message" style={{ margin: '-10px 0 20px 0' }}>
+						{errors.gruppeId?.message}
+					</div>
+				)}
+			</div>
 		</>
 	)
 }

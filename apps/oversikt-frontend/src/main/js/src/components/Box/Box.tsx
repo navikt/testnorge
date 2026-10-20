@@ -1,27 +1,66 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { NotFoundError } from '@navikt/dolly-lib'
-import * as components from '@navikt/dolly-komponenter'
+import { InlineMessage } from '@navikt/ds-react'
 
 type Submit<T> = () => Promise<void | T>
 
 type Props<T> = {
 	header: string
-	onRender: (data: { onSubmit?: Submit<T>; value?: T; loading: boolean }) => React.ReactNode
+	onRender: (data: { onSubmit?: Submit<T>; value?: T | null; loading: boolean }) => React.ReactNode
 	onSubmit?: Submit<T>
 }
 
 const StyledBox = styled.div`
-	width: 400px;
-	height: 360px;
-	border: 1px solid;
-	margin: 10px;
-	padding: 12px;
-	border-radius: 25px;
+	inline-size: min(100%, 25rem);
+	min-block-size: 22.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-16);
+	padding: var(--ax-space-16);
+	border: 1px solid var(--ax-border-neutral-subtle);
+	border-radius: var(--ax-radius-16);
+	background: var(--ax-bg-raised);
 `
 
-const Header = styled.h3`
-	margin: 6px 0;
+const Header = styled.h2`
+	margin: 0;
+`
+
+const Content = styled.div`
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: var(--ax-space-12);
+
+	table {
+		border-collapse: collapse;
+	}
+
+	td {
+		padding-inline-end: var(--ax-space-8);
+		padding-block-end: var(--ax-space-4);
+		text-align: left;
+		vertical-align: top;
+	}
+
+	textarea {
+		inline-size: 100%;
+		max-inline-size: 100%;
+		padding: var(--ax-space-12);
+		border: 1px solid var(--ax-border-neutral-subtle);
+		border-radius: var(--ax-radius-8);
+		background: var(--ax-bg-input);
+		color: var(--ax-text-neutral);
+		opacity: 1;
+	}
+`
+
+const Messages = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-8);
+	margin-top: auto;
 `
 
 const Box = <T extends unknown>({ onRender, header, onSubmit }: Props<T>) => {
@@ -29,7 +68,7 @@ const Box = <T extends unknown>({ onRender, header, onSubmit }: Props<T>) => {
 	const [error, setError] = useState<boolean>(false)
 	const [success, setSuccess] = useState<boolean>(false)
 	const [loading, setLoading] = useState<boolean>(false)
-	const [value, setValue] = useState<T>(null)
+	const [value, setValue] = useState<T | null>(null)
 
 	const submit = onSubmit
 		? () => {
@@ -55,15 +94,29 @@ const Box = <T extends unknown>({ onRender, header, onSubmit }: Props<T>) => {
 					})
 					.finally(() => setLoading(false))
 		  }
-		: null
+		: undefined
 
 	return (
 		<StyledBox>
 			<Header>{header}</Header>
-			{onRender({ onSubmit: submit, value, loading })}
-			{notFound && <components.WarningAlert label="Ikke funnet." />}
-			{error && <components.ErrorAlert label="Noe gikk galt." />}
-			{success && <components.SuccessAlert label="Success!" />}
+			<Content>{onRender({ onSubmit: submit, value, loading })}</Content>
+			<Messages>
+				{notFound && (
+					<InlineMessage role="alert" size="small" status="warning">
+						Ikke funnet.
+					</InlineMessage>
+				)}
+				{error && (
+					<InlineMessage role="alert" size="small" status="error">
+						Noe gikk galt.
+					</InlineMessage>
+				)}
+				{success && (
+					<InlineMessage role="status" size="small" status="success">
+						Success!
+					</InlineMessage>
+				)}
+			</Messages>
 		</StyledBox>
 	)
 }

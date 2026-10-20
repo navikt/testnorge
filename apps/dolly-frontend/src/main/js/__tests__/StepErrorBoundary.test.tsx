@@ -2,6 +2,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import StepErrorBoundary from '@/components/bestillingsveileder/stegVelger/StepErrorBoundary'
 import React from 'react'
+import { captureFrontendError } from '@/observability/frontendTelemetry'
+
+vi.mock('@/observability/frontendTelemetry', () => ({
+	captureFrontendError: vi.fn(),
+}))
 
 vi.mock('@/logger/Logger', () => ({
 	Logger: {
@@ -38,14 +43,16 @@ describe('StepErrorBoundary', () => {
 
 	it('should render error alert when child throws', () => {
 		console.error = vi.fn()
+		const error = new Error('Something broke')
 
 		render(
 			<StepErrorBoundary stepIndex={1} stepLabel="Velg egenskaper">
-				<ThrowingChild error={new Error('Something broke')} />
+				<ThrowingChild error={error} />
 			</StepErrorBoundary>,
 		)
 
 		expect(screen.getByText(/Noe gikk galt ved visning av "Velg egenskaper"/)).toBeDefined()
+		expect(captureFrontendError).toHaveBeenCalledWith(error)
 	})
 
 	it('should render chunk error message for chunk load errors', () => {

@@ -1,20 +1,27 @@
 import React from 'react'
+import ApplicationTokenCopyButton from '@/components/ApplicationTokenCopyButton'
 import PageWithMenu from '@/components/PageWithMenu'
+import type { AppNavigationItem } from '@/components/Navigation'
 import FetchAccessToken from '@/components/FetchAccessToken'
 import { useParams } from 'react-router'
 import { Application } from '@/services/ApplicationService'
 
 type Props = {
-	navigations: Navigation<Application>[]
+	navigations: AppNavigationItem<Application>[]
 }
 
 const AccessTokenPage = ({ navigations }: Props) => {
-	// @ts-ignore
-	const { name } = useParams()
+	const { name } = useParams<{ name: string }>()
 	return (
-		<PageWithMenu navigations={navigations} menuTitle="Applikasjoner">
+		<PageWithMenu
+			navigations={navigations}
+			menuTitle="Applikasjoner"
+			renderLeadingAction={(navigation) => (
+				<ApplicationTokenCopyButton application={navigation.content} label={navigation.label} />
+			)}
+		>
 			<FetchAccessToken
-				scope={name}
+				scope={name ?? ''}
 				labels={{
 					header: 'Access Token',
 					subHeader: `Generer token for ${name}`,

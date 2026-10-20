@@ -15,3 +15,7 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           accepted-audience: ${ACCEPTED_AUDIENCE}
+
+open:
+  search:
+    index: bestilling-dev

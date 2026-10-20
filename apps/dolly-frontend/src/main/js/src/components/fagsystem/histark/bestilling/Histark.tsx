@@ -30,7 +30,7 @@ export const Histark = ({ histark }: HistarkProps) => {
 						<TitleValue
 							title="Temakoder"
 							value={arrayToString(
-								dokument?.temakoder?.map((kode) => showKodeverkLabel(Kodeverk.TEMA, kode)),
+								dokument?.temakoder?.map((kode) => showKodeverkLabel(Kodeverk.ARKIVTEMAER, kode)),
 							)}
 						/>
 						<TitleValue title="Nav-enhet" value={dokument?.enhetsnavn} />

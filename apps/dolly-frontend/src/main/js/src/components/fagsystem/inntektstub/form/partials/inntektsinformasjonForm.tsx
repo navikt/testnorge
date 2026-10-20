@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
-import InntektsendringForm from './inntektsendringForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { useFormContext } from 'react-hook-form'
 import { VirksomhetToggle } from '@/components/fagsystem/inntektstub/form/partials/virksomhetToggle'
@@ -19,11 +18,10 @@ export default ({ path }: InntektsinformasjonForm) => {
 			: null,
 	)
 
-	const [rapporteringsdate, setRapporteringsdato] = useState(
+	const rapporteringsdate =
 		formMethods.watch(`${path}.rapporteringsdato`) !== ''
 			? Date.parse(formMethods.watch(`${path}.rapporteringsdato`))
-			: null,
-	)
+			: null
 
 	const handleDateChange = (selectedDate: Date) => {
 		selectedDate?.setHours(6)
@@ -58,7 +56,6 @@ export default ({ path }: InntektsinformasjonForm) => {
 			</div>
 			<VirksomhetToggle path={path} />
 			<InntektsinformasjonLister formMethods={formMethods} path={path} />
-			<InntektsendringForm formMethods={formMethods} path={path} />
 		</React.Fragment>
 	)
 }

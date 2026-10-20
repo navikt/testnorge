@@ -59,6 +59,7 @@ public class Consumers {
     private ServerProperties testnorgeProfilApi;
     private ServerProperties testnorgeTilbakemeldingApi;
     private ServerProperties testnavTenorSearchService;
+    private ServerProperties testnavTemplateSearchService;
     private ServerProperties testnavSykemeldingApi;
     private ServerProperties testnavLevendeArbeidsforholdAnsettelse;
     private ServerProperties testnavLevendeArbeidsforholdScheduler;

@@ -1,14 +1,13 @@
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
-import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
+import { LaasModal } from '@/components/ui/button/LaasButton/LaasModal'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
 import './GruppeHeader.less'
-import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
+import { TagsModal } from '@/components/ui/button/Tags/TagsModal'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
@@ -26,9 +25,10 @@ import { createLoadingSelector } from '@/ducks/loading'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { EndreTilknytning } from '@/pages/gruppe/EndreTilknytning/EndreTilknytning'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { Button } from '@navikt/ds-react'
+import { PencilIcon } from '@navikt/aksel-icons'
 
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
-const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
 
 type GruppeHeaderProps = {
@@ -39,12 +39,10 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 	const dispatch = useDispatch<any>()
 	const matchMutate = useMatchMutate()
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
-	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 	const { currentBruker } = useCurrentBruker()
 	const brukertype = currentBruker?.brukertype
 
 	const isDeletingGruppe = useSelector((state: any) => loadingSelectorSlettGruppe(state))
-	const isSendingTags = useSelector((state: any) => loadingSelectorSendTags(state))
 	const isLockingGruppe = useSelector((state: any) => loadingSelectorLaasGruppe(state))
 
 	const { gruppe, error } = useGruppeById(gruppeId)
@@ -115,62 +113,42 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<Button
 								data-testid={TestComponentSelectors.BUTTON_REDIGER_GRUPPE}
-								kind="edit"
+								size="xsmall"
+								variant="tertiary"
+								icon={<PencilIcon aria-hidden />}
 								onClick={visRediger}
 							>
-								REDIGER
+								Rediger
 							</Button>
 						)}
-						<Button
-							data-testid={TestComponentSelectors.BUTTON_GJENOPPRETT_GRUPPE}
-							onClick={visGjenopprettModal}
-							kind="synchronize"
-							disabled={antallPersoner < 1}
-							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : undefined}
-						>
-							GJENOPPRETT
-						</Button>
+						<GjenopprettGruppe gruppeId={gruppeId} />
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<LaasButton
+							<LaasModal
 								autoMutate={false}
 								gruppeId={gruppe.id}
 								action={laasGruppe}
 								loading={isLockingGruppe}
-							>
-								Er du sikker på at du vil låse denne gruppen? <br />
-								En gruppe som er låst kan ikke endres, og blir heller ikke <br />
-								påvirket av prodlast i samhandlermiljøet (Q1). <br />
-								Når gruppen er låst må du kontakte Team Dolly <br />
-								dersom du ønsker å låse den opp igjen.
-							</LaasButton>
-						)}
-						{gruppe.erEierAvGruppe && !erLaast && (
-							<SlettButton
-								autoMutate={false}
-								gruppeId={gruppe.id}
-								action={deleteGruppe}
-								loading={isDeletingGruppe}
-								navigateHome={true}
-							>
-								Er du sikker på at du vil slette denne gruppen?
-							</SlettButton>
-						)}
-						{brukertype !== 'BANKID' && (
-							<TagsButton
-								isSending={isSendingTags}
-								gruppeId={gruppe.id}
-								eksisterendeTags={gruppe.tags}
 							/>
 						)}
-						<EksporterExcel gruppeId={gruppe.id} />
+						{gruppe.erEierAvGruppe && !erLaast && (
+							<SlettModal
+								action={deleteGruppe}
+								gruppeId={gruppe.id}
+								loading={isDeletingGruppe}
+								navigateHome={true}
+								autoMutate={false}
+								slettType={'gruppe'}
+							/>
+						)}
+						{brukertype !== 'BANKID' && (
+							<TagsModal gruppeId={gruppe.id} eksisterendeTags={gruppe.tags} />
+						)}
 						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
+						<EksporterExcel gruppeId={gruppe.id} />
 					</div>
 				</div>
 			</header>
 			{visRedigerState && <RedigerGruppe gruppeId={gruppeId} onCancel={skjulRediger} />}
-			{viserGjenopprettModal && (
-				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
-			)}
 		</Fragment>
 	)
 }

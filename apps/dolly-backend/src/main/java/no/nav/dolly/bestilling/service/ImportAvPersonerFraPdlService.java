@@ -86,18 +86,13 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                 .flatMap(testnorgeIdent -> opprettPerson(bestilling, bestKriterier, testnorgeIdent), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                        () -> saveBestillingToOpenSearchServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();
                                 })
                                 .then(doFerdig(bestilling))
                                 .subscribe());
-    }
-
-    private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress) {
-
-        return transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
     }
 
     private Flux<BestillingProgress> opprettPerson(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, String ident) {
@@ -108,20 +103,20 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 .concatMap(testnorgeIdent -> Mono.just(OriginatorUtility.prepOriginator(bestKriterier, testnorgeIdent, mapperFacade)))
                 .concatMap(originator -> opprettProgress(bestilling, PDL, originator.getIdent())
                         .zipWith(Mono.just(originator)))
+                .concatMap(tuple -> oppdaterPdlImportStatus(tuple.getT1())
+                        .zipWith(Mono.just(tuple.getT2())))
                 .concatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
+                .concatMap(progress -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse()))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
-                .concatMap(tuple -> leggIdentTilGruppe(tuple.getT2(), bestKriterier.getBeskrivelse())
-                        .thenReturn(tuple))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
                                 .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
                                         .filter(BestillingProgress::isPdlSync)
                                         .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
-                                                tuple.getT2(), true))
-                                        .then(oppdaterStatus(tuple.getT2()))));
+                                                tuple.getT2(), true))));
     }
 }

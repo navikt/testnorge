@@ -1,36 +1,18 @@
-import React, { useEffect, useState } from 'react';
-
-import styled from 'styled-components';
-import { TextField as NavInput } from '@navikt/ds-react';
+import React, { useState } from 'react';
+import { Button, InlineMessage, TextField } from '@navikt/ds-react';
 import {
-  ErrorAlert,
-  Knapp,
-  SuccessAlert,
-  WarningAlert,
-  WarningAlertstripe,
-} from '@navikt/dolly-komponenter';
-import _ from 'lodash';
+  SearchButtonSlot,
+  SearchFieldSlot,
+  SearchRow,
+  SearchStatusSlot,
+} from '@/pages/endringsmelding-page/form/FormLayout';
 
-const SearchDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const Input = styled(NavInput)`
-  width: 50%;
-`;
-
-const StyledKnapp = styled(Knapp)`
-  min-width: 150px;
-`;
-
-type Props<T> = {
-  setMiljoer: any;
-  setShow: any;
+type Props = {
+  setMiljoer: (value: string[]) => void;
+  setShow: (show: boolean) => void;
   labels: {
     label: string;
     button: string;
-    delete: string;
     onFound: string;
     onNotFound: string;
     onError: string;
@@ -39,114 +21,118 @@ type Props<T> = {
   onChange?: (value: string) => void;
 };
 
-const Alert = styled.div`
-  width: 25%;
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 5px;
-  padding-left: 7px;
-`;
-
-const isSyntheticIdent = (value: string) => {
-  return value.match('[0-9]{2}[4-9]{1}[0-9]{8}');
+type SearchStatus = {
+  status: 'success' | 'warning' | 'error';
+  message: string;
 };
 
-const StyledWarning = styled(WarningAlertstripe)`
-  margin: 30px 0 0 15px;
-  height: 50px;
-  width: -webkit-fill-available;
-`;
+const isSyntheticIdent = (value: string) => /^[0-9]{2}[4-9]{1}[0-9]{8}$/.test(value);
+const isValidIdent = (value: string) => /^[0-9]{11}$/.test(value);
 
-export const Search = <T extends unknown>({ labels, onChange, setShow, setMiljoer }: Props<T>) => {
+export const Search = ({ labels, onChange, setShow, setMiljoer }: Props) => {
   const [value, setValue] = useState('');
-  const [query, setQuery] = useState(null);
-  const [response, setResponse] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<SearchStatus | null>(null);
 
-  const renderAlert = () => {
-    if (_.isEmpty(response?.miljoer)) {
-      return null;
-    } else if (error) {
-      return <ErrorAlert label={labels.onError} />;
-    } else if (response.miljoer.length === 0) {
-      return <WarningAlert label={labels.onNotFound} />;
-    } else {
-      return <SuccessAlert label={labels.onFound} />;
+  const hentMiljoeInfo = async () => {
+    if (isSyntheticIdent(value)) {
+      setStatus({ status: 'warning', message: labels.syntIdent });
+      setShow(false);
+      setMiljoer([]);
+      return;
     }
-  };
 
-  const hentMiljoeInfo = async (ident: string) => {
-    setError(false);
+    if (!isValidIdent(value)) {
+      setStatus({ status: 'warning', message: 'Ident må være 11 siffer.' });
+      setShow(false);
+      setMiljoer([]);
+      return;
+    }
+
     setLoading(true);
-    return fetch(`/endringsmelding-service/api/v1/ident/miljoer`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ident: ident }),
-    })
-      .then(async (res) => {
-        setLoading(false);
-        setError(false);
-        const jsonResponse = await res.json();
-        setResponse(jsonResponse?.[0]);
-        setShow(true);
-      })
-      .catch((reason) => {
-        console.error(reason);
-        setShow(false);
-        setLoading(false);
-        setError(true);
-        if (reason?.response?.status === 401 || reason?.response?.status === 403) {
-          console.error('Auth feilet');
-        }
-        if (reason.status === 404 || reason.response?.status === 404) {
-          if (reason.response?.data?.error) {
-            throw new Error(reason.response?.data?.error);
-          }
-        }
-        throw new Error(`Henting av data fra endringsmelding-service feilet.`);
+    setStatus(null);
+
+    try {
+      const response = await fetch(`/endringsmelding-service/api/v1/ident/miljoer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ident: value }),
       });
-  };
 
-  useEffect(() => {
-    if (query && query.length === 11) {
-      hentMiljoeInfo(query);
-    } else {
-      setError('Ident må være 11 siffer.');
+      if (!response.ok) {
+        throw new Error();
+      }
+
+      const data = await response.json();
+      const miljoer = data?.[0]?.miljoer ?? [];
+      setMiljoer(miljoer);
+
+      if (miljoer.length > 0) {
+        setShow(true);
+        setStatus({ status: 'success', message: labels.onFound });
+        return;
+      }
+
+      setShow(false);
+      setStatus({ status: 'warning', message: labels.onNotFound });
+    } catch {
+      setMiljoer([]);
+      setShow(false);
+      setStatus({ status: 'error', message: labels.onError });
+    } finally {
+      setLoading(false);
     }
-  }, [query]);
-
-  useEffect(() => {
-    setMiljoer(response?.miljoer);
-  }, [response]);
+  };
 
   return (
-    <SearchDiv>
-      <Input
-        label={labels.label}
-        defaultValue=""
-        onChange={(e) => {
-          setShow(false);
-          setResponse(null);
-          setMiljoer([]);
-          if (onChange) {
-            onChange(e.target.value);
-          }
-          setValue(e.target.value);
-        }}
-      />
-      <StyledKnapp
-        onClick={(event: any) => {
-          event.preventDefault();
-          setQuery(value);
-        }}
-        disabled={loading || isSyntheticIdent(value)}
-        loading={loading}
-      >
-        {labels.button}
-      </StyledKnapp>
-      {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
-      <Alert>{renderAlert()}</Alert>
-    </SearchDiv>
+    <SearchRow>
+      <SearchFieldSlot>
+        <TextField
+          label={labels.label}
+          autoComplete="off"
+          inputMode="numeric"
+          value={value}
+          onChange={(event) => {
+            const nextValue = event.target.value;
+            setShow(false);
+            setMiljoer([]);
+            setStatus(
+              isSyntheticIdent(nextValue) ? { status: 'warning', message: labels.syntIdent } : null,
+            );
+            onChange?.(nextValue);
+            setValue(nextValue);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              void hentMiljoeInfo();
+            }
+          }}
+        />
+      </SearchFieldSlot>
+      <SearchButtonSlot>
+        <Button
+          type="button"
+          onClick={() => {
+            void hentMiljoeInfo();
+          }}
+          disabled={loading || value === '' || isSyntheticIdent(value)}
+          loading={loading}
+        >
+          {labels.button}
+        </Button>
+      </SearchButtonSlot>
+      <SearchStatusSlot>
+        {status && (
+          <InlineMessage
+            status={status.status}
+            size="small"
+            role={status.status === 'error' ? 'alert' : 'status'}
+          >
+            {status.message}
+          </InlineMessage>
+        )}
+      </SearchStatusSlot>
+    </SearchRow>
   );
 };

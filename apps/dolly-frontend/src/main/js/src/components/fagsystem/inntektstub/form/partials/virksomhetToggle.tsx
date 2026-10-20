@@ -19,7 +19,7 @@ import { useOrganisasjonValidation } from '@/components/shared/ArbeidsforholdTog
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	margin-bottom: 10px;
+	margin: 10px 0 10px 0;
 `
 
 type ArbeidsforholdToggleProps = {

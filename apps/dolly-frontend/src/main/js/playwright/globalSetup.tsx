@@ -37,6 +37,8 @@ import {
 	personFragmentNavigerMock,
 	personFragmentSearchMock,
 	skjermingMock,
+	soekMalerBrukerMock,
+	soekMalerOversiktMock,
 	tagsMock,
 	tenorSearchOversiktMock,
 	tenorSearchTestdataMock,
@@ -117,6 +119,12 @@ const tenorTestdataAlleFelter = new RegExp(
 const tenorTestdataOversikt = new RegExp(
 	/testnav-tenor-search-service\/api\/v1\/tenor\/testdata\/oversikt\?antall=10&side=0/,
 )
+const soekMalerOversikt = new RegExp(
+	/testnav-template-search-service\/api\/v1\/tenor\/maler\/personer\/oversikt/,
+)
+const soekMalerBruker = new RegExp(
+	/testnav-template-search-service\/api\/v1\/tenor\/maler\/personer\/brukerId/,
+)
 
 const mockRoutes: RouteInfo[] = [
 	{ url: api, response: [] },
@@ -171,6 +179,8 @@ const mockRoutes: RouteInfo[] = [
 	{ url: arenaMiljoer, response: ['q1', 'q2', 'q4'] },
 	{ url: tenorTestdataAlleFelter, response: tenorSearchTestdataMock },
 	{ url: tenorTestdataOversikt, response: tenorSearchOversiktMock },
+	{ url: soekMalerOversikt, response: soekMalerOversiktMock },
+	{ url: soekMalerBruker, response: soekMalerBrukerMock },
 	{ url: '**/dolly-logg', response: [] },
 ]
 

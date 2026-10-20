@@ -1,30 +1,38 @@
 import React from 'react';
-import { WarningFilled } from '@navikt/ds-icons';
-import styled from 'styled-components';
-
-const StyledLoginPage = styled.div`
-    margin-top: 150px;
-    padding: 100px 20px;
-    margin-right: 15%;
-    margin-left: 15%;
-    background: white;
-    border: solid 1px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-`;
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
+import { BodyShort, Box, Heading, Link, Page, VStack } from '@navikt/ds-react';
 
 export const LoginPage = () => (
-  <StyledLoginPage>
-    <WarningFilled width={50} height={50} color="#FF9100" />
-    <h1>Du har ikke tilgang til denne siden</h1>
-    <p>
-      Av sikkerhetshensyn må du bestille tilgang for å kunne sende meldinger til TPS.
-    </p>
-    <p>
-      Ta kontakt med team <a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a> på Slack eller på epost
-      dolly@nav.no dersom du ønsker tilgang.
-    </p>
-  </StyledLoginPage>
+  <Page contentBlockPadding="none">
+    <Page.Block as="main" gutters>
+      <div className="tps-login-page">
+        <Box
+          className="tps-login-page__card"
+          background="default"
+          borderWidth="1"
+          borderColor="neutral-subtle"
+          paddingBlock="space-96"
+          paddingInline="space-20"
+        >
+          <VStack gap="space-16" align="center">
+            <ExclamationmarkTriangleFillIcon
+              title="Advarsel"
+              style={{ fontSize: '3rem', color: 'var(--ax-text-warning-decoration)' }}
+            />
+            <Heading level="1" size="large">
+              Du har ikke tilgang til denne siden
+            </Heading>
+            <BodyShort>
+              Av sikkerhetshensyn må du bestille tilgang for å kunne sende meldinger til TPS.
+            </BodyShort>
+            <BodyShort>
+              Ta kontakt med team{' '}
+              <Link href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</Link> på Slack eller
+              på epost dolly@nav.no dersom du ønsker tilgang.
+            </BodyShort>
+          </VStack>
+        </Box>
+      </div>
+    </Page.Block>
+  </Page>
 );

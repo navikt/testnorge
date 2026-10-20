@@ -1,0 +1,40 @@
+package no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command;
+
+import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.PensjonOperationResponse;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
+import no.nav.testnav.libs.reactivecore.web.WebClientError;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+@RequiredArgsConstructor
+public class DeleteTpForholdCommand implements Callable<Mono<Void>> {
+
+    private final WebClient webClient;
+    private final String token;
+    private final RunId runId;
+    private final String ident;
+    private final String environment;
+    private final Duration timeout;
+
+    @Override
+    public Mono<Void> call() {
+        return PensjonCommandSupport.requireSuccessful(
+                        webClient.delete()
+                                .uri(uriBuilder -> uriBuilder
+                                        .path("/pensjon/api/v1/tp/person/forhold")
+                                        .queryParam("miljoer", environment)
+                                        .build())
+                                .headers(headers -> PensjonCommandSupport.applyHeaders(headers, token, runId))
+                                .header("pid", ident)
+                                .retrieve()
+                                .bodyToMono(PensjonOperationResponse.class),
+                        Set.of(environment))
+                .timeout(timeout)
+                .retryWhen(WebClientError.is5xxException());
+    }
+}

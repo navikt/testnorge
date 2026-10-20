@@ -8,12 +8,12 @@ import { sjekkManglerYrkesskadeData } from '@/components/fagsystem/yrkesskader/v
 import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import {
 	harArbeidsplassenBestilling,
-	harDokarkivBestilling,
 	harHistarkBestilling,
 	harMedlBestilling,
 	harUdistubBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import { sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
+import { sjekkManglerDokarkivData } from '@/components/fagsystem/dokarkiv/visning/Visning'
 
 interface UseTimedOutParams {
 	data: any
@@ -30,7 +30,6 @@ interface UseTimedOutParams {
 	arbeidsplassencvData: any
 	arbeidsplassencvError: any
 	dokarkivData: any
-	dokarkivError: any
 	histarkData: any
 	histarkError: any
 	udistub: any
@@ -57,7 +56,6 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		arbeidsplassencvData,
 		arbeidsplassencvError,
 		dokarkivData,
-		dokarkivError,
 		histarkData,
 		histarkError,
 		udistub,
@@ -94,8 +92,7 @@ export function useTimedOutFagsystemer(params: UseTimedOutParams): string[] {
 		arbeidsplassencvError
 	)
 		list.push('ARBEIDSPLASSENCV')
-	if (harDokarkivBestilling(bestillingerFagsystemer) && !dokarkivData && dokarkivError)
-		list.push('DOKARKIV')
+	if (dokarkivData && sjekkManglerDokarkivData(dokarkivData)) list.push('DOKARKIV')
 	if (harHistarkBestilling(bestillingerFagsystemer) && !histarkData && histarkError)
 		list.push('HISTARK')
 	if (

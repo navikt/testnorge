@@ -78,7 +78,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                 .flatMap(testident -> oppdaterPerson(bestilling, request, testident))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(request, bestilling)
+                        () -> saveBestillingToOpenSearchServer(request, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();
@@ -92,10 +92,14 @@ public class OppdaterPersonService extends DollyBestillingService {
         return Mono.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
                 .flatMap(originator -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                         .zipWith(Mono.just(originator)))
+                .flatMap(tuple -> (tuple.getT1().isPdl() ?
+                        oppdaterPdlImportStatus(tuple.getT1()) :
+                        Mono.just(tuple.getT1()))
+                        .zipWith(Mono.just(tuple.getT2())))
                 .flatMap(tuple -> oppdaterPerson(tuple.getT2(), tuple.getT1()))
                 .flatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
-                .flatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
+                .flatMap(progress -> opprettDollyPersonLeggTil(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
                 .flatMap(tuple -> (!tuple.getT1().getIdent().equals(testident.getIdent()) ?
                         updateIdent(tuple.getT1(), tuple.getT2()) : Mono.just(tuple.getT1().getIdent()))

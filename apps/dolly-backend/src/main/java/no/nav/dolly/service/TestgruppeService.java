@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.projection.RsGruppeFragment;
+import no.nav.dolly.domain.projection.GruppeFragment;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -36,18 +36,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuples;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.ceilDiv;
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -134,11 +136,13 @@ public class TestgruppeService {
         return brukerService.fetchOrCreateBruker()
                 .filter(bruker -> Brukertype.BANKID == bruker.getBrukertype())
                 .flatMap(bruker -> brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                        .map(TilgangDTO::getBrukere)
-                        .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere, Pageable.unpaged())
-                                .map(Testgruppe::getId)
-                                .collectList())
-                        .map(grupper -> grupper.stream().anyMatch(gruppe -> gruppe.equals(gruppeId))))
+                        .map(BrukereDTO::getBrukere)
+                        .map(TestgruppeService::getGyldigeBrukere)
+                        .flatMap(brukere -> brukere.isEmpty()
+                                ? Mono.just(false)
+                                : testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere, Pageable.unpaged())
+                                        .map(Testgruppe::getId)
+                                        .any(gruppeId::equals)))
                 .switchIfEmpty(Mono.just(true));
     }
 
@@ -154,11 +158,18 @@ public class TestgruppeService {
                 .flatMap(bruker ->
                         (bruker.getBrukertype() == Brukertype.BANKID
                                 ? brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .map(TilgangDTO::getBrukere)
-                                .flatMap(brukere -> testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
-                                                PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
-                                        .collectList()
-                                        .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)))
+                                .map(BrukereDTO::getBrukere)
+                                .map(TestgruppeService::getGyldigeBrukere)
+                                .flatMap(brukere -> {
+                                    if (brukere.isEmpty()) {
+                                        return Mono.just(Tuples.of(List.<Testgruppe>of(), 0L));
+                                    } else {
+                                        return testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
+                                                        PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                                .collectList()
+                                                .zipWith(testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere));
+                                    }
+                                })
                                 :
                                 testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
                                         .collectList()
@@ -215,7 +226,7 @@ public class TestgruppeService {
                                 testgruppeRepository.countByOpprettetAvId(bruker.getId()));
 
                     } else if (bruker.getBrukertype() == Brukertype.AZURE ||
-                            bruker.getBrukertype() == Brukertype.TEAM) {
+                               bruker.getBrukertype() == Brukertype.TEAM) {
 
                         return Mono.zip(Mono.just(bruker),
                                 testgruppeRepository.findByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
@@ -225,16 +236,27 @@ public class TestgruppeService {
                     } else {
 
                         return brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .map(TilgangDTO::getBrukere)
-                                .flatMap(brukere -> Mono.zip(Mono.just(bruker),
-                                        testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
-                                                        PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
-                                                .collectList(),
-                                        testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)));
+                                .map(BrukereDTO::getBrukere)
+                                .map(TestgruppeService::getGyldigeBrukere)
+                                .flatMap(brukere -> brukere.isEmpty()
+                                        ? Mono.zip(Mono.just(bruker), Mono.just(List.<Testgruppe>of()), Mono.just(0L))
+                                        : Mono.zip(Mono.just(bruker),
+                                                testgruppeRepository.findByOpprettetAv_BrukerIdIn(brukere,
+                                                                PageRequest.of(pageNo, pageSize, Sort.by("id").descending()))
+                                                        .collectList(),
+                                                testgruppeRepository.countByOpprettetAv_BrukerIdIn(brukere)));
                     }
                 })
                 .flatMap(tuple ->
                         getRsTestgruppePage(pageNo, pageSize, tuple.getT1(), tuple.getT2(), tuple.getT3()));
+    }
+
+    private static List<String> getGyldigeBrukere(List<String> brukere) {
+
+        return brukere.stream()
+                .filter(StringUtils::isNotBlank)
+                .distinct()
+                .toList();
     }
 
     private Mono<RsTestgruppePage> getRsTestgruppePage(Integer pageNo, Integer pageSize, Bruker bruker, List<Testgruppe> testgrupper, Long antall) {
@@ -303,7 +325,7 @@ public class TestgruppeService {
 
         return fetchTestgruppeById(gruppeId)
                 .flatMap(testgruppe -> identService.saveIdentTilGruppe(ident, testgruppe.getId(), master, null))
-                .flatMap(testIdent -> pdlDataConsumer.putStandalone(ident, true));
+                .flatMap(_ -> pdlDataConsumer.putStandalone(ident, true));
     }
 
     public Mono<Page<Testident>> getIdenter(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
@@ -334,26 +356,25 @@ public class TestgruppeService {
                 .then();
     }
 
-    public Flux<RsGruppeFragment> fetchGruppeByFragment(String gruppeFragment) {
+    public Flux<GruppeFragment> fetchGruppeByFragment(String gruppeFragment, String bankIdOrgNr) {
 
         var searchQueries = gruppeFragment.split(" ");
         var gruppeId = Arrays.stream(searchQueries)
                 .filter(word -> word.matches("\\d+"))
-                .map(id -> "%" + id + "%")
                 .findFirst()
                 .orElse("");
         var gruppeNavn = Arrays.stream(searchQueries)
                 .filter(word -> !word.matches("\\d+"))
                 .filter(StringUtils::isNotBlank)
-                .map(word -> "%" + word + "%")
                 .collect(Collectors.joining(" "));
 
-        return Mono.just(gruppeFragment)
-                .flatMapMany(fragment -> isNotBlank(gruppeNavn) && isNotBlank(gruppeId) ?
-                        testgruppeRepository.findByIdContainingAndNavnContaining(gruppeId, gruppeNavn) :
-                        Flux.merge(
-                                testgruppeRepository.findByIdContaining(gruppeId),
-                                testgruppeRepository.findByNavnContaining(gruppeNavn)))
-                .sort(Comparator.comparing(RsGruppeFragment::getId));
+        Mono<List<String>> optionalBankIdBrukere = isBlank(bankIdOrgNr) ?
+                Mono.just(emptyList()) :
+                brukerServiceConsumer.getBrukereIOrganisasjon(bankIdOrgNr)
+                        .map(BrukereDTO::getBrukere);
+
+        return optionalBankIdBrukere
+                .flatMapMany(brukere ->
+                        testgruppeRepository.findByIdAndNavnAndBrukere(gruppeId, gruppeNavn, brukere.toArray(new String[0])));
     }
 }

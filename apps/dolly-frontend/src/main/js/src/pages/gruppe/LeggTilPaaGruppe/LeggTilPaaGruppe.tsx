@@ -1,7 +1,8 @@
-import Button from '@/components/ui/button/Button'
 import React from 'react'
 import { useNavigate } from 'react-router'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import { Button } from '@navikt/ds-react'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
 
 type LeggTilProps = {
 	antallPersoner: number
@@ -24,6 +25,9 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 	return (
 		<Button
 			data-testid={TestComponentSelectors.BUTTON_LEGGTILPAAALLE}
+			size="xsmall"
+			variant="tertiary"
+			icon={<PlusCircleIcon aria-hidden />}
 			onClick={() =>
 				navigate(`/gruppe/${gruppeId}/bestilling/`, {
 					state: {
@@ -32,11 +36,10 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 					},
 				})
 			}
-			kind="add-circle"
 			disabled={antallPersoner < 1 || antallPersoner > 50}
 			title={getButtonTitle()}
 		>
-			LEGG TIL PÅ ALLE
+			Legg til på alle
 		</Button>
 	)
 }

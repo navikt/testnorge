@@ -13,13 +13,14 @@ import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skattekort.SkattekortRequestDTO;
@@ -74,6 +75,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("arenaforvalter", "arenaforvalter")
                 .field("bankkonto", "bankkonto")
                 .field("brregstub", "brregstub")
+                .field("henvendelse", "henvendelse")
                 .field("histark", "histark")
                 .field("inntektsmelding", "inntektsmelding")
                 .field("inntektstub", "inntektstub")
@@ -100,8 +102,8 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getEnvironments().addAll(request.getEnvironments());
                         akkumulert.getEtterlatteYtelser().addAll(mapperFacade.mapAsList(request.getEtterlatteYtelser(), EtterlatteYtelse.class));
                         akkumulert.getFullmakt().addAll(mapperFacade.mapAsList(request.getFullmakt(), RsFullmakt.class));
+                        akkumulert.getInntekter().addAll(mapperFacade.mapAsList(request.getInntekter(), RsInntekter.class));
                         akkumulert.getInstdata().addAll(mapperFacade.mapAsList(request.getInstdata(), RsInstdata.class));
-                        akkumulert.getSigrunstub().addAll(mapperFacade.mapAsList(request.getSigrunstub(), RsLignetInntekt.class));
                         akkumulert.getSigrunstubPensjonsgivende().addAll(mapperFacade.mapAsList(request.getSigrunstubPensjonsgivende(), RsPensjonsgivendeForFolketrygden.class));
                         akkumulert.getSigrunstubSummertSkattegrunnlag().addAll(mapperFacade.mapAsList(request.getSigrunstubSummertSkattegrunnlag(), RsSummertSkattegrunnlag.class));
                         akkumulert.getYrkesskader().addAll(mapperFacade.mapAsList(request.getYrkesskader(), YrkesskadeRequest.class));
@@ -276,6 +278,17 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulertDTO.getForventetLoeslatelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getForventetLoeslatelse(), RsInstdataKdi.ForventetLoeslatelse.class));
                         akkumulertDTO.getLoeslatelse().addAll(mapperFacade.mapAsList(rsInstdataKdi.getLoeslatelse(), RsInstdataKdi.Loeslatelse.class));
                         akkumulertDTO.getAnnullering().addAll(mapperFacade.mapAsList(rsInstdataKdi.getAnnullering(), RsInstdataKdi.Annullering.class));
+                    }
+                })
+                .register();
+
+        factory.classMap(RsHenvendelse.class, RsHenvendelse.class)
+                .mapNulls(false)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsHenvendelse henvendelse, RsHenvendelse akkumulertDTO, MappingContext context) {
+                        akkumulertDTO.getMeldinger().addAll(mapperFacade.mapAsList(henvendelse.getMeldinger(), RsHenvendelse.Melding.class));
+                        akkumulertDTO.getSamtalereferater().addAll(mapperFacade.mapAsList(henvendelse.getSamtalereferater(), RsHenvendelse.Samtalereferat.class));
                     }
                 })
                 .register();

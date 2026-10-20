@@ -4,6 +4,10 @@ Prosjekt for å opprette og konfigurere personer knyttet til fellesregistrene i 
 
 ## Dokumentasjon
 
+### Nettlesertelemetri
+
+Dolly bruker `@nais/apm` for nettlesertelemetri. Se [Nais-dokumentasjonen for APM](https://doc.nais.io/observability/apm/).
+
 ## Lokal kjøring
 
 * [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)

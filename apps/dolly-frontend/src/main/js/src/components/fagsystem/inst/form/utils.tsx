@@ -21,7 +21,8 @@ export const getExcludedDatesAndMaxDate = (data) => {
 
 		if (_.isNil(sluttdato)) {
 			const start = new Date(startdato)
-			maxDate = start.setDate(start.getDate() - 1)
+			start.setDate(start.getDate() - 1)
+			maxDate = start
 		} else {
 			days = getAllDatesBetween(new Date(startdato), new Date(sluttdato))
 			excludeDates = excludeDates.concat(days)

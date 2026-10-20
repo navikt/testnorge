@@ -1,0 +1,133 @@
+package no.nav.testnav.apps.statusfrontend.fagsystem.krr;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.KrrFunctionalTestProperties;
+import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
+import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestDefinition;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestExistingDataException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Creation;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Preflight;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.EmptyTestResult.Verification;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestContext;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestPoller.pollUntil;
+
+@Service
+@Slf4j
+@ConditionalOnProperty(prefix = "functional-test.krr", name = "enabled", havingValue = "true")
+@RequiredArgsConstructor
+public class KrrFunctionalTest
+        implements FunctionalTestDefinition<Preflight, Creation, Verification> {
+
+    private static final FunctionalTestDescriptor DESCRIPTOR = new FunctionalTestDescriptor(
+            new SystemId("krr"),
+            new DisplayName("KRR"),
+            Set.of(FunctionalTestEnvironment.GLOBAL),
+            CleanupExpectation.DELETED);
+
+    private final KrrClient client;
+    private final PdlFunctionalTestProperties pdlProperties;
+    private final KrrFunctionalTestProperties properties;
+    private final Scheduler scheduler;
+
+    @Override
+    public FunctionalTestDescriptor descriptor() {
+        return DESCRIPTOR;
+    }
+
+    @Override
+    public boolean requiresPdl() {
+        return true;
+    }
+
+    @Override
+    public Mono<Preflight> preflight(FunctionalTestContext context) {
+        var request = KrrTestData.request(pdlProperties.getIdent(), context);
+        return client.getContactInformation(context.runId(), request)
+                .flatMap(status -> status.noActiveContacts()
+                        ? Mono.just(Preflight.COMPLETED)
+                        : Mono.error(new FunctionalTestExistingDataException()));
+    }
+
+    @Override
+    public Mono<Void> cleanupExistingData(FunctionalTestContext context) {
+        return cleanup(context, Preflight.COMPLETED, Optional.empty(), Optional.empty(),
+                DESCRIPTOR.expectedCleanupState());
+    }
+
+    @Override
+    public Mono<Creation> create(FunctionalTestContext context, Preflight preflightResult) {
+        var request = KrrTestData.request(pdlProperties.getIdent(), context);
+        return client.createContactInformation(context.runId(), request)
+                .thenReturn(Creation.COMPLETED);
+    }
+
+    @Override
+    public Mono<Verification> verify(
+            FunctionalTestContext context,
+            Preflight preflightResult,
+            Creation createResult
+    ) {
+        return awaitStatus(context, true)
+                .thenReturn(Verification.COMPLETED);
+    }
+
+    @Override
+    public Mono<Void> cleanup(
+            FunctionalTestContext context,
+            Preflight preflightResult,
+            Optional<Creation> createResult,
+            Optional<Verification> verificationResult,
+            CleanupExpectation expectedEndState
+    ) {
+        var request = KrrTestData.request(pdlProperties.getIdent(), context);
+        return client.getContactInformation(context.runId(), request)
+                .switchIfEmpty(Mono.error(new IllegalStateException("KRR-oppslaget mangler resultat.")))
+                .flatMap(status -> {
+                    if (status.noActiveContacts()) {
+                        return Mono.empty();
+                    }
+                    if (status.contactIds().isEmpty()) {
+                        return Mono.error(new IllegalStateException("KRR-oppslaget mangler kontakt-ID."));
+                    }
+                    return Flux.fromIterable(status.contactIds())
+                            .distinct()
+                            .concatMap(contactId -> client.deleteContactInformation(context.runId(), contactId))
+                            .then(awaitStatus(context, false));
+                });
+    }
+
+    private Mono<Void> awaitStatus(FunctionalTestContext context, boolean expectedPresent) {
+        var request = KrrTestData.request(pdlProperties.getIdent(), context);
+        return Mono.defer(() -> {
+            var lastStatus = new AtomicReference<KrrResourceStatus>();
+            return pollUntil(
+                    () -> client.getContactInformation(context.runId(), request)
+                            .doOnNext(lastStatus::set),
+                    status -> expectedPresent ? status.expectedDataPresent() : status.noActiveContacts(),
+                    properties.getPollInterval(),
+                    properties.getPollTimeout(),
+                    scheduler)
+                    .doOnError(FunctionalTestVerificationTimeoutException.class, _ -> log.warn(
+                            "KRR oppnådde ikke forventet tilstand: runId={}, expectedPresent={}, lastStatus={}",
+                            context.runId().value(), expectedPresent, lastStatus.get()))
+                    .then();
+        });
+    }
+}

@@ -9,13 +9,14 @@ export type Mal = {
 	id: number
 	malBestilling?: any
 	bestilling?: any
+	soekKriterier?: any
 }
 
 type MalResponse = {
 	malbestillinger: [string, Mal[]]
 }
 
-type OversiktResponse = {
+export type OversiktResponse = {
 	brukereMedMaler: Array<{ brukernavn: string; brukerId: string }>
 }
 

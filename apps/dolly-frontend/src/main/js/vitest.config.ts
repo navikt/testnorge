@@ -7,6 +7,7 @@ import * as path from 'path'
 const rootDir = import.meta.dirname
 
 export default defineConfig({
+	publicDir: path.resolve(rootDir, '__tests__/public'),
 	resolve: {
 		alias: {
 			'@': path.resolve(rootDir, 'src'),

@@ -2,6 +2,7 @@ import React from 'react'
 import { Logger } from '@/logger/Logger'
 import { Alert, Button } from '@navikt/ds-react'
 import { isChunkLoadError } from '@/utils/chunkErrorUtils'
+import { captureFrontendError } from '@/observability/frontendTelemetry'
 
 interface Props {
 	children: React.ReactNode
@@ -23,6 +24,7 @@ export default class StepErrorBoundary extends React.Component<Props, { error: a
 	}
 
 	componentDidCatch(error: any, info: any) {
+		captureFrontendError(error)
 		console.error('StepErrorBoundary', this.props.stepIndex, this.props.stepLabel, error?.message)
 		Logger.error({
 			event: `Step render feil: ${this.props.stepLabel}`,

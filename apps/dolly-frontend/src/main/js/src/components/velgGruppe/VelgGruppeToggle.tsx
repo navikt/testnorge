@@ -77,7 +77,7 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper, loading }: VelgGruppeTogg
 	}
 
 	return (
-		<div className="toggle--wrapper">
+		<div className="toggle--wrapper" style={{ marginBottom: '20px' }}>
 			<ToggleGroup
 				size={'small'}
 				value={gruppevalg}
@@ -109,7 +109,12 @@ export const VelgGruppeToggle = ({ fraGruppe, grupper, loading }: VelgGruppeTogg
 			</ToggleGroup>
 
 			{gruppevalg === Gruppevalg.MINE && (
-				<EksisterendeGruppe fraGruppe={fraGruppe} grupper={grupper} loading={loading} />
+				<EksisterendeGruppe
+					formMethods={formMethods}
+					fraGruppe={fraGruppe}
+					grupper={grupper}
+					loading={loading}
+				/>
 			)}
 			{gruppevalg === Gruppevalg.ALLE && <AlleGrupper fraGruppe={fraGruppe} />}
 			{gruppevalg === Gruppevalg.NY && <NyGruppe />}

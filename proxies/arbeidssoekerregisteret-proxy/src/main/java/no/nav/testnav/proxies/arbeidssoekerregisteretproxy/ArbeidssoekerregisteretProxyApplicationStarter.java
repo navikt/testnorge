@@ -52,5 +52,4 @@ public class ArbeidssoekerregisteretProxyApplicationStarter {
                 )
                 .build();
     }
-
 }

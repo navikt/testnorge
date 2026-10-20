@@ -28,6 +28,10 @@ public class SlettArbeidssoekerregisteretCommand implements Callable<Mono<HttpSt
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> HttpStatus.valueOf(response.getStatusCode().value()))
-                .doOnError(WebClientError.logTo(log));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> {
+                    log.error("Feil ved sletting av arbeidssoekerregisteret for ident {}. Feilmelding: {}", ident, throwable.getMessage(), throwable);
+                    return Mono.just(HttpStatus.INTERNAL_SERVER_ERROR);
+                });
     }
 }

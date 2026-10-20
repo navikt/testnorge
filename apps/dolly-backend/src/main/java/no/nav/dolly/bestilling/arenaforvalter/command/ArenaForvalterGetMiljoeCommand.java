@@ -38,6 +38,7 @@ public class ArenaForvalterGetMiljoeCommand implements Callable<Flux<String>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .doOnError(WebClientError.logTo(log))
-                .flatMapIterable(miljoer -> Arrays.stream(miljoer).toList());
+                .flatMapIterable(miljoer -> Arrays.stream(miljoer).toList())
+                .onErrorResume(_ -> Flux.just("q1","q2"));
     }
 }

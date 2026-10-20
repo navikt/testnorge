@@ -1,43 +1,51 @@
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { Alert } from '@navikt/ds-react'
+import { Link, LocalAlert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { top } from '@popperjs/core'
 import React from 'react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import type { LogoutErrorState } from '@/components/utlogging/logoutState'
+import { isLogoutErrorState, LogoutErrorStates } from '@/components/utlogging/logoutState'
 
-const brukerveiledning = (
-	<a
-		href="https://navikt.github.io/testnorge/testnav/latest/index.html#feil_innlogging"
-		target="_blank"
-	>
-		brukerveiledningen
-	</a>
-)
-
-const Advarsler = {
-	organisation_error:
-		'En feil oppsto og du ble logget ut. Sjekk om du er tilknyttet en organisasjon som har tilgang til Dolly. ' +
-		'Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller velg en annen innloggingsmetode. ',
-	unknown_error: 'Ukjent feil oppsto og du ble logget ut. ',
-	miljoe_error: 'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. ',
-	person_org_error:
-		'Du er blitt logget ut. Det oppsto et problem med å hente organisasjonstilganger. ',
-	azure_error:
-		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. ',
+interface LogoutAlert {
+	title: string
+	message: string
 }
 
-const getAdvarsel: () => string = () => {
-	const url = location.href
-	if (url.includes('state=')) {
-		const urlParts = url.split('state=')
-		if (urlParts.length === 1 || !(urlParts[1] in Advarsler)) {
-			return null
-		} else {
-			// @ts-ignore
-			return Advarsler[urlParts[1]]
-		}
-	}
-	return null
+const logoutAlerts: Record<LogoutErrorState, LogoutAlert> = {
+	[LogoutErrorStates.ORGANISATION_ERROR]: {
+		title: 'Du har ikke tilgang til Dolly',
+		message:
+			'Vi kunne ikke finne en organisasjon du kan representere i Dolly. Hvis du mener dette er feil, kan du kontakte Dolly-teamet.',
+	},
+	[LogoutErrorStates.UNKNOWN_ERROR]: {
+		title: 'Du ble logget ut på grunn av en feil',
+		message: 'Noe gikk galt under innloggingen. Vedvarer feilen, kan du kontakte Dolly-teamet.',
+	},
+	[LogoutErrorStates.MILJOE_ERROR]: {
+		title: 'Du ble logget ut på grunn av en feil',
+		message: 'Vi kunne ikke hente gyldige miljøer. Vedvarer feilen, kan du kontakte Dolly-teamet.',
+	},
+	[LogoutErrorStates.PERSON_ORG_ERROR]: {
+		title: 'Du ble logget ut på grunn av en feil',
+		message:
+			'Vi kunne ikke bekrefte organisasjonstilgangen din, og du ble derfor logget ut. Vedvarer feilen, kan du kontakte Dolly-teamet.',
+	},
+	[LogoutErrorStates.AZURE_ERROR]: {
+		title: 'Du ble logget ut på grunn av en feil',
+		message:
+			'Vi kunne ikke hente nødvendig innloggingsinformasjon. Vedvarer feilen, kan du kontakte Dolly-teamet.',
+	},
+	[LogoutErrorStates.SESSION_ERROR]: {
+		title: 'Du ble logget ut på grunn av en feil',
+		message:
+			'Vi kunne ikke opprette en gyldig Dolly-sesjon, og du ble derfor logget ut. Vedvarer feilen, kan du kontakte Dolly-teamet.',
+	},
+}
+
+export const getLogoutAlert = (search: string): LogoutAlert | null => {
+	const logoutState = new URLSearchParams(search).get('state')
+	return isLogoutErrorState(logoutState) ? logoutAlerts[logoutState] : null
 }
 
 export const redirectOnClick =
@@ -64,24 +72,37 @@ const redirectTo = (path: string, toIdporten: boolean) => {
 }
 
 export default () => {
-	const advarsel = getAdvarsel()
-	const modalHeight = advarsel ? 400 + ((advarsel.length + 70) / 88) * 20 : 350
+	const logoutAlert = getLogoutAlert(location.search)
+	const modalHeight = logoutAlert ? 450 : 350
 	const runningLocal = window.location.hostname.includes('localhost')
 
 	return (
 		<div className="login-container">
 			<div className="login-modal" style={{ height: modalHeight + 'px' }}>
 				<h1>Velkommen til Dolly</h1>
-				<h3>
+				<p className="login-modal_description">
 					Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data. I Dolly kan du
 					opprette syntetiske personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i
 					valgte testmiljøer.
-				</h3>
-				{advarsel && (
-					<Alert variant={'warning'}>
-						{advarsel}
-						<>Sjekk {brukerveiledning} hvis feilen vedvarer eller ta kontakt med Dolly.</>
-					</Alert>
+				</p>
+				{logoutAlert && (
+					<LocalAlert status="error">
+						<LocalAlert.Header>
+							<LocalAlert.Title as="h2">{logoutAlert.title}</LocalAlert.Title>
+						</LocalAlert.Header>
+						<LocalAlert.Content>
+							{logoutAlert.message} Sjekk{' '}
+							<Link
+								href="https://navikt.github.io/testnorge/testnav/latest/index.html#feil_innlogging"
+								target="_blank"
+								rel="noreferrer"
+								referrerPolicy="no-referrer"
+							>
+								brukerveiledning
+							</Link>{' '}
+							for mer informasjon.
+						</LocalAlert.Content>
+					</LocalAlert>
 				)}
 				<div className="flexbox--justify-center flexbox--align-center">
 					<NavButton

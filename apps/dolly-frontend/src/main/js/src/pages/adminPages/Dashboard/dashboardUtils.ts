@@ -12,19 +12,19 @@ import {
 	type DashboardBestillingerDTO,
 	type DashboardDollyTeamsDTO,
 	type DashboardOrganisasjonerDTO,
+	type DashboardOversiktDTO,
 	type DashboardTeamsDTO,
 } from '@/utils/hooks/useDashboard'
-import { MONTH_NAMES, type MonthName } from './dashboardFeilUtils'
+import { MONTH_NAMES, type MonthName, tilOversiktInterval } from './dashboardFeilUtils'
 
 export type PersonTrendPoint = {
 	dato: string
 	datoVisning: string
-	bestillinger: number
-	personerTotalt: number
-	nye: number
-	gjenopprettede: number
-	navIdenter: number
-	testnorgeIdenter: number
+	nyeBestillinger: number
+	gjenopprettedeBestillinger: number
+	nyePersoner: number
+	dollyPersoner: number
+	testnorgePersoner: number
 }
 
 export type MonthlyTeamPoint = {
@@ -35,6 +35,7 @@ export type MonthlyTeamPoint = {
 	teams: {
 		team: string
 		unikeBrukere: number
+		beskrivelse?: string
 	}[]
 }
 
@@ -48,6 +49,15 @@ export type MonthlyTrendPoint = {
 export type TeamDistributionPoint = {
 	team: string
 	unikeBrukere: number
+	beskrivelse?: string
+}
+
+export type MonthlyPersonPoint = {
+	interval: string
+	intervalVisning: string
+	totalt: number
+	nye: number
+	gjenopprettede: number
 }
 
 export const MONTH_SCOPE_LAST_12 = 'LAST_12'
@@ -183,12 +193,11 @@ export const fillMissingPersonDays = (
 		completedDays.push(
 			personDataForDay ?? {
 				dato: currentDateValue,
-				bestillinger: 0,
-				personerTotalt: 0,
-				nye: 0,
-				gjenopprettede: 0,
-				navIdenter: 0,
-				testnorgeIdenter: 0,
+				antallNyeBestillinger: 0,
+				antallGjenopprettedeBestillinger: 0,
+				antallNyePersoner: 0,
+				andelOpprettedeDollyPersoner: 0,
+				andelImporterteTestnorgePersoner: 0,
 			},
 		)
 		currentDate = new Date(currentDate)
@@ -266,23 +275,47 @@ export const toMonthlyTeamPoints = (dashboardTeams: DashboardTeamsDTO[]): Monthl
 		.filter((point): point is MonthlyTeamPoint => Boolean(point))
 		.sort((a, b) => a.interval.localeCompare(b.interval))
 
+const toOrganisasjonBeskrivelse = (
+	organisasjonsform?: string,
+	organisasjonsnummer?: string,
+): string | undefined => {
+	const deler = [
+		organisasjonsform?.trim(),
+		organisasjonsnummer?.trim() ? `org.nr. ${organisasjonsnummer.trim()}` : undefined,
+	].filter(Boolean)
+	return deler.length > 0 ? deler.join(', ') : undefined
+}
+
 export const toMonthlyOrganisasjonPoints = (
 	dashboardOrganisasjoner: DashboardOrganisasjonerDTO[],
 ): MonthlyTeamPoint[] =>
 	dashboardOrganisasjoner
-		.map((row) => ({
-			interval: row.interval,
-			intervalVisning: toMonthDisplayDate(row.interval),
-			totaltUnikeBrukere: asNumber(row.totaltUnikeBrukere),
-			totaltAntallTeams: asNumber(row.totaltAntallOrganisasjoner),
-			teams: (row.organisasjoner ?? [])
-				.map((entry) => ({
-					team: entry.navn,
-					unikeBrukere: asNumber(entry.unikeBrukere),
-				}))
-				.filter((entry) => entry.team)
-				.sort((a, b) => b.unikeBrukere - a.unikeBrukere),
-		}))
+		.map((row) => {
+			const organisasjoner = (row.organisasjoner ?? []).filter((entry) => entry.navn)
+			const antallPerNavn = new Map<string, number>()
+			organisasjoner.forEach((entry) =>
+				antallPerNavn.set(entry.navn, (antallPerNavn.get(entry.navn) ?? 0) + 1),
+			)
+			return {
+				interval: row.interval,
+				intervalVisning: toMonthDisplayDate(row.interval),
+				totaltUnikeBrukere: asNumber(row.totaltUnikeBrukere),
+				totaltAntallTeams: asNumber(row.totaltAntallOrganisasjoner),
+				teams: organisasjoner
+					.map((entry) => ({
+						team:
+							(antallPerNavn.get(entry.navn) ?? 0) > 1 && entry.organisasjonsnummer
+								? `${entry.navn} (${entry.organisasjonsnummer})`
+								: entry.navn,
+						unikeBrukere: asNumber(entry.unikeBrukere),
+						beskrivelse: toOrganisasjonBeskrivelse(
+							entry.organisasjonsform,
+							entry.organisasjonsnummer,
+						),
+					}))
+					.sort((a, b) => b.unikeBrukere - a.unikeBrukere),
+			}
+		})
 		.sort((a, b) => a.interval.localeCompare(b.interval))
 
 export const toMonthlyDollyTeamPoints = (
@@ -298,22 +331,42 @@ export const toMonthlyDollyTeamPoints = (
 				.map((entry) => ({
 					team: entry.navn,
 					unikeBrukere: asNumber(entry.antallMedlemmer),
+					beskrivelse: entry.beskrivelse?.trim() || undefined,
 				}))
 				.filter((entry) => entry.team)
 				.sort((a, b) => b.unikeBrukere - a.unikeBrukere),
 		}))
 		.sort((a, b) => a.interval.localeCompare(b.interval))
 
+export const toMonthlyPersonPoints = (oversikt: DashboardOversiktDTO[]): MonthlyPersonPoint[] =>
+	oversikt
+		.map((rad) => {
+			const interval = tilOversiktInterval(rad)
+			if (!interval) {
+				return null
+			}
+			const nye = asNumber(rad.nye)
+			const gjenopprettede = asNumber(rad.gjenopprettede)
+			return {
+				interval,
+				intervalVisning: toMonthDisplayDate(interval),
+				totalt: asNumber(rad.totaltAntallPersoner ?? nye + gjenopprettede),
+				nye,
+				gjenopprettede,
+			}
+		})
+		.filter((point): point is MonthlyPersonPoint => point !== null)
+		.sort((a, b) => a.interval.localeCompare(b.interval))
+
 export const toPersonTrendData = (personer: DashboardBestillingerDTO[]): PersonTrendPoint[] =>
 	personer.map((personData) => ({
 		dato: personData.dato,
 		datoVisning: toDisplayDate(personData.dato),
-		bestillinger: asNumber(personData.bestillinger),
-		personerTotalt: asNumber(personData.personerTotalt),
-		nye: asNumber(personData.nye),
-		gjenopprettede: asNumber(personData.gjenopprettede),
-		navIdenter: asNumber(personData.navIdenter),
-		testnorgeIdenter: asNumber(personData.testnorgeIdenter),
+		nyeBestillinger: asNumber(personData.antallNyeBestillinger),
+		gjenopprettedeBestillinger: asNumber(personData.antallGjenopprettedeBestillinger),
+		nyePersoner: asNumber(personData.antallNyePersoner),
+		dollyPersoner: asNumber(personData.andelOpprettedeDollyPersoner),
+		testnorgePersoner: asNumber(personData.andelImporterteTestnorgePersoner),
 	}))
 
 export const toMonthlyTrendData = (points: MonthlyTeamPoint[]): MonthlyTrendPoint[] =>
@@ -324,10 +377,10 @@ export const toMonthlyTrendData = (points: MonthlyTeamPoint[]): MonthlyTrendPoin
 		totaltAntallTeams: point.totaltAntallTeams,
 	}))
 
-export const filterMonthlyTeamPoints = (
-	points: MonthlyTeamPoint[],
+export const filterMonthlyTeamPoints = <T extends { interval: string }>(
+	points: T[],
 	scope: typeof MONTH_SCOPE_LAST_12 | typeof MONTH_SCOPE_ALL,
-) => {
+): T[] => {
 	const sortedPoints = [...points].sort((a, b) => a.interval.localeCompare(b.interval))
 	return scope === MONTH_SCOPE_ALL ? sortedPoints : sortedPoints.slice(-12)
 }
@@ -344,6 +397,7 @@ export const toTeamDistributionForInterval = (
 	(points.find((point) => point.interval === interval)?.teams ?? []).map((teamData) => ({
 		team: teamData.team,
 		unikeBrukere: teamData.unikeBrukere,
+		beskrivelse: teamData.beskrivelse,
 	}))
 
 export type MonthlyDistributionView = {

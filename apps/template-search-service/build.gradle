@@ -1,0 +1,38 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-template-search-service"
+        property "sonar.projectName", "testnav-template-search-service"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.springframework.boot:spring-boot-flyway"
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+
+    implementation "org.apache.commons:commons-lang3"
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-database-postgresql"
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "io.r2dbc:r2dbc-h2"
+    runtimeOnly "io.r2dbc:r2dbc-pool"
+    runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly "org.postgresql:r2dbc-postgresql"
+
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "org.testcontainers:postgresql"
+    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+}

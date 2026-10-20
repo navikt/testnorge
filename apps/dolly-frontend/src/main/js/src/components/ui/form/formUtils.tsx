@@ -90,6 +90,7 @@ const getValgteAttributter = (values) => {
 		'pensjonforvalter.uforetrygd',
 		'pensjonforvalter.afpOffentlig',
 		'kelvinAap',
+		'oppfoelgingsvedtak14a',
 		'arenaforvalter',
 		sykemeldingAttributt,
 		'yrkesskader',

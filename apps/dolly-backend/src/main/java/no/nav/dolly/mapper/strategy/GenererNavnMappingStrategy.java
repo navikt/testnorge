@@ -1,12 +1,12 @@
 package no.nav.dolly.mapper.strategy;
 
-import tools.jackson.databind.JsonNode;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.JsonNode;
 
 @Component
 public class GenererNavnMappingStrategy implements MappingStrategy {
@@ -18,15 +18,9 @@ public class GenererNavnMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(JsonNode node, Navn navn, MappingContext context) {
 
-                        if (node.has("adjektiv")) {
-                            navn.setFornavn(node.get("adjektiv").textValue());
-                        }
-                        if (node.has("adverb")) {
-                            navn.setMellomnavn(node.get("adverb").textValue());
-                        }
-                        if (node.has("substantiv")) {
-                            navn.setEtternavn(node.get("substantiv").textValue());
-                        }
+                            navn.setFornavn(node.path("adjektiv").asString());
+                            navn.setMellomnavn(node.path("adverb").asString());
+                            navn.setEtternavn(node.path("substantiv").asString());
                     }
                 })
                 .byDefault()

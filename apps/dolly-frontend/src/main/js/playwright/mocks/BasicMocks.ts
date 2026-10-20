@@ -2465,3 +2465,31 @@ export const fagsystemTyperMock = [
 		beskrivelse: 'Nav CV',
 	},
 ]
+
+export const soekMalerOversiktMock = {
+	brukereMedMaler: [
+		{
+			brukernavn: 'BeASt, BugTerminator',
+			brukerId: '1234-5678-12',
+		},
+	],
+}
+
+export const soekMalerBrukerMock = [
+	{
+		id: 101,
+		malNavn: 'Mitt Tenor-søk',
+		soekKriterier: {
+			kjoenn: 'MANN',
+			foedselsdato: {
+				fraOgMed: '2020-01-01',
+			},
+			navn: {
+				harMellomnavn: true,
+			},
+			relasjoner: {
+				relasjon: ['FAR', 'MOR'],
+			},
+		},
+	},
+]

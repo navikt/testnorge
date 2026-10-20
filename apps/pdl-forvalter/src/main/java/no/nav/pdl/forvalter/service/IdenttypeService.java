@@ -23,6 +23,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,6 +33,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
@@ -45,15 +47,15 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IdenttypeService implements Validation<IdentRequestDTO> {
+public class IdenttypeService implements BiValidation<IdentRequestDTO, PersonDTO> {
 
-    private static final LocalDateTime START_OF_ERA = LocalDateTime.of(1900, 1, 1, 0, 0);
+    private static final LocalDateTime START_OF_ERA = LocalDateTime.of(1900, Month.JANUARY, 1, 0, 0);
     private static final String VALIDATION_DATO_INVALID = "Identtype ugyldig forespørsel: støttet datointervall " +
                                                           "er fødsel mellom 1.1.1900 og dagens dato";
     private static final String VALIDATION_DATO_INTERVAL_INVALID = "Identtype ugyldig forespørsel: fødtFør kan ikke være tidligere " +
                                                                    "enn fødtEtter";
-    private static final String VALIDATION_IDENTTYPE_INVALID = "Identtype må være en av FNR, DNR eller NPID";
     private static final String VALIDATION_ALDER_NOT_ALLOWED = "Alder må være mellom 0 og 120 år";
+    private static final String TESTNORGE_IDENT = "Ny ident er ikke støttet for personer fra Testnorge";
     private static final Map<Identtype, Integer> IDENT_PRIORITET = Map.of(
             NPID, 0,
             DNR, 1,
@@ -68,6 +70,10 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private final PersonRepository personRepository;
 
     public Mono<DbPerson> convert(DbPerson person) {
+
+        if (person.getPerson().getNyident().isEmpty()) {
+            return Mono.just(person);
+        }
 
         var nyPerson = new AtomicReference<>(person);
         var nyeIdenter = mapperFacade.mapAsList(person.getPerson().getNyident(), IdentRequestDTO.class);
@@ -90,11 +96,11 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     }
 
     @Override
-    public Mono<Void> validate(IdentRequestDTO request) {
+    public Mono<Void> validate(IdentRequestDTO request, PersonDTO person) {
 
-        if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
-            DNR != request.getIdenttype() && NPID != request.getIdenttype()) {
-            return Mono.error(new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID));
+        if (isTestnorgeIdent(person.getIdent())) {
+
+            return Mono.error(new InvalidRequestException(TESTNORGE_IDENT));
         }
 
         if (nonNull(request.getFoedtEtter()) && (START_OF_ERA.isAfter(request.getFoedtEtter()) ||
@@ -136,7 +142,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
                         var nyRequest = PersonRequestDTO.builder()
                                 .eksisterendeIdent(request.getEksisterendeIdent())
-                                .identtype(getIdenttype(request, person.getIdent()))
+                                .identtype(request.getIdenttype())
                                 .kjoenn(getKjoenn(request, person.getPerson()))
                                 .foedtEtter(getFoedtEtter(request, person.getPerson()))
                                 .foedtFoer(getFoedtFoer(request, person.getPerson()))
@@ -153,7 +159,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 })
                 .flatMap(nyPerson -> {
 
-                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <
+                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <=
                         IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
 
                         return swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
@@ -175,14 +181,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         relasjonService.setRelasjoner(personer.getT1().getIdent(), GAMMEL_IDENTITET,
                                         personer.getT2().getIdent(), NY_IDENTITET)
                                 .then(Mono.just(personer.getT1())));
-    }
-
-    private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
-
-        if (nonNull(request.getIdenttype())) {
-            return request.getIdenttype();
-        }
-        return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
     }
 
     private static Kjoenn getKjoenn(IdentRequestDTO request, PersonDTO person) {
@@ -223,7 +221,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private Comparator<IdentRequestDTO> sortIdenter() {
 
-        return Comparator.comparingInt(ir ->
-                IDENT_PRIORITET.getOrDefault(ir.getIdenttype(), Integer.MAX_VALUE));
+        return Comparator.comparingInt(identRequest ->
+                IDENT_PRIORITET.get(identRequest.getIdenttype()));
     }
 }

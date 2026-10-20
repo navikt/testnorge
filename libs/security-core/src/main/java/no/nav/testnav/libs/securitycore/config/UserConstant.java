@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class UserConstant {
 
+    public static final String NAV_ORGANIZATION_NUMBER = "889640782";
     public static final String USER_HEADER_JWT = "User-Jwt";
     public static final String USER_CLAIM_ID = "id";
     public static final String USER_CLAIM_USERNAME = "brukernavn";

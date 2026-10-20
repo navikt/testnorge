@@ -29,7 +29,7 @@ export default () => {
 
 	return (
 		<Box
-			onSubmit={() => BrukerService.getBruker(orgnummer)}
+			onSubmit={() => BrukerService.getBruker(orgnummer ?? '')}
 			header="Brukerinfo"
 			onRender={({ onSubmit, value, loading }) => (
 				<>

@@ -1,6 +1,7 @@
 package no.nav.testnav.dollysearchservice.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.testnav.dollysearchservice.dto.SearchRequest;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.ElasticTyper;
 import no.nav.testnav.libs.dto.dollysearchservice.v1.PersonRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
@@ -11,6 +12,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.matchQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.mustExistQuery;
 import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.mustMatchQuery;
+import static no.nav.testnav.dollysearchservice.utils.OpenSearchQueryUtils.shouldExistQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
@@ -38,12 +40,12 @@ public class FagsystemQueryUtils {
             case BANKKONTO_NORGE -> mustExistQuery(queryBuilder, "bankkonto.norskBankkonto");
             case BANKKONTO_UTLAND -> mustExistQuery(queryBuilder, "bankkonto.utenlandskBankkonto");
             case BRREGSTUB -> mustExistQuery(queryBuilder, "brregstub");
-            case OPPFOELGINGSVEDTAK14A -> mustExistQuery(queryBuilder, "oppfoelgingsvedtak14a");
             case DOKARKIV -> mustExistQuery(queryBuilder, "dokarkiv");
             case ETTERLATTE -> mustExistQuery(queryBuilder, "etterlatteYtelser");
             case FULLMAKT -> mustExistQuery(queryBuilder, "fullmakt");
+            case HENVENDELSE -> mustExistQuery(queryBuilder, "henvendelse");
             case HISTARK -> mustExistQuery(queryBuilder, "histark");
-            case INNTK -> mustExistQuery(queryBuilder, "inntektstub");
+            case INNTK -> shouldExistQuery(queryBuilder, "inntekter","inntektstub");
             case INNTKMELD -> mustExistQuery(queryBuilder, "inntektsmelding");
             case INSTDATA -> mustExistQuery(queryBuilder, "instdata");
             case INSTDATA_KDI -> mustExistQuery(queryBuilder, "instdataKdi");
@@ -51,6 +53,7 @@ public class FagsystemQueryUtils {
             case KRRSTUB -> mustExistQuery(queryBuilder, "krrstub");
             case MEDL -> mustExistQuery(queryBuilder, "medl");
             case NOM -> mustExistQuery(queryBuilder, "nomdata");
+            case OPPFOELGINGSVEDTAK14A -> mustExistQuery(queryBuilder, "oppfoelgingsvedtak14a");
             case PEN_AFP_OFFENTLIG -> mustExistQuery(queryBuilder, "pensjonforvalter.afpOffentlig");
             case PEN_AP -> mustExistQuery(queryBuilder, "pensjonforvalter.alderspensjon");
             case PEN_AP_NY_UTTAKSGRAD -> mustExistQuery(queryBuilder, "pensjonforvalter.alderspensjonNyUtaksgrad");
@@ -73,6 +76,16 @@ public class FagsystemQueryUtils {
         if (!miljoer.isEmpty()) {
             miljoer.forEach(miljoe -> queryBuilder.must(builder ->
                     builder.match(matchQuery("miljoer", miljoe))));
+        }
+    }
+
+    public static void addOrgnrQuery(BoolQuery.Builder queryBuilder, SearchRequest request) {
+
+        if ("BANKID".equals(request.getBrukerType()) && isNotBlank(request.getOrgnr())) {
+            queryBuilder.must(builder ->
+                            builder.match(matchQuery("brukerType", "BANKID")))
+                    .must(builder ->
+                            builder.match(matchQuery("orgnr", request.getOrgnr())));
         }
     }
 

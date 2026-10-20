@@ -7,27 +7,29 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsNomData;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arbeidssoekerregistrering.RsArbeidssoekerregisteret;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.etterlatte.EtterlatteYtelse;
 import no.nav.dolly.domain.resultset.fullmakt.RsFullmakt;
+import no.nav.dolly.domain.resultset.henvendelse.RsHenvendelse;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
+import no.nav.dolly.domain.resultset.oppfoelgingsvedtak14a.RsOppfoelgingsvedtak14aDTO;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.sigrunstub.RsSummertSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
@@ -70,13 +72,13 @@ public class BestillingDokument implements Persistable<Long> {
     
     private List<RsAareg> aareg;
     
-    private List<RsLignetInntekt> sigrunstub;
-    
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     
     private List<RsSummertSkattegrunnlag> sigrunstubSummertSkattegrunnlag;
     
     private InntektMultiplierWrapper inntektstub;
+
+    private List<RsInntekter> inntekter;
     
     private Arenadata arenaforvalter;
     
@@ -117,6 +119,11 @@ public class BestillingDokument implements Persistable<Long> {
     private RsKelvinAapRequestDTO kelvinAap;
 
     private RsOppfoelgingsvedtak14aDTO oppfoelgingsvedtak14a;
+
+    private RsHenvendelse henvendelse;
+
+    private Bruker.Brukertype brukerType;
+    private String orgnr;
 
     @Transient
     @JsonIgnore

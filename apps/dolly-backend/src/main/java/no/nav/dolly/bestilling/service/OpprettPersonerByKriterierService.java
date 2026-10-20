@@ -85,7 +85,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                         .flatMap(_ -> opprettPerson(bestilling, bestKriterier, originator), 3))
                 .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
                         _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToElasticServer(bestKriterier, bestilling)
+                        () -> saveBestillingToOpenSearchServer(bestKriterier, bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();
@@ -102,13 +102,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 .takeWhile(BooleanUtils::isFalse)
                 .concatMap(_ -> opprettPDLFProgress(bestilling))
                 .concatMap(progress -> opprettPerson(originator, progress))
+                .concatMap(progress -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse()))
                 .concatMap(this::sendOrdrePerson)
                 .filter(BestillingProgress::isIdentGyldig)
                 .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
                         .zipWith(Mono.just(progress)))
-                .concatMap(tuple -> leggIdentTilGruppe(tuple.getT1().getIdent(), tuple.getT2(),
-                        bestKriterier.getBeskrivelse())
-                        .thenReturn(tuple))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .concatMap(tuple ->
                         gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)

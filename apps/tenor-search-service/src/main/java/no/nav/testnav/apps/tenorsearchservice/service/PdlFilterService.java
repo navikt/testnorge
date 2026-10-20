@@ -1,9 +1,8 @@
 package no.nav.testnav.apps.tenorsearchservice.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.tenorsearchservice.consumers.DollyBackendConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.PdlDataConsumer;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.BestillingIndexSelector;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,16 +11,17 @@ import reactor.core.publisher.Mono;
 import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO.hasArenaSyntTag;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO.hasDollyTag;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
 public class PdlFilterService {
 
     private final PdlDataConsumer pdlDataConsumer;
-    private final DollyBackendConsumer dollyBackendConsumer;
+    private final OpenSearchQueryService openSearchQueryService;
 
-    public Mono<TenorOversiktResponse> filterPdlPerson(TenorOversiktResponse oversikt, DollyBackendSelector selector) {
+    public Mono<TenorOversiktResponse> filterPdlPerson(TenorOversiktResponse oversikt,
+                                                       BestillingIndexSelector selector,
+                                                       String orgnr) {
 
         if (oversikt.getStatus() != HttpStatus.OK ||
                 isNull(oversikt.getData()) ||
@@ -35,23 +35,21 @@ public class PdlFilterService {
                 .toList();
 
         return Mono.zip(
-                        dollyBackendConsumer.getFinnesInfo(identer, selector),
+                        openSearchQueryService.execQuery(identer, selector, orgnr),
                         pdlDataConsumer.hasPdlDollyTag(identer)
                 )
                 .map(kilde -> {
                     var oversiktDTO = oversikt.copy();
-                    var iBrukMap = isNull(kilde.getT1().getIBruk())
-                            ? java.util.Collections.<String, Boolean>emptyMap()
-                            : kilde.getT1().getIBruk();
+                    var iBruk = kilde.getT1().getIdenter();
                     var personer = oversiktDTO.getData().getPersoner().stream()
                             .filter(person -> !hasDollyTag(kilde.getT2().getPersonerTags().get(person.getId())) ||
-                                    isTrue(iBrukMap.get(person.getId())))
+                                    iBruk.contains(person.getId()))
                             .map(person -> TenorOversiktResponse.Person.builder()
                                     .id(person.getId())
                                     .fornavn(person.getFornavn())
                                     .etternavn(person.getEtternavn())
                                     .tenorRelasjoner(person.getTenorRelasjoner())
-                                    .iBruk(iBrukMap.get(person.getId()))
+                                    .iBruk(iBruk.contains(person.getId()))
                                     .iArenaSynt(hasArenaSyntTag(kilde.getT2().getPersonerTags().get(person.getId())))
                                     .build())
                             .toList();

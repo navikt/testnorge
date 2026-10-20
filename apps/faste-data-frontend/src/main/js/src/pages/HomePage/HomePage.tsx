@@ -1,12 +1,19 @@
 import React from 'react';
-import { Page } from '@navikt/dolly-komponenter';
+import { BodyLong, Heading, VStack } from '@navikt/ds-react';
+import { AppPage, SectionStack } from '@/components/layout';
 
 const HomePage = () => {
   return (
-    <Page>
-      <h1>Faste Data Søk</h1>
-      <p>Appen brukes til søke etter faste data i test miljøer.</p>
-    </Page>
+    <AppPage>
+      <SectionStack>
+        <VStack gap="space-16">
+          <Heading level="1" size="large">
+            Faste Data Søk
+          </Heading>
+          <BodyLong>Appen brukes til søke etter faste data i test miljøer.</BodyLong>
+        </VStack>
+      </SectionStack>
+    </AppPage>
   );
 };
 

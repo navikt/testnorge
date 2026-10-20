@@ -131,7 +131,8 @@ export const SoekForm = ({
 		setRequest(updatedRequest)
 	}
 
-	const antallFagsystemer = watch('registreRequest')?.length
+	const antallFagsystemer = watch('registreRequest')?.length ?? 0
+	const antallMiljoer = watch('miljoer')?.length ?? 0
 
 	const getAntallRequest = (liste: Array<string>) => {
 		let antall = 0
@@ -157,14 +158,19 @@ export const SoekForm = ({
 								<Table size="small">
 									<Table.Body>
 										<Table.ExpandableRow
-											content={<Fagsystemer handleChangeList={handleChangeList} />}
+											content={
+												<Fagsystemer
+													handleChangeList={handleChangeList}
+													handleChange={handleChange}
+												/>
+											}
 											defaultOpen={true}
 										>
 											<Table.HeaderCell>
 												<Header
 													title="Fagsystemer"
-													antall={antallFagsystemer}
-													paths={['registreRequest', 'miljoer']}
+													antall={antallFagsystemer + antallMiljoer + getAntallRequest(['kilde'])}
+													paths={['registreRequest', 'miljoer', 'kilde']}
 													emptyCategory={emptyCategory}
 												/>
 											</Table.HeaderCell>

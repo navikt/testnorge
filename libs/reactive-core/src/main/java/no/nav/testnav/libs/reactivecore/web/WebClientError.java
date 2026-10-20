@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.reactivecore.web;
 
 import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.unix.Errors.NativeIoException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.WriteTimeoutException;
 import lombok.Getter;
@@ -11,12 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
 
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -30,12 +33,25 @@ import static io.micrometer.common.util.StringUtils.isNotBlank;
 @Slf4j
 public class WebClientError {
 
+    private static final List<Duration> RETRY_DELAYS = List.of(
+            Duration.ofSeconds(1),
+            Duration.ofSeconds(5),
+            Duration.ofSeconds(10)
+    );
+
+    /**
+     * System property used to scale all retry delays. Defaults to {@code 1}, meaning unmodified delays.
+     * Test JVMs set this to a very small value in order to avoid actually sleeping during retries.
+     */
+    static final String RETRY_DELAY_FACTOR_PROPERTY = "webclient.retry.delay.factor";
+
     private static final String DUAL_PARMS = "{} {}";
 
     private static final Predicate<Throwable> IS_5XX = throwable -> throwable instanceof WebClientResponseException webClientResponseException &&
             webClientResponseException.getStatusCode().is5xxServerError() ||
             throwable instanceof WebClientRequestException webClientRequestException &&
-                    webClientRequestException.getCause() instanceof SocketException;
+                    (webClientRequestException.getCause() instanceof SocketException ||
+                            webClientRequestException.getCause() instanceof NativeIoException);
 
     /**
      * Returns a {@link Retry} that will retry on the given exception type, for a given number of times, after a given set of seconds.
@@ -47,8 +63,19 @@ public class WebClientError {
      */
     public static Retry is(Predicate<Throwable> on, long times, long afterSeconds) {
         return Retry
-                .backoff(times, Duration.ofSeconds(afterSeconds))
+                .backoff(times, scaled(Duration.ofSeconds(afterSeconds)))
                 .filter(on);
+    }
+
+    /**
+     * Scales a retry delay by the factor given by {@value #RETRY_DELAY_FACTOR_PROPERTY}.
+     *
+     * @param delay The configured delay.
+     * @return The delay to actually wait, never negative.
+     */
+    private static Duration scaled(Duration delay) {
+        var factor = Double.parseDouble(System.getProperty(RETRY_DELAY_FACTOR_PROPERTY, "1"));
+        return factor == 1 ? delay : Duration.ofNanos(Math.max(0, (long) (delay.toNanos() * factor)));
     }
 
     /**
@@ -67,26 +94,32 @@ public class WebClientError {
      * @return Retry configuration (actually a {@link RetryBackoffSpec}).
      */
     public static Retry any() {
-        return is(throwable -> true);
+        return is(_ -> true);
     }
 
     /**
-     * Convenience method for retrying on 5xx exceptions. Similar to {@link #any()}.
+     * Returns a retry configuration for 5xx responses and retryable connection failures.
+     * Retries at most three times, with delays of 1, 5, and 10 seconds, and propagates the
+     * original failure when all retries are exhausted.
      *
-     * @return Retry configuration (actually a {@link RetryBackoffSpec}).
+     * @return Retry configuration with fixed, sequential retry delays.
      */
     public static Retry is5xxException() {
-        return is(IS_5XX);
-    }
+        return Retry.from(retrySignals ->
+                retrySignals.concatMap(retrySignal -> {
+                    var failure = retrySignal.failure();
 
-    /**
-     * Convenience method for retrying on 5xx exceptions, then throwing a given exception. Similar to {@link #is5xxException()}.
-     *
-     * @param throwable A {@link Throwable} to throw after retries are exhausted.
-     * @return Retry configuration (actually a {@link RetryBackoffSpec}).
-     */
-    public static Retry is5xxExceptionThen(Throwable throwable) {
-        return ((RetryBackoffSpec) is5xxException()).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> throwable);
+                    if (!IS_5XX.test(failure)) {
+                        return Mono.error(failure);
+                    }
+
+                    var retryNumber = retrySignal.totalRetries();
+                    if (retryNumber >= RETRY_DELAYS.size()) {
+                        return Mono.error(failure);
+                    }
+
+                    return Mono.delay(scaled(RETRY_DELAYS.get((int) retryNumber)));
+                }));
     }
 
     /**
@@ -148,22 +181,26 @@ public class WebClientError {
         private static String resolveMessage(Throwable throwable) {
             switch (throwable) {
                 case WebClientResponseException e -> {
-                    return isNotBlank(e.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
+                    return e.getStatusCode().is4xxClientError() &&
+                           isNotBlank(e.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
                             e.getResponseBodyAsString(StandardCharsets.UTF_8) :
                             e.getStatusCode().value() + " " + e.getStatusText();
                 }
                 case WebClientRequestException e -> {
                     switch (e.getCause()) {
-                        case ConnectTimeoutException ignored -> {
+                        case ConnectTimeoutException _ -> {
                             return MSG_TIMEOUT;
                         }
-                        case ReadTimeoutException ignored -> {
+                        case ReadTimeoutException _ -> {
                             return MSG_TIMEOUT;
                         }
-                        case WriteTimeoutException ignored -> {
+                        case WriteTimeoutException _ -> {
                             return MSG_TIMEOUT;
                         }
-                        case SocketException ignored -> {
+                        case SocketException _ -> {
+                            return MSG_UNSTABLE;
+                        }
+                        case NativeIoException _ -> {
                             return MSG_UNSTABLE;
                         }
                         default -> {
@@ -171,7 +208,7 @@ public class WebClientError {
                         }
                     }
                 }
-                case TimeoutException ignored -> {
+                case TimeoutException _-> {
                     return MSG_TIMEOUT;
                 }
                 default -> {
@@ -185,7 +222,7 @@ public class WebClientError {
                 case WebClientResponseException e -> {
                     return HttpStatus.valueOf(e.getStatusCode().value());
                 }
-                case TimeoutException ignored -> {
+                case TimeoutException _ -> {
                     return HttpStatus.REQUEST_TIMEOUT;
                 }
                 default -> {

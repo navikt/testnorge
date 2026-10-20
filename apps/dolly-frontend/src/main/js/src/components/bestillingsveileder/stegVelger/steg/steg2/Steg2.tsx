@@ -49,6 +49,8 @@ import {
 import BankkontoForm from '@/components/fagsystem/bankkonto/form/Form'
 import { KelvinAapForm } from '@/components/fagsystem/kelvin/form/Form'
 import { KdiForm } from '@/components/fagsystem/kdi/form/Form'
+import { oppfoelgingsvedtak14aPath } from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
+import { Oppfoelgingsvedtak14aForm } from '@/components/fagsystem/oppfoelgingsvedtak14a/form/Form'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -108,6 +110,7 @@ const Steg2: React.FC = () => {
 			{getValues(uforetrygdPath) && <UforetrygdForm />}
 			{getValues(afpOffentligPath) && <AfpOffentligForm />}
 			{getValues('kelvinAap') && <KelvinAapForm />}
+			{getValues(oppfoelgingsvedtak14aPath) && <Oppfoelgingsvedtak14aForm />}
 			{getValues('arenaforvalter') && <ArenaForm />}
 			{getValues('sykemelding') && <SykdomForm />}
 			{getValues('yrkesskader') && <YrkesskaderForm />}

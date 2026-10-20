@@ -41,7 +41,6 @@ export default defineConfig(({ mode }) => ({
 		sourcemap: true,
 		cssCodeSplit: false,
 		rolldownOptions: {
-			external: ['./nais.js'],
 			output: {
 				sourcemapExcludeSources: false,
 				codeSplitting: {
@@ -62,9 +61,9 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	define: {
-		'process.env.COMMIT_HASH': JSON.stringify((commitHash || '').trim()),
-		'process.env.GIT_BRANCH': JSON.stringify((gitBranch || '').trim()),
-		'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version || ''),
+		'import.meta.env.COMMIT_HASH': JSON.stringify((commitHash || '').trim()),
+		'import.meta.env.GIT_BRANCH': JSON.stringify((gitBranch || '').trim()),
+		'import.meta.env.APP_VERSION': JSON.stringify(process.env.npm_package_version || ''),
 	},
 	css: {
 		preprocessorOptions: {

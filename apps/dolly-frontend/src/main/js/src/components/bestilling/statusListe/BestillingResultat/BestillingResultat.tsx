@@ -3,11 +3,8 @@ import { Feedback } from '@/components/feedback'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
-
 import './BestillingResultat.less'
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -65,9 +62,7 @@ export default function BestillingResultat({
 	compactHeaderRight,
 	errorMetaFormatter,
 }: ResultatProps) {
-	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [showConfetti, setShowConfetti] = useState(false)
-	const mutate = useMatchMutate()
 
 	useEffect(() => {
 		if (bestilling.ferdig && !bestilling.stoppet && !bestillingHarFeil(bestilling)) {
@@ -146,30 +141,18 @@ export default function BestillingResultat({
 						<div className="flexbox--all-center">
 							<BestillingSammendragModal bestillinger={[bestilling]} />
 							{harIdenterOpprettet && (
-								<Button
+								<GjenopprettConnector
+									bestilling={bestilling}
+									brukerId={brukerId}
 									disabled={disableGjenopprett}
 									title={
 										disableGjenopprett
 											? 'Kan ikke gjenopprette gjenoppretting av bestilling'
 											: 'Gjenopprett'
 									}
-									onClick={openGjenopprettModal}
-									kind="synchronize"
-								>
-									GJENOPPRETT
-								</Button>
+								/>
 							)}
 						</div>
-						{isGjenopprettModalOpen && (
-							<GjenopprettConnector
-								bestilling={bestilling}
-								brukerId={brukerId}
-								closeModal={() => {
-									closeGjenoprettModal()
-									mutate(REGEX_BACKEND_GRUPPER)
-								}}
-							/>
-						)}
 					</>
 				)}
 			</div>

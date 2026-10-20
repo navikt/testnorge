@@ -3,13 +3,15 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
+import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
 import no.nav.dolly.domain.projection.GruppeBestillingIdent;
-import no.nav.dolly.domain.projection.RsBestillingFragment;
+import no.nav.dolly.domain.projection.BestillingFragment;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
@@ -40,7 +42,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -49,9 +50,11 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -76,6 +79,7 @@ public class BestillingService {
     private final JsonMapper jsonMapper;
     private final OpenSearchService openSearchService;
     private final TestgruppeRepository testgruppeRepository;
+    private final BrukerServiceConsumer brukerServiceConsumer;
 
     public Mono<Bestilling> fetchBestillingById(Long bestillingId) {
 
@@ -99,27 +103,27 @@ public class BestillingService {
                 .flatMap(this::resolveUtlededeFagsystemerForBestilling);
     }
 
-    public Flux<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+    public Flux<BestillingFragment> fetchBestillingByFragment(String bestillingFragment, String bankIdOrgNr) {
 
         var searchQueries = bestillingFragment.split(" ");
         var bestillingID = Arrays.stream(searchQueries)
                 .filter(word -> word.matches("\\d+"))
-                .map(id -> "%" + id + "%")
                 .findFirst()
                 .orElse("");
         var gruppeNavn = Arrays.stream(searchQueries)
                 .filter(word -> !word.matches("\\d+"))
                 .filter(StringUtils::isNotBlank)
-                .map(word -> "%" + word + "%")
                 .collect(Collectors.joining(" "));
 
-        return Mono.just(bestillingFragment)
-                .flatMapMany(_ -> isNotBlank(gruppeNavn) && isNotBlank(bestillingID) ?
-                        bestillingRepository.findByIdContainingAndGruppeNavnContaining(bestillingID, gruppeNavn) :
-                        Flux.merge(
-                                bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)),
-                                bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn))))
-                .sort(Comparator.comparing(RsBestillingFragment::getId));
+        Mono<List<String>> optionalBankIdBrukere = isBlank(bankIdOrgNr) ?
+                Mono.just(emptyList()) :
+                brukerServiceConsumer.getBrukereIOrganisasjon(bankIdOrgNr)
+                        .map(BrukereDTO::getBrukere);
+
+        return optionalBankIdBrukere
+                .flatMapMany(brukere ->
+                        bestillingRepository.findByIdAndGruppeNavnAndBrukere(bestillingID, gruppeNavn,
+                                brukere.toArray(new String[0])));
     }
 
     public Flux<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
@@ -278,12 +282,7 @@ public class BestillingService {
                     } else {
                         return Mono.just(bestilling);
                     }
-                })
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                });
     }
 
     @Transactional
@@ -324,12 +323,7 @@ public class BestillingService {
                     } else {
                         return Mono.just(bestilling);
                     }
-                })
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                });
     }
 
     @Transactional
@@ -401,12 +395,7 @@ public class BestillingService {
                     bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
                     return bestilling;
                 })
-                .flatMap(bestillingRepository::save)
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                .flatMap(bestillingRepository::save);
     }
 
     @Transactional
@@ -445,12 +434,7 @@ public class BestillingService {
                     bestilling.setUtlededeFagsystemer(resolveUnionFagsystemer(kriterierList, bestilling));
                     return bestilling;
                 })
-                .flatMap(bestillingRepository::save)
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                .flatMap(bestillingRepository::save);
     }
 
     @Transactional
@@ -479,12 +463,7 @@ public class BestillingService {
                                 .flatMap(kriterier -> {
                                     bestilling.setBestKriterier(kriterier);
                                     return bestillingRepository.save(bestilling);
-                                }))
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                                }));
     }
 
     @Transactional
@@ -513,12 +492,7 @@ public class BestillingService {
                                 .flatMap(kriterier -> {
                                     bestilling.setBestKriterier(kriterier);
                                     return bestillingRepository.save(bestilling);
-                                }))
-                .flatMap(bestilling -> getBestillingProgresser(bestilling)
-                        .map(progresser -> {
-                            bestilling.setProgresser(progresser);
-                            return bestilling;
-                        }));
+                                }));
     }
 
     public Mono<Void> slettBestillingerByGruppeId(Long gruppeId) {
@@ -578,9 +552,11 @@ public class BestillingService {
                                     .dokarkiv(request2.getDokarkiv())
                                     .etterlatteYtelser(request2.getEtterlatteYtelser())
                                     .fullmakt(request2.getFullmakt())
+                                    .henvendelse(request2.getHenvendelse())
                                     .histark(request2.getHistark())
                                     .inntektsmelding(request2.getInntektsmelding())
                                     .inntektstub(request2.getInntektstub())
+                                    .inntekter(request2.getInntekter())
                                     .instdata(request2.getInstdata())
                                     .instdataKdi(request2.getInstdataKdi())
                                     .kelvinAap(request2.getKelvinAap())
@@ -590,7 +566,6 @@ public class BestillingService {
                                     .oppfoelgingsvedtak14a(request2.getOppfoelgingsvedtak14a())
                                     .pdldata(request2.getPdldata())
                                     .pensjonforvalter(request2.getPensjonforvalter())
-                                    .sigrunstub(request2.getSigrunstub())
                                     .sigrunstubPensjonsgivende(request2.getSigrunstubPensjonsgivende())
                                     .sigrunstubSummertSkattegrunnlag(request2.getSigrunstubSummertSkattegrunnlag())
                                     .skattekort(request2.getSkattekort())
@@ -691,10 +666,6 @@ public class BestillingService {
     private String filterAvailable(String miljoer, Collection<String> available) {
 
         return isNotBlank(miljoer) ? filterAvailable(Arrays.asList(miljoer.split(",")), available) : null;
-    }
-
-    private String wrapSearchString(String searchString) {
-        return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
     }
 
     private String toJson(Object object) {

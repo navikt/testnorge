@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
-import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
@@ -58,6 +57,7 @@ import {
 	harKdiBestilling,
 	harKelvinAapBestilling,
 	harMedlBestilling,
+	harOppfoelgingsvedtak14aBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
 	harSigrunstubPensjonsgivendeInntekt,
@@ -85,8 +85,6 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
@@ -105,7 +103,9 @@ import { InntektstubVisning } from '@/components/fagsystem/inntektstub/visning/V
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
 import { KrrVisning } from '@/components/fagsystem/krrstub/visning/KrrVisning'
 import { sjekkManglerUdiData, UdiVisning } from '@/components/fagsystem/udistub/visning/UdiVisning'
-import DokarkivVisning from '@/components/fagsystem/dokarkiv/visning/Visning'
+import DokarkivVisning, {
+	sjekkManglerDokarkivData,
+} from '@/components/fagsystem/dokarkiv/visning/Visning'
 import HistarkVisning from '@/components/fagsystem/histark/visning/Visning'
 import { useArbeidssoekerregistrering } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { ArbeidssoekerregisteretVisning } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretVisning'
@@ -119,6 +119,12 @@ import { useKelvinAapBehandlingStatus } from '@/utils/hooks/useKelvin'
 import { KelvinAapVisning } from '@/components/fagsystem/kelvin/visning/KelvinAapVisning'
 import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visning/KdiVisning'
 import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
+import { useOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
+import { Oppfoelgingsvedtak14aVisning } from '@/components/fagsystem/oppfoelgingsvedtak14a/visning/Oppfoelgingsvedtak14aVisning'
+import { Button } from '@navikt/ds-react'
+import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { OpprettMal } from '@/pages/maler/OpprettMal'
+import { malTyper } from '@/pages/maler/MalModal'
 
 const getIdenttype = (ident: string) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -157,7 +163,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 		iLaastGruppe,
 	} = props
 	const { gruppeId } = ident
-	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
 	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 	const { pdlforvalterPerson } = usePdlForvalterPerson(ident?.ident)
@@ -282,6 +287,15 @@ const PersonVisning = (props: PersonVisningProps) => {
 		error: kelvinAapBehandlingStatusError,
 	} = useKelvinAapBehandlingStatus(ident.ident, harKelvinAapBestilling(bestillingerFagsystemer))
 
+	const {
+		loading: loadingOppfoelgingsvedtak14aData,
+		oppfoelgingsvedtak14aData,
+		error: errorOppfoelgingsvedtak14aData,
+	} = useOppfoelgingsvedtak14a(
+		ident.ident,
+		harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer),
+	)
+
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
 		harArenaBestilling(bestillingerFagsystemer) ||
@@ -379,7 +393,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 		arbeidsplassencvData,
 		arbeidsplassencvError,
 		dokarkivData,
-		dokarkivError,
 		histarkData,
 		histarkError,
 		udistub,
@@ -426,6 +439,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 				!arbeidsplassencvData &&
 				arbeidsplassencvError
 			),
+			!!(
+				harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer) &&
+				!oppfoelgingsvedtak14aData &&
+				errorOppfoelgingsvedtak14aData
+			),
+			!!(dokarkivData && sjekkManglerDokarkivData(dokarkivData)),
 		]
 
 		return checks.some(Boolean)
@@ -508,7 +527,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArenaData ||
 		loadingApData ||
 		loadingSkattekort ||
-		loadingKdiData
+		loadingKdiData ||
+		loadingKelvinAapBehandlingStatus ||
+		loadingOppfoelgingsvedtak14aData
 
 	return (
 		<ErrorBoundary>
@@ -516,6 +537,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
+							size="xsmall"
+							variant="tertiary"
+							icon={<PlusCircleIcon aria-hidden />}
 							onClick={() => {
 								const personData = { ...data }
 								if (pdlforvalterPerson) {
@@ -545,6 +569,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 								if (kdiData) {
 									personData.instdataKdi = kdiData
 								}
+								if (kelvinAapData) {
+									personData.kelvinAap = kelvinAapData
+								}
+								if (oppfoelgingsvedtak14aData) {
+									personData.oppfoelgingsvedtak14a = oppfoelgingsvedtak14aData
+								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
 									personData,
@@ -555,10 +585,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 									navigate,
 								)
 							}}
-							kind="add-circle"
 							loading={isLoadingFagsystemer}
 						>
-							LEGG TIL/ENDRE
+							Legg til / endre
 						</Button>
 					)}
 					<GjenopprettPerson
@@ -576,16 +605,12 @@ const PersonVisning = (props: PersonVisningProps) => {
 					)}
 					{bestillingIdListe?.length > 0 && (
 						<>
-							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-								OPPRETT MAL
-							</Button>
+							<OpprettMal id={ident?.ident} malType={malTyper.PERSON} />
 							<BestillingSammendragModal bestillinger={ident?.bestillinger} />
 						</>
 					)}
 					{!iLaastGruppe && ident.master !== 'PDL' && (
-						<SlettButton action={slettPerson} loading={loading.slettPerson}>
-							Er du sikker på at du vil slette denne personen?
-						</SlettButton>
+						<SlettModal action={slettPerson} loading={loading.slettPerson} slettType={'person'} />
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton slettPerson={slettPerson} loading={loading.slettPerson} />
@@ -705,6 +730,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					loading={loadingKelvinAapBehandlingStatus}
 					harKelvinAapBestilling={harKelvinAapBestilling(bestillingerFagsystemer)}
 				/>
+				<Oppfoelgingsvedtak14aVisning
+					data={oppfoelgingsvedtak14aData}
+					loading={loadingOppfoelgingsvedtak14aData}
+					harBestilling={harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer)}
+				/>
 				<ArenaVisning
 					data={arenaData}
 					bestillingIdListe={bestillingIdListe}
@@ -771,9 +801,6 @@ const PersonVisning = (props: PersonVisningProps) => {
 				<HendelseIdPersonMiljoeInfo ident={ident.ident} relatertePersoner={relatertePersoner} />
 				<TidligereBestillinger ids={ident.bestillingId} erOrg={false} />
 				<BeskrivelseConnector ident={ident} closeModal={() => {}} />
-				{isMalModalOpen && (
-					<MalModal id={ident.ident} malType={malTyper.PERSON} closeModal={closeMalModal} />
-				)}
 			</div>
 		</ErrorBoundary>
 	)

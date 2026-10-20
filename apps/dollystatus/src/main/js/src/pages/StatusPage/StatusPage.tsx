@@ -1,140 +1,135 @@
-import React, { useEffect, useState } from 'react'
-import { useBoolean } from 'react-use'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import './StatusPage.less'
-import { Accordion } from '@navikt/ds-react'
+import { Heading, LocalAlert, Tag, VStack } from '@navikt/ds-react'
 
 import BlankHeader from '@/components/BlankHeader/BlankHeader'
 import Loading from '@/components/loading/Loading'
-import Icon from '@/components/icon/Icon'
+import { FagsystemStatusPanel } from '@/pages/StatusPage/FagsystemStatusPanel'
+import { isRunning, useFagsystemStatuses } from '@/pages/StatusPage/useFagsystemStatuses'
 
 export default () => {
-	const [statuses, setStatuses] = useState({})
-	const [dataLoading, setDataLoading] = useBoolean(true)
+	const {
+		activeRunId,
+		errorMessage,
+		functionalStatuses,
+		groupedStatuses,
+		initialLoading,
+		rerun,
+		rerunPanel,
+		startingPanel,
+		startingSystemId,
+		technicalStatuses,
+	} = useFagsystemStatuses()
+	const [now, setNow] = useState(() => Date.now())
 
 	useEffect(() => {
-		const endpoint = 'https://dolly-backend.intern.dev.nav.no/internal/status'
-
-		fetch(endpoint, {
-			headers: {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': 'https://dolly-backend.intern.dev.nav.no',
-			},
-		})
-			.then((response) => response.json())
-			.then((json) => {
-				setStatuses(json)
-				setDataLoading(false)
-			})
-			.catch((err) => {
-				setDataLoading(false)
-			})
+		const intervalId = window.setInterval(() => setNow(Date.now()), 30_000)
+		return () => window.clearInterval(intervalId)
 	}, [])
 
-	const serviceStatus = (service) => {
-		if (service.alive === 'OK' && service.ready === 'OK') {
-			return 'OK'
-		}
-		if (service.alive === 'OK') {
-			return 'Warn'
-		}
-		return 'Feil'
-	}
+	const runningCount = useMemo(
+		() => groupedStatuses.flat().filter((status) => isRunning(status.state)).length,
+		[groupedStatuses],
+	)
+	const failedCount = useMemo(
+		() =>
+			groupedStatuses
+				.flat()
+				.filter(
+					(status) =>
+						!isRunning(status.state) &&
+						status.state !== 'OK' &&
+						status.state !== 'NOT_RUN' &&
+						!(status.state === 'TECHNICAL_ONLY' && status.technicalStatus.state === 'UP'),
+				).length,
+		[groupedStatuses],
+	)
 
-	const aggregateStatus = (services) => {
-		if (!services) {
-			return null
-		}
-		const statuses = services.map((service) => serviceStatus(service))
-
-		const haveOk = statuses.includes('OK')
-		const haveWarn = statuses.includes('Warn')
-		const haveFeil = statuses.includes('Feil')
-
-		if (!haveWarn && !haveFeil) {
-			return 'OK'
-		}
-		if (!haveOk) {
-			return 'Feil'
-		}
-		return 'Warn'
-	}
-
-	const iconType = (status) => {
-		if (status === 'OK') {
-			return 'feedback-check-circle'
-		}
-		if (status === 'Warn') {
-			return 'report-problem-circle'
-		}
-		if (status === 'Feil') {
-			return 'report-problem-triangle'
-		}
-		return 'arbeid'
-	}
-
-	const clientStatus = (consumer) => {
-		const services = statuses[consumer]
-		const serviceNames = Object.keys(services).map((name) => {
-			return (
-				<div className="consumer-service">
-					<div className="consumer-service-name">
-						<h5>{name}</h5> <span>({services[name].team})</span>
-					</div>
-					<div className="consumer-service-status">
-						<Icon kind={iconType(serviceStatus(services[name]))} />
-					</div>
-				</div>
-			)
-		})
-		const consumerStatus = aggregateStatus(Object.values(services))
-		const cssConsumerClass = 'consumer-name ' + `consumer-${consumerStatus}`
+	if (initialLoading) {
 		return (
-			<div className="consumer-status" key={consumer}>
-				<Accordion style={{ width: '100%' }}>
-					<Accordion.Item>
-						<Accordion.Header>
-							<div className={cssConsumerClass}>
-								<div>{consumer}</div>
-								<div className="consumer-status-icon">
-									<Icon kind={iconType(consumerStatus)} />
-								</div>
-							</div>
-						</Accordion.Header>
-						<Accordion.Content>
-							<div>{serviceNames}</div>
-						</Accordion.Content>
-					</Accordion.Item>
-				</Accordion>
-			</div>
-		)
-	}
-
-	const clients = Object.keys(statuses).map((name) => clientStatus(name))
-
-	if (dataLoading) {
-		return (
-			<div
-				style={{
-					display: 'flex',
-					width: '100%',
-					height: '100vh',
-					alignItems: 'center',
-					justifyContent: 'center',
-				}}
-			>
-				<Loading label="Sjekker tjenester" />
-			</div>
+			<>
+				<BlankHeader />
+				<main className="status-page-loading">
+					<Loading label="Henter fagssystemstatus" />
+				</main>
+			</>
 		)
 	}
 
 	return (
 		<>
 			<BlankHeader />
-			<div style={{ textAlign: 'center' }}>
-				<h2>Dolly tjenestestatus</h2>
-			</div>
-			<div className="consumers-container">{clients}</div>
+			<main className="status-page">
+				<VStack gap="space-24">
+					<div>
+						<Heading className="status-page-title" level="1" size="large">
+							Dolly fagssystemstatus
+						</Heading>
+						<p className="status-page-introduction">
+							Statusene oppdateres automatisk når siden lastes. Resultatene lagres i én time.
+						</p>
+						{import.meta.env.MODE === 'mock' && (
+							<div className="status-page-mock-notice">
+								<Tag variant="moderate" size="small" data-color="warning">
+									NB: Kjører i lokal dev-modus med mockdata. Feil og blokkering er kun visuelt og
+									ingen av testene kjøres. Manuell omstart av testene vil også bli mocket.
+								</Tag>
+							</div>
+						)}
+					</div>
+					{errorMessage && (
+						<LocalAlert status="error" size="small">
+							<LocalAlert.Header>
+								<LocalAlert.Title as="h2">Statussjekken feilet</LocalAlert.Title>
+							</LocalAlert.Header>
+							<LocalAlert.Content>{errorMessage}</LocalAlert.Content>
+						</LocalAlert>
+					)}
+					<p className="status-page-live-region" aria-live="polite">
+						{runningCount > 0
+							? `${runningCount} statussjekker pågår.`
+							: activeRunId
+								? 'Testkjøringen fullføres.'
+								: `Statussjekkene er ferdige. ${failedCount} statuser har feil.`}
+					</p>
+					{groupedStatuses.length === 0 ? (
+						<LocalAlert status="warning" size="small">
+							<LocalAlert.Header>
+								<LocalAlert.Title as="h2">Ingen statuser tilgjengelig</LocalAlert.Title>
+							</LocalAlert.Header>
+							<LocalAlert.Content>Last inn siden på nytt for å prøve igjen.</LocalAlert.Content>
+						</LocalAlert>
+					) : (
+						<>
+							{functionalStatuses.length > 0 && (
+								<FagsystemStatusPanel
+									title="Funksjonstester"
+									groupedStatuses={functionalStatuses}
+									anyRunActive={activeRunId !== null}
+									startingSystemId={startingSystemId}
+									now={now}
+									onRerun={(systemId) => void rerun(systemId)}
+									startingAll={startingPanel === 'functional'}
+									onRerunAll={() => void rerunPanel('functional')}
+								/>
+							)}
+							{technicalStatuses.length > 0 && (
+								<FagsystemStatusPanel
+									title="Interne sjekker"
+									groupedStatuses={technicalStatuses}
+									anyRunActive={activeRunId !== null}
+									startingSystemId={startingSystemId}
+									now={now}
+									onRerun={(systemId) => void rerun(systemId)}
+									startingAll={startingPanel === 'technical'}
+									onRerunAll={() => void rerunPanel('technical')}
+								/>
+							)}
+						</>
+					)}
+				</VStack>
+			</main>
 		</>
 	)
 }

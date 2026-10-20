@@ -8,16 +8,23 @@ import { worker } from './__tests__/mocks/browser.ts'
 const isBrowser = typeof window !== 'undefined'
 
 const flushMicrotasks = () => new Promise((resolve) => queueMicrotask(resolve))
+let workerStartPromise: ReturnType<typeof worker.start> | undefined
+
+const startWorker = () => {
+	workerStartPromise ??= worker.start({ quiet: true })
+	return workerStartPromise
+}
 
 export const dollyTest = testBase.extend({
 	worker: [
-		async ({}, use) => {
+		async ({ task }, use) => {
+			void task
 			if (isBrowser) {
-				await worker.start({ quiet: true })
+				await startWorker()
 			}
 			await use(worker)
 			if (isBrowser) {
-				await worker.stop()
+				worker.resetHandlers()
 			}
 		},
 		{ auto: true },

@@ -3,7 +3,7 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.brukerservice.BrukerServiceConsumer;
-import no.nav.dolly.consumer.brukerservice.dto.TilgangDTO;
+import no.nav.dolly.consumer.brukerservice.dto.BrukereDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 import no.nav.dolly.domain.jpa.BrukerFavoritter;
@@ -135,7 +135,7 @@ public class BrukerService {
                 .flatMapMany(bruker -> Brukertype.AZURE == bruker.getBrukertype() ?
                         brukerRepository.findByOrderById() :
                         brukerServiceConsumer.getKollegaerIOrganisasjon(bruker.getBrukerId())
-                                .map(TilgangDTO::getBrukere)
+                                .map(BrukereDTO::getBrukere)
                                 .flatMapMany(brukerRepository::findByBrukerIdInOrderByBrukernavn));
     }
 
@@ -157,9 +157,9 @@ public class BrukerService {
                     } else {
                         return teamRepository.findById(teamId)
                                 .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke team med ID: " + teamId)))
-                                .flatMap(team -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId())
+                                .flatMap(_ -> teamBrukerRepository.findByTeamIdAndBrukerId(teamId, bruker.getId())
                                         .switchIfEmpty(Mono.error(new IllegalArgumentException("Bruker er ikke medlem av teamet med ID: " + teamId))))
-                                .flatMap(team -> {
+                                .flatMap(_ -> {
                                     bruker.setRepresentererTeam(teamId);
                                     return brukerRepository.save(bruker);
                                 });

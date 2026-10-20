@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-
-import { DatePickerFormItem, Line, SelectFormItem } from '@navikt/dolly-komponenter';
+import { LocalAlert, UNSAFE_Combobox } from '@navikt/ds-react';
 import { sendDodsmelding, slettDodsmelding } from '@/service/EndringsmeldingService';
 import { format } from 'date-fns';
-import { Alert } from '@navikt/ds-react';
+import { ControlledDatePickerField } from '@/components/form/ControlledDatePickerField';
 import { EndringsmeldingForm } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingForm';
+import {
+  AlertOffset,
+  FormRow,
+  HalfField,
+  QuarterField,
+} from '@/pages/endringsmelding-page/form/FormLayout';
 
 export type Handling = 'SETTE_DOEDSDATO' | 'ENDRET_DOEDSDATO' | 'ANNULLERE_DOEDSDATO';
+type SubmitHandling = Handling | null;
 
 const notEmptyString = (value: string) => !!value && value !== '';
 const notEmptyList = (value: unknown[]) => !!value && value.length > 0;
@@ -14,12 +20,13 @@ const notEmptyList = (value: unknown[]) => !!value && value.length > 0;
 export const DodsmeldingForm = () => {
   const [miljoOptions, setMiljoOptions] = useState<string[]>([]);
   const [ident, setIdent] = useState<string>('');
-  const [doedsdato, setDoedsdato] = useState<string>(format(new Date(), 'y-MM-dd'));
+  const [doedsdato, setDoedsdato] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [valgteMiljoer, setValgteMiljoer] = useState<string[]>([]);
+  const [miljoInputValue, setMiljoInputValue] = useState('');
   const [validate, setValidate] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const onValidate = (handling: Handling) => {
+  const onValidate = (handling: SubmitHandling) => {
     setValidate(true);
     return (
       (handling === 'ANNULLERE_DOEDSDATO' || notEmptyString(doedsdato)) &&
@@ -27,10 +34,12 @@ export const DodsmeldingForm = () => {
     );
   };
 
-  const onSend = (handling: Handling): Promise<any> => {
-    if (handling === 'ANNULLERE_DOEDSDATO') {
+  const onSend = (handling: SubmitHandling): Promise<any> => {
+    const resolvedHandling = handling ?? 'SETTE_DOEDSDATO';
+
+    if (resolvedHandling === 'ANNULLERE_DOEDSDATO') {
       return slettDodsmelding(ident.trim(), valgteMiljoer).then((response) => {
-        setError(response?.error);
+        setError(response?.error || '');
         return Promise.resolve(response);
       });
     }
@@ -38,20 +47,20 @@ export const DodsmeldingForm = () => {
       {
         doedsdato: doedsdato,
         ident: ident.trim(),
-        handling: handling,
+        handling: resolvedHandling,
       },
       valgteMiljoer,
     ).then((response) => {
-      setError(response?.error);
+      setError(response?.error || '');
       return Promise.resolve(response);
     });
   };
 
-  const getSuccessMessage = (value: string, handling?: Handling) => {
+  const getSuccessMessage = (value: string | undefined, handling?: SubmitHandling) => {
     if (handling === 'ANNULLERE_DOEDSDATO') {
-      return `Dødsmelding annulert for ident ${value} i miljø ${valgteMiljoer}.`;
+      return `Dødsmelding annulert for ident ${value} i miljø ${valgteMiljoer.join(', ')}.`;
     }
-    return `Dødsmelding for ident ${value} ble sendt til miljø ${valgteMiljoer}.`;
+    return `Dødsmelding for ident ${value} ble sendt til miljø ${valgteMiljoer.join(', ')}.`;
   };
   return (
     <EndringsmeldingForm
@@ -63,9 +72,11 @@ export const DodsmeldingForm = () => {
       onSend={onSend}
       valid={onValidate}
       setIdent={(ident) => {
-        setError(null);
+        setError('');
         setMiljoOptions([]);
         setValgteMiljoer([]);
+        setMiljoInputValue('');
+        setValidate(false);
         setIdent(ident);
       }}
       getSuccessMessage={getSuccessMessage}
@@ -74,37 +85,50 @@ export const DodsmeldingForm = () => {
         if (miljoer?.length > 0) {
           setValgteMiljoer([miljoer[0]]);
         }
+        setMiljoInputValue('');
       }}
     >
-      <Line>
-        <DatePickerFormItem
-          id="doedsdato-field"
-          label="Dødsdato*"
-          onBlur={(value: string) => setDoedsdato(value)}
-          error={validate && !notEmptyString(doedsdato) ? 'Påkrevd' : null}
-        />
-        <SelectFormItem
-          onChange={(value: string[]) => setValgteMiljoer(value)}
-          htmlId="miljo-dodsdato-select"
-          multi={true}
-          label="Send til miljo*"
-          error={validate && !notEmptyList(valgteMiljoer) ? 'Påkrevd' : null}
-          options={
-            !miljoOptions || miljoOptions?.length === 0
-              ? []
-              : miljoOptions?.map((value: string) => ({
-                  value: value,
-                  label: value.toUpperCase(),
-                }))
-          }
-        />
-      </Line>
+      <FormRow>
+        <HalfField>
+          <ControlledDatePickerField
+            id="doedsdato-field"
+            label="Dødsdato*"
+            value={doedsdato}
+            onChange={setDoedsdato}
+            required
+            error={validate && !notEmptyString(doedsdato) ? 'Påkrevd' : undefined}
+          />
+        </HalfField>
+        <QuarterField>
+          <UNSAFE_Combobox
+            label="Send til miljø*"
+            options={miljoOptions.map((value) => ({ value, label: value.toUpperCase() }))}
+            isMultiSelect
+            shouldAutocomplete
+            value={miljoInputValue}
+            onChange={setMiljoInputValue}
+            selectedOptions={valgteMiljoer}
+            onToggleSelected={(option, isSelected) => {
+              const nextValues = isSelected
+                ? [...new Set([...valgteMiljoer, option])]
+                : valgteMiljoer.filter((value) => value !== option);
+              setValgteMiljoer(miljoOptions.filter((value) => nextValues.includes(value)));
+              setMiljoInputValue('');
+            }}
+            error={validate && !notEmptyList(valgteMiljoer) ? 'Påkrevd' : undefined}
+          />
+        </QuarterField>
+      </FormRow>
       {notEmptyString(error) && (
-        <div style={{ marginTop: '20px' }}>
-          <Alert variant={'error'} closeButton onClose={() => setError('')}>
-            {error}
-          </Alert>
-        </div>
+        <AlertOffset>
+          <LocalAlert status="error" size="small">
+            <LocalAlert.Header>
+              <LocalAlert.Title as="div">Kunne ikke sende dødsmeldingen</LocalAlert.Title>
+              <LocalAlert.CloseButton onClick={() => setError('')} />
+            </LocalAlert.Header>
+            <LocalAlert.Content>{error}</LocalAlert.Content>
+          </LocalAlert>
+        </AlertOffset>
       )}
     </EndringsmeldingForm>
   );

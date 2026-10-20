@@ -6,8 +6,9 @@ import { v4 as uuid } from 'uuid'
 import * as _ from 'lodash-es'
 import { Logger } from '@/logger/Logger'
 import { appendDocumentChunk, initDocumentUpload } from '@/api'
+import { klargjoerInntektstubForBestilling } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
 
-const CHUNK_SIZE = 500_000
+const CHUNK_SIZE = 4 * 1024 * 1024
 
 export const actions = createActions(
 	{
@@ -152,6 +153,13 @@ const cleanBestillingValues = (values: any): any => {
 					return rest
 				}),
 			},
+		}
+	}
+
+	if (cleaned?.inntektstub?.inntektsinformasjon?.length) {
+		cleaned = {
+			...cleaned,
+			inntektstub: klargjoerInntektstubForBestilling(cleaned.inntektstub),
 		}
 	}
 

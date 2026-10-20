@@ -219,7 +219,7 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	)
 
 	return {
-		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
+		dokarkivData: data?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

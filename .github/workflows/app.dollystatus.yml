@@ -5,6 +5,11 @@ on:
     paths:
       - .github/workflows/app.dollystatus.yml
       - apps/dollystatus/**
+      - libs/data-transfer-objects/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/security-core/**
+      - libs/slack/**
       - libs/testing/**
       - plugins/**
 

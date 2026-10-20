@@ -72,7 +72,7 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 const OrgMiljoeInfoVisning = ({ miljoer, loading = false, error = false }: Props) => {
 	const harMiljoe = miljoer.length > 0
 	return (
-		<div style={{ padding: '0 0 10px 5px' }}>
+		<div style={{ padding: '0 0 10px 5px', marginTop: '-5px' }}>
 			{loading && <Loading label="Sjekker organisasjonsnummer..." />}
 			{!loading && error && (
 				<div className="flexbox">

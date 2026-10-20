@@ -37,7 +37,7 @@ public class IdentpoolId32DeleteCommand implements Callable<Mono<Void>> {
                 .headers(WebClientHeader.bearer(token))
                 .retrieve()
                 .bodyToMono(Void.class)
-                .retryWhen(WebClientError.is5xxExceptionThen(new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
+                .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException exception) {

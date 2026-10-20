@@ -99,6 +99,9 @@
 	"/testnav-tenor-search-service/api": {
 		"changeOrigin": true
 	},
+	"/testnav-template-search-service/api": {
+		"changeOrigin": true
+	},
 	"/testnav-levende-arbeidsforhold-ansettelse": {
 		"changeOrigin": true
 	},

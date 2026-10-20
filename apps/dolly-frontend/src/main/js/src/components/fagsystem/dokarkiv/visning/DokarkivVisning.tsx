@@ -44,7 +44,7 @@ export default ({ journalpost, miljoe }: Props) => {
 			<TitleValue title="Tittel" value={journalpost.tittel} />
 			<TitleValue title="Brevkode" value={journalpost.dokumenter?.[0]?.brevkode} />
 			<TitleValue title="Kanal" value={journalpost.kanal} />
-			<TitleValue title="Tema" value={journalpost.tema} />
+			<TitleValue title="Tema" value={journalpost.tema ?? journalpost.temanavn} />
 			<TitleValue
 				title="Behandlingstema"
 				value={
