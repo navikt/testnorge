@@ -1,8 +1,8 @@
 import * as Yup from 'yup'
-import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import { ifPresent, messages, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { finnUgyldigeFelter } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
+import { Inntektsinformasjon } from '@/components/fagsystem/inntektstub/form/partials/inntektstubTypes'
 
 const unikOrgMndTest = (unikValidation: Yup.StringSchema<string, Yup.AnyObject>) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
@@ -10,68 +10,28 @@ const unikOrgMndTest = (unikValidation: Yup.StringSchema<string, Yup.AnyObject>)
 		if (!orgnr) return true
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-		const alleInntekter = fullForm.inntektstub?.inntektsinformasjon
+		const alleInntekter = fullForm?.inntekter ?? []
 		const currInntektsinformasjon = testContext.parent
-		if (!currInntektsinformasjon?.sisteAarMaaned) return true
+		if (!currInntektsinformasjon?.perioder?.length) return true
 
 		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)
 	})
 }
 
-const nyeInntekterOverlapper = (alleInntekter, currInntektsinformasjon) => {
-	const virksomheter = alleInntekter.map((inntektinfo) => inntektinfo.virksomhet)
-	const maaneder = alleInntekter.map((inntektinfo) => ({
-		sisteAarMaaned: inntektinfo.sisteAarMaaned,
-		antallMaaneder: inntektinfo.antallMaaneder,
-	}))
-
-	const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
-	//Hvis ingen orgnr er like trenger vi ikke sjekke datoer. Hvis orgnr er like -> finn måneder
-	if (likeOrgnrIndex.length < 2) return false
-
-	const tidsrom = finnTidsrom(maaneder)
-	return finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
+const nyeInntekterOverlapper = (
+	alleInntekter: Inntektsinformasjon[],
+	currInntektsinformasjon: Inntektsinformasjon,
+) => {
+	const antallOverlappendeInntekter = alleInntekter.filter(
+		(inntektinfo) =>
+			inntektinfo?.virksomhet === currInntektsinformasjon.virksomhet &&
+			harFellesPeriode(inntektinfo?.perioder, currInntektsinformasjon.perioder),
+	).length
+	return antallOverlappendeInntekter > 1
 }
 
-const indexOfLikeOrgnr = (virksomheter, orgnr) => {
-	const index = []
-	virksomheter.forEach((virksomhet, idx) => virksomhet === orgnr && index.push(idx))
-	return index
-}
-
-const dato = (aarMaaned) => {
-	const year = aarMaaned.split('-')[0]
-	const month = aarMaaned.split('-')[1]
-	return new Date(year, month - 1)
-}
-
-const finnTidsrom = (maaneder) => maaneder.map((maaned) => getInterval(maaned))
-
-const getInterval = (inntektsinformasjon) => {
-	const currDato = dato(inntektsinformasjon.sisteAarMaaned)
-	return inntektsinformasjon.antallMaaneder && inntektsinformasjon.antallMaaneder > 1
-		? {
-				start: subMonths(currDato, inntektsinformasjon.antallMaaneder - 1),
-				end: currDato,
-			}
-		: {
-				start: currDato,
-				end: addDays(currDato, 1),
-			}
-}
-
-const finnesOverlappendeDato = (tidsrom, index) => {
-	const tidsromSomIkkeKanOverlappe = index.map((idx) => tidsrom[idx])
-	const firstInterval = tidsromSomIkkeKanOverlappe[0]
-
-	return tidsromSomIkkeKanOverlappe.some((t, idx) => {
-		if (idx === 0) return //Tester mot første tidsrom
-		return areIntervalsOverlapping(
-			{ start: firstInterval.start, end: addDays(firstInterval.end, 1) },
-			{ start: t.start, end: t.end },
-		)
-	})
-}
+const harFellesPeriode = (perioder: string[] = [], andrePerioder: string[] = []) =>
+	perioder.some((periode) => andrePerioder.includes(periode))
 
 const inntektsliste = Yup.array().of(
 	Yup.object()
@@ -110,28 +70,21 @@ const forskuddstrekksliste = Yup.array().of(
 )
 
 export const validation = {
-	inntektstub: ifPresent(
-		'$inntektstub',
-		Yup.object({
-			inntektsinformasjon: Yup.array().of(
-				Yup.object({
-					sisteAarMaaned: requiredString.matches(/^\d{4}-(0[1-9]|1[012])$/, {
-						message: 'Dato må være på formatet yyyy-MM',
-						excludeEmptyString: true,
-					}),
-					antallMaaneder: Yup.number()
-						.integer('Kan ikke være et desimaltall')
-						.transform((i, j) => (j === '' ? null : i))
-						.min(1, 'Antall måneder må være et positivt tall')
-						.max(500, 'Antall måneder kan maksimalt være 500')
-						.nullable(),
-					virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
-					opplysningspliktig: requiredString,
-					inntektsliste: inntektsliste,
-					fradragsliste: fradragsliste,
-					forskuddstrekksliste: forskuddstrekksliste,
-				}),
-			),
-		}),
+	inntekter: ifPresent(
+		'$inntekter',
+		Yup.array().of(
+			Yup.object({
+				perioder: Yup.array()
+					.of(Yup.string())
+					.min(1, 'Velg minst én måned')
+					.required('Velg minst én måned'),
+				rapporteringsdato: Yup.date().nullable(),
+				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
+				opplysningspliktig: requiredString,
+				inntektsliste: inntektsliste,
+				fradragsliste: fradragsliste,
+				forskuddstrekksliste: forskuddstrekksliste,
+			}),
+		),
 	),
 }

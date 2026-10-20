@@ -74,10 +74,8 @@ public class TypeStatusIdenterUtility {
 
     private static String getTypeInfo(Map.Entry<String, Map<String, Set<String>>> typeEntry, Map.Entry<String, Set<String>> statusEntry) {
 
-        if (isBlank(typeEntry.getKey())) {
+        if (isBlank(typeEntry.getKey()) || statusEntry.getKey().contains("Info")) {
             return statusEntry.getKey();
-        } else if ("Info".equalsIgnoreCase(typeEntry.getKey().trim())) {
-            return "Info: %s".formatted(statusEntry.getKey());
         } else {
             return "Feil: %s: %s".formatted(typeEntry.getKey().trim(), statusEntry.getKey()
                     .replaceAll("Feil.\\s*", ""));

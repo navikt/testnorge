@@ -30,6 +30,7 @@ type Fagsystem = {
 	yrkesskader?: boolean
 	inntektsmelding?: boolean
 	inntektstub?: boolean
+	inntekter?: boolean
 }
 
 const harFagsystem = (
@@ -123,4 +124,4 @@ export const harInntektsmeldingBestilling = (bestillingerFagsystemer: Fagsystem[
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.inntektsmelding)
 
 export const harInntektstubBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
-	harFagsystem(bestillingerFagsystemer, (i) => !!i?.inntektstub)
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.inntektstub || !!i?.inntekter)

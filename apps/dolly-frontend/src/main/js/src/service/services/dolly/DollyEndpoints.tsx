@@ -280,4 +280,8 @@ export default class DollyEndpoints {
 		const base = `${uri}/hendelseid/ident/${ident}`
 		return relatertIdent ? `${base}?relatertIdent=${relatertIdent}` : base
 	}
+
+	static slettInnntekt(ident: string, periode: string) {
+		return `${uri}/endring/inntekt/ident/${ident}/periode/${periode}`
+	}
 }

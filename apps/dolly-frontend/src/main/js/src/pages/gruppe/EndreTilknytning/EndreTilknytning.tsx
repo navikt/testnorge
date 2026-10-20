@@ -21,7 +21,7 @@ export const EndreTilknytning = ({ gruppe }: EndreTilknytningProps) => {
 			>
 				Bytt eier
 			</Button>
-			<EndreTilknytningModal gruppe={gruppe} open={open} setOpen={setOpen} />
+			{open && <EndreTilknytningModal gruppe={gruppe} open={open} setOpen={setOpen} />}
 		</>
 	)
 }

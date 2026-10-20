@@ -295,4 +295,9 @@ export default {
 				throw error
 			})
 	},
+
+	// endring-controller
+	slettInntekt(ident: string, periode: string) {
+		return Request.delete(Endpoints.slettInnntekt(ident, periode))
+	},
 }
