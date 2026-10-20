@@ -1,10 +1,13 @@
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
-
-export const henvendelseAttributt = 'henvendelse'
-
-export const henvendelseInitialValues = {}
+import {
+	henvendelseAttributt,
+	henvendelseMeldingerPath,
+	henvendelseSamtalereferaterPath,
+	initialMelding,
+	initialSamtalereferat,
+} from '@/components/fagsystem/henvendelse/initialValues'
 
 export const SalesforcePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SalesforcePanel.initialValues)
@@ -18,8 +21,9 @@ export const SalesforcePanel = ({ stateModifier, formValues }: any) => {
 			iconType="salesforce"
 			startOpen={harValgtAttributt(formValues, [henvendelseAttributt])}
 		>
-			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.henvendelse} />
+			<AttributtKategori title="Henvendelse" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.meldinger} />
+				<Attributt attr={sm.attrs.samtalereferater} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -28,10 +32,16 @@ export const SalesforcePanel = ({ stateModifier, formValues }: any) => {
 SalesforcePanel.heading = 'Salesforce'
 
 SalesforcePanel.initialValues = ({ set, del, has }: any) => ({
-	henvendelse: {
-		label: 'Har henvendelse',
-		checked: has(henvendelseAttributt),
-		add: () => set(henvendelseAttributt, henvendelseInitialValues),
-		remove: () => del(henvendelseAttributt),
+	meldinger: {
+		label: 'Har meldinger',
+		checked: has(henvendelseMeldingerPath),
+		add: () => set(henvendelseMeldingerPath, [initialMelding]),
+		remove: () => del(henvendelseMeldingerPath),
+	},
+	samtalereferater: {
+		label: 'Har samtalereferater',
+		checked: has(henvendelseSamtalereferaterPath),
+		add: () => set(henvendelseSamtalereferaterPath, [initialSamtalereferat]),
+		remove: () => del(henvendelseSamtalereferaterPath),
 	},
 })

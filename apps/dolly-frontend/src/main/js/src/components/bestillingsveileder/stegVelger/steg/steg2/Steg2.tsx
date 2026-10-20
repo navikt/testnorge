@@ -51,6 +51,8 @@ import { KelvinAapForm } from '@/components/fagsystem/kelvin/form/Form'
 import { KdiForm } from '@/components/fagsystem/kdi/form/Form'
 import { oppfoelgingsvedtak14aPath } from '@/components/fagsystem/oppfoelgingsvedtak14a/initialValues'
 import { Oppfoelgingsvedtak14aForm } from '@/components/fagsystem/oppfoelgingsvedtak14a/form/Form'
+import { HenvendelseForm } from '@/components/fagsystem/henvendelse/form/Form'
+import { henvendelseAttributt } from '@/components/fagsystem/henvendelse/initialValues'
 
 const HistarkForm = lazy(() => import('@/components/fagsystem/histark/form/HistarkForm'))
 const DokarkivForm = lazy(() => import('@/components/fagsystem/dokarkiv/form/DokarkivForm'))
@@ -121,6 +123,7 @@ const Steg2: React.FC = () => {
 			{getValues('krrstub') && <KrrstubForm />}
 			{getValues('medl') && <MedlForm />}
 			{getValues('udistub') && <UdistubForm />}
+			{getValues(henvendelseAttributt) && <HenvendelseForm />}
 			{getValues('organisasjon') && <OrganisasjonForm />}
 
 			<Suspense fallback={<Loading label="Laster komponenter..." />}>
