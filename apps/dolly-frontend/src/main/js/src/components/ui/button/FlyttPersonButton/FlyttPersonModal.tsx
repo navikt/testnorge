@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import * as Yup from 'yup'
 import { DollyApi } from '@/service/Api'
 import { useNavigate } from 'react-router'
@@ -45,13 +45,23 @@ export const FlyttPersonModal = ({ gruppeId, open, setOpen }: FlyttPersonButtonT
 
 	const { identer: gruppeIdenter, loading: gruppeLoading } = useGruppeIdenter(gruppeId)
 
-	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(gruppeIdenter)
+	const pdlfIdenter = useMemo(
+		() => gruppeIdenter?.filter((person: Person) => person.master === 'PDLF'),
+		[gruppeIdenter],
+	)
+
+	const pdlIdenter = useMemo(
+		() => gruppeIdenter?.filter((person: Person) => person.master === 'PDL'),
+		[gruppeIdenter],
+	)
+
+	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(pdlfIdenter)
 
 	const {
 		data: testnorgeOptions,
 		loading: testnorgeLoading,
 		error: testnorgeError,
-	} = useTestnorgeOptions(gruppeIdenter)
+	} = useTestnorgeOptions(pdlIdenter)
 
 	const navigate = useNavigate()
 

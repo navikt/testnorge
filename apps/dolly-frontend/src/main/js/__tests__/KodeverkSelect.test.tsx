@@ -1,6 +1,6 @@
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { render, screen, waitFor } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { dollyTest } from '../vitest.setup'
 import { worker } from './mocks/browser'
 import userEvent from '@testing-library/user-event'

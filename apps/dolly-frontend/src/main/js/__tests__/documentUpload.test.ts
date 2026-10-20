@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, vi } from 'vitest'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 import { dollyTest } from '../vitest.setup'
 import { worker } from './mocks/browser'
 import { sendBestilling } from '@/ducks/bestilling'

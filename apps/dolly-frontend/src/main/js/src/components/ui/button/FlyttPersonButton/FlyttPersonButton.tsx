@@ -26,7 +26,7 @@ export const FlyttPersonButton = ({
 			>
 				Flytt personer
 			</Button>
-			<FlyttPersonModal gruppeId={gruppeId} open={open} setOpen={setOpen} />
+			{open && <FlyttPersonModal gruppeId={gruppeId} open={open} setOpen={setOpen} />}
 		</>
 	)
 }

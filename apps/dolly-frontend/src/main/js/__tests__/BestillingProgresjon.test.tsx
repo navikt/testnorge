@@ -6,7 +6,7 @@ import { dollyTest } from '../vitest.setup'
 import userEvent from '@testing-library/user-event'
 import { uferdigBestillingMock } from '#/mocks/BasicMocks'
 import { worker } from './mocks/browser'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw/http'
 
 dollyTest('renders Bestillingprogresjon and cancel removes the element', async () => {
 	const user = userEvent.setup()
