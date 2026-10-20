@@ -57,12 +57,14 @@ public class PdlPersonBolk {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class IdenterBolk {
 
         private String ident;
-        private List<Identinformasjon> identer;
+        @Builder.Default
+        private List<Identinformasjon> identer = new ArrayList<>();
     }
 
     @lombok.Data
