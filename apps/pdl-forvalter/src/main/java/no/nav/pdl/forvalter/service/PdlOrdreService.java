@@ -114,7 +114,7 @@ public class PdlOrdreService {
 
         return checkAlias(ident)
                 .then(Mono.defer(() -> personRepository.findByIdent(ident)))
-                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Ident %s finnes ikke i databasen", ident))))
+                .switchIfEmpty(Mono.error(new NotFoundException("Ident %s finnes ikke i databasen".formatted(ident))))
                 .flatMap(dbPerson -> getEksternePersoner(dbPerson)
                         .zipWith(Mono.just(dbPerson)))
                 .flatMap(tuple -> {

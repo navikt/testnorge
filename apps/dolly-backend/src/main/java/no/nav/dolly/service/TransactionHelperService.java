@@ -54,14 +54,14 @@ public class TransactionHelperService {
     @Retryable
     public Mono<BestillingProgress> persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
-        return transactionalOperator.execute(status1 ->
+        return transactionalOperator.execute(_ ->
 
                         bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                                 .flatMap(progress -> {
                                     setter.accept(progress, status);
                                     return bestillingProgressRepository.save(progress);
                                 })
-                                .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
+                                .doFinally(_ -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
                 .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
                 .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()));
@@ -80,7 +80,7 @@ public class TransactionHelperService {
                                               BiConsumer<BestillingProgress, String> setter, String status,
                                               String separator) {
 
-        return transactionalOperator.execute(status1 ->
+        return transactionalOperator.execute(_ ->
 
                         bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                                 .doOnNext(progress -> {
@@ -89,7 +89,7 @@ public class TransactionHelperService {
                                     setter.accept(progress, result);
                                 })
                                 .flatMap(bestillingProgressRepository::save)
-                                .doFinally(signal -> new ClearCacheUtil(cacheManager).run()))
+                                .doFinally(_ -> new ClearCacheUtil(cacheManager).run()))
                 .collectList()
                 .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
                 .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()));
@@ -116,13 +116,13 @@ public class TransactionHelperService {
     public Mono<String> getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
 
         return bestillingProgressRepository.findById(bestillingProgress.getId())
-                .map(getter);
+                .mapNotNull(getter);
     }
 
     @Retryable
     public Mono<Bestilling> persister(Long bestillingId, RsDollyBestilling bestilling) {
 
-        return transactionalOperator.execute(status ->
+        return transactionalOperator.execute(_ ->
 
                         bestillingService.getBestKriterier(bestilling)
                                 .flatMap(kriterier ->
@@ -140,7 +140,7 @@ public class TransactionHelperService {
     @Retryable
     public Mono<Bestilling> oppdaterBestillingFerdig(Long id, String feil) {
 
-        return transactionalOperator.execute(status ->
+        return transactionalOperator.execute(   _ ->
 
             bestillingRepository.findByIdAndLock(id)
                     .flatMap(bestilling -> {

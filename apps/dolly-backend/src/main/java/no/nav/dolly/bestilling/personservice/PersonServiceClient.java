@@ -11,6 +11,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -38,9 +39,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static java.time.LocalTime.now;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.Strings.CS;
 
 @Slf4j
 @Service
@@ -70,8 +73,8 @@ public class PersonServiceClient {
                     var startTime = System.currentTimeMillis();
 
                     return Mono.from(getIdentWithRelasjoner(dollyPerson, progress)
-                            .flatMap(status -> getPersonService(LocalTime.now().plusSeconds(applicationConfig.getClientTimeout()), LocalTime.now(),
-                                    new PersonServiceResponse(), status))
+                            .flatMap(personer -> getPersonService(now().plusSeconds(applicationConfig.getClientTimeout()), now(),
+                                    new PersonServiceResponse(), personer), 10)
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                             .onErrorResume(error -> doError(error, dollyPerson))
                             .doOnNext(status -> logStatus(status, startTime))
@@ -81,14 +84,37 @@ public class PersonServiceClient {
                 });
     }
 
-    private Flux<PersonServiceResponse> doError(Throwable error, DollyPerson person) {
+    private static Flux<PersonServiceResponse> doError(Throwable error, DollyPerson person) {
 
+        log.error("Oppstått feil for ident: {}", person.getIdent(), error);
         return Flux.just(PersonServiceResponse.builder()
                 .ident(person.getIdent())
-                .status(error instanceof TimeoutException ? HttpStatus.OK : WebClientError.describe(error).getStatus())
-                .feilmelding(error instanceof TimeoutException ? null : WebClientError.describe(error).getMessage())
+                .status(getStatus(error))
+                .feilmelding(getFeilmelding(error))
                 .exists(false)
                 .build());
+    }
+
+    private static HttpStatus getStatus(Throwable error) {
+
+        if (error instanceof TimeoutException) {
+            return HttpStatus.OK;
+        } else if (error instanceof DollyFunctionalException) {
+            return HttpStatus.BAD_REQUEST;
+        } else {
+            return WebClientError.describe(error).getStatus();
+        }
+    }
+
+    private static String getFeilmelding(Throwable error) {
+
+        if (error instanceof TimeoutException) {
+            return null;
+        } else if (error instanceof DollyFunctionalException e) {
+            return CS.contains(e.getMessage(), "Utgått") ? "Utgått ident" : e.getMessage();
+        } else {
+            return WebClientError.describe(error).getMessage();
+        }
     }
 
     private Mono<Map<String, Set<String>>> getHendelseIder(boolean isOrdre, BestillingProgress progress) {
@@ -97,11 +123,13 @@ public class PersonServiceClient {
                 .flatMap(ignore -> isOrdre ?
                         Mono.just(progress.getPdlOrdreStatus()) :
                         transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus))
+                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke hendelseId for ident: %s"
+                        .formatted(progress.getIdent()))))
                 .flatMap(json -> {
                     try {
                         return Mono.just(jsonMapper.readTree(json));
                     } catch (JacksonException e) {
-                        return Mono.error(new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e));
+                        return Mono.error(new DollyFunctionalException(json, e));
                     }
                 })
                 .flatMap(tree -> Mono.just(Map.of(getTextValue(tree.path("hovedperson").path("ident")),
@@ -166,7 +194,7 @@ public class PersonServiceClient {
                                                     .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
                                                     .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
                                                     .filter(Objects::nonNull))
-                                    .flatMap(Function.identity())))
+                                    .flatMap(Function.identity())),10)
                             .map(ident -> Map.entry(ident, new HashSet<>())));
         }
     }
@@ -205,8 +233,9 @@ public class PersonServiceClient {
                     status.getIdent(), System.currentTimeMillis() - startTime,
                     errorStatusDecoder.getErrorText(status.getStatus(),
                             status.getFeilmelding()));
-            status.setFormattertMelding("Feil: Synkronisering mot PDL gitt på grunn av %s."
-                    .formatted(status.getStatus()));
+            status.setFormattertMelding("Feil: Synkronisering mot PDL gitt på grunn av %s %s"
+                    .formatted(status.getStatus(), CS.contains(status.getFeilmelding(), "Internal Server Error") ?
+                            "" : status.getFeilmelding()));
         }
     }
 
@@ -222,7 +251,7 @@ public class PersonServiceClient {
             return Flux.just(1)
                     .delayElements(Duration.ofMillis(TIMEOUT))
                     .flatMap(_ -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
-                            .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
+                            .flatMapMany(resultat -> getPersonService(tidSlutt, now(), resultat, ident)));
         }
     }
 
