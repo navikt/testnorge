@@ -23,7 +23,7 @@ vi.mock('@/components/ui/form/fieldArray/DollyFieldArray', () => ({
 }))
 
 const renderInntekt = (inntekt: Record<string, unknown>) =>
-	render(<Inntektstub inntektstub={{ inntektsinformasjon: [{ inntektsliste: [inntekt] }] }} />)
+	render(<Inntektstub inntektstub={[{ virksomhet: '947064649', inntektsliste: [inntekt] }]} />)
 
 describe('Inntektstub bestilling', () => {
 	it('should show tilleggsinformasjon from flat form values', () => {
@@ -43,5 +43,27 @@ describe('Inntektstub bestilling', () => {
 		})
 
 		expect(screen.getByText('Grunnpensjonsbeløp: 1234')).toBeInTheDocument()
+	})
+})
+
+describe('Inntektstub bestilling without values', () => {
+	it('should not render when all inntektsinformasjon fields are empty', () => {
+		const { container } = render(
+			<Inntektstub
+				inntektstub={[
+					{
+						perioder: [],
+						rapporteringsdato: null,
+						virksomhet: '',
+						opplysningspliktig: '',
+						inntektsliste: [{ beloep: '', inntektstype: '' }],
+						fradragsliste: [],
+						forskuddstrekksliste: [],
+					},
+				]}
+			/>,
+		)
+
+		expect(container).toBeEmptyDOMElement()
 	})
 })

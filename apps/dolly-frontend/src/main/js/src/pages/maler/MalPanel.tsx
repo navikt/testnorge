@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Alert, Box, Button, Table } from '@navikt/ds-react'
+import { Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -63,6 +63,9 @@ export const MalPanel = ({
 		}
 		if (_.has(bestilling, 'sigrunstub')) {
 			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder sigrunstub med lignet inntekt, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
+		}
+		if (_.has(bestilling, 'inntektstub')) {
+			return 'Denne malen er utdatert, og vil ikke fungere som den skal. Dette fordi den inneholder Inntektstub-data på et gammelt format, som ikke lenger er støttet. Vi anbefaler at du sletter denne malen og oppretter en ny.'
 		}
 	}
 
@@ -159,18 +162,22 @@ export const MalPanel = ({
 											content={
 												<>
 													{alert && (
-														<Alert
+														<StyledAlert
 															variant={'warning'}
 															size={'small'}
 															style={{ marginBottom: '20px' }}
 														>
 															{alert}
-														</Alert>
+														</StyledAlert>
 													)}
 													{erTomBestilling && (
-														<Alert variant={'info'} size={'small'} style={{ marginBottom: '20px' }}>
+														<StyledAlert
+															variant={'info'}
+															size={'small'}
+															style={{ marginBottom: '20px' }}
+														>
 															Denne malen inneholder ingen bestillingsdata.
-														</Alert>
+														</StyledAlert>
 													)}
 													<div className="bestilling-data">
 														<MalVisning

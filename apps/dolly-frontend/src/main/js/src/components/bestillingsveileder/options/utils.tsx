@@ -9,7 +9,7 @@ import { initialValues as initialValuesInst } from '@/components/fagsystem/inst/
 import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
 
 export const initialValues = {
-	inntektstub: initialValuesInntektstub,
+	inntekter: initialValuesInntektstub,
 	aareg: initialArbeidsforhold,
 	permisjon: initialPermisjon,
 	utenlandsopphold: initialUtenlandsopphold,

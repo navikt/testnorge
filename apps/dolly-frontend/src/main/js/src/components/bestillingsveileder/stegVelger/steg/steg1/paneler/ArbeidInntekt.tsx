@@ -3,7 +3,7 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
-import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
+import { initialValues, inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
 import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
 import {
 	getInitialSigrunstubPensjonsgivende,
@@ -64,10 +64,10 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }: any) => {
 				</div>
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntektstub} />
+				<Attributt attr={sm.attrs.inntekter} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
+				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntekter" />
 			</AttributtKategori>
 			<AttributtKategori title="Nav skattekort" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.skattekort} />
@@ -137,34 +137,12 @@ ArbeidInntektPanel.initialValues = ({ set, opts, del, has }: any) => {
 				}),
 			remove: () => del('inntektsmelding'),
 		},
-		inntektstub: {
+		inntekter: {
 			label: 'Har inntekt',
-			checked: has('inntektstub'),
-			add: () =>
-				set('inntektstub', {
-					inntektsinformasjon: [
-						{
-							sisteAarMaaned: '',
-							rapporteringsdato: null,
-							antallMaaneder: '',
-							virksomhet: '',
-							opplysningspliktig: '',
-							versjon: null,
-							inntektsliste: [
-								{
-									beloep: '',
-									startOpptjeningsperiode: '',
-									sluttOpptjeningsperiode: '',
-									inntektstype: '',
-								},
-							],
-							fradragsliste: [],
-							forskuddstrekksliste: [],
-						},
-					],
-				}),
+			checked: has('inntekter'),
+			add: () => set('inntekter', [initialValues]),
 			remove() {
-				del('inntektstub')
+				del('inntekter')
 			},
 		},
 		skattekort: {

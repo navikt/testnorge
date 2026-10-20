@@ -156,10 +156,10 @@ const cleanBestillingValues = (values: any): any => {
 		}
 	}
 
-	if (cleaned?.inntektstub?.inntektsinformasjon?.length) {
+	if (cleaned?.inntekter?.length) {
 		cleaned = {
 			...cleaned,
-			inntektstub: klargjoerInntektstubForBestilling(cleaned.inntektstub),
+			inntekter: klargjoerInntektstubForBestilling(cleaned.inntekter),
 		}
 	}
 

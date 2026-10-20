@@ -25,7 +25,7 @@ vi.mock(
 	() => ({ initialValues: {} }),
 )
 
-const inntektPath = 'inntektstub.inntektsinformasjon.0.inntektsliste.0'
+const inntektPath = 'inntekter.0.inntektsliste.0'
 
 const pensjonGyldigeVerdier = {
 	beskrivelse: ['alderspensjon'],
@@ -39,7 +39,7 @@ const mockValidate = vi.mocked(InntektstubService.validate)
 const setup = (inntekt: Record<string, unknown>) => {
 	const { result } = renderHook(() =>
 		useForm<FieldValues>({
-			defaultValues: { inntektstub: { inntektsinformasjon: [{ inntektsliste: [inntekt] }] } },
+			defaultValues: { inntekter: [{ inntektsliste: [inntekt] }] },
 		}),
 	)
 	const formMethods = result.current

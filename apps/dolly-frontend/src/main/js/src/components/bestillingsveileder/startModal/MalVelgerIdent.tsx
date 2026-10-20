@@ -145,13 +145,15 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 	const erGammelSyntSykemeldingMal = _.has(bestillingData, 'sykemelding.syntSykemelding')
 	const erGammelDetaljertSykemeldingMal = _.has(bestillingData, 'sykemelding.detaljertSykemelding')
 	const erLignetInntektMal = _.has(bestillingData, 'sigrunstub')
+	const erGammelInntektstubMal = _.has(bestillingData, 'inntektstub')
 	const erUtdatertMal =
 		erGammelFullmaktMal ||
 		erGammelAmeldingMal ||
 		erGammelSyntSykemeldingMal ||
 		erGammelDetaljertSykemeldingMal ||
 		erTpsfMal ||
-		erLignetInntektMal
+		erLignetInntektMal ||
+		erGammelInntektstubMal
 
 	return (
 		<div className="ny-bestilling-form_input">

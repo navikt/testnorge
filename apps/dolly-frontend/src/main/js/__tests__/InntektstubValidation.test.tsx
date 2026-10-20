@@ -9,7 +9,7 @@ import {
 	klargjoerInntektstubForBestilling,
 } from '@/components/fagsystem/inntektstub/validerInntekt/gyldigeVerdier'
 
-const inntektPath = 'inntektstub.inntektsinformasjon.0.inntektsliste.0'
+const inntektPath = 'inntekter.0.inntektsliste.0'
 const persontypePath = `${inntektPath}.persontype`
 
 const gyldigeVerdier = {
@@ -39,23 +39,21 @@ const setup = (inntekt: Record<string, unknown>) => {
 			mode: 'onChange',
 			resolver: yupResolver(Yup.object(validation) as any),
 			defaultValues: {
-				inntektstub: {
-					inntektsinformasjon: [
-						{
-							sisteAarMaaned: '2026-01',
-							virksomhet: '947064649',
-							opplysningspliktig: '947064640',
-							inntektsliste: [inntekt],
-						},
-					],
-				},
+				inntekter: [
+					{
+						perioder: ['2026-01'],
+						virksomhet: '947064649',
+						opplysningspliktig: '947064640',
+						inntektsliste: [inntekt],
+					},
+				],
 			},
 		}),
 	)
 	const validerSomVedNavigering = async () => {
 		let gyldig = false
 		await act(async () => {
-			gyldig = await result.current.trigger(['inntektstub'])
+			gyldig = await result.current.trigger(['inntekter'])
 		})
 		return gyldig
 	}
@@ -119,20 +117,18 @@ describe('Inntektstub validation of dynamic fields', () => {
 
 describe('klargjoerInntektstubForBestilling', () => {
 	it('should remove valid values and nest tilleggsinformasjon before submit', () => {
-		const klargjort = klargjoerInntektstubForBestilling({
-			inntektsinformasjon: [
-				{ virksomhet: '1', inntektsliste: [lagInntekt()] },
-				{ virksomhet: '2' },
-			],
-		})
+		const klargjort = klargjoerInntektstubForBestilling([
+			{ virksomhet: '1', inntektsliste: [lagInntekt()] },
+			{ virksomhet: '2' },
+		])
 
-		expect(klargjort.inntektsinformasjon[0].inntektsliste[0]).toEqual({
+		expect(klargjort[0].inntektsliste[0]).toEqual({
 			beloep: 1000,
 			inntektstype: 'LOENNSINNTEKT',
 			beskrivelse: 'fastloenn',
 			inngaarIGrunnlagForTrekk: false,
 			tilleggsinformasjon: { reiseKostOgLosji: { persontype: 'kunde' } },
 		})
-		expect(klargjort.inntektsinformasjon[1]).toEqual({ virksomhet: '2' })
+		expect(klargjort[1]).toEqual({ virksomhet: '2' })
 	})
 })
