@@ -1,6 +1,8 @@
-package no.nav.dolly.synt.meldekort.onnx;
+package no.nav.dolly.synt.meldekort.generator;
 
 import lombok.experimental.UtilityClass;
+
+import static java.util.Objects.isNull;
 
 @UtilityClass
 class MeldekortXmlMapper {
@@ -9,7 +11,7 @@ class MeldekortXmlMapper {
     private static final String SOAP_ENV_CLOSE = "</Meldekort></MottakMeldekort></soapenv:Body></soapenv:Envelope>";
     private static final String KONTROLLRESULTAT = "<ns2:Kontrollresultat><ns2:Arsakskoder/><ns2:Status>OK</ns2:Status><ns2:Veiledning>false</ns2:Veiledning><ns2:Returbrev>00</ns2:Returbrev></ns2:Kontrollresultat>";
 
-    static String toXml(int id, GeneratedMeldekort meldekort) {
+    static String toXml(int id, GeneratedMeldekort meldekort, Double arbeidstimerOverride) {
         var xmlBuilder = new StringBuilder();
         xmlBuilder.append(SOAP_ENV_OPEN.formatted(id));
         xmlBuilder.append("<ns2:Spm>");
@@ -18,15 +20,16 @@ class MeldekortXmlMapper {
         xmlBuilder.append(jaNeiTag("Syk", meldekort.syk()));
         xmlBuilder.append(jaNeiTag("AnnetFravaer", meldekort.annetFravaer()));
         xmlBuilder.append(jaNeiTag("Kurs", meldekort.kurs()));
-        xmlBuilder.append("<ns2:Forskudd><ns2:Verdi>").append(booleanText(meldekort.forskudd())).append("</ns2:Verdi></ns2:Forskudd>");
+        xmlBuilder.append("<ns2:Forskudd><ns2:Verdi>").append(PythonText.lower(meldekort.forskudd())).append("</ns2:Verdi></ns2:Forskudd>");
         xmlBuilder.append("<ns2:MeldekortDager>");
+        var timerOverride = isNull(arbeidstimerOverride) ? null : PythonText.number(arbeidstimerOverride);
         for (var dag : meldekort.meldekortDager()) {
             xmlBuilder.append("<ns2:MeldekortDag>");
             xmlBuilder.append("<ns2:Dag>").append(dag.dag()).append("</ns2:Dag>");
-            xmlBuilder.append("<ns2:ArbeidetTimerSum><ns2:Verdi>").append(formatTimer(dag.arbeidetTimerSum())).append("</ns2:Verdi></ns2:ArbeidetTimerSum>");
-            xmlBuilder.append("<ns2:Syk><ns2:Verdi>").append(booleanText(dag.syk())).append("</ns2:Verdi></ns2:Syk>");
-            xmlBuilder.append("<ns2:AnnetFravaer><ns2:Verdi>").append(booleanText(dag.annetFravaer())).append("</ns2:Verdi></ns2:AnnetFravaer>");
-            xmlBuilder.append("<ns2:Kurs><ns2:Verdi>").append(booleanText(dag.kurs())).append("</ns2:Verdi></ns2:Kurs>");
+            xmlBuilder.append("<ns2:ArbeidetTimerSum><ns2:Verdi>").append(isNull(timerOverride) ? dag.arbeidetTimerSum() : timerOverride).append("</ns2:Verdi></ns2:ArbeidetTimerSum>");
+            xmlBuilder.append("<ns2:Syk><ns2:Verdi>").append(PythonText.lower(dag.syk())).append("</ns2:Verdi></ns2:Syk>");
+            xmlBuilder.append("<ns2:AnnetFravaer><ns2:Verdi>").append(PythonText.lower(dag.annetFravaer())).append("</ns2:Verdi></ns2:AnnetFravaer>");
+            xmlBuilder.append("<ns2:Kurs><ns2:Verdi>").append(PythonText.lower(dag.kurs())).append("</ns2:Verdi></ns2:Kurs>");
             xmlBuilder.append("<ns2:Meldegruppe>").append(dag.meldegruppe()).append("</ns2:Meldegruppe>");
             xmlBuilder.append("</ns2:MeldekortDag>");
         }
@@ -38,18 +41,9 @@ class MeldekortXmlMapper {
         return xmlBuilder.toString();
     }
 
-    private static String jaNeiTag(String tagName, boolean value) {
+    private static String jaNeiTag(String tagName, Object value) {
         return "<ns2:%s><ns2:SvarJa><ns2:Verdi>%s</ns2:Verdi></ns2:SvarJa><ns2:SvarNei><ns2:Verdi>%s</ns2:Verdi></ns2:SvarNei></ns2:%s>"
-                .formatted(tagName, booleanText(value), booleanText(!value), tagName);
-    }
-
-    private static String booleanText(boolean value) {
-        return Boolean.toString(value);
-    }
-
-    private static String formatTimer(double timer) {
-        return "%.1f".formatted(timer);
+                .formatted(tagName, PythonText.lower(value), Boolean.toString(PythonText.not(value)), tagName);
     }
 
 }
-

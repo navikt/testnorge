@@ -5,4 +5,4 @@ EXPOSE 8080
 
 COPY build/libs/app.jar /my/app.jar
 WORKDIR /my
-ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=60.0", "-XX:+ExitOnOutOfMemoryError", "-Duser.timezone=Europe/Oslo", "-jar", "app.jar"]

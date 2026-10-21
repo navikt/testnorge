@@ -10,8 +10,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.synt.meldekort.onnx.MeldekortType;
-import no.nav.dolly.synt.meldekort.onnx.OnnxService;
+import no.nav.dolly.synt.meldekort.generator.MeldekortService;
+import no.nav.dolly.synt.meldekort.generator.MeldekortType;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +28,7 @@ import java.util.List;
 @Slf4j
 class MeldekortController {
 
-    private final OnnxService onnxService;
+    private final MeldekortService meldekortService;
 
     @GetMapping(value = "/meldekort/{meldegruppe}/{num_to_generate}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -77,7 +77,7 @@ class MeldekortController {
         );
         var started = System.currentTimeMillis();
         var arbeidstimerOverride = parseArbeidstimer(arbeidstimer);
-        var generated = onnxService.generateMeldekort(meldegruppe, numToGenerate, arbeidstimerOverride);
+        var generated = meldekortService.generateMeldekort(meldegruppe, numToGenerate, arbeidstimerOverride);
         log.info(
                 "Generated {} meldekort for meldegruppe {} in {}ms",
                 generated.size(),
