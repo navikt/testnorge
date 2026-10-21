@@ -9,6 +9,7 @@ import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { HenvendelseKodeverk } from '@/config/kodeverk'
 import { useAlleNavEnheter } from '@/utils/hooks/useNorg2'
+import { useHenvendelseTemagrupper } from '@/utils/hooks/useHenvendelse'
 import {
 	henvendelseAttributt,
 	henvendelseMeldingerPath,
@@ -24,11 +25,17 @@ interface HenvendelseFelterProps {
 
 const HenvendelseFelter = ({ path }: HenvendelseFelterProps) => {
 	const { alleNavEnheter, loading: loadingEnheter } = useAlleNavEnheter()
+	const { temagrupper, loading: loadingTemagrupper } = useHenvendelseTemagrupper()
 
 	return (
 		<>
-			{/*TODO: Fix options fra kodeverk temagrupper */}
-			<FormTextInput name={`${path}.temagruppe`} label="Temagruppe" size="large" />
+			<FormSelect
+				name={`${path}.temagruppe`}
+				label="Temagruppe"
+				options={temagrupper}
+				isLoading={loadingTemagrupper}
+				size="large"
+			/>
 			<FormSelect
 				name={`${path}.tema`}
 				label="Tema"
