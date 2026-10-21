@@ -11,7 +11,7 @@ export const dollyTest = testBase.extend({
 
       await use(worker);
 
-      worker.stop();
+      await worker.stop();
     },
     {
       auto: true,
