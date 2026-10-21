@@ -50,7 +50,12 @@ const HenvendelseFelter = ({ path }: HenvendelseFelterProps) => {
 				size="xlarge"
 				info="Hvis ikke valgt, vil enhet automatisk settes basert på personens adresse."
 			/>
-			<FormTextInput name={`${path}.kjedeId`} label="Kjede-ID" size="large" />
+			<FormTextInput
+				name={`${path}.kjedeId`}
+				label="Kjede-ID"
+				size="large"
+				info="Referanse når dette er fortsettelse av en tidligere melding"
+			/>
 			<FormTextInput name={`${path}.meldingsId`} label="Meldings-ID" size="large" />
 			<FormTextInput name={`${path}.fritekst`} label="Fritekst" size="xxlarge" />
 		</>
