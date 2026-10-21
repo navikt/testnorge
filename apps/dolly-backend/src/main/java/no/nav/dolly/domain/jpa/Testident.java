@@ -63,6 +63,11 @@ public class Testident implements Serializable {
         return getMaster() == Master.PDLF;
     }
 
+    @JsonIgnore
+    public boolean isIdentSyntetisk() {
+        return ident.charAt(2) >= '4';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

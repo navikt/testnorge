@@ -1,5 +1,7 @@
 dolly:
   client:
+    oppretting:
+      timeout: 600
     general:
       timeout: 30
 
