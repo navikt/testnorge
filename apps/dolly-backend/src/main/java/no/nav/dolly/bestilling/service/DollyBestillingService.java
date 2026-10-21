@@ -384,20 +384,26 @@ public class DollyBestillingService {
 
     protected Mono<BestillingProgress> throwError(Long id, String ident) {
 
-        var errText = String.format("Bestilling %s feilet ved håndtering av ident: %s", id, ident);
-        log.warn(errText);
+        var errText = "Bestilling %s feilet ved håndtering av ident: %s".formatted(id, ident);
         return Mono.error(new DollyFunctionalException(errText));
     }
 
     protected Mono<BestillingProgress> setOpprettIdentFeilet(Long id, BestillingProgress progress, String ident, Throwable error) {
 
-        log.error("Feil ved oppretting av ident: {} {}", ident, error.getMessage(), error);
+        var errText = getIfNull(error.getMessage(), error.getClass().getSimpleName());
+        log.error("Feil ved oppretting av ident: {} {}", ident, errText, error);
+        var feilmelding = "Feil: " + errText;
+
         return nonNull(progress) ?
-                transactionHelperService.persister(progress, BestillingProgress::setFeil, error.getMessage()) :
+                transactionHelperService.persister(progress, BestillingProgress::setFeil, feilmelding)
+                        .switchIfEmpty(Mono.fromSupplier(() -> {
+                            log.warn("Fant ikke progress for ident {} ved lagring av feil: {}", ident, feilmelding);
+                            return progress;
+                        })) :
                 bestillingProgressRepository.save(BestillingProgress.builder()
                         .bestillingId(id)
                         .ident(ident)
-                        .feil("Feil: " + getIfNull(error.getMessage(), error.getClass().getSimpleName()))
+                        .feil(feilmelding)
                         .build());
     }
 }

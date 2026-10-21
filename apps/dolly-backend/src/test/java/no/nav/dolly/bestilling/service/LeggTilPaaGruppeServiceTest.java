@@ -200,7 +200,7 @@ class LeggTilPaaGruppeServiceTest {
 
         verify(transactionHelperService).persister(
                 org.mockito.ArgumentMatchers.argThat(progress -> IDENT_1.equals(progress.getIdent())),
-                any(BiConsumer.class), eq("Feil i første ident"));
+                any(BiConsumer.class), eq("Feil: Feil i første ident"));
         verify(service).doFerdig(bestilling);
     }
 
@@ -232,6 +232,62 @@ class LeggTilPaaGruppeServiceTest {
         verify(service, never()).opprettProgress(any(), any(), anyString());
         verifyNoInteractions(personServiceClient);
         verify(bestillingProgressRepository, never()).save(any(BestillingProgress.class));
+        verify(service, never()).saveBestillingToOpenSearchServer(any(), any());
+        verify(service).doFerdig(bestilling);
+    }
+
+    @Test
+    void shouldUseExceptionNameWhenErrorHasNoMessage() {
+
+        when(identService.getTestidenterByGruppeId(GRUPPE_ID)).thenReturn(Flux.just(testident(IDENT_1)));
+        doReturn(Mono.error(new IllegalStateException()))
+                .when(service).opprettDollyPersonLeggTil(any(), any());
+
+        service.executeAsync(bestilling);
+
+        verify(transactionHelperService).persister(any(BestillingProgress.class), any(BiConsumer.class),
+                eq("Feil: IllegalStateException"));
+        verify(service).doFerdig(bestilling);
+    }
+
+    @Test
+    void shouldFinishBestillingWhenProgressCannotBeUpdatedWithError() {
+
+        when(identService.getTestidenterByGruppeId(GRUPPE_ID))
+                .thenReturn(Flux.just(testident(IDENT_1), testident(IDENT_2)));
+        doReturn(Mono.error(new IllegalStateException("feil")))
+                .when(service).opprettDollyPersonLeggTil(any(), any());
+        when(transactionHelperService.persister(any(BestillingProgress.class), any(BiConsumer.class), anyString()))
+                .thenReturn(Mono.empty());
+
+        service.executeAsync(bestilling);
+
+        verify(transactionHelperService, times(2))
+                .persister(any(BestillingProgress.class), any(BiConsumer.class), anyString());
+        verify(service).doFerdig(bestilling);
+    }
+
+    @Test
+    void shouldNotFailWhenSettingBestillingFerdigFailsAfterError() {
+
+        when(identService.getTestidenterByGruppeId(GRUPPE_ID))
+                .thenReturn(Flux.error(new IllegalStateException()));
+        when(transactionHelperService.oppdaterBestillingFerdig(eq(BESTILLING_ID), contains("IllegalStateException")))
+                .thenReturn(Mono.error(new IllegalStateException("db nede")));
+
+        service.executeAsync(bestilling);
+
+        verify(transactionHelperService).oppdaterBestillingFerdig(eq(BESTILLING_ID), contains("IllegalStateException"));
+    }
+
+    @Test
+    void shouldNotFailWhenDoFerdigFailsAfterCompletion() {
+
+        when(identService.getTestidenterByGruppeId(GRUPPE_ID)).thenReturn(Flux.just(testident(IDENT_1)));
+        doReturn(Mono.error(new IllegalStateException("db nede"))).when(service).doFerdig(bestilling);
+
+        service.executeAsync(bestilling);
+
         verify(service).doFerdig(bestilling);
     }
 

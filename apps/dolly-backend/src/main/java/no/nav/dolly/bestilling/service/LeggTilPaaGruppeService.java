@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -90,19 +91,29 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .filter(testident -> bestilling.getGruppeId() != 4457 || !testident.isIdentSyntetisk())
                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3)
                 .subscribe(null, e -> {
+                            var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
                             log.error("Feil ved utføring av legg-til på gruppe, bestId: {} melding: {}",
-                                    bestilling.getId(), e.getMessage(), e);
+                                    bestilling.getId(), melding, e);
                             transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(),
-                                            StringUtils.left("Feil ved utføring av legg-til på gruppe: " + e.getMessage(), 1000))
-                                    .subscribe();
+                                            StringUtils.left("Feil ved utføring av legg-til på gruppe: " + melding, 1000))
+                                    .subscribe(null, ex -> log.error("Kunne ikke sette bestilling {} ferdig: {}",
+                                            bestilling.getId(), ex.getMessage(), ex));
                         },
-                        () -> saveBestillingToOpenSearchServer(bestKriterier, bestilling)
-                                .onErrorResume(e -> {
-                                    log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
-                                    return Mono.empty();
-                                })
-                                .then(doFerdig(bestilling))
-                                .subscribe());
+                        () -> saveToOpenSearchUnlessStoppet(bestKriterier, bestilling)
+                                .then(Mono.defer(() -> doFerdig(bestilling)))
+                                .subscribe(null, e -> log.error("Kunne ikke sette bestilling {} ferdig: {}",
+                                        bestilling.getId(), e.getMessage(), e)));
+    }
+
+    private Mono<Void> saveToOpenSearchUnlessStoppet(RsDollyUtvidetBestilling bestKriterier, Bestilling bestilling) {
+
+        return bestillingService.isStoppet(bestilling.getId())
+                .filter(BooleanUtils::isFalse)
+                .flatMap(_ -> saveBestillingToOpenSearchServer(bestKriterier, bestilling))
+                .onErrorResume(e -> {
+                    log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
+                    return Mono.empty();
+                });
     }
 
     private Mono<BestillingProgress> leggTilPaaPerson(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, Testident testident) {
