@@ -382,12 +382,6 @@ public class DollyBestillingService {
                 Mono.just(progress);
     }
 
-    protected Mono<BestillingProgress> throwError(Long id, String ident) {
-
-        var errText = "Bestilling %s feilet ved håndtering av ident: %s".formatted(id, ident);
-        return Mono.error(new DollyFunctionalException(errText));
-    }
-
     protected Mono<BestillingProgress> setOpprettIdentFeilet(Long id, BestillingProgress progress, String ident, Throwable error) {
 
         var errText = getIfNull(error.getMessage(), error.getClass().getSimpleName());

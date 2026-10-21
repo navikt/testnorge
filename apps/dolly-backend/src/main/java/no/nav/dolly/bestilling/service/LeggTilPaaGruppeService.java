@@ -11,6 +11,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -122,7 +123,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         return bestillingService.isStoppet(bestilling.getId())
                 .filter(BooleanUtils::isFalse)
                 .flatMap(_ -> prossesserIdent(bestilling, bestKriterier, testident, progress)
-                        .switchIfEmpty(Mono.defer(() -> throwError(bestilling.getId(), testident.getIdent())))
+                        .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
                         .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", testident.getIdent()))
                         .onErrorResume(e -> setOpprettIdentFeilet(bestilling.getId(), progress.get(), testident.getIdent(), e)));
     }
@@ -136,13 +137,15 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                         .thenReturn(originator))
                 .flatMap(originator -> oppdaterPerson(originator, progress.get()))
                 .flatMap(this::sendOrdrePerson)
+                .doOnNext(progress::set)
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(_ -> opprettDollyPersonLeggTil(progress.get(), bestilling.getBruker()))
                 .flatMap(dollyPerson -> updateIdent(dollyPerson, progress.get()))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get(), true)
                         .thenReturn(dollyPerson))
-                .flatMap(dollyPerson -> personServiceClient.syncPerson(dollyPerson, progress.get())
+                .flatMap(dollyPerson ->
+                        personServiceClient.syncPerson(dollyPerson, progress.get())
                         .zipWith(Mono.just(dollyPerson)))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,

@@ -292,6 +292,21 @@ class LeggTilPaaGruppeServiceTest {
     }
 
     @Test
+    void shouldUseProgressReturnedFromSendOrdrePersonInLaterSteps() {
+
+        var updatedProgress = BestillingProgress.builder().id(99L).bestillingId(BESTILLING_ID)
+                .ident(IDENT_1).master(PDLF).pdlSync(true).build();
+        when(identService.getTestidenterByGruppeId(GRUPPE_ID)).thenReturn(Flux.just(testident(IDENT_1)));
+        doReturn(Mono.just(updatedProgress)).when(service).sendOrdrePerson(any());
+
+        service.executeAsync(bestilling);
+
+        verify(service).opprettDollyPersonLeggTil(updatedProgress, bestilling.getBruker());
+        verify(personServiceClient).syncPerson(any(), eq(updatedProgress));
+        verify(service).doFerdig(bestilling);
+    }
+
+    @Test
     void shouldRecordErrorWhenIdentIsInvalid() {
 
         when(identService.getTestidenterByGruppeId(GRUPPE_ID))
@@ -304,7 +319,7 @@ class LeggTilPaaGruppeServiceTest {
 
         verifyNoInteractions(personServiceClient);
         verify(transactionHelperService).persister(any(BestillingProgress.class), any(BiConsumer.class),
-                contains("feilet ved håndtering av ident"));
+                eq("Feil: Oppretting ikke fullført; annen feil"));
         verify(service).doFerdig(bestilling);
     }
 
@@ -323,7 +338,7 @@ class LeggTilPaaGruppeServiceTest {
 
         verify(service, never()).gjenopprettKlienterFerdigstill(any(), any(), any(), anyBoolean());
         verify(transactionHelperService).persister(any(BestillingProgress.class), any(BiConsumer.class),
-                contains("feilet ved håndtering av ident"));
+                eq("Feil: Oppretting ikke fullført; annen feil"));
         verify(service).doFerdig(bestilling);
     }
 

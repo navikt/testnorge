@@ -272,11 +272,35 @@ class PersonServiceClientTest {
                 .verifyComplete();
 
         verify(errorStatusDecoder).getErrorText(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Fant ikke hendelseId for ident: " + IDENT);
+                "Fant ikke hendelseId for ident");
         var statusCaptor = ArgumentCaptor.forClass(String.class);
         verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
         assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(
-                "Feil: Synkronisering mot PDL gitt på grunn av 500 INTERNAL_SERVER_ERROR Fant ikke hendelseId for ident: " + IDENT);
+                "Feil: Synkronisering mot PDL gitt på grunn av 500 INTERNAL_SERVER_ERROR Fant ikke hendelseId for ident");
+        verifyNoInteractions(personServiceConsumer);
+    }
+
+    @Test
+    void shouldReportBadRequestWithStoredPdlOrderStatusWhenItContainsFeil() {
+
+        var progress = new BestillingProgress();
+        progress.setIdent(IDENT);
+        progress.setPdlForvalterStatus("Feil: Opprettelse av person feilet");
+        stubProgress(progress);
+        when(applicationConfig.getClientTimeout()).thenReturn(5L);
+        when(transactionHelperService.getProgress(eq(progress), any())).thenReturn(Mono.empty());
+        when(errorStatusDecoder.getErrorText(HttpStatus.BAD_REQUEST, "Feil: Opprettelse av person feilet"))
+                .thenReturn("Feil");
+
+        StepVerifier.withVirtualTime(() -> personServiceClient.syncPerson(pdlfPerson(), progress))
+                .thenAwait(Duration.ofSeconds(1))
+                .assertNext(result -> assertThat(result.isPdlSync()).isFalse())
+                .verifyComplete();
+
+        var statusCaptor = ArgumentCaptor.forClass(String.class);
+        verify(transactionHelperService, times(2)).persister(eq(progress), any(), statusCaptor.capture());
+        assertThat(statusCaptor.getAllValues().getLast()).isEqualTo(
+                "Feil: Synkronisering mot PDL gitt på grunn av 400 BAD_REQUEST Feil: Opprettelse av person feilet");
         verifyNoInteractions(personServiceConsumer);
     }
 

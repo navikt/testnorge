@@ -123,8 +123,10 @@ public class PersonServiceClient {
                 .flatMap(ignore -> isOrdre ?
                         Mono.just(progress.getPdlOrdreStatus()) :
                         transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus))
-                .switchIfEmpty(Mono.error(new NotFoundException("Fant ikke hendelseId for ident: %s"
-                        .formatted(progress.getIdent()))))
+                .switchIfEmpty(Mono.error(
+                        CS.contains(progress.getPdlForvalterStatus(), "Feil") ?
+                                new DollyFunctionalException(progress.getPdlForvalterStatus()) :
+                                new NotFoundException("Fant ikke hendelseId for ident")))
                 .flatMap(json -> {
                     try {
                         return Mono.just(jsonMapper.readTree(json));
@@ -194,7 +196,7 @@ public class PersonServiceClient {
                                                     .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
                                                     .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
                                                     .filter(Objects::nonNull))
-                                    .flatMap(Function.identity())),10)
+                                    .flatMap(Function.identity())), 10)
                             .map(ident -> Map.entry(ident, new HashSet<>())));
         }
     }
