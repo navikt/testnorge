@@ -34,7 +34,7 @@ export const FieldArrayAddButton = ({
 	</Button>
 )
 
-const DeleteButton = ({ onClick }) =>
+export const DeleteButton = ({ onClick, title = 'Fjern' }) =>
 	!onClick ? null : (
 		<Button
 			className="dolly-delete-button"
@@ -42,7 +42,7 @@ const DeleteButton = ({ onClick }) =>
 			size="small"
 			icon={<TrashIcon aria-hidden />}
 			onClick={onClick}
-			title="Fjern"
+			title={title}
 		/>
 	)
 
@@ -86,6 +86,7 @@ export const DollyFaBlokk = ({
 	showDeleteButton,
 	number,
 	whiteBackground,
+	deleteButtonTitle = undefined,
 }) => {
 	const className = whiteBackground ? 'dfa-blokk-white' : 'dfa-blokk'
 	return (
@@ -95,7 +96,7 @@ export const DollyFaBlokk = ({
 				<h2>{header}</h2>
 				{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
 				{tag}
-				{showDeleteButton && <DeleteButton onClick={handleRemove} />}
+				{showDeleteButton && <DeleteButton onClick={handleRemove} title={deleteButtonTitle} />}
 			</div>
 			<div className={`${className}_content`}>{children}</div>
 		</div>
@@ -169,6 +170,8 @@ export const DollyFieldArray = ({
 	expandable = false,
 	getHeader = null as unknown as Function,
 	whiteBackground = false,
+	handleRemove = null as unknown as (index: number) => void,
+	deleteButtonTitle = undefined,
 }) => {
 	if (!data || data.length === 0 || Array.isArray(data) === false) return null
 	if (ignoreOnSingleElement && data.length === 1) return children(data[0], 0)
@@ -190,6 +193,8 @@ export const DollyFieldArray = ({
 								getHeader={getHeader ? getHeader : () => header}
 								data={curr}
 								whiteBackground={whiteBackground}
+								handleRemove={handleRemove ? () => handleRemove(idx) : undefined}
+								deleteButtonTitle={deleteButtonTitle}
 							>
 								{children(curr, idx)}
 							</ExpandableBlokk>
@@ -201,6 +206,9 @@ export const DollyFieldArray = ({
 							header={getHeader ? getHeader(curr) : header}
 							hjelpetekst={hjelpetekst}
 							whiteBackground={whiteBackground}
+							showDeleteButton={!!handleRemove}
+							handleRemove={handleRemove ? () => handleRemove(idx) : undefined}
+							deleteButtonTitle={deleteButtonTitle}
 						>
 							{children(curr, idx)}
 						</DollyFaBlokk>

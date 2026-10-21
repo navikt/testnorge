@@ -116,7 +116,7 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<SigrunstubSummertSkattegrunnlag
 				summertSkattegrunnlagListe={bestilling.sigrunstubSummertSkattegrunnlag}
 			/>
-			<Inntektstub inntektstub={bestilling.inntektstub} />
+			<Inntektstub inntektstub={bestilling.inntektstub ?? bestilling.inntekter} />
 			<Inntektsmelding inntektsmelding={bestilling.inntektsmelding} />
 			<Skattekort skattekort={bestilling.skattekort} />
 			<Arbeidssoekerregisteret arbeidssoekerregisteret={bestilling.arbeidssoekerregisteret} />

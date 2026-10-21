@@ -24,8 +24,8 @@ public class StatusController {
     public Map<String, TestnavStatusResponse> getStatus() {
 
         var status = checkConsumerStatus(
-                consumers.getSyntMeldekort().getUrl() + "/internal/isAlive",
-                consumers.getSyntMeldekort().getUrl() + "/internal/isReady",
+                consumers.getSyntMeldekort().getUrl() + "/internal/health/liveness",
+                consumers.getSyntMeldekort().getUrl() + "/internal/health/readiness",
                 webClient);
         return Map.of(
                 "synthdata-arena-meldekort", status

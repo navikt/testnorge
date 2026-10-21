@@ -43,7 +43,7 @@ export const ArenaForm = () => {
 				{!leggTilPaaGruppe &&
 					dagpengerAktiv &&
 					!personFoerLeggTilInntektstub &&
-					!formMethods.getValues().hasOwnProperty('inntektstub') && (
+					!formMethods.getValues().hasOwnProperty('inntekter') && (
 						<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
 					)}
 				{!servicebehovAktiv && (

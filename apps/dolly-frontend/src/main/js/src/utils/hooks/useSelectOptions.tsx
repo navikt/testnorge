@@ -12,14 +12,14 @@ const sliceGruppe = (gruppe, maxAntall, url) => {
 }
 
 const multiplePdlforvalterUrl = (gruppe) => {
-	if (!gruppe) return null
+	if (!gruppe?.length) return null
 	const maxAntall = 150
 	const url = '/testnav-pdl-forvalter/api/v1/personer?'
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
 const multiplePdlPersonUrl = (gruppe) => {
-	if (!gruppe) return null
+	if (!gruppe?.length) return null
 	const maxAntall = 150
 	const url = '/person-service/api/v2/personer/identer?'
 	return sliceGruppe(gruppe, maxAntall, url)
