@@ -25,6 +25,9 @@ public class ApplicationConfig {
     @Value("${dolly.client.general.timeout}")
     private Long clientTimeout;
 
+    @Value("${dolly.client.oppretting.timeout}")
+    private Long opprettPersonTimeout;
+
     @PostConstruct
     public void enableAuthCtxOnSpawnedThreads() {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);

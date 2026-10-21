@@ -371,7 +371,7 @@ class DollyBestillingServiceTest {
         given(bestillingService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
 
         StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
-                .expectNext(newIdent)
+                .expectNext(dollyPerson)
                 .verifyComplete();
 
         var order = inOrder(identService, bestillingProgressRepository, bestillingService);
@@ -396,7 +396,7 @@ class DollyBestillingServiceTest {
         var dollyPerson = DollyPerson.builder().ident(newIdent).build();
 
         StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
-                .expectNext(newIdent)
+                .expectNext(dollyPerson)
                 .verifyComplete();
 
         verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
@@ -412,7 +412,7 @@ class DollyBestillingServiceTest {
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
-                .expectNext(IDENT)
+                .expectNext(dollyPerson)
                 .verifyComplete();
 
         verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
