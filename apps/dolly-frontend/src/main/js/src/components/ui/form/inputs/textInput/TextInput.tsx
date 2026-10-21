@@ -19,6 +19,7 @@ const StyledIcon = styled(Icon)`
 type TextInputProps = {
 	name: string
 	label?: string
+	info?: string
 	title?: string
 	placeholder?: string
 	defaultValue?: string
@@ -207,7 +208,12 @@ export const TextInput = ({
 
 export const DollyTextInput = (props: TextInputProps) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label || ''} manualError={props.manualError}>
+		<Label
+			name={props.name}
+			label={props.label || ''}
+			info={props.info}
+			manualError={props.manualError}
+		>
 			<TextInput {...props} />
 		</Label>
 	</InputWrapper>

@@ -54,7 +54,7 @@ const HenvendelseFelter = ({ path }: HenvendelseFelterProps) => {
 				name={`${path}.kjedeId`}
 				label="Kjede-ID"
 				size="large"
-				info="Referanse når dette er fortsettelse av en tidligere melding"
+				info="Referanse når dette er fortsettelse av en tidligere melding."
 			/>
 			<FormTextInput name={`${path}.meldingsId`} label="Meldings-ID" size="large" />
 			<FormTextInput name={`${path}.fritekst`} label="Fritekst" size="xxlarge" />
