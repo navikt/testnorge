@@ -8,7 +8,7 @@ async function main() {
   if (import.meta.env.DEV) {
     const { worker } = await import('../__tests__/mocks/browser');
     await worker.start({
-      onUnhandledRequest: 'bypass',
+      onUnhandledFrame: 'bypass',
     });
     console.log('MSW initialized');
   }

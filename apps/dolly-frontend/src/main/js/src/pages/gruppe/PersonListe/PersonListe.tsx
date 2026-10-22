@@ -207,6 +207,7 @@ export default function PersonListe({
 			dataField: 'iBruk',
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
+			overflowVisible: true,
 			formatter: (_cell, row) => (
 				<Suspense fallback={<Loading label={'Laster...'} />}>
 					<PersonIBrukButtonConnector ident={row.ident} />

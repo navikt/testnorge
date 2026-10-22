@@ -22,6 +22,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.opensearch.BestillingDokument;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -50,7 +51,9 @@ import java.util.stream.Stream;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -288,6 +291,7 @@ public class DollyBestillingService {
                         .bestillingId(bestilling.getId())
                         .ident(ident)
                         .master(master)
+                        .pdlImportStatus(PDL.equals(master) ? "OK" : null)
                         .build())
                 .flatMap(bestillingProgressRepository::save);
     }
@@ -358,7 +362,7 @@ public class DollyBestillingService {
                         .build());
     }
 
-    protected Mono<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
+    protected Mono<DollyPerson> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 
         var oppdatertIdent = progress.getOppdatertIdent();
 
@@ -366,13 +370,34 @@ public class DollyBestillingService {
             return identService.swapIdent(oppdatertIdent, dollyPerson.getIdent())
                     .then(bestillingProgressRepository.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
                     .then(bestillingService.swapIdent(oppdatertIdent, dollyPerson.getIdent()))
-                    .thenReturn(dollyPerson.getIdent());
+                    .thenReturn(dollyPerson);
         }
-        return Mono.just(dollyPerson.getIdent());
+        return Mono.just(dollyPerson);
     }
 
     protected Mono<BestillingProgress> oppdaterPdlImportStatus(BestillingProgress progress) {
 
-        return transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
+        return progress.isPdl() ?
+                transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK") :
+                Mono.just(progress);
+    }
+
+    protected Mono<BestillingProgress> setOpprettIdentFeilet(Long id, BestillingProgress progress, String ident, Throwable error) {
+
+        var errText = getIfNull(error.getMessage(), error.getClass().getSimpleName());
+        log.error("Feil ved oppretting av ident: {} {}", ident, errText, error);
+        var feilmelding = "Feil: " + errText;
+
+        return nonNull(progress) ?
+                transactionHelperService.persister(progress, BestillingProgress::setFeil, feilmelding)
+                        .switchIfEmpty(Mono.fromSupplier(() -> {
+                            log.warn("Fant ikke progress for ident {} ved lagring av feil: {}", ident, feilmelding);
+                            return progress;
+                        })) :
+                bestillingProgressRepository.save(BestillingProgress.builder()
+                        .bestillingId(id)
+                        .ident(ident)
+                        .feil(feilmelding)
+                        .build());
     }
 }

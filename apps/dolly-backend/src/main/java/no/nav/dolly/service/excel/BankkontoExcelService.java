@@ -124,14 +124,20 @@ public class BankkontoExcelService {
     private Mono<List<Object[]>> getBankkontoDetaljer(Testgruppe testgruppe) {
 
         var start = System.currentTimeMillis();
+        var counter = new AtomicInteger();
         return bestillingRepository.findByGruppeId(testgruppe.getId())
                 .flatMap(bestilling -> bestillingProgressRepository.findAllByBestillingId(bestilling.getId()))
                 .filter(progress -> isNotBlank(progress.getKontoregisterStatus()))
                 .map(BestillingProgress::getIdent)
                 .distinct()
-                .flatMap(ident -> kontoregisterConsumer.getKontonummer(ident)
-                        .filter(response -> HttpStatus.OK.equals(response.getStatus()))
-                        .map(response -> unpackBankkonto(response.getAktivKonto())))
+                .flatMap(kontoregisterConsumer::getKontonummer, 50)
+                .filter(response -> HttpStatus.OK.equals(response.getStatus()))
+                .map(response -> unpackBankkonto(response.getAktivKonto()))
+                .doOnNext(_ -> {
+                    if (counter.incrementAndGet() % 200 == 0) {
+                        log.info("Hentet %d kontonumre.".formatted(counter.get()));
+                    }
+                })
                 .collectList()
                 .doOnNext(bankkonti -> log.info("Excel: hentet {} antall bankkonti, tid {} sekunder", bankkonti.size(),
                         (System.currentTimeMillis() - start) / 1000));

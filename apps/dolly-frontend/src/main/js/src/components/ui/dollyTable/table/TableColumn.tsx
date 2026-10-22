@@ -6,10 +6,14 @@ export default function TableColumn({
 	className,
 	children,
 	centerItem,
+	overflowVisible,
 	style,
 	onClick,
 }) {
-	const cssClass = cn('dot-column', `col${width}`, className, { centerItem: centerItem })
+	const cssClass = cn('dot-column', `col${width}`, className, {
+		centerItem: centerItem,
+		overflowVisible: overflowVisible,
+	})
 	const render = value ? value : children
 
 	return (
