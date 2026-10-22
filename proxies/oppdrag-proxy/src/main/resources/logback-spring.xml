@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod">
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
+                <maxStackTraceLength>-1</maxStackTraceLength>
+                <addCauses>true</addCauses>
+                <stackTraceIncludePrefix>-</stackTraceIncludePrefix>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="stdout_json"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>
+                    %d{HH:mm:ss.SSS} | %5p | %logger{25} | %m%n
+                </pattern>
+                <charset>utf8</charset>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
+</configuration>

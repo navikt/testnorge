@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nav.no/system/os/entiteter/oppdragSkjema"
+           version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:typer="http://nav.no/system/os/entiteter/typer/simpleTypes"
+           xmlns:oppdragSkjema="http://nav.no/system/os/entiteter/oppdragSkjema"
+
+>
+
+    <xs:import namespace="http://nav.no/system/os/entiteter/typer/simpleTypes" schemaLocation="typer/simpleTypes.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation>Oppdrag entiteter</xs:documentation>
+        <xs:documentation>For hver entitet er det lagt til en referanse ID.</xs:documentation>
+        <xs:documentation>Disse IDene korresponderer med entitetene som er implementert i baksystemet og kan forenkle kommunikasjon.</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="enhet">
+        <xs:annotation>
+            <xs:documentation>Entitet enhet</xs:documentation>
+            <xs:documentation>Referanse ID 120 dersom enhet på nivå oppdrag</xs:documentation>
+            <xs:documentation>Referanse ID 160 dersom enhet på nivå oppdragslinje</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="typeEnhet" type="typer:typeEnhet" />
+                <xs:element name="enhet" type="typer:enhet" minOccurs="0" />
+                <xs:element name="datoEnhetFom" type="typer:dato" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="belopsgrense">
+        <xs:annotation>
+            <xs:documentation>Entitet Beløpsgrense</xs:documentation>
+            <xs:documentation>Referanse ID 130</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="typeGrense">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="4" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="belopGrense" type="typer:belop" />
+                <xs:element name="datoGrenseFom" type="typer:dato" />
+                <xs:element name="datoGrenseTom" type="typer:dato" minOccurs="0" />
+                <xs:element name="feilreg" type="typer:feilreg" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="tekst">
+        <xs:annotation>
+            <xs:documentation>Entitet Tekst</xs:documentation>
+            <xs:documentation>Referanse ID 140 dersom tekst tihørende oppdrag</xs:documentation>
+            <xs:documentation>Referanse ID 158 dersom tekst tihørende oppdragslinje</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tekstLnr" type="typer:tekstLnr" />
+                <xs:element name="tekstKode" minOccurs="0">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="4" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="tekst" minOccurs="0">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="40" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="datoTekstFom" type="typer:dato" />
+                <xs:element name="datoTekstTom" type="typer:dato" minOccurs="0" />
+                <xs:element name="feilreg" type="typer:feilreg" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="grad">
+        <xs:annotation>
+            <xs:documentation>Entitet Grad</xs:documentation>
+            <xs:documentation>Referanse ID 170</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="typeGrad">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="4" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="grad" type="typer:grad" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="attestant">
+        <xs:annotation>
+            <xs:documentation>Entitet Attestasjon</xs:documentation>
+            <xs:documentation>Referanse ID 180</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="attestantId">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="8" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="datoUgyldigFom" type="typer:dato" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="valuta">
+        <xs:annotation>
+            <xs:documentation>Entitet Valuta</xs:documentation>
+            <xs:documentation>Referanse ID 190</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="typeValuta">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="FAKT" />
+                            <xs:enumeration value="FRAM" />
+                            <xs:enumeration value="UTB" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="valuta">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="3" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="datoValutaFom" type="typer:dato" minOccurs="1" />
+                <xs:element name="feilreg" type="typer:feilreg" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="linjeStatus">
+        <xs:annotation>
+            <xs:documentation>Entitet linjestatus</xs:documentation>
+            <xs:documentation>Referanse ID 151</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kodeStatusLinje" type="typer:kodeStatusLinje" />
+                <xs:element name="datoStatusFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="klassifikasjon">
+        <xs:annotation>
+            <xs:documentation>Entitet klassifikasjon</xs:documentation>
+            <xs:documentation>Referanse ID 152</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kodeKlassifik" type="typer:kodeKlassifik" />
+                <xs:element name="datoKlassifikFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="skyldner">
+        <xs:annotation>
+            <xs:documentation>Entitet skyldner</xs:documentation>
+            <xs:documentation>Referanse ID 153</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="skyldnerId" type="typer:fnrOrgnr" />
+                <xs:element name="datoSkyldnerFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="kid">
+        <xs:annotation>
+            <xs:documentation>Inneholder elementene som skal være med KID</xs:documentation>
+            <xs:documentation>Referanse ID 154</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kid" type="typer:kid" />
+                <xs:element name="datoKidFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="utbetalesTil">
+        <xs:annotation>
+            <xs:documentation>Entitet Utbetales til</xs:documentation>
+            <xs:documentation>Referanse ID 155</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="utbetalesTilId" type="typer:fnrOrgnr" />
+                <xs:element name="datoUtbetalesTilIdFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="refusjonsInfo">
+        <xs:annotation>
+            <xs:documentation>Entitet for refusjon til et orgnr og/eller maksdato for utbetaling av ytelse</xs:documentation>
+            <xs:documentation>Referanse ID 156</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="refunderesId" type="typer:fnrOrgnr" minOccurs="0" />
+                <xs:element name="maksDato" type="typer:dato" minOccurs="0" />
+                <xs:element name="datoFom" type="typer:dato" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="avstemmingsnokkel">
+        <xs:annotation>
+            <xs:documentation>Entitet nøkler til bevis informasjon</xs:documentation>
+            <xs:documentation>Referanse ID 115</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kodeKomponent">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="8" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="avstemmingsNokkel">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="8" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ompostering">
+        <xs:annotation>
+            <xs:documentation>Ompostering</xs:documentation>
+            <xs:documentation>Referanse ID 116</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="omPostering">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="J" />
+                            <xs:enumeration value="N" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="datoOmposterFom" type="typer:dato" minOccurs="0" />
+                <xs:element name="feilreg" type="typer:feilreg" minOccurs="0"/>
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="oppdragslinje">
+        <xs:annotation>
+            <xs:documentation>Entitet Oppdragslinje</xs:documentation>
+            <xs:documentation>Referanse ID 150</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="kodeEndringLinje">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="NY" />
+                        <xs:enumeration value="ENDR" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="kodeStatusLinje" type="typer:kodeStatusLinje" minOccurs="0" />
+            <xs:element name="datoStatusFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="vedtakId" type="typer:vedtakId" minOccurs="0" />
+            <xs:element name="delytelseId" type="typer:delytelseId" minOccurs="0" />
+            <xs:element name="linjeId" type="typer:linjeId" minOccurs="0" />
+            <xs:element name="kodeKlassifik" type="typer:kodeKlassifik" />
+            <xs:element name="datoKlassifikFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="datoVedtakFom" type="typer:dato" />
+            <xs:element name="datoVedtakTom" type="typer:dato" minOccurs="0" />
+            <xs:element name="sats" type="typer:sats" />
+            <xs:element name="fradragTillegg" type="typer:fradragTillegg" />
+            <xs:element name="typeSats" type="typer:typeSats" />
+            <xs:element name="skyldnerId" type="typer:fnrOrgnr" minOccurs="0" />
+            <xs:element name="datoSkyldnerFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="kravhaverId" type="typer:fnrOrgnr" minOccurs="0" />
+            <xs:element name="datoKravhaverFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="kid" type="typer:kid" minOccurs="0" />
+            <xs:element name="datoKidFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="brukKjoreplan" type="typer:brukKjoreplan" minOccurs="0" />
+            <xs:element name="saksbehId" type="typer:saksbehId" />
+            <xs:element name="utbetalesTilId" type="typer:fnrOrgnr" />
+            <xs:element name="datoUtbetalesTilIdFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="kodeArbeidsgiver" type="typer:kodeArbeidsgiver" minOccurs="0" />
+            <xs:element name="henvisning" type="typer:henvisning" minOccurs="0" />
+            <xs:element name="typeSoknad" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="10" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="refFagsystemId" type="typer:fagsystemId" minOccurs="0" />
+            <xs:element name="refOppdragsId" type="typer:oppdragsId" minOccurs="0" />
+            <xs:element name="refDelytelseId" type="typer:delytelseId" minOccurs="0" />
+            <xs:element name="refLinjeId" type="typer:linjeId" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="oppdrag">
+        <xs:annotation>
+            <xs:documentation>Entitet Oppdrag</xs:documentation>
+            <xs:documentation>Referanse ID 110</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="kodeEndring">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="NY" />
+                        <xs:enumeration value="ENDR" />
+                        <xs:enumeration value="UEND" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="kodeStatus" type="typer:kodeStatus" minOccurs="0" />
+            <xs:element name="datoStatusFom" type="typer:dato" minOccurs="0" />
+            <xs:element name="kodeFagomraade" type="typer:kodeFagomraade" />
+            <xs:element name="fagsystemId" type="typer:fagsystemId" minOccurs="0" />
+            <xs:element name="oppdragsId" type="typer:oppdragsId" minOccurs="0" />
+            <xs:element name="utbetFrekvens" type="typer:utbetFrekvens" minOccurs="0" />
+            <xs:element name="datoForfall" type="typer:dato" minOccurs="0" />
+            <xs:element name="stonadId" type="typer:stonadId" minOccurs="0" />
+            <xs:element name="oppdragGjelderId" type="typer:fnrOrgnr" />
+            <xs:element name="datoOppdragGjelderFom" type="typer:dato" />
+            <xs:element name="saksbehId" type="typer:saksbehId" />
+            <xs:element ref="oppdragSkjema:enhet" minOccurs="0" maxOccurs="2" />
+            <xs:element ref="oppdragSkjema:belopsgrense" minOccurs="0" maxOccurs="50" />
+            <xs:element ref="oppdragSkjema:tekst" minOccurs="0" maxOccurs="50" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="oppdragStatus">
+        <xs:annotation>
+            <xs:documentation>Entitet Oppdragstatus</xs:documentation>
+            <xs:documentation>Referanse ID 111</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kodeStatus" type="typer:kodeStatus" />
+                <xs:element name="datoStatusFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="oppdragGjelder">
+        <xs:annotation>
+            <xs:documentation>Entitet Oppdrag gjelder</xs:documentation>
+            <xs:documentation>Referanse ID 112</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="oppdragGjelderId" type="typer:fnrOrgnr" />
+                <xs:element name="datoOppdragGjelderFom" type="typer:dato" />
+                <xs:element name="tidspktReg" type="typer:tidspktReg" />
+                <xs:element name="saksbehId" type="typer:saksbehId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="bilagstype">
+        <xs:annotation>
+            <xs:documentation>Entitet Bilagstype</xs:documentation>
+            <xs:documentation>Referanse ID 113</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="typeBilag">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1" />
+                            <xs:maxLength value="4" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
