@@ -5,4 +5,4 @@ EXPOSE 8080
 
 COPY build/libs/app.jar /my/app.jar
 WORKDIR /my
-ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Europe/Oslo", "-Dorg.apache.avro.SERIALIZABLE_PACKAGES=no.nav.testnav.libs.avro.organisasjon.v1", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-jar", "app.jar"]
