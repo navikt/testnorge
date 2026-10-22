@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw/http';
 
 export const handlers = [
   http.get(new RegExp(/testnorge-profil-api\/api\/v1\/profil.*/), () => {

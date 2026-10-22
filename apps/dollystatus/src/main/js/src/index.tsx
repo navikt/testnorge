@@ -14,7 +14,7 @@ const enableMocking = async () => {
 		return
 	}
 	const { worker } = await import('@/mocks/browser')
-	await worker.start({ onUnhandledRequest: 'bypass' })
+	await worker.start({ onUnhandledFrame: 'bypass' })
 }
 
 enableMocking().then(() => createRoot(container).render(<App />))
