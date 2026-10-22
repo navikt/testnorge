@@ -89,7 +89,6 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .filter(request -> isBlank(request.getFeil()))
                 .flatMapMany(_ ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId()))
-                .filter(testident -> bestilling.getGruppeId() != 4457 || !testident.isIdentSyntetisk())
                 .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3)
                 .subscribe(null, e -> {
                             var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
