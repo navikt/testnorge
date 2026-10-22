@@ -95,6 +95,7 @@ public class PersonExcelService {
 
         return fullmakt.stream()
                 .map(FullmaktDTO::getMotpartsPersonident)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -104,6 +105,7 @@ public class PersonExcelService {
                 .filter(bolk -> isTrue(bolk.getHistorisk()))
                 .filter(bolk -> !"AKTORID".equals(bolk.getGruppe()))
                 .map(PdlPersonBolk.Identinformasjon::getIdent)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -112,6 +114,7 @@ public class PersonExcelService {
         return vergemaal.stream()
                 .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
                 .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -121,6 +124,7 @@ public class PersonExcelService {
                 .filter(forelder -> PdlPerson.Rolle.BARN == forelder.getMinRolleForPerson())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -130,6 +134,7 @@ public class PersonExcelService {
                 .filter(barnet -> PdlPerson.Rolle.BARN == barnet.getRelatertPersonsRolle())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -138,6 +143,7 @@ public class PersonExcelService {
         return partnere.stream()
                 .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 

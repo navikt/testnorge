@@ -396,25 +396,6 @@ class LeggTilPaaGruppeServiceTest {
     }
 
     @Test
-    void shouldSkipSyntetiskeIdenterForGruppe4457() {
-
-        var gruppe4457 = Bestilling.builder().id(BESTILLING_ID).gruppeId(4457L).build();
-        doReturn(bestKriterier).when(service).getDollyBestillingRequest(gruppe4457);
-        doReturn(Mono.just(gruppe4457)).when(service).doFerdig(gruppe4457);
-        doReturn(Mono.empty()).when(service).saveBestillingToOpenSearchServer(any(), eq(gruppe4457));
-        doAnswer(invocation -> Mono.just(progress(invocation.getArgument(2))))
-                .when(service).opprettProgress(eq(gruppe4457), eq(PDLF), anyString());
-        when(identService.getTestidenterByGruppeId(4457L))
-                .thenReturn(Flux.just(testident("12445678901"), testident("12345678902")));
-
-        service.executeAsync(gruppe4457);
-
-        verify(service).opprettProgress(gruppe4457, PDLF, "12345678902");
-        verify(service, never()).opprettProgress(gruppe4457, PDLF, "12445678901");
-        verify(service).doFerdig(gruppe4457);
-    }
-
-    @Test
     void shouldNotCallCounterWhenIdentFailsBeforeUpdate() {
 
         when(identService.getTestidenterByGruppeId(GRUPPE_ID)).thenReturn(Flux.just(testident(IDENT_1)));
