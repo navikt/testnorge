@@ -1,6 +1,6 @@
 Spring Boot-utgave av [synt-meldekort](https://github.com/navikt/testnorge-syntetiseringspakker/tree/master/apps/arena/synt_meldekort) fra [testnorge-syntetiseringspakker](https://github.com/navikt/testnorge-syntetiseringspakker/tree/master).
 
-Appen genererer syntetiske meldekort med samme algoritme som `bean.model.Model.syn()` i Python-appen. Pakken `bean` leser den eksporterte modellen og trekker verdier kolonne for kolonne i modellens `visitSequence`, med beslutningstrær, kernel density og missing-modeller. Pakken `generator` gjør om radene til meldekort-XML på samme format som Python-appen.
+Appen genererer syntetiske meldekort med samme algoritme som `bean.model.Model.syn()` i Python-appen. Biblioteket [`libs/synt-bean`](../../libs/synt-bean) leser den eksporterte modellen og trekker verdier kolonne for kolonne i modellens `visitSequence`, med beslutningstrær, kernel density og missing-modeller. Pakken `generator` gjør om radene til meldekort-XML på samme format som Python-appen.
 
 ## Modellformat
 Appen leser én fil per meldegruppe: `meldekort_bean_<MELDEGRUPPE>.json.gz`. Den stopper ved oppstart hvis en av meldegruppene ARBS, ATTF, DAGP, FY eller INDIV mangler. Filer for andre meldegrupper blir hoppet over.
@@ -24,7 +24,7 @@ gcloud storage cp --no-clobber /tmp/meldekort/json/meldekort_bean_*.json.gz gs:/
 
 Skriptet stopper med en feilmelding hvis modellen bruker noe Java-porten ikke støtter.
 
-Testene i `src/test/resources/bean` er laget med `create_java_test_fixtures.py` i samme mappe som eksportskriptet. De sammenligner fordelingene fra Java-porten med `Model.syn()` i Python.
+Testdataene i `libs/synt-bean/src/test/resources/bean` er laget med `create_java_test_fixtures.py` i samme mappe som eksportskriptet. De sammenligner fordelingene fra Java-porten med `Model.syn()` i Python.
 
 ## Lokal kjøring
 * [Generelt.](../../docs/modules/ROOT/pages/local/local_general.adoc)

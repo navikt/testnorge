@@ -1,15 +1,27 @@
 [[lokal_generelt]]
 = Forberede synt-modeller for lokal kjøring
 
-Applikasjoner i synt kan kjøres lokalt, men er avhengig av at ONNX-modellfilene er lastet ned lokalt.
+Applikasjoner i synt kan kjøres lokalt, men trenger modellfilene lokalt.
 
-== Last ned onnx-modeller
+* `synt-meldekort` og `synt-tilleggsstonad` bruker eksporterte bean-modeller (`*_bean_*.json.gz`). Se README for appen.
+* De andre synt-appene bruker ONNX-modeller (`*.onnx`).
+
+== Last ned modeller
 
 Buckets finnes i https://console.cloud.google.com/storage/browser?project=dolly-dev-ff83[GCP].
 
-. Sjekk applikasjonens `application-prod.yml` for å finne ut hvilken bucket som brukes. Dette konfigureres med `app.config.bucket`. I `app.config.models` ligger en eller flere prefixer for modellene som brukes.
+. Sjekk applikasjonens `application-prod.yml` for å finne ut hvilken bucket som brukes. Dette konfigureres med `app.config.bucket`. I `app.config.models` ligger modellene som brukes.
 
-. Last ned onnx-modellene (`*.onnx`) til `./src/main/resources/models/` for applikasjonen det gjelder, enten manuelt eller vha.
+. Last ned modellfilene til `./src/main/resources/models/` for applikasjonen det gjelder, enten manuelt eller med `gcloud`.
++
+For ONNX-modeller:
++
 ----
 > gcloud storage cp gs://<app.config.bucket>/*.onnx .
+----
++
+For bean-modeller, for eksempel `synt-tilleggsstonad`:
++
+----
+> gcloud storage cp "gs://synthdata-tilleggsstonad-model-bucket/tilleggsstonad_bean_*.json.gz" .
 ----

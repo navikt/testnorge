@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation "no.nav.testnav.libs:synt-bean"
     implementation "no.nav.testnav.libs:testing"
     implementation "no.nav.testnav.libs:texas"
 

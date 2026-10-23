@@ -1,7 +1,6 @@
 package no.nav.dolly.synt.meldekort.generator;
 
-import no.nav.dolly.synt.meldekort.bean.BeanFixtures;
-import no.nav.dolly.synt.meldekort.bean.BeanSynthesizer;
+import no.nav.dolly.libs.syntbean.BeanSynthesizer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Element;
@@ -64,7 +63,7 @@ class MeldekortGeneratorTest {
             throws Exception {
 
         var generated = generator().generateMeldekort(MeldekortType.ARBS, 4_000, null, new SplittableRandom(11));
-        var expected = BeanFixtures.reference("ARBS").get("statistics").get("columns").get("ARBEIDET").get("frequencies").get("J").asDouble();
+        var expected = MeldekortFixtures.reference("ARBS").get("statistics").get("columns").get("ARBEIDET").get("frequencies").get("J").asDouble();
 
         var arbeidet = 0;
         for (var xml : generated) {
@@ -132,7 +131,7 @@ class MeldekortGeneratorTest {
     void shouldRejectModelWhoseContentDoesNotMatchFilename(@TempDir Path directory)
             throws IOException {
 
-        try (var input = BeanFixtures.open("bean/meldekort_bean_ARBS.json.gz")) {
+        try (var input = MeldekortFixtures.open("bean/meldekort_bean_ARBS.json.gz")) {
             Files.copy(input, directory.resolve("meldekort_bean_DAGP.json.gz"));
         }
 
@@ -144,7 +143,7 @@ class MeldekortGeneratorTest {
 
     private static MeldekortGenerator generator() {
 
-        var synthesizer = BeanFixtures.synthesizer("ARBS");
+        var synthesizer = MeldekortFixtures.synthesizer("ARBS");
         var synthesizers = new EnumMap<MeldekortType, BeanSynthesizer>(MeldekortType.class);
         Arrays.stream(MeldekortType.values()).forEach(type -> synthesizers.put(type, synthesizer));
         return new MeldekortGenerator(synthesizers);
@@ -156,7 +155,7 @@ class MeldekortGeneratorTest {
 
         var jsonMapper = JsonMapper.builder().build();
         ObjectNode document;
-        try (var input = new GZIPInputStream(BeanFixtures.open("bean/meldekort_bean_ARBS.json.gz"))) {
+        try (var input = new GZIPInputStream(MeldekortFixtures.open("bean/meldekort_bean_ARBS.json.gz"))) {
             document = (ObjectNode) jsonMapper.readTree(input);
         }
         document.put("meldegruppe", meldegruppe);

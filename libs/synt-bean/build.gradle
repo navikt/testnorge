@@ -1,0 +1,14 @@
+plugins {
+    id "dolly-libs"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "testnav-synt-bean"
+        property "sonar.projectName", "testnav-synt-bean"
+    }
+}
+
+dependencies {
+    implementation "tools.jackson.core:jackson-databind"
+}
