@@ -58,6 +58,7 @@ import {
 	harKelvinAapBestilling,
 	harMedlBestilling,
 	harOppfoelgingsvedtak14aBestilling,
+	harHenvendelseBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
 	harSigrunstubPensjonsgivendeInntekt,
@@ -121,6 +122,9 @@ import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visn
 import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
 import { useOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
 import { Oppfoelgingsvedtak14aVisning } from '@/components/fagsystem/oppfoelgingsvedtak14a/visning/Oppfoelgingsvedtak14aVisning'
+import { useHenvendelser } from '@/utils/hooks/useHenvendelse'
+import { usePdlAktoerId } from '@/utils/hooks/usePdlPerson'
+import { HenvendelseVisning } from '@/components/fagsystem/henvendelse/visning/HenvendelseVisning'
 import { Button } from '@navikt/ds-react'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { OpprettMal } from '@/pages/maler/OpprettMal'
@@ -296,6 +300,17 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer),
 	)
 
+	const { aktoerId, loading: loadingAktoerId } = usePdlAktoerId(
+		ident.ident,
+		harHenvendelseBestilling(bestillingerFagsystemer),
+	)
+
+	const {
+		henvendelser,
+		loading: loadingHenvendelser,
+		error: errorHenvendelser,
+	} = useHenvendelser(aktoerId)
+
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
 		harArenaBestilling(bestillingerFagsystemer) ||
@@ -444,6 +459,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 				!oppfoelgingsvedtak14aData &&
 				errorOppfoelgingsvedtak14aData
 			),
+			!!(
+				harHenvendelseBestilling(bestillingerFagsystemer) &&
+				!henvendelser?.length &&
+				errorHenvendelser
+			),
 			!!(dokarkivData && sjekkManglerDokarkivData(dokarkivData)),
 		]
 
@@ -529,7 +549,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingSkattekort ||
 		loadingKdiData ||
 		loadingKelvinAapBehandlingStatus ||
-		loadingOppfoelgingsvedtak14aData
+		loadingOppfoelgingsvedtak14aData ||
+		loadingAktoerId ||
+		loadingHenvendelser
 
 	return (
 		<ErrorBoundary>
@@ -782,6 +804,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} ident={ident.ident} />
+				<HenvendelseVisning
+					data={henvendelser}
+					loading={loadingAktoerId || loadingHenvendelser}
+					harBestilling={harHenvendelseBestilling(bestillingerFagsystemer)}
+				/>
 				<SkatteetatenVisning
 					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
 						dokument.identifikator?.includes(ident.ident),
