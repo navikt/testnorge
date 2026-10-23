@@ -13,6 +13,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Component
 public class BankkontonrUtlandskMappingStrategy implements MappingStrategy {
     @Override
@@ -29,11 +32,13 @@ public class BankkontonrUtlandskMappingStrategy implements MappingStrategy {
                                 BankkontoGenerator.tilfeldigUtlandskBankkonto(bestilling.getLandkode()) : bestilling.getKontonummer();
                         kontoregister.setKontonummer(kontonummer);
 
+                        var landkode = (StringUtils.length(bestilling.getLandkode()) != 3) ?
+                                bestilling.getLandkode() : KontoregisterLandkode.getIso2FromIso(bestilling.getLandkode());
+
                         kontoregister.setUtenlandskKonto(new UtenlandskKontoDTO(
                                 bestilling.getBanknavn(),
-                                "", // bankkode mangler i BankkontonrUtlandDTO
-                                (StringUtils.length(bestilling.getLandkode()) != 3) ?
-                                        bestilling.getLandkode() : KontoregisterLandkode.getIso2FromIso(bestilling.getLandkode()),
+                                getBankkode(bestilling),
+                                landkode,
                                 bestilling.getValuta(),
                                 bestilling.getSwift(),
                                 bestilling.getBankAdresse1(),
@@ -44,5 +49,17 @@ public class BankkontonrUtlandskMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static String getBankkode(BankkontonrUtlandDTO bestilling) {
+
+        var tillatBankkode = KontoregisterLandkode.fraLandkode(bestilling.getLandkode())
+                .filter(landkode -> nonNull(landkode.getBankkodeLengde()))
+                .isPresent();
+
+        if (!tillatBankkode) {
+            return null;
+        }
+        return isNotBlank(bestilling.getBankkode()) ? bestilling.getBankkode() : bestilling.getIban();
     }
 }
