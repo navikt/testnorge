@@ -6,6 +6,7 @@ rootProject.name = "synt-tilleggsstonad"
 
 includeBuild "../../plugins/java"
 
+includeBuild "../../libs/synt-bean"
 includeBuild "../../libs/testing"
 includeBuild "../../libs/texas"
 

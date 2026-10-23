@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/synt.synt-tilleggsstonad.yml
       - synt/synt-tilleggsstonad/**
+      - libs/synt-bean/**
       - libs/testing/**
       - libs/texas/**
       - plugins/**

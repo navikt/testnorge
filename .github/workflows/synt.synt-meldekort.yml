@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/synt.synt-meldekort.yml
       - synt/synt-meldekort/**
+      - libs/synt-bean/**
       - libs/testing/**
       - libs/texas/**
       - plugins/**

@@ -9,6 +9,13 @@ metadata:
     nais.io/run-as-user: "65532" # The nonroot user.
 spec:
   image: {{image}}
+  startup:
+    path: "/internal/health/liveness"
+    port: 8080
+    initialDelay: 20
+    periodSeconds: 5
+    failureThreshold: 36
+    timeout: 2
   liveness:
     path: "/internal/health/liveness"
     port: 8080
@@ -20,6 +27,14 @@ spec:
   prometheus:
     enabled: true
     path: "/internal/metrics"
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   replicas:
     min: 1
     max: 1
@@ -37,8 +52,10 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
         - application: dolly-auth-local
+        - application: synthdata-arena-vedtakshistorikk
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
         - application: testnav-synt-vedtakshistorikk-service
     outbound:
       rules:

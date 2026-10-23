@@ -17,10 +17,10 @@ public class LocalModels {
 
         try {
             var target = extractModelsToTemporaryDirectory();
-            log.info("Extracted legacy model metadata to {}", target);
+            log.info("Extracted tilleggsstonad models to {}", target);
             return target;
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to extract legacy model metadata from classpath", e);
+            throw new UncheckedIOException("Failed to extract tilleggsstonad models from classpath", e);
         }
 
     }
@@ -34,7 +34,7 @@ public class LocalModels {
         var resolver = new PathMatchingResourcePatternResolver();
         var resources = resolver.getResources("classpath*:models/*.json.gz");
         if (resources.length == 0) {
-            throw new IllegalStateException("No legacy model metadata files found at classpath:models/*.json.gz");
+            throw new IllegalStateException("No tilleggsstonad model files found at classpath:models/*.json.gz");
         }
         for (var resource : resources) {
             var filename = resource.getFilename();

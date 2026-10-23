@@ -10,20 +10,20 @@ app:
   config:
     bucket: synthdata-tilleggsstonad-model-bucket
     models:
-      - boutgifter
-      - boutgifter_arbeidssokere
-      - daglig_reise
-      - daglig_reise_arbeidssoker
-      - flytting
-      - flytting_arbeidssokere
-      - laeremidler
-      - laeremidler_arbeidssokere
-      - reise_aktivitet_og_hjemreiser
-      - reise_aktivitet_og_hjemreiser_arbeidssokere
-      - reisestonad_til_arbeidssokere
-      - reise_til_obligatorisk_samling
-      - reise_til_obligatorisk_samling_arbeidssokere
-      - tilsyn_barn
-      - tilsyn_barn_arbeidssoker
-      - tilsyn_familiemedlemmer
-      - tilsyn_familiemedlemmer_arbeidssokere
+      - tilleggsstonad_bean_boutgifter
+      - tilleggsstonad_bean_boutgifter_arbeidssokere
+      - tilleggsstonad_bean_daglig_reise
+      - tilleggsstonad_bean_daglig_reise_arbeidssoker
+      - tilleggsstonad_bean_flytting
+      - tilleggsstonad_bean_flytting_arbeidssokere
+      - tilleggsstonad_bean_laeremidler
+      - tilleggsstonad_bean_laeremidler_arbeidssokere
+      - tilleggsstonad_bean_reise_aktivitet_og_hjemreiser
+      - tilleggsstonad_bean_reise_aktivitet_og_hjemreiser_arbeidssokere
+      - tilleggsstonad_bean_reisestonad_til_arbeidssokere
+      - tilleggsstonad_bean_reise_til_obligatorisk_samling
+      - tilleggsstonad_bean_reise_til_obligatorisk_samling_arbeidssokere
+      - tilleggsstonad_bean_tilsyn_barn
+      - tilleggsstonad_bean_tilsyn_barn_arbeidssoker
+      - tilleggsstonad_bean_tilsyn_familiemedlemmer
+      - tilleggsstonad_bean_tilsyn_familiemedlemmer_arbeidssokere
