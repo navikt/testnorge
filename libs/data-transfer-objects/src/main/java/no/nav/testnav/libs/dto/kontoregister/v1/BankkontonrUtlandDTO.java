@@ -19,6 +19,7 @@ public class BankkontonrUtlandDTO {
     private String swift;
     private String iban;
     private String banknavn;
+    private String bankkode;
     private String valuta;
     private String bankAdresse1;
     private String bankAdresse2;

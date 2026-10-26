@@ -47,7 +47,7 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                         target.setOffentligIdent((String) context.getProperty("ident"));
                         target.setDatoGiroNr((isNull(source.getKontoRegdato()) ? LocalDate.now() :
                                 source.getKontoRegdato().toLocalDate()).toString());
-                        target.setKodeBank(source.getIban());
+                        target.setKodeBank(isNotBlank(source.getBankkode()) ? source.getBankkode() : source.getIban());
                         target.setGiroNrUtland(source.getKontonummer());
                         target.setKodeLand(source.getLandkode());
                         target.setKodeSwift(source.getSwift());

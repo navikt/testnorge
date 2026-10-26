@@ -14,6 +14,7 @@ type UtenlandskBankkontoTypes = {
 		swift: string
 		landkode: string
 		banknavn: string
+		bankkode?: string
 		iban: string
 		valuta: string
 		bankAdresse1: string
@@ -44,7 +45,10 @@ export const UtenlandskBankkonto = ({ utenlandskBankkonto }: UtenlandskBankkonto
 							kodeverk={GtKodeverk.LAND}
 						/>
 						<TitleValue title="Banknavn" value={utenlandskBankkonto.banknavn} />
-						<TitleValue title="Bankkode" value={utenlandskBankkonto.iban} />
+						<TitleValue
+							title="Bankkode"
+							value={utenlandskBankkonto.bankkode || utenlandskBankkonto.iban}
+						/>
 						<TitleValue
 							title="Valuta"
 							value={utenlandskBankkonto.valuta}

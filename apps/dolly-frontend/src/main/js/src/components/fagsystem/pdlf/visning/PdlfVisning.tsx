@@ -48,6 +48,7 @@ const getKontoregisterBankkonto = (bankkontoData) => {
 			swift: bankkontoData.utenlandskKontoInfo?.swiftBicKode,
 			landkode: bankkontoData.utenlandskKontoInfo?.bankLandkode,
 			banknavn: bankkontoData.utenlandskKontoInfo?.banknavn,
+			bankkode: bankkontoData.utenlandskKontoInfo?.bankkode,
 			iban: bankkontoData.kontonummer,
 			valuta: bankkontoData.utenlandskKontoInfo?.valutakode,
 			bankAdresse1: bankkontoData.utenlandskKontoInfo?.bankadresse1,
