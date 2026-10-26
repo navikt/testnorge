@@ -70,7 +70,7 @@ BankinformasjonPanel.initialValues = ({ set, opts, del, has }) => {
 					swift: 'BANKXX11222',
 					landkode: null,
 					banknavn: '',
-					iban: '',
+					bankkode: '',
 					valuta: null,
 					bankAdresse1: '',
 					bankAdresse2: '',

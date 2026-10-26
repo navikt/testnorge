@@ -5,18 +5,45 @@ import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
-import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
+import {
+	finnKontoregisterLandkode,
+	KontoregisterLandkode,
+	landkodeIsoMapping,
+} from '@/service/services/kontoregister/landkoder'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
+import { useWatch } from 'react-hook-form'
+import { useKontoregisterLandkoder } from '@/utils/hooks/useKontoregisterLandkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
+
+const tillaterBankkode = (
+	landkode: string | null | undefined,
+	kontoregisterLandkoder: KontoregisterLandkode[],
+) => Boolean(finnKontoregisterLandkode(landkode, kontoregisterLandkoder)?.bankkodeLengde)
 
 export const UtenlandskBankkonto = ({ formMethods }: any) => {
 	const values = formMethods.getValues()
 	const disableKontonummer = _.get(values, `${path}.tilfeldigKontonummer`)
 	const disableTilfeldigKontonummer = _.get(values, `${path}.kontonummer`)
+	const { kontoregisterLandkoder } = useKontoregisterLandkoder()
+	const valgtLandkode = useWatch({ control: formMethods.control, name: `${path}.landkode` })
+	const visBankkode = tillaterBankkode(valgtLandkode, kontoregisterLandkoder)
+
+	const oppdaterBankkode = (landkode?: string | null) => {
+		const bankkode = formMethods.getValues(`${path}.bankkode`)
+		if (!tillaterBankkode(landkode, kontoregisterLandkoder)) {
+			if (bankkode) {
+				formMethods.setValue(`${path}.bankkode`, '')
+			}
+			formMethods.clearErrors(`${path}.bankkode`)
+		} else if (bankkode) {
+			formMethods.trigger(`${path}.bankkode`)
+		}
+	}
 
 	const updateSwiftLandkode = (selected: any) => {
+		oppdaterBankkode(selected?.value)
 		if (!selected) {
 			return
 		}
@@ -71,7 +98,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 						afterChange={updateSwiftLandkode}
 					/>
 					<FormTextInput name={`${path}.banknavn`} label={'Banknavn'} size={'small'} />
-					<FormTextInput name={`${path}.iban`} label={'Bankkode'} />
+					{visBankkode && <FormTextInput name={`${path}.bankkode`} label={'Bankkode'} />}
 					<FormSelect
 						name={`${path}.valuta`}
 						label="Valuta"
