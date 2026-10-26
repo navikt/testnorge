@@ -109,6 +109,7 @@ export default function Table({
 								width={columnCell.width}
 								value={getColumnValue(row, columnCell)}
 								centerItem={columnCell.centerItem}
+								overflowVisible={columnCell.overflowVisible}
 							/>
 						))}
 					</Row>

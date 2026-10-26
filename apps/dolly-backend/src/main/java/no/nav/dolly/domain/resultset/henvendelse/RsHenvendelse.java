@@ -12,16 +12,32 @@ import lombok.experimental.SuperBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsHenvendelse {
 
-    @Builder.Default
-    private List<Melding> meldinger = new ArrayList<>();
-    @Builder.Default
-    private List<Samtalereferat> samtalereferater = new ArrayList<>();
+    private List<Melding> meldinger ;
+    private List<Samtalereferat> samtalereferater;
+
+    public List<Samtalereferat> getSamtalereferater() {
+
+        if (isNull(samtalereferater)) {
+            samtalereferater = new ArrayList<>();
+        }
+        return samtalereferater;
+    }
+
+    public List<Melding> getMeldinger() {
+
+        if (isNull(meldinger)) {
+            meldinger = new ArrayList<>();
+        }
+        return meldinger;
+    }
 
     @Data
     @EqualsAndHashCode(callSuper = true)

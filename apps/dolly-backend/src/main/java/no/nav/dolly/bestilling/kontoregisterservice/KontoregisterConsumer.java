@@ -65,8 +65,7 @@ public class KontoregisterConsumer extends ConsumerStatus {
                         HentKontoRequestDTO.builder()
                                 .kontohaver(ident)
                                 .build(),
-                        token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Hentet kontonummer for ident {} {}", ident, response));
+                        token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_slettKonto"})

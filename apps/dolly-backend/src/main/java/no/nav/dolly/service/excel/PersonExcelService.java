@@ -59,8 +59,8 @@ public class PersonExcelService {
 
     private static final Object[] PERSONDATA_HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
-            "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak", "Brukt", "Beskrivelse"};
-    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14, 14, 20};
+            "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak", "Brukt", "Beskrivelse", "Identhistorikk"};
+    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14, 14, 20, 14};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String DUAL_FMT = "%s %s";
     private static final String ADR_UTLAND_FMT = "%s (%s)";
@@ -95,6 +95,17 @@ public class PersonExcelService {
 
         return fullmakt.stream()
                 .map(FullmaktDTO::getMotpartsPersonident)
+                .sorted()
+                .collect(Collectors.joining(",\n"));
+    }
+
+    private Object getIdentHistorikk(PdlPersonBolk.IdenterBolk identdata) {
+
+        return isNull(identdata) ? "" : identdata.getIdenter().stream()
+                .filter(bolk -> isTrue(bolk.getHistorisk()))
+                .filter(bolk -> !"AKTORID".equals(bolk.getGruppe()))
+                .map(PdlPersonBolk.Identinformasjon::getIdent)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -103,6 +114,7 @@ public class PersonExcelService {
         return vergemaal.stream()
                 .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
                 .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -112,6 +124,7 @@ public class PersonExcelService {
                 .filter(forelder -> PdlPerson.Rolle.BARN == forelder.getMinRolleForPerson())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -121,6 +134,7 @@ public class PersonExcelService {
                 .filter(barnet -> PdlPerson.Rolle.BARN == barnet.getRelatertPersonsRolle())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -129,6 +143,7 @@ public class PersonExcelService {
         return partnere.stream()
                 .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
                 .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -174,8 +189,8 @@ public class PersonExcelService {
 
         return sikkerhetstiltak.stream()
                 .map(tiltak -> String.format("%s -- %s", tiltak.getTiltakstype(), tiltak.getBeskrivelse()) +
-                        (nonNull(tiltak.getKontaktperson()) && isNotBlank(tiltak.getKontaktperson().getPersonident()) ?
-                                String.format(", kontaktperson: %s", tiltak.getKontaktperson().getPersonident()) : ""))
+                               (nonNull(tiltak.getKontaktperson()) && isNotBlank(tiltak.getKontaktperson().getPersonident()) ?
+                                       String.format(", kontaktperson: %s", tiltak.getKontaktperson().getPersonident()) : ""))
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -228,7 +243,7 @@ public class PersonExcelService {
 
     private static String formatVegadresse(VegadresseDTO vegadresse, String coAdresseNavn, Map<String, String> postnummer) {
         return Stream.of(String.format(DUAL_FMT, vegadresse.getAdressenavn(), vegadresse.getHusnummer() +
-                                (isNotBlank(vegadresse.getHusbokstav()) ? vegadresse.getHusbokstav() : "")),
+                                                                              (isNotBlank(vegadresse.getHusbokstav()) ? vegadresse.getHusbokstav() : "")),
                         isNotBlank(vegadresse.getBruksenhetsnummer()) ?
                                 String.format("Bruksenhet: %s",
                                         vegadresse.getBruksenhetsnummer()) : null,
@@ -364,8 +379,9 @@ public class PersonExcelService {
                                 log.info("Excel: hentet alle hovedpersoner antall {}, medgått tid er {} sekunder",
                                         personer.size(),
                                         (System.currentTimeMillis() - start.get()) / 1000))
-                        .doOnNext(personer -> start.set(System.currentTimeMillis()))
-                        .flatMap(personer -> Flux.concat(Mono.just(personer),
+                        .doOnNext(_ -> start.set(System.currentTimeMillis()))
+                        .flatMap(personer -> Flux.concat(
+                                        Mono.just(personer),
                                         getPersoner(Stream.of(
                                                         getIdenterForRelasjon(personer, PARTNER),
                                                         getIdenterForRelasjon(personer, BARN),
@@ -405,66 +421,73 @@ public class PersonExcelService {
                 .collectList()
                 .filter(identer -> !identer.isEmpty())
                 .flatMap(identer ->
-
                         Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
                                         kodeverkConsumer.getKodeverkByName(KOMMUNENR),
                                         kodeverkConsumer.getKodeverkByName(POSTNUMMER))
-
-                                .flatMap(kodeverk -> personServiceConsumer.getPdlPersonerNoRetries(identer)
-                                        .filter(personbolk -> nonNull(personbolk.getData()))
-                                        .map(PdlPersonBolk::getData)
-                                        .map(PdlPersonBolk.Data::getHentPersonBolk)
-                                        .flatMap(Flux::fromIterable)
-                                        .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                        .map(person -> prepDataRow(person, kodeverk, testidenter))
-                                        .collectList()));
+                                .zipWith(Mono.just(identer)))
+                .flatMapMany(tuple ->
+                        personServiceConsumer.getPdlPersonerNoRetries(tuple.getT2())
+                                .filter(personbolk -> nonNull(personbolk.getData()))
+                                .map(PdlPersonBolk::getData)
+                                .flatMap(data -> prepDataRow(data, tuple.getT1(), testidenter)))
+                .collectList();
     }
 
-    private Object[] prepDataRow(PdlPersonBolk.PersonBolk person,
-                                 Tuple3<Map<String, String>, Map<String, String>, Map<String, String>> kodeverk,
-                                 List<Testident> identer) {
-        return new Object[]{
-                person.getIdent(),
-                IdentTypeUtil.getIdentType(person.getIdent()).name(),
-                getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
-                getEtternavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
-                getAlder(person.getIdent(), person.getPerson().getDoedsfall().stream()
-                                .map(PdlPerson.Doedsfall::getDoedsdato).findFirst().orElse(null)),
-                getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
-                getFoedselsdato(person.getPerson().getFoedselsdato().stream().findFirst().orElse(null)),
-                getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
-                getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
-                getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null),
-                        kodeverk.getT1()),
-                getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
-                getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()),
-                        kodeverk.getT3(),
-                        kodeverk.getT2(),
-                        kodeverk.getT1()),
-                getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse()),
-                        kodeverk.getT3(),
-                        kodeverk.getT1()),
-                getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO()),
-                        kodeverk.getT3(),
-                        kodeverk.getT2(),
-                        kodeverk.getT1()),
-                getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
-                getPartnere(person.getPerson().getSivilstand()),
-                getBarn(person.getPerson().getForelderBarnRelasjon()),
-                getForeldre(person.getPerson().getForelderBarnRelasjon()),
-                getVerge(person.getPerson().getVergemaalEllerFremtidsfullmakt()),
-                getFullmektig(person.getPerson().getFullmakt()),
-                getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak()),
-                getIBruk(person, identer),
-                getBeskrivelse(person, identer)
-        };
+    private Flux<Object[]> prepDataRow(PdlPersonBolk.Data data,
+                                       Tuple3<Map<String, String>, Map<String, String>, Map<String, String>> kodeverk,
+                                       List<Testident> identer) {
+
+        return Flux.fromIterable(data.getHentPersonBolk())
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(person -> {
+                            var identdata = data.getHentIdenterBolk().stream()
+                                    .filter(identerBolk -> person.getIdent().equals(identerBolk.getIdent()))
+                                    .findFirst().orElse(null);
+
+                            return new Object[]{
+                                    person.getIdent(),
+                                    IdentTypeUtil.getIdentType(person.getIdent()).name(),
+                                    getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
+                                    getEtternavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
+                                    getAlder(person.getIdent(), person.getPerson().getDoedsfall().stream()
+                                            .map(PdlPerson.Doedsfall::getDoedsdato).findFirst().orElse(null)),
+                                    getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
+                                    getFoedselsdato(person.getPerson().getFoedselsdato().stream().findFirst().orElse(null)),
+                                    getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
+                                    getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
+                                    getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null),
+                                            kodeverk.getT1()),
+                                    getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
+                                    getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()),
+                                            kodeverk.getT3(),
+                                            kodeverk.getT2(),
+                                            kodeverk.getT1()),
+                                    getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse()),
+                                            kodeverk.getT3(),
+                                            kodeverk.getT1()),
+                                    getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO()),
+                                            kodeverk.getT3(),
+                                            kodeverk.getT2(),
+                                            kodeverk.getT1()),
+                                    getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
+                                    getPartnere(person.getPerson().getSivilstand()),
+                                    getBarn(person.getPerson().getForelderBarnRelasjon()),
+                                    getForeldre(person.getPerson().getForelderBarnRelasjon()),
+                                    getVerge(person.getPerson().getVergemaalEllerFremtidsfullmakt()),
+                                    getFullmektig(person.getPerson().getFullmakt()),
+                                    getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak()),
+                                    getIBruk(person, identer),
+                                    getBeskrivelse(person, identer),
+                                    getIdentHistorikk(identdata)};
+                        }
+                );
     }
 
     private static String getIBruk(PdlPersonBolk.PersonBolk person, List<Testident> identer) {
 
         return identer.stream()
                 .anyMatch(ident -> ident.getIdent().equals(person.getIdent()) &&
-                        isTrue(ident.getIBruk())) ?
+                                   isTrue(ident.getIBruk())) ?
                 "Ja" : "Nei";
     }
 

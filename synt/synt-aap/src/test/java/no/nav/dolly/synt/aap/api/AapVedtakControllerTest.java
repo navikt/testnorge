@@ -75,6 +75,25 @@ class AapVedtakControllerTest {
     }
 
     @Test
+    void shouldReturnJsonWhenLegacyClientAcceptsTextPlain() {
+
+        when(onnxService.generate115(anyList()))
+                .thenReturn(List.of(Vedtak115Dto.builder().vedtaktype("O").build()));
+
+        webTestClient.post()
+                .uri("/api/v1/11_5")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(List.of(Map.of("fraDato", "2018-10-01")))
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$[0].VEDTAKTYPE").isEqualTo("O");
+
+    }
+
+    @Test
     void shouldReturn200ForFriMk() {
 
         when(onnxService.generateFriMk(anyList()))

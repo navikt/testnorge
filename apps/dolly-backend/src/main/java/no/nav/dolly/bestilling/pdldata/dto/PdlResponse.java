@@ -10,7 +10,7 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.Strings.CS;
 
 @Data
 @Builder
@@ -37,6 +37,6 @@ public class PdlResponse {
     @JsonIgnore
     public boolean isFinnesIkke() {
 
-        return isNotBlank(feilmelding) && feilmelding.contains(FINNES_IKKE);
+        return CS.contains(feilmelding, FINNES_IKKE);
     }
 }
