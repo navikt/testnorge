@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
 import { useToggle } from 'react-use'
 import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
@@ -15,6 +15,7 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
 
 type MalVelgerProps = {
 	brukerId: string
@@ -167,7 +168,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 				size={'small'}
 				isSwitch
 			/>
-			<div style={{ marginTop: '10px' }}>
+			<div className="ny-bestilling-form_row" style={{ marginTop: '10px' }}>
 				<DollySelect
 					name="zIdent"
 					label="Bruker/team"
@@ -197,9 +198,15 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 				</Button>
 			</div>
 			{erUtdatertMal && (
-				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
-					Denne malen er utdatert, og vil muligens ikke fungere som den skal.
-				</Alert>
+				<InfoCard
+					data-color="warning"
+					size="small"
+					style={{ marginRight: '20px', marginBottom: '20px' }}
+				>
+					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+						Denne malen er utdatert, og vil muligens ikke fungere som den skal.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 		</div>
 	)

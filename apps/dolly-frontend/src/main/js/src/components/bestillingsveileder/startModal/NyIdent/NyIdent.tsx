@@ -31,7 +31,7 @@ export function NyIdent() {
 
 	return (
 		<FormProvider {...formMethods}>
-			<div style={{ flexDirection: 'column', alignItems: 'start' }}>
+			<div className="ny-bestilling-form_row" style={{ flexDirection: 'column', alignItems: 'start' }}>
 				<h3 style={{ marginBottom: 0 }}>Velg antall og type</h3>
 				<div className="ny-bestilling-form_selects">
 					<FormTextInput
