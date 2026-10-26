@@ -8,12 +8,13 @@ import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataKdiPostCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
+import no.nav.dolly.bestilling.instdata.command.InstdataPutCommand;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataKdiResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
 import no.nav.dolly.config.Consumers;
-import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.reactivesecurity.exchange.TokenExchange;
@@ -83,12 +84,22 @@ public class InstdataConsumer extends ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_postInstdata"})
-    public Flux<InstdataResponse> postInstdata(List<Instdata> instdata, String environment) {
+    public Flux<InstdataResponse> postInstdata(List<InstdataDTO> instdata, String environment) {
 
         log.info("Instdata opprett til {}: {}", environment, instdata);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(instdata)
                         .flatMap(opphold -> new InstdataPostCommand(webClient, opphold, environment,
+                                token.getTokenValue()).call()));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inst_postInstdata"})
+    public Flux<InstdataResponse> putInstdata(List<InstdataDTO> instdata, String environment) {
+
+        log.info("Instdata endret til {}: {}", environment, instdata);
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> Flux.fromIterable(instdata)
+                        .flatMap(opphold -> new InstdataPutCommand(webClient, opphold, environment,
                                 token.getTokenValue()).call()));
     }
 

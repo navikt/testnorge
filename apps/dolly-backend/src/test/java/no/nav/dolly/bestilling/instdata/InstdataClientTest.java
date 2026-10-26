@@ -4,10 +4,12 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.MiljoerResponse;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.service.TransactionHelperService;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Collections.singleton;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -79,13 +82,14 @@ class InstdataClientTest {
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
                 .institusjonsoppholdEnvironments(List.of("q2"))
                 .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder()
+        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of(InstdataDTO.builder()
                 .norskident(IDENT)
                 .build()));
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
+        when(transactionHelperService.persister(any(), any(RsDollyBestilling.class))).thenReturn(Mono.just(new Bestilling()));
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
@@ -109,16 +113,17 @@ class InstdataClientTest {
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
                 .institusjonsoppholdEnvironments(List.of("q2"))
                 .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder()
+        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of(InstdataDTO.builder()
                 .norskident(IDENT)
                 .build()));
         when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
-                .institusjonsopphold(Map.of("q2", List.of(new Instdata())))
+                .institusjonsopphold(Map.of("q2", List.of(new InstdataDTO())))
                 .build()));
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
+        when(transactionHelperService.persister(any(), any(RsDollyBestilling.class))).thenReturn(Mono.just(new Bestilling()));
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
@@ -142,7 +147,7 @@ class InstdataClientTest {
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
                 .institusjonsoppholdEnvironments(List.of("q2"))
                 .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of());
+        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of());
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
@@ -157,5 +162,67 @@ class InstdataClientTest {
                     assertThat(statusCaptor.getAllValues().getLast(), is(equalTo("INST2_STATUS#q2:opphold=1$OK")));
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldLagreOppholdIdFraResponsPaaBestilling() {
+
+        var progress = new BestillingProgress();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+
+        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
+                .institusjonsoppholdEnvironments(List.of(ENVIRONMENT))
+                .build()));
+        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of(InstdataDTO.builder()
+                .norskident(IDENT)
+                .build()));
+        when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
+                .status(HttpStatus.OK)
+                .institusjonsopphold(Map.of(ENVIRONMENT, List.of(InstdataDTO.builder().oppholdId("42").build())))
+                .build()));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
+        when(transactionHelperService.persister(any(), any(RsDollyBestilling.class))).thenReturn(Mono.just(new Bestilling()));
+
+        var request = new RsDollyBestillingRequest();
+        var instdata = RsInstdata.builder().build();
+        request.setInstdata(List.of(instdata));
+        request.setEnvironments(singleton(ENVIRONMENT));
+
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        assertThat(instdata.getOpprettedeOppholdId().get(ENVIRONMENT), is(equalTo(Set.of("42"))));
+        verify(transactionHelperService).persister(any(), eq(request));
+    }
+
+    @Test
+    void shouldIkkePostePaaNyttNaarOppholdErOpprettetTidligereIBestillingen() {
+
+        var progress = new BestillingProgress();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+
+        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
+                .institusjonsoppholdEnvironments(List.of(ENVIRONMENT))
+                .build()));
+        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of(InstdataDTO.builder()
+                .norskident(IDENT)
+                .build()));
+        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
+                .institusjonsopphold(Map.of(ENVIRONMENT, List.of(InstdataDTO.builder().oppholdId("42").build())))
+                .build()));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
+
+        var request = new RsDollyBestillingRequest();
+        request.setInstdata(List.of(RsInstdata.builder()
+                .opprettedeOppholdId(Map.of(ENVIRONMENT, Set.of("42")))
+                .build()));
+        request.setEnvironments(singleton(ENVIRONMENT));
+
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        verify(instdataConsumer, never()).postInstdata(anyList(), anyString());
     }
 }

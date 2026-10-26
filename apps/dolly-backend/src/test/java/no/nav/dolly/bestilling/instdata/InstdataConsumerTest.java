@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.instdata;
 
 import no.nav.dolly.bestilling.AbstractConsumerTest;
-import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class InstdataConsumerTest extends AbstractConsumerTest {
 
             stubPostInstData();
 
-            instdataConsumer.postInstdata(singletonList(Instdata.builder().build()), ENVIRONMENT)
+            instdataConsumer.postInstdata(singletonList(InstdataDTO.builder().build()), ENVIRONMENT)
                     .as(StepVerifier::create)
                     .assertNext(status ->
                             MatcherAssert.assertThat(status.getStatus(), Matchers.is(HttpStatus.OK)))

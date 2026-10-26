@@ -10,7 +10,7 @@ import no.nav.dolly.bestilling.instdata.service.InstKdiHendelseService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,19 +48,19 @@ public class InstdataClient implements ClientRegister {
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if ((bestilling.getInstdata().isEmpty() && isNull(bestilling.getInstdataKdi())) || bestilling.getEnvironments().isEmpty() ) {
+        if ((bestilling.getInstdata().isEmpty() && isNull(bestilling.getInstdataKdi())) || bestilling.getEnvironments().isEmpty()) {
 
             return Mono.empty();
         }
 
         return oppdaterStatus(progress, prepInitStatus(bestilling))
                 .then(Flux.merge(doInst2Bestilling(bestilling, dollyPerson, isOpprettEndre)
-                                .map(INST2_STATUS::formatted),
-                        doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre)
-                                .map(KDI_STATUS::formatted))
-                .collect(Collectors.joining("|"))
-                .filter(resultat -> !resultat.isBlank())
-                .flatMap(resultat -> oppdaterStatus(progress, resultat)));
+                                        .map(INST2_STATUS::formatted),
+                                doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre)
+                                        .map(KDI_STATUS::formatted))
+                        .collect(Collectors.joining("|"))
+                        .filter(resultat -> !resultat.isBlank())
+                        .flatMap(resultat -> oppdaterStatus(progress, resultat)));
     }
 
     private Mono<String> doInstKdiBestilling(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
@@ -91,12 +92,12 @@ public class InstdataClient implements ClientRegister {
                 .flatMapMany(_ -> {
                     var context = MappingContextUtils.getMappingContext();
                     context.setProperty("ident", dollyPerson.getIdent());
-                    return Mono.just(mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class, context));
+                    return Mono.just(mapperFacade.mapAsList(bestilling.getInstdata(), InstdataDTO.class, context));
                 })
                 .flatMap(instdata -> instdataConsumer.getMiljoer()
                         .flatMapMany(miljoer -> Flux.fromIterable(miljoer.getInstitusjonsoppholdEnvironments())
                                 .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
-                                .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe))
+                                .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe, bestilling))
                                 .collect(Collectors.joining(","))));
     }
 
@@ -120,11 +121,16 @@ public class InstdataClient implements ClientRegister {
                         throwable -> log.error("Feil ved sletting av identer fra Institusjonsopphold fengsel (KDI)", throwable));
     }
 
-    private Mono<List<Instdata>> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
+    private Mono<List<InstdataDTO>> filterInstdata(List<InstdataDTO> instdataRequest, String miljoe, RsDollyUtvidetBestilling bestilling) {
 
         if (instdataRequest.isEmpty()) {
             return Mono.just(emptyList());
         }
+
+        var opprettedeOppholdIder = bestilling.getInstdata().getFirst()
+                .getOpprettedeOppholdId()
+                .getOrDefault(miljoe, new HashSet<>());
+
         return instdataConsumer.getInstdata(instdataRequest.getFirst().getNorskident(), miljoe)
                 .map(eksisterende -> {
                     log.info("Instdata hentet data fra {}: {}", miljoe, eksisterende.getInstitusjonsopphold());
@@ -132,7 +138,8 @@ public class InstdataClient implements ClientRegister {
                             .filter(request -> eksisterende.getInstitusjonsopphold()
                                     .getOrDefault(miljoe, emptyList())
                                     .stream()
-                                    .noneMatch(request::equals))
+                                    .noneMatch(fraMiljoe -> fraMiljoe.equals(request) ||
+                                                            opprettedeOppholdIder.contains(fraMiljoe.getOppholdId())))
                             .toList();
                 });
     }
@@ -155,14 +162,24 @@ public class InstdataClient implements ClientRegister {
                         response.getFeilmelding());
     }
 
-    private Mono<String> postInstdata(boolean isNewOpphold, List<Instdata> instdata, String miljoe) {
+    private Mono<String> postInstdata(boolean isNewOpphold, List<InstdataDTO> instdata, String miljoe, RsDollyUtvidetBestilling bestilling) {
 
         var oppholdId = new AtomicInteger(0);
 
-        return (isNewOpphold ? Mono.just(instdata) : filterInstdata(instdata, miljoe))
+        return (isNewOpphold ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestilling))
                 .flatMap(newInstdata -> {
                     if (!newInstdata.isEmpty()) {
                         return instdataConsumer.postInstdata(newInstdata, miljoe)
+                                .flatMap(response -> {
+                                    var oppholdIder = response.getInstitusjonsopphold().values().stream()
+                                            .flatMap(List::stream)
+                                            .map(InstdataDTO::getOppholdId)
+                                            .collect(Collectors.toSet());
+                                    bestilling.getInstdata().getFirst().getOpprettedeOppholdId()
+                                            .computeIfAbsent(miljoe, _ -> new HashSet<>()).addAll(oppholdIder);
+                                    return transactionHelperService.persister(bestilling.getId(), bestilling)
+                                            .thenReturn(response);
+                                })
                                 .map(response -> String.format("%s:opphold=%d$%s",
                                         miljoe, oppholdId.incrementAndGet(), getStatus(response)))
                                 .collect(Collectors.joining(","));
