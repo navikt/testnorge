@@ -130,7 +130,7 @@ const validateBankkode = (schema: Yup.StringSchema<string | null | undefined>) =
 			return true
 		}
 
-		if (!value) {
+		if (!value?.trim()) {
 			if (kontoregisterLandkode.kreverBicOgBankkode) {
 				return testContext.createError({
 					message: `${kontoregisterLandkode.land} krever både BIC og bankkode`,

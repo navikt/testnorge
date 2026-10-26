@@ -37,8 +37,11 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 				formMethods.setValue(`${path}.bankkode`, '')
 			}
 			formMethods.clearErrors(`${path}.bankkode`)
-		} else if (bankkode) {
-			formMethods.trigger(`${path}.bankkode`)
+		} else {
+			const { isTouched, error } = formMethods.getFieldState(`${path}.bankkode`)
+			if (bankkode || isTouched || error) {
+				formMethods.trigger(`${path}.bankkode`)
+			}
 		}
 	}
 

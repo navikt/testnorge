@@ -144,6 +144,25 @@ describe('bankkontoValidation for utenlandsk bankkonto', () => {
 		expect(feil).toEqual([])
 	})
 
+	it('should treat whitespace-only bankkode as missing', async () => {
+		const feil = await valideringsfeil(
+			utenlandskBankkonto({ swift: 'BANKAU22', bankkode: '      ' }),
+		)
+
+		expect(feil).toContainEqual({
+			path: 'bankkonto.utenlandskBankkonto.bankkode',
+			message: 'Australia krever både BIC og bankkode',
+		})
+	})
+
+	it('should accept missing bankkode for country with optional bankkode', async () => {
+		const feil = await valideringsfeil(
+			utenlandskBankkonto({ landkode: 'USA', swift: 'BANKUS22', valuta: 'USD' }),
+		)
+
+		expect(feil).toEqual([])
+	})
+
 	it('should accept missing bankkode for country without bankkode', async () => {
 		const feil = await valideringsfeil(
 			utenlandskBankkonto({ landkode: 'DEU', swift: 'BANKDE22', valuta: 'EUR' }),
