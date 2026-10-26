@@ -1,6 +1,27 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate } from '@/utils/YupValidations'
-import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
+import { isAfter, startOfDay } from 'date-fns'
+
+const fomFoerTom = (fom: any, tom: any) => {
+	if (!fom || !tom) return true
+	return !isAfter(startOfDay(new Date(fom)), startOfDay(new Date(tom)))
+}
+
+const fomDato = requiredDate.test(
+	'is-before-tom',
+	'Dato må være før eller lik til-dato',
+	function (value) {
+		return fomFoerTom(value, this.parent?.tom)
+	},
+)
+
+const tomDato = requiredDate.test(
+	'is-after-fom',
+	'Dato må være etter eller lik fra-dato',
+	function (value) {
+		return fomFoerTom(this.parent?.fom, value)
+	},
+)
 
 const vanligAktivitetSchema = Yup.object({
 	grad: Yup.number()
@@ -17,13 +38,13 @@ const vanligAktivitetSchema = Yup.object({
 			const grad = this.parent?.grad
 			return grad !== null && grad !== undefined && grad !== ''
 		}),
-	fom: testDatoFom(requiredDate, 'tom'),
-	tom: testDatoTom(requiredDate, 'fom'),
+	fom: fomDato,
+	tom: tomDato,
 })
 
 const enAktivitetSchema = Yup.object({
-	fom: testDatoFom(requiredDate, 'tom'),
-	tom: testDatoTom(requiredDate, 'fom'),
+	fom: fomDato,
+	tom: tomDato,
 })
 
 export const validation = {
