@@ -16,6 +16,8 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { henvendelseAttributt } from '@/components/fagsystem/henvendelse/initialValues'
 
 type MalVelgerProps = {
 	brukerId: string
@@ -74,9 +76,20 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 	const brukerOptions = getBrukerOptions(brukere)
 	const malOptions = getMalOptions(maler)
 
+	const leggTil = opts.is?.leggTil || opts.is?.leggTilPaaGruppe
+	const { gruppe } = useGruppeById(leggTil && gruppeId ? String(gruppeId) : '')
+	const kanBrukeHenvendelse = !!leggTil && !!gruppe?.tags?.includes('SALESFORCE')
+
+	const fjernHenvendelseHvisIkkeTillatt = (malData: any) => {
+		if (kanBrukeHenvendelse || !_.has(malData, `bestilling.${henvendelseAttributt}`)) {
+			return malData
+		}
+		return { ...malData, bestilling: _.omit(malData.bestilling, henvendelseAttributt) }
+	}
+
 	const handleMalChange = (mal: { value: string; label: string; data: any }) => {
 		if (mal) {
-			opts.setMal && opts.setMal(mal.data)
+			opts.setMal && opts.setMal(fjernHenvendelseHvisIkkeTillatt(mal.data))
 			formMethods.setValue('mal', mal.value)
 			formMethods.setValue('gruppeId', gruppeId)
 			const identtype = _.get(mal.data, 'bestilling.pdldata.opprettNyPerson.identtype')
@@ -147,6 +160,9 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 	const erGammelDetaljertSykemeldingMal = _.has(bestillingData, 'sykemelding.detaljertSykemelding')
 	const erLignetInntektMal = _.has(bestillingData, 'sigrunstub')
 	const erGammelInntektstubMal = _.has(bestillingData, 'inntektstub')
+	const harHenvendelseSomFjernes =
+		!kanBrukeHenvendelse &&
+		_.has(valgtMal?.data?.bestilling ?? bestillingData, henvendelseAttributt)
 	const erUtdatertMal =
 		erGammelFullmaktMal ||
 		erGammelAmeldingMal ||
@@ -205,6 +221,18 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 				>
 					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
 						Denne malen er utdatert, og vil muligens ikke fungere som den skal.
+					</InfoCard.Message>
+				</InfoCard>
+			)}
+			{harHenvendelseSomFjernes && (
+				<InfoCard
+					data-color="warning"
+					size="small"
+					style={{ marginRight: '20px', marginBottom: '20px' }}
+				>
+					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+						Denne malen inneholder henvendelser fra Salesforce, og kan kun brukes ved legg til /
+						endre på en person som ligger i en gruppe med tag "SALESFORCE".
 					</InfoCard.Message>
 				</InfoCard>
 			)}
