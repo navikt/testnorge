@@ -1,0 +1,29 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+
+app:
+  config:
+    bucket: synthdata-tilleggsstonad-model-bucket
+    models:
+      - tilleggsstonad_bean_boutgifter
+      - tilleggsstonad_bean_boutgifter_arbeidssokere
+      - tilleggsstonad_bean_daglig_reise
+      - tilleggsstonad_bean_daglig_reise_arbeidssoker
+      - tilleggsstonad_bean_flytting
+      - tilleggsstonad_bean_flytting_arbeidssokere
+      - tilleggsstonad_bean_laeremidler
+      - tilleggsstonad_bean_laeremidler_arbeidssokere
+      - tilleggsstonad_bean_reise_aktivitet_og_hjemreiser
+      - tilleggsstonad_bean_reise_aktivitet_og_hjemreiser_arbeidssokere
+      - tilleggsstonad_bean_reisestonad_til_arbeidssokere
+      - tilleggsstonad_bean_reise_til_obligatorisk_samling
+      - tilleggsstonad_bean_reise_til_obligatorisk_samling_arbeidssokere
+      - tilleggsstonad_bean_tilsyn_barn
+      - tilleggsstonad_bean_tilsyn_barn_arbeidssoker
+      - tilleggsstonad_bean_tilsyn_familiemedlemmer
+      - tilleggsstonad_bean_tilsyn_familiemedlemmer_arbeidssokere

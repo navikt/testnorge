@@ -1,8 +1,8 @@
 package no.nav.dolly.synt.meldekort.generator;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.synt.meldekort.bean.BeanModelReader;
-import no.nav.dolly.synt.meldekort.bean.BeanSynthesizer;
+import no.nav.dolly.libs.syntbean.BeanModelReader;
+import no.nav.dolly.libs.syntbean.BeanSynthesizer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -65,9 +65,9 @@ class MeldekortGenerator {
                 continue;
             }
             var synthesizer = BeanModelReader.read(file);
-            if (!meldegruppe.equals(synthesizer.meldegruppe())) {
+            if (!meldegruppe.equals(synthesizer.name())) {
                 throw new IllegalStateException("Model file %s contains meldegruppe %s"
-                        .formatted(file.getFileName(), synthesizer.meldegruppe()));
+                        .formatted(file.getFileName(), synthesizer.name()));
             }
             synthesizers.put(type.get(), synthesizer);
             log.info("Loaded meldekort model {} with {} columns", meldegruppe, synthesizer.columnNames().size());
