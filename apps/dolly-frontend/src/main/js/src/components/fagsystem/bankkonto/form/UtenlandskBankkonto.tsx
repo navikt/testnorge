@@ -30,6 +30,18 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 	const valgtLandkode = useWatch({ control: formMethods.control, name: `${path}.landkode` })
 	const visBankkode = tillaterBankkode(valgtLandkode, kontoregisterLandkoder)
 
+	const validerHvisRoert = (feltnavn: string, harVerdi = false) => {
+		const { isTouched, error } = formMethods.getFieldState(`${path}.${feltnavn}`)
+		if (harVerdi || isTouched || error) {
+			formMethods.trigger(`${path}.${feltnavn}`)
+		}
+	}
+
+	const validerFeltPaakrevdVedBankkode = () => {
+		validerHvisRoert('banknavn')
+		validerHvisRoert('bankAdresse1')
+	}
+
 	const oppdaterBankkode = (landkode?: string | null) => {
 		const bankkode = formMethods.getValues(`${path}.bankkode`)
 		if (!tillaterBankkode(landkode, kontoregisterLandkoder)) {
@@ -38,11 +50,9 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 			}
 			formMethods.clearErrors(`${path}.bankkode`)
 		} else {
-			const { isTouched, error } = formMethods.getFieldState(`${path}.bankkode`)
-			if (bankkode || isTouched || error) {
-				formMethods.trigger(`${path}.bankkode`)
-			}
+			validerHvisRoert('bankkode', Boolean(bankkode))
 		}
+		validerFeltPaakrevdVedBankkode()
 	}
 
 	const updateSwiftLandkode = (selected: any) => {
@@ -101,7 +111,13 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 						afterChange={updateSwiftLandkode}
 					/>
 					<FormTextInput name={`${path}.banknavn`} label={'Banknavn'} size={'small'} />
-					{visBankkode && <FormTextInput name={`${path}.bankkode`} label={'Bankkode'} />}
+					{visBankkode && (
+						<FormTextInput
+							name={`${path}.bankkode`}
+							label={'Bankkode'}
+							afterChange={validerFeltPaakrevdVedBankkode}
+						/>
+					)}
 					<FormSelect
 						name={`${path}.valuta`}
 						label="Valuta"

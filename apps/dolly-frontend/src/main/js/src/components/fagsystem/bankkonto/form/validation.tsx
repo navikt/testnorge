@@ -151,6 +151,21 @@ const validateBankkode = (schema: Yup.StringSchema<string | null | undefined>) =
 	})
 }
 
+const brukerBankkode = (bankkonto?: { bankkode?: string | null; landkode?: string | null }) =>
+	Boolean(bankkonto?.bankkode?.trim()) &&
+	Boolean(finnKontoregisterLandkode(bankkonto?.landkode)?.bankkodeLengde)
+
+const validatePaakrevdVedBankkode = (
+	schema: Yup.StringSchema<string | null | undefined>,
+	feltnavn: string,
+) => {
+	return schema.test(
+		'paakrevd-ved-bankkode',
+		`${feltnavn} er påkrevd ved bruk av bankkode`,
+		(value, testContext) => !brukerBankkode(testContext.parent) || Boolean(value?.trim()),
+	)
+}
+
 export const bankkontoValidation = {
 	bankkonto: ifPresent(
 		'$bankkonto',
@@ -174,15 +189,15 @@ export const bankkontoValidation = {
 						.test('length', 'Valutakode kan kun bestå av tre store bokstaver', (val) =>
 							/^[A-Z]{3}$/.test(val),
 						),
-					banknavn: Yup.string().nullable().optional(),
-					bankAdresse1: Yup.string()
-						.nullable()
-						.optional()
-						.test(
-							'length',
-							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34,
-						),
+					banknavn: validatePaakrevdVedBankkode(Yup.string().nullable().optional(), 'Banknavn'),
+					bankAdresse1: validatePaakrevdVedBankkode(
+						Yup.string().nullable().optional(),
+						'Adresselinje 1',
+					).test(
+						'length',
+						'Bankadresse må være mellom 1 og 34 tegn',
+						(val) => !val || val.length <= 34,
+					),
 					bankAdresse2: Yup.string()
 						.nullable()
 						.optional()
