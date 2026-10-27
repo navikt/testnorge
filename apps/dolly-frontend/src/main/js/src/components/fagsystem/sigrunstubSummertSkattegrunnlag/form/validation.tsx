@@ -21,7 +21,7 @@ const grunnlagValidation = Yup.object({
 			antattMarkedsverdi: nullableNumber().integer(),
 			antattVerdiSomNytt: nullableNumber().integer(),
 			beloep: requiredNumber.transform((i, j) => (j === '' ? null : i)).positive(messages.positive),
-			eierandel: nullableNumber().integer().positive(messages.positive),
+			eierandel: nullableNumber().positive(messages.positive),
 			fabrikatnavn: Yup.string().nullable(),
 			formuesverdi: nullableNumber().integer().positive(messages.positive),
 			formuesverdiForFormuesandel: nullableNumber().integer().positive(messages.positive),
