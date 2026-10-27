@@ -47,3 +47,4 @@ jobs:
       deploy-tag-test: "#deploy-test-dolly-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
     secrets: inherit
+

@@ -33,3 +33,4 @@ jobs:
       id-token: write
       packages: read
     secrets: inherit
+
