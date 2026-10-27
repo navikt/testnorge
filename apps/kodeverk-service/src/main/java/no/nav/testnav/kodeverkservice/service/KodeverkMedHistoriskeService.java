@@ -23,9 +23,8 @@ public class KodeverkMedHistoriskeService {
 
         return kodeverkService.getKodeverkMap("Kommuner")
                 .map(KodeverkDTO::getKodeverk)
-                .flatMapMany(koder -> Flux.concat(Flux.fromIterable(koder.entrySet())
-                                // Ekskluder kommune 1507 som er historisk, men er erstattet av kommunenr 1508
-                                .filter(entry -> !entry.getKey().equals("1507")),
+                .flatMapMany(koder -> Flux.concat(
+                        Flux.fromIterable(koder.entrySet()),
                         Flux.fromIterable(GamleKommunerUtility.getHistoriskeKommuner().entrySet())))
                 .sort(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
@@ -39,9 +38,8 @@ public class KodeverkMedHistoriskeService {
 
         return kodeverkService.getKodeverkByName("Kommuner")
                 .map(KodeverkAdjustedDTO::getKoder)
-                .flatMapMany(koder -> Flux.concat(Flux.fromIterable(koder)
-                                // Ekskluder kommune 1507 som er historisk, men er erstattet av kommunenr 1508
-                                .filter(entry -> !entry.getValue().equals("1507")),
+                .flatMapMany(koder -> Flux.concat(
+                        Flux.fromIterable(koder),
                         Flux.fromIterable(GamleKommunerUtility.getHistoriskeKommunerAdjusted())))
                 .collectList()
                 .map(koder -> KodeverkAdjustedDTO.builder()
