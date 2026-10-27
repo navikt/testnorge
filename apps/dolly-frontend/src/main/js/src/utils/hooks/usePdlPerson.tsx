@@ -40,7 +40,6 @@ export const usePdlPersonbolk = (identer: Array<string>) => {
 	}
 }
 
-// TODO: Vi kan ikke få aktoerId fra allerede fetched data?
 export const usePdlAktoerId = (ident: string, shouldFetch: boolean) => {
 	const { data, error, isLoading } = useSWR<PdlDataWrapper, Error>(
 		ident && shouldFetch ? getPersonoppslagUrl(ident, null) : null,

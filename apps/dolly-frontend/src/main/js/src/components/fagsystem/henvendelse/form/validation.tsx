@@ -7,7 +7,6 @@ const samtalereferatFelter = {
 	enhet: Yup.string().nullable(),
 	fritekst: requiredString,
 	kjedeId: Yup.string().nullable(),
-	meldingsId: Yup.string().nullable(),
 }
 
 export const validation = {

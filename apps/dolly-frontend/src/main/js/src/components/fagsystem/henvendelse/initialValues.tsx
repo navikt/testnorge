@@ -8,7 +8,6 @@ export const initialSamtalereferat = {
 	enhet: null,
 	fritekst: '',
 	kjedeId: null,
-	meldingsId: null,
 }
 
 export const initialMelding = {
