@@ -20,7 +20,9 @@ const grunnlagValidation = Yup.object({
 				.max(new Date().getFullYear(), 'Valgt år må være senest i år'),
 			antattMarkedsverdi: nullableNumber().integer(),
 			antattVerdiSomNytt: nullableNumber().integer(),
-			beloep: requiredNumber.transform((i, j) => (j === '' ? null : i)).positive(messages.positive),
+			beloep: nullableNumber()
+				.transform((i, j) => (j === '' ? null : i))
+				.positive(messages.positive),
 			eierandel: nullableNumber().positive(messages.positive),
 			fabrikatnavn: Yup.string().nullable(),
 			formuesverdi: nullableNumber().integer().positive(messages.positive),
