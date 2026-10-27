@@ -24,6 +24,16 @@ import {
 	initialSamtalereferat,
 } from '@/components/fagsystem/henvendelse/initialValues'
 import { validation } from '@/components/fagsystem/henvendelse/form/validation'
+import { HenvendelseListe } from '@/components/fagsystem/henvendelse/visning/HenvendelseVisning'
+import { ExpansionCard } from '@navikt/ds-react'
+import styled from 'styled-components'
+
+const StyledExpansionCard = styled.div`
+	margin-bottom: 20px;
+	.aksel-body-long--small {
+		line-height: unset;
+	}
+`
 
 interface KjedeIdOption {
 	value: string
@@ -110,6 +120,18 @@ export const HenvendelseForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [henvendelseAttributt])}
 			>
 				<>
+					{henvendelser && henvendelser.length > 0 && (
+						<StyledExpansionCard>
+							<ExpansionCard size="small" aria-label="Eksisterende henvendelser på person">
+								<ExpansionCard.Header>
+									<ExpansionCard.Title>Eksisterende henvendelser på person</ExpansionCard.Title>
+								</ExpansionCard.Header>
+								<ExpansionCard.Content>
+									<HenvendelseListe data={henvendelser} />
+								</ExpansionCard.Content>
+							</ExpansionCard>
+						</StyledExpansionCard>
+					)}
 					{harMeldinger && (
 						<FormDollyFieldArray
 							name={henvendelseMeldingerPath}
