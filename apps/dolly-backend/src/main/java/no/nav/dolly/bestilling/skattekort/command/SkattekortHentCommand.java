@@ -21,7 +21,7 @@ import static java.util.Objects.nonNull;
 @Slf4j
 public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>> {
 
-    private static final String HENT_SKATTEKORT_URL = "/skattekort/{miljoe}/api/v1/person/hent-skattekort";
+    private static final String HENT_SKATTEKORT_URL = "/skattekort/{miljoe}/api/v2/person/hent-skattekort";
 
     private final WebClient webClient;
     private final SkattekortHentRequest request;

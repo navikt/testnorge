@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @Slf4j
 public class SkattekortOpprettCommand implements Callable<Mono<SkattekortResponse>> {
 
-    private static final String OPPRETT_SKATTEKORT_URL = "/skattekort/{miljoe}/api/v1/person/opprett";
+    private static final String OPPRETT_SKATTEKORT_URL = "/skattekort/{miljoe}/api/v2/person/opprett";
 
     private final WebClient webClient;
     private final SkattekortRequest request;
