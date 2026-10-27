@@ -8,11 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -23,6 +18,7 @@ public class InstdataDTO {
 
     private String norskident;
     private String institusjonsnummer;
+    private String tssEksternId;
 
     private InstdataInstitusjonstype institusjonstype;
     private String oppholdstype;
@@ -35,17 +31,6 @@ public class InstdataDTO {
 
     @EqualsAndHashCode.Exclude
     private String oppholdId;
-
-    @EqualsAndHashCode.Exclude
-    private Map<String, Set<String>> opprettedeOppholdId;
-
-    public Map<String, Set<String>> getOpprettedeOppholdId() {
-
-        if (isNull(opprettedeOppholdId)) {
-            opprettedeOppholdId = new HashMap<>();
-        }
-        return opprettedeOppholdId;
-    }
 
     public enum InstdataInstitusjonstype {
 

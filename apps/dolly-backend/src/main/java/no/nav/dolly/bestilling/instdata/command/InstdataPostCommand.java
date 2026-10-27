@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -13,8 +14,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +29,8 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
 
     @Override
     public Mono<InstdataResponse> call() {
+
+        log.info("Instdata opprett til {}: {}", miljoe, instdata);
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -39,12 +40,13 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(instdata)
                 .retrieve()
-                .toEntity(InstdataDTO.class)
+                .toEntity(new ParameterizedTypeReference<Map<String, List<InstdataDTO>>>() {
+                })
                 .map(resultat -> InstdataResponse.builder()
                         .personident(instdata.getNorskident())
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
-                        .institusjonsopphold(nonNull(resultat.getBody()) ? Map.of(miljoe, List.of(resultat.getBody())) : null)
+                        .institusjonsopphold(resultat.getBody())
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())

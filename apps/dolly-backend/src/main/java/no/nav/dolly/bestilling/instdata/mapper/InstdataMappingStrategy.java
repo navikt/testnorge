@@ -24,6 +24,7 @@ public class InstdataMappingStrategy implements MappingStrategy {
 
                         instdata.setOppholdstype(mapKategori(rsInstdata.getInstitusjonstype()).name());
                         instdata.setInstitusjonsnummer(mapInstitusjonsnummer(rsInstdata.getInstitusjonstype()));
+                        instdata.setTssEksternId(mapTssEksternId(rsInstdata.getInstitusjonstype()));
                     }
 
                     private static InstdataOppholdstype mapKategori(RsInstdata.InstdataInstitusjonstype type) {
@@ -41,6 +42,15 @@ public class InstdataMappingStrategy implements MappingStrategy {
                             case AS -> Institusjonsnummer.ADAMSTUEN_SYKEHJEM.getId();
                             case FO -> Institusjonsnummer.INDRE_OSTFOLD_FENGSEL.getId();
                             default -> Institusjonsnummer.HELGELANDSSYKEHUSET_HF.getId();
+                        };
+                    }
+
+                    private static String mapTssEksternId(RsInstdata.InstdataInstitusjonstype type) {
+
+                        return switch (type) {
+                            case AS -> TssEksternId.ADAMSTUEN_SYKEHJEM.getId();
+                            case FO -> TssEksternId.INDRE_OSTFOLD_FENGSEL.getId();
+                            default -> TssEksternId.HELGELANDSSYKEHUSET_HF.getId();
                         };
                     }
                 })
@@ -81,4 +91,17 @@ public class InstdataMappingStrategy implements MappingStrategy {
         private final String id;
     }
 
+    @Getter
+    public enum TssEksternId {
+
+        ADAMSTUEN_SYKEHJEM("80000464106"),
+        INDRE_OSTFOLD_FENGSEL("80000465653"),
+        HELGELANDSSYKEHUSET_HF("80000464241");
+
+        TssEksternId(String id) {
+            this.id = id;
+        }
+
+        private final String id;
+    }
 }

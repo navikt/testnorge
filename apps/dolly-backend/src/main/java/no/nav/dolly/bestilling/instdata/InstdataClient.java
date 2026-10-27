@@ -171,14 +171,18 @@ public class InstdataClient implements ClientRegister {
                     if (!newInstdata.isEmpty()) {
                         return instdataConsumer.postInstdata(newInstdata, miljoe)
                                 .flatMap(response -> {
-                                    var oppholdIder = response.getInstitusjonsopphold().values().stream()
-                                            .flatMap(List::stream)
-                                            .map(InstdataDTO::getOppholdId)
-                                            .collect(Collectors.toSet());
-                                    bestilling.getInstdata().getFirst().getOpprettedeOppholdId()
-                                            .computeIfAbsent(miljoe, _ -> new HashSet<>()).addAll(oppholdIder);
-                                    return transactionHelperService.persister(bestilling.getId(), bestilling)
-                                            .thenReturn(response);
+                                    if (response.getStatus().is2xxSuccessful()) {
+                                        var oppholdIder = response.getInstitusjonsopphold().values().stream()
+                                                .flatMap(List::stream)
+                                                .map(InstdataDTO::getOppholdId)
+                                                .collect(Collectors.toSet());
+                                        bestilling.getInstdata().getFirst().getOpprettedeOppholdId()
+                                                .computeIfAbsent(miljoe, _ -> new HashSet<>()).addAll(oppholdIder);
+                                        return transactionHelperService.persister(bestilling.getId(), bestilling)
+                                                .thenReturn(response);
+                                    } else {
+                                        return Mono.just(response);
+                                    }
                                 })
                                 .map(response -> String.format("%s:opphold=%d$%s",
                                         miljoe, oppholdId.incrementAndGet(), getStatus(response)))
