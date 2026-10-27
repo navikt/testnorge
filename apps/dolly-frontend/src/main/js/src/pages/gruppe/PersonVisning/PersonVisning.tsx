@@ -638,6 +638,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 								if (oppfoelgingsvedtak14aData) {
 									personData.oppfoelgingsvedtak14a = oppfoelgingsvedtak14aData
 								}
+								if (henvendelser) {
+									personData.henvendelser = henvendelser
+								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
 									personData,

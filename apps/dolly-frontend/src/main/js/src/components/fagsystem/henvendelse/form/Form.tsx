@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
@@ -10,6 +10,12 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { HenvendelseKodeverk } from '@/config/kodeverk'
 import { useAlleNavEnheter } from '@/utils/hooks/useNorg2'
 import { useHenvendelseTemagrupper } from '@/utils/hooks/useHenvendelse'
+import { formatDateTime } from '@/utils/DataFormatter'
+import { HenvendelseInfo } from '@/components/fagsystem/henvendelse/HenvendelseTypes'
+import {
+	BestillingsveilederContext,
+	BestillingsveilederContextType,
+} from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	henvendelseAttributt,
 	henvendelseMeldingerPath,
@@ -19,11 +25,32 @@ import {
 } from '@/components/fagsystem/henvendelse/initialValues'
 import { validation } from '@/components/fagsystem/henvendelse/form/validation'
 
-interface HenvendelseFelterProps {
-	path: string
+interface KjedeIdOption {
+	value: string
+	label: string
 }
 
-const HenvendelseFelter = ({ path }: HenvendelseFelterProps) => {
+interface HenvendelseFelterProps {
+	path: string
+	kjedeIdOptions: KjedeIdOption[]
+}
+
+const getKjedeIdOptions = (
+	henvendelser: HenvendelseInfo[] | undefined,
+	henvendelseType: string,
+): KjedeIdOption[] =>
+	henvendelser
+		?.filter(
+			(henvendelse) => henvendelse.henvendelseType === henvendelseType && henvendelse.kjedeId,
+		)
+		.map((henvendelse) => ({
+			value: henvendelse.kjedeId as string,
+			label: henvendelse.opprettetDato
+				? `${henvendelse.kjedeId} (${formatDateTime(henvendelse.opprettetDato)})`
+				: (henvendelse.kjedeId as string),
+		})) ?? []
+
+const HenvendelseFelter = ({ path, kjedeIdOptions }: HenvendelseFelterProps) => {
 	const { alleNavEnheter, loading: loadingEnheter } = useAlleNavEnheter()
 	const { temagrupper, loading: loadingTemagrupper } = useHenvendelseTemagrupper()
 
@@ -50,13 +77,14 @@ const HenvendelseFelter = ({ path }: HenvendelseFelterProps) => {
 				size="xlarge"
 				info="Hvis ikke valgt, vil enhet automatisk settes basert på personens adresse."
 			/>
-			<FormTextInput
+			<FormSelect
 				name={`${path}.kjedeId`}
 				label="Kjede-ID"
-				size="large"
-				info="Referanse når dette er fortsettelse av en tidligere melding."
+				options={kjedeIdOptions}
+				isDisabled={kjedeIdOptions.length === 0}
+				size="xlarge"
+				info="Velg kjede-ID for å legge meldingen til en eksisterende henvendelse på person. Hvis ingen kjede-ID velges, vil en ny henvendelse opprettes. Se evt. eksisterende henvendelser øverst på siden."
 			/>
-			<FormTextInput name={`${path}.meldingsId`} label="Meldings-ID" size="large" />
 			<FormTextInput name={`${path}.fritekst`} label="Fritekst" size="xxlarge" />
 		</>
 	)
@@ -64,8 +92,13 @@ const HenvendelseFelter = ({ path }: HenvendelseFelterProps) => {
 
 export const HenvendelseForm = () => {
 	const formMethods = useFormContext()
+	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
 	const harMeldinger = formMethods.watch(henvendelseMeldingerPath)
 	const harSamtalereferater = formMethods.watch(henvendelseSamtalereferaterPath)
+
+	const henvendelser: HenvendelseInfo[] | undefined = opts?.personFoerLeggTil?.henvendelser
+	const meldingskjedeOptions = getKjedeIdOptions(henvendelser, 'MELDINGSKJEDE')
+	const samtalereferatOptions = getKjedeIdOptions(henvendelser, 'SAMTALEREFERAT')
 
 	return (
 		<Vis attributt={henvendelseAttributt}>
@@ -86,8 +119,8 @@ export const HenvendelseForm = () => {
 						>
 							{(path: string, idx: number) => (
 								<React.Fragment key={idx}>
-									<HenvendelseFelter path={path} />
-									<FormCheckbox name={`${path}.tildelMeg`} label="Tildel meg" />
+									<HenvendelseFelter path={path} kjedeIdOptions={meldingskjedeOptions} />
+									<FormCheckbox name={`${path}.tildelMeg`} label="Tildel meg" checkboxMargin />
 								</React.Fragment>
 							)}
 						</FormDollyFieldArray>
@@ -101,7 +134,7 @@ export const HenvendelseForm = () => {
 						>
 							{(path: string, idx: number) => (
 								<React.Fragment key={idx}>
-									<HenvendelseFelter path={path} />
+									<HenvendelseFelter path={path} kjedeIdOptions={samtalereferatOptions} />
 								</React.Fragment>
 							)}
 						</FormDollyFieldArray>

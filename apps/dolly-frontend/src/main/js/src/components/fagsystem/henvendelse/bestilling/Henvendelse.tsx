@@ -33,7 +33,6 @@ const HenvendelseVerdier = ({
 		<TitleValue title="Tema" value={data.tema} kodeverk={HenvendelseKodeverk.Tema} />
 		<TitleValue title="Enhet" value={getEnhetLabel(data.enhet)} />
 		<TitleValue title="Kjede-ID" value={data.kjedeId} />
-		<TitleValue title="Meldings-ID" value={data.meldingsId} />
 		<TitleValue title="Fritekst" value={data.fritekst} />
 	</>
 )
