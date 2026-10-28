@@ -19,12 +19,13 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Mono;
@@ -45,8 +46,9 @@ import static org.mockito.Mockito.when;
 class TenorPersonMalRepositoryTest {
 
     @Container
-    private static final PostgreSQLContainer<?> POSTGRES =
-            new PostgreSQLContainer<>("postgres:15-alpine");
+    @ServiceConnection
+    private static final PostgreSQLContainer POSTGRES =
+            new PostgreSQLContainer("postgres:15-alpine");
 
     @Autowired
     private TenorPersonMalRepository malRepository;
@@ -68,18 +70,9 @@ class TenorPersonMalRepositoryTest {
 
     @DynamicPropertySource
     static void databaseProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.flyway.url", POSTGRES::getJdbcUrl);
-        registry.add("spring.flyway.user", POSTGRES::getUsername);
-        registry.add("spring.flyway.password", POSTGRES::getPassword);
         registry.add(
                 "spring.flyway.placeholders.malNameIndexExpression",
                 () -> "lower(mal_navn)");
-        registry.add("spring.r2dbc.url", () -> "r2dbc:postgresql://%s:%d/%s".formatted(
-                POSTGRES.getHost(),
-                POSTGRES.getFirstMappedPort(),
-                POSTGRES.getDatabaseName()));
-        registry.add("spring.r2dbc.username", POSTGRES::getUsername);
-        registry.add("spring.r2dbc.password", POSTGRES::getPassword);
     }
 
     @BeforeEach
