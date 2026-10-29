@@ -10,11 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -42,17 +37,6 @@ public class RsInstdata {
     @EqualsAndHashCode.Exclude
     @Schema(description = "Id for opphold; brukes ved endring")
     private String oppholdId;
-
-    @EqualsAndHashCode.Exclude
-    private Map<String, Set<String>> opprettedeOppholdId;
-
-    public Map<String, Set<String>> getOpprettedeOppholdId() {
-
-        if (isNull(opprettedeOppholdId)) {
-            opprettedeOppholdId = new HashMap<>();
-        }
-        return opprettedeOppholdId;
-    }
 
     @Getter
     public enum InstdataInstitusjonstype {

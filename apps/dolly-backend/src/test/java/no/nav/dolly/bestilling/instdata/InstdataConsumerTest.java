@@ -15,8 +15,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -49,6 +51,22 @@ class InstdataConsumerTest extends AbstractConsumerTest {
                     .as(StepVerifier::create)
                     .assertNext(status ->
                             MatcherAssert.assertThat(status.getStatus(), Matchers.is(HttpStatus.OK)))
+                    .verifyComplete();
+        }
+
+        @Test
+        void putInstdataNaarOppholdIkkeFinnesReturnererOk() {
+
+            stubFor(put(urlPathMatching("(.*)/inst/api/v1/institusjonsopphold/42"))
+                    .withQueryParam("environment", equalTo(ENVIRONMENT))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.NOT_FOUND.value())
+                            .withBody("Institusjonsopphold med id 42 finnes ikke")));
+
+            instdataConsumer.postInstdata(List.of(InstdataDTO.builder().oppholdId("42").build()), ENVIRONMENT)
+                    .as(StepVerifier::create)
+                    .assertNext(response ->
+                            assertThat(response.getStatus(), Matchers.is(HttpStatus.OK)))
                     .verifyComplete();
         }
 

@@ -11,10 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
-
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,22 +39,28 @@ public class InstdataPutCommand implements Callable<Mono<InstdataResponse>> {
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(instdata)
                 .retrieve()
-                .toEntity(InstdataDTO.class)
+                .toBodilessEntity()
                 .map(resultat -> InstdataResponse.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
-                        .institusjonsopphold(nonNull(resultat.getBody()) ?
-                                Map.of(miljoe, List.of(resultat.getBody())) : null)
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
                     var error = WebClientError.describe(throwable);
+                    if (error.getMessage().contains("Institusjonsopphold med id %s finnes ikke"
+                            .formatted(instdata.getOppholdId()))) {
+                        return Mono.just(InstdataResponse.builder()
+                                .status(HttpStatus.OK)
+                                .environments(List.of(miljoe))
+                                .build());
+                    } else {
                     return Mono.just(InstdataResponse.builder()
                             .status(error.getStatus())
                             .feilmelding(error.getMessage())
                             .environments(List.of(miljoe))
                             .build());
+                    }
                 });
     }
 }
