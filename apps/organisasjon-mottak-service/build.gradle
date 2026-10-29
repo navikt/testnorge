@@ -35,10 +35,10 @@ dependencies {
     implementation "org.springframework.kafka:spring-kafka"
 
     implementation "io.confluent:kafka-avro-serializer:$versions.avroSerializer"
-    implementation "org.apache.httpcomponents.core5:httpcore5:5.3"
+    implementation "org.apache.httpcomponents.core5:httpcore5"
     implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
 
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
     testImplementation "org.springframework.security:spring-security-test"
 }

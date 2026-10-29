@@ -75,8 +75,8 @@ public class AdresseController {
     @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
     public Flux<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) Long matrikkelId,
                                                                @RequestParam(required = false) String kommunenummer,
-                                                               @RequestParam(required = false) String gaardsnummer,
-                                                               @RequestParam(required = false) String bruksnummer,
+                                                               @RequestParam(required = false) Long gaardsnummer,
+                                                               @RequestParam(required = false) Long bruksnummer,
                                                                @RequestParam(required = false) String postnummer,
                                                                @RequestParam(required = false) String poststed,
                                                                @RequestParam(required = false) String tilleggsnavn,

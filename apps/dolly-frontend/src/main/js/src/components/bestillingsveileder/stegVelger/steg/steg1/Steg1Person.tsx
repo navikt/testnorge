@@ -23,8 +23,10 @@ import { ArbeidssoekerPanel } from '@/components/bestillingsveileder/stegVelger/
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
 import { useFormContext } from 'react-hook-form'
 import { NavAnsattPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/NavAnsatt'
+import { SalesforcePanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Salesforce'
 import { PanelFilterContext } from '@/components/ui/panel/PanelFilterContext'
 import { Search } from '@navikt/ds-react'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -39,6 +41,8 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	const testnorgeIdent = identFraTestnorge(opts)
 	const personFoerLeggTil = opts?.personFoerLeggTil
 	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
+	const { gruppe } = useGruppeById(leggTil ? opts?.gruppeId : null)
+	const visSalesforcePanel = leggTil && !!gruppe?.tags?.includes('SALESFORCE')
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -59,6 +63,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		DokarkivPanel,
 		PensjonPanel,
 		NavAnsattPanel,
+		SalesforcePanel,
 	]
 		.map((panel) => ({
 			label: panel.heading,
@@ -110,6 +115,9 @@ export const Steg1Person = ({ stateModifier }: any) => {
 					formValues={formValues}
 				/>
 				<DokarkivPanel stateModifier={stateModifier} formValues={formValues} />
+				{visSalesforcePanel && (
+					<SalesforcePanel stateModifier={stateModifier} formValues={formValues} />
+				)}
 			</AttributtVelger>
 		</PanelFilterContext.Provider>
 	)

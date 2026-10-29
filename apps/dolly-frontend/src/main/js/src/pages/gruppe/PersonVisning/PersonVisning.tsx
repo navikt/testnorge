@@ -58,6 +58,7 @@ import {
 	harKelvinAapBestilling,
 	harMedlBestilling,
 	harOppfoelgingsvedtak14aBestilling,
+	harHenvendelseBestilling,
 	harPensjonavtaleBestilling,
 	harPoppBestilling,
 	harSigrunstubPensjonsgivendeInntekt,
@@ -121,6 +122,9 @@ import { KdiVisning, sjekkManglerKdiData } from '@/components/fagsystem/kdi/visn
 import { useInstData, useKdiData } from '@/utils/hooks/useInstitusjon'
 import { useOppfoelgingsvedtak14a } from '@/utils/hooks/useOppfoelgingsvedtak14a'
 import { Oppfoelgingsvedtak14aVisning } from '@/components/fagsystem/oppfoelgingsvedtak14a/visning/Oppfoelgingsvedtak14aVisning'
+import { useHenvendelser } from '@/utils/hooks/useHenvendelse'
+import { usePdlAktoerId } from '@/utils/hooks/usePdlPerson'
+import { HenvendelseVisning } from '@/components/fagsystem/henvendelse/visning/HenvendelseVisning'
 import { Button } from '@navikt/ds-react'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { OpprettMal } from '@/pages/maler/OpprettMal'
@@ -198,7 +202,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 		harSkattekortBestilling(bestillingerFagsystemer),
 	)
 
-	const { medl, error: medlError } = useMedlPerson(
+	const {
+		medl,
+		loading: loadingMedl,
+		error: medlError,
+	} = useMedlPerson(
 		ident.ident,
 		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
@@ -295,6 +303,13 @@ const PersonVisning = (props: PersonVisningProps) => {
 		ident.ident,
 		harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer),
 	)
+
+	const { aktoerId, loading: loadingAktoerId } = usePdlAktoerId(
+		ident.ident,
+		harHenvendelseBestilling(bestillingerFagsystemer),
+	)
+
+	const { henvendelser, loading: loadingHenvendelser } = useHenvendelser(aktoerId)
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
@@ -409,42 +424,74 @@ const PersonVisning = (props: PersonVisningProps) => {
 
 	const { inntektstub, brregstub, krrstub } = data
 
+	const manglerData = <T,>(
+		harBestilling: (fagsystemer: typeof bestillingerFagsystemer) => boolean,
+		loadingData: boolean,
+		fagsystemData: T | null | undefined,
+		sjekkMangler?: (fagsystemData: T) => boolean,
+	): boolean => {
+		if (!harBestilling(bestillingerFagsystemer) || loadingData) {
+			return false
+		}
+		if (!fagsystemData) {
+			return true
+		}
+		return !!sjekkMangler?.(fagsystemData)
+	}
+
 	const manglerFagsystemdata = (): boolean => {
 		const checks: boolean[] = [
 			Array.isArray(krrstub) && krrstub.length === 0,
 			harInntektstubBestilling(bestillingerFagsystemer) &&
 				(!inntektstub || (Array.isArray(inntektstub) && inntektstub.length === 0)),
 			!!(arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold),
-			!!(poppData && sjekkManglerPensjonData(poppData)),
-			!!(tpDataForhold && sjekkManglerTpData(tpDataForhold)),
-			!!(apData && sjekkManglerApData(apData)),
-			!!(uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)),
+			manglerData(harPoppBestilling, loadingPoppData, poppData, sjekkManglerPensjonData),
+			manglerData(harTpBestilling, loadingTpDataForhold, tpDataForhold, sjekkManglerTpData),
+			manglerData(harApBestilling, loadingApData, apData, sjekkManglerApData),
+			manglerData(
+				harUforetrygdBestilling,
+				loadingUforetrygdData,
+				uforetrygdData,
+				sjekkManglerUforetrygdData,
+			),
 			!!(brregstub && sjekkManglerBrregData(brregstub)),
-			!!(instData && sjekkManglerInstData(instData)),
-			!!(kdiData && sjekkManglerKdiData(kdiData)),
-			!!(yrkesskadeData && sjekkManglerYrkesskadeData(yrkesskadeData)),
-			!!(
-				(udistub && sjekkManglerUdiData(udistub)) ||
-				(harUdistubBestilling(bestillingerFagsystemer) && !udistub && udistubError)
+			manglerData(harInstBestilling, loadingInstData, instData, sjekkManglerInstData),
+			manglerData(harKdiBestilling, loadingKdiData, kdiData, sjekkManglerKdiData),
+			manglerData(
+				harYrkesskaderBestilling,
+				loadingYrkesskadeData,
+				yrkesskadeData,
+				sjekkManglerYrkesskadeData,
 			),
-			!!(
-				(harMedlBestilling(bestillingerFagsystemer) && medlError) ||
-				(harMedlBestilling(bestillingerFagsystemer) &&
-					medl &&
-					Array.isArray(medl) &&
-					medl.length === 0)
+			manglerData(harUdistubBestilling, loadingUdistub, udistub, sjekkManglerUdiData),
+			manglerData(
+				harMedlBestilling,
+				loadingMedl,
+				medlError ? null : medl,
+				(medlData) => !Array.isArray(medlData) || medlData.length === 0,
 			),
-			!!(
-				harArbeidsplassenBestilling(bestillingerFagsystemer) &&
-				!arbeidsplassencvData &&
-				arbeidsplassencvError
+			manglerData(
+				harArbeidsplassenBestilling,
+				loadingArbeidsplassencvData,
+				arbeidsplassencvError ? null : arbeidsplassencvData,
 			),
-			!!(
-				harOppfoelgingsvedtak14aBestilling(bestillingerFagsystemer) &&
-				!oppfoelgingsvedtak14aData &&
-				errorOppfoelgingsvedtak14aData
+			manglerData(
+				harOppfoelgingsvedtak14aBestilling,
+				loadingOppfoelgingsvedtak14aData,
+				oppfoelgingsvedtak14aData,
 			),
-			!!(dokarkivData && sjekkManglerDokarkivData(dokarkivData)),
+			manglerData(
+				harHenvendelseBestilling,
+				loadingAktoerId || loadingHenvendelser,
+				henvendelser,
+				(henvendelseListe) => henvendelseListe.length === 0,
+			),
+			manglerData(
+				harDokarkivBestilling,
+				loadingDokarkivData,
+				dokarkivData,
+				sjekkManglerDokarkivData,
+			),
 		]
 
 		return checks.some(Boolean)
@@ -529,7 +576,23 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingSkattekort ||
 		loadingKdiData ||
 		loadingKelvinAapBehandlingStatus ||
-		loadingOppfoelgingsvedtak14aData
+		loadingOppfoelgingsvedtak14aData ||
+		loadingAktoerId ||
+		loadingHenvendelser
+
+	const isLoadingAlleFagsystemer =
+		isLoadingFagsystemer ||
+		loading?.krrstub ||
+		loading?.inntektstub ||
+		loading?.brregstub ||
+		loadingMedl ||
+		loadingUdistub ||
+		loadingTpDataForhold ||
+		loadingPoppData ||
+		loadingUforetrygdData ||
+		loadingInstData ||
+		loadingYrkesskadeData ||
+		loadingDokarkivData
 
 	return (
 		<ErrorBoundary>
@@ -575,6 +638,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 								if (oppfoelgingsvedtak14aData) {
 									personData.oppfoelgingsvedtak14a = oppfoelgingsvedtak14aData
 								}
+								if (henvendelser) {
+									personData.henvendelser = henvendelser
+								}
 								personData.timedOutFagsystemer = timedOutFagsystemer
 								leggTilPaaPerson(
 									personData,
@@ -616,7 +682,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 						<FrigjoerButton slettPerson={slettPerson} loading={loading.slettPerson} />
 					)}
 				</div>
-				{manglerFagsystemdata() && (
+				{!isLoadingAlleFagsystemer && manglerFagsystemdata() && (
 					<StyledAlert variant={'info'} size={'small'}>
 						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
 						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med Team Dolly
@@ -782,6 +848,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} ident={ident.ident} />
+				<HenvendelseVisning
+					data={henvendelser}
+					loading={loadingAktoerId || loadingHenvendelser}
+					harBestilling={harHenvendelseBestilling(bestillingerFagsystemer)}
+				/>
 				<SkatteetatenVisning
 					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
 						dokument.identifikator?.includes(ident.ident),

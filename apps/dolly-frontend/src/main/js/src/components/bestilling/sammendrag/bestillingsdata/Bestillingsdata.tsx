@@ -60,6 +60,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { KelvinAap } from '@/components/fagsystem/kelvin/bestilling/KelvinAap'
 import { KdiBestilling } from '@/components/fagsystem/kdi/bestilling/KdiBestilling'
 import { Oppfoelgingsvedtak14a } from '@/components/fagsystem/oppfoelgingsvedtak14a/bestilling/Oppfoelgingsvedtak14a'
+import { Henvendelse } from '@/components/fagsystem/henvendelse/bestilling/Henvendelse'
 
 type BestillingsdataTypes = {
 	bestilling: any
@@ -147,6 +148,7 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 			<Udistub udistub={bestilling.udistub} />
 			<Dokarkiv dokarkivListe={bestilling.dokarkiv} />
 			<Histark histark={bestilling.histark} />
+			<Henvendelse henvendelse={bestilling.henvendelse} />
 		</ErrorBoundary>
 	)
 }

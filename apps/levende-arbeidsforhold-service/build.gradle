@@ -38,5 +38,5 @@ dependencies {
 
     implementation "org.springframework.kafka:spring-kafka"
 
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }

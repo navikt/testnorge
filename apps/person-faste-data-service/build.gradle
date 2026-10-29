@@ -24,10 +24,11 @@ dependencies {
     implementation "com.h2database:h2"
     implementation "com.zaxxer:HikariCP"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "org.springframework.boot:spring-boot-flyway"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
     implementation "org.postgresql:postgresql"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }

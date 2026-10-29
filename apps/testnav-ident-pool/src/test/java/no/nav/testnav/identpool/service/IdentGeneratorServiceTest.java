@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.testcontainers.shaded.com.google.common.collect.Ordering;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Generering av identer")
@@ -70,7 +70,8 @@ class IdentGeneratorServiceTest {
         Map<LocalDate, List<String>> pinMap =
                 identGeneratorService.genererIdenterMap(localDate, localDate.plusDays(1), Identtype.FNR, false);
         assertThat(pinMap.size(), is(equalTo(1)));
-        assertThat(Ordering.natural().reverse().isOrdered(pinMap.get(localDate)), is(false));
+        var identer = pinMap.get(localDate);
+        assertThat(identer.stream().sorted(Comparator.reverseOrder()).toList().equals(identer), is(false));
     }
 
     @Test

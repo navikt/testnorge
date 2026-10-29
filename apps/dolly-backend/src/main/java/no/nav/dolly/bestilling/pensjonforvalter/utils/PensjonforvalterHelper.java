@@ -27,7 +27,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.basicAlderspensjonRequestDTO;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static org.apache.poi.util.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service

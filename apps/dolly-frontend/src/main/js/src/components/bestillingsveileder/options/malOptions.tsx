@@ -21,6 +21,11 @@ import {
 } from '@/components/fagsystem/aareg/form/initialValues'
 import { FullmaktHandling } from '@/components/fagsystem/fullmakt/FullmaktType'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
+import {
+	initialMelding,
+	initialSamtalereferat,
+} from '@/components/fagsystem/henvendelse/initialValues'
+import { HenvendelseTypes } from '@/components/fagsystem/henvendelse/HenvendelseTypes'
 
 export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
@@ -115,9 +120,28 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	if (initialValuesMal.fullmakt) {
 		initialValuesMal.fullmakt = getUpdatedFullmaktData(initialValuesMal.fullmakt)
 	}
+	if (initialValuesMal.henvendelse) {
+		initialValuesMal.henvendelse = getUpdatedHenvendelseData(initialValuesMal.henvendelse)
+	}
 	const gyldigeEnvironments = gyldigeDollyMiljoer(environments)
 	initialValuesMal.environments = filterMiljoe(gyldigeEnvironments, mal.bestilling?.environments)
 	return initialValuesMal
+}
+
+const getUpdatedHenvendelseData = (henvendelseData: HenvendelseTypes) => {
+	const newHenvendelseData = Object.assign({}, henvendelseData)
+	if (newHenvendelseData.meldinger) {
+		newHenvendelseData.meldinger = newHenvendelseData.meldinger.map((melding) =>
+			updateData(_.omit(melding, ['kjedeId', 'meldingsId']), initialMelding),
+		)
+	}
+	if (newHenvendelseData.samtalereferater) {
+		newHenvendelseData.samtalereferater = newHenvendelseData.samtalereferater.map(
+			(samtalereferat) =>
+				updateData(_.omit(samtalereferat, ['kjedeId', 'meldingsId']), initialSamtalereferat),
+		)
+	}
+	return newHenvendelseData
 }
 
 const getUpdatedFullmaktData = (fullmaktData) => {

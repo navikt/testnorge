@@ -28,7 +28,7 @@ import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
-import static org.apache.poi.util.StringUtil.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
