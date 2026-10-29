@@ -27,6 +27,8 @@ import { validation } from '@/components/fagsystem/kdi/form/validation'
 import { useFengsel } from '@/utils/hooks/useInstitusjon'
 import { RedigeringAnnulleringForm } from '@/components/fagsystem/kdi/form/partials/RedigeringAnnulleringForm'
 import { Tag } from '@navikt/ds-react'
+import styled from 'styled-components'
+import { KdiMeldingProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 const meldingstyper = [
 	{
@@ -61,6 +63,15 @@ const meldingstyper = [
 	},
 ] as const
 
+type Meldingstype = (typeof meldingstyper)[number]
+
+type Melding = KdiMeldingProps & {
+	key: Meldingstype['key']
+	header: Meldingstype['header']
+	Form: Meldingstype['Form']
+	idx: number
+}
+
 const meldingType = {
 	ANNULLERT: 'Annullert',
 	REDIGERING: 'Redigering',
@@ -76,6 +87,18 @@ const FieldArrayTag = ({ type }: { type: any }) => (
 		{type}
 	</Tag>
 )
+
+const MeldingGruppe = styled.div`
+	background-color: var(--ax-bg-meta-purple-soft);
+	border-left: 4px solid var(--ax-border-meta-purple);
+	padding-top: 10px;
+	margin-bottom: 10px;
+
+	&& .dfa-blokk {
+		background-color: transparent;
+		border-left: none;
+	}
+`
 
 export const naaPubliseringstidspunkt = () =>
 	Temporal.Now.plainDateTimeISO()
@@ -104,31 +127,51 @@ export const KdiForm = () => {
 
 	// Rekkefoelgen fryses mens publiseringstidspunkt redigeres, og oppdateres kun naar
 	// brukeren trykker "Oppdater rekkefoelge", naar meldinger legges til/fjernes, eller ved ny render.
-	const meldinger = useMemo(
-		() =>
-			meldingstyper
-				.flatMap(({ key, header, Form }) =>
-					fieldArrays[key].fields.map((_field: any, idx: number) => ({
-						...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
-						key,
-						header,
-						Form,
-						idx,
-					})),
-				)
-				.sort(
-					(a, b) =>
-						publiseringstidspunktTid(a.publiseringstidspunkt) -
-						publiseringstidspunktTid(b.publiseringstidspunkt),
-				),
-		[
-			sortVersjon,
-			fieldArrays.innsettelse.fields,
-			fieldArrays.loeslatelse.fields,
-			fieldArrays.avbruddStart.fields,
-			fieldArrays.avbruddSlutt.fields,
-			fieldArrays.forventetLoeslatelse.fields,
-		],
+	const meldingGrupper = useMemo(() => {
+		const grupper = new Map<string, Array<Melding>>()
+
+		meldingstyper.forEach(({ key, header, Form }) =>
+			fieldArrays[key].fields.forEach((_field: any, idx: number) => {
+				const melding = {
+					...formMethods.getValues(`instdataKdi.${key}[${idx}]`),
+					key,
+					header,
+					Form,
+					idx,
+				}
+				const gruppeKey = melding.hendelseId ? `${key}-${melding.hendelseId}` : `${key}-${idx}`
+				grupper.set(gruppeKey, [...(grupper.get(gruppeKey) || []), melding])
+			}),
+		)
+
+		const sisteTidspunkt = (gruppeMeldinger: Array<Melding>) => {
+			const redigeringer = gruppeMeldinger.filter((melding) => !melding.meldingId)
+			const relevanteMeldinger = redigeringer.length > 0 ? redigeringer : gruppeMeldinger
+			return publiseringstidspunktTid(
+				relevanteMeldinger[relevanteMeldinger.length - 1].publiseringstidspunkt,
+			)
+		}
+
+		return Array.from(grupper, ([gruppeKey, gruppeMeldinger]) => ({
+			gruppeKey,
+			meldinger: gruppeMeldinger.sort(
+				(a, b) =>
+					publiseringstidspunktTid(a.publiseringstidspunkt) -
+					publiseringstidspunktTid(b.publiseringstidspunkt),
+			),
+		})).sort((a, b) => sisteTidspunkt(a.meldinger) - sisteTidspunkt(b.meldinger))
+	}, [
+		sortVersjon,
+		fieldArrays.innsettelse.fields,
+		fieldArrays.loeslatelse.fields,
+		fieldArrays.avbruddStart.fields,
+		fieldArrays.avbruddSlutt.fields,
+		fieldArrays.forventetLoeslatelse.fields,
+	])
+
+	const antallMeldinger = meldingGrupper.reduce(
+		(antall, gruppe) => antall + gruppe.meldinger.length,
+		0,
 	)
 
 	const { fengsler } = useFengsel()
@@ -152,6 +195,51 @@ export const KdiForm = () => {
 		})
 	}
 
+	const renderMelding = ({ key, header, Form, idx }: Melding, meldingNr: number) => {
+		const hendelse = formMethods.getValues(`instdataKdi.${key}[${idx}]`)
+		const meldingId = formMethods.getValues(`instdataKdi.${key}[${idx}].meldingId`)
+		const hendelseId = formMethods.getValues(`instdataKdi.${key}[${idx}].hendelseId`)
+
+		const erEksisterendeMelding = !!meldingId
+		const erRedigering = !erEksisterendeMelding && !!hendelseId
+		const harAnnullering = annulleringer?.find((a) => a.annullertMeldingId === meldingId)
+
+		return (
+			<DollyFaBlokk
+				key={`${key}-${idx}`}
+				idx={idx}
+				number={meldingNr}
+				header={header}
+				handleRemove={() => fieldArrays[key].remove(idx)}
+				tag={
+					harAnnullering ? (
+						<FieldArrayTag type={meldingType.ANNULLERT} />
+					) : erRedigering ? (
+						<FieldArrayTag type={meldingType.REDIGERING} />
+					) : null
+				}
+				showDeleteButton={!erEksisterendeMelding && antallMeldinger > 1}
+			>
+				<Form
+					path={`instdataKdi.${key}[${idx}]`}
+					formMethods={formMethods}
+					erEksisterendeMelding={erEksisterendeMelding}
+					fengselOptions={fengselOptions}
+					onSort={() => setSortVersjon((versjon) => versjon + 1)}
+					sortVersjon={sortVersjon}
+				/>
+				{erEksisterendeMelding && (
+					<RedigeringAnnulleringForm
+						meldingId={meldingId}
+						handleRedigering={() => handleRedigering(key, hendelse)}
+					/>
+				)}
+			</DollyFaBlokk>
+		)
+	}
+
+	let meldingNr = 0
+
 	return (
 		<Vis attributt={instdataKdiAttributt}>
 			<Panel
@@ -163,48 +251,18 @@ export const KdiForm = () => {
 				<ErrorBoundary>
 					<Kategori title={'KDI-meldinger'}>
 						<DollyFieldArrayWrapper>
-							{meldinger.map(({ key, header, Form, idx }, meldingNr) => {
-								const hendelse = formMethods.getValues(`instdataKdi.${key}[${idx}]`)
-								const meldingId = formMethods.getValues(`instdataKdi.${key}[${idx}].meldingId`)
-								const hendelseId = formMethods.getValues(`instdataKdi.${key}[${idx}].hendelseId`)
-
-								const erEksisterendeMelding = !!meldingId
-								const erRedigering = !erEksisterendeMelding && !!hendelseId
-								const harAnnullering = annulleringer?.find(
-									(a) => a.annullertMeldingId === meldingId,
-								)
-
+							{meldingGrupper.map(({ gruppeKey, meldinger }) => {
+								if (meldinger.length === 1) {
+									return renderMelding(meldinger[0], ++meldingNr)
+								}
 								return (
-									<DollyFaBlokk
-										key={`${key}-${idx}`}
-										idx={idx}
-										number={meldingNr + 1}
-										header={header}
-										handleRemove={() => fieldArrays[key].remove(idx)}
-										tag={
-											harAnnullering ? (
-												<FieldArrayTag type={meldingType.ANNULLERT} />
-											) : erRedigering ? (
-												<FieldArrayTag type={meldingType.REDIGERING} />
-											) : null
-										}
-										showDeleteButton={!erEksisterendeMelding && meldinger?.length > 1}
+									<MeldingGruppe
+										key={gruppeKey}
+										role="group"
+										aria-label={`${meldinger[0].header} med redigeringer`}
 									>
-										<Form
-											path={`instdataKdi.${key}[${idx}]`}
-											formMethods={formMethods}
-											erEksisterendeMelding={erEksisterendeMelding}
-											fengselOptions={fengselOptions}
-											onSort={() => setSortVersjon((versjon) => versjon + 1)}
-											sortVersjon={sortVersjon}
-										/>
-										{erEksisterendeMelding && (
-											<RedigeringAnnulleringForm
-												meldingId={meldingId}
-												handleRedigering={() => handleRedigering(key, hendelse)}
-											/>
-										)}
-									</DollyFaBlokk>
+										{meldinger.map((melding) => renderMelding(melding, ++meldingNr))}
+									</MeldingGruppe>
 								)
 							})}
 							<div className="flexbox--flex-wrap">
