@@ -177,7 +177,6 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
     void shouldLagreOppholdIdFraResponsPaaBestilling() {
 
