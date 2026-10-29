@@ -3,6 +3,7 @@ import { UseFormReturn } from 'react-hook-form'
 import * as _ from 'lodash-es'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { BestillingsveilederContextType } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { henvendelseAttributt } from '@/components/fagsystem/henvendelse/initialValues'
 
 interface UseMalFormSyncProps {
 	context: BestillingsveilederContextType
@@ -75,7 +76,7 @@ const buildMalBasedValues = (
 	}
 
 	if (isNy) {
-		return baseNextValues
+		return _.omit(baseNextValues, henvendelseAttributt)
 	}
 
 	const sanitized = sanitizePdldata(malValues.pdldata)

@@ -210,7 +210,7 @@ export const useTransaksjonIdPensjon = (ident, harBestilling) => {
 }
 
 export const useDokarkivData = (ident, harDokarkivbestilling) => {
-	const { transaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
+	const { transaksjonsid, loading: loadingTransaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
 	const { dokarkivEnvironments } = useDokarkivEnvironments()
 
 	const { data, isLoading, error } = useSWR<any, Error>(
@@ -220,7 +220,7 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 	return {
 		dokarkivData: data?.sort?.((a, b) => a.miljo?.localeCompare(b.miljo)),
-		loading: isLoading,
+		loading: isLoading || (harDokarkivbestilling && loadingTransaksjonsid),
 		error: error,
 	}
 }

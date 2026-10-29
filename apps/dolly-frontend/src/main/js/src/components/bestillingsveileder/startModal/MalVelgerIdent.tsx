@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
 import { useToggle } from 'react-use'
 import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
@@ -15,6 +15,9 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { henvendelseAttributt } from '@/components/fagsystem/henvendelse/initialValues'
 
 type MalVelgerProps = {
 	brukerId: string
@@ -73,9 +76,20 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 	const brukerOptions = getBrukerOptions(brukere)
 	const malOptions = getMalOptions(maler)
 
+	const leggTil = opts.is?.leggTil || opts.is?.leggTilPaaGruppe
+	const { gruppe } = useGruppeById(leggTil && gruppeId ? String(gruppeId) : '')
+	const kanBrukeHenvendelse = !!leggTil && !!gruppe?.tags?.includes('SALESFORCE')
+
+	const fjernHenvendelseHvisIkkeTillatt = (malData: any) => {
+		if (kanBrukeHenvendelse || !_.has(malData, `bestilling.${henvendelseAttributt}`)) {
+			return malData
+		}
+		return { ...malData, bestilling: _.omit(malData.bestilling, henvendelseAttributt) }
+	}
+
 	const handleMalChange = (mal: { value: string; label: string; data: any }) => {
 		if (mal) {
-			opts.setMal && opts.setMal(mal.data)
+			opts.setMal && opts.setMal(fjernHenvendelseHvisIkkeTillatt(mal.data))
 			formMethods.setValue('mal', mal.value)
 			formMethods.setValue('gruppeId', gruppeId)
 			const identtype = _.get(mal.data, 'bestilling.pdldata.opprettNyPerson.identtype')
@@ -146,6 +160,9 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 	const erGammelDetaljertSykemeldingMal = _.has(bestillingData, 'sykemelding.detaljertSykemelding')
 	const erLignetInntektMal = _.has(bestillingData, 'sigrunstub')
 	const erGammelInntektstubMal = _.has(bestillingData, 'inntektstub')
+	const harHenvendelseSomFjernes =
+		!kanBrukeHenvendelse &&
+		_.has(valgtMal?.data?.bestilling ?? bestillingData, henvendelseAttributt)
 	const erUtdatertMal =
 		erGammelFullmaktMal ||
 		erGammelAmeldingMal ||
@@ -167,7 +184,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 				size={'small'}
 				isSwitch
 			/>
-			<div style={{ marginTop: '10px' }}>
+			<div className="ny-bestilling-form_row" style={{ marginTop: '10px' }}>
 				<DollySelect
 					name="zIdent"
 					label="Bruker/team"
@@ -197,9 +214,27 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 				</Button>
 			</div>
 			{erUtdatertMal && (
-				<Alert variant={'warning'} size={'small'} style={{ width: '97%', marginBottom: '10px' }}>
-					Denne malen er utdatert, og vil muligens ikke fungere som den skal.
-				</Alert>
+				<InfoCard
+					data-color="warning"
+					size="small"
+					style={{ marginRight: '20px', marginBottom: '20px' }}
+				>
+					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+						Denne malen er utdatert, og vil muligens ikke fungere som den skal.
+					</InfoCard.Message>
+				</InfoCard>
+			)}
+			{harHenvendelseSomFjernes && (
+				<InfoCard
+					data-color="warning"
+					size="small"
+					style={{ marginRight: '20px', marginBottom: '20px' }}
+				>
+					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+						Denne malen inneholder henvendelser fra Salesforce, og kan kun brukes ved legg til /
+						endre på en person som ligger i en gruppe med tag "SALESFORCE".
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 		</div>
 	)
