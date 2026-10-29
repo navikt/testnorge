@@ -12,7 +12,6 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.TransactionHelperService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -82,7 +81,6 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
     void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
@@ -114,7 +112,6 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
     void gjenopprettNaarInstdataFinnesFraFoer_SkalGiOk() {
 
@@ -177,7 +174,6 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
     void shouldLagreOppholdIdFraResponsPaaBestilling() {
 

@@ -24,7 +24,6 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -208,7 +207,7 @@ public class InstdataClient implements ClientRegister {
                                     if (response.getStatus().is2xxSuccessful()) {
                                         lagredeOppholdIder.get().addAll(
                                                 response.getInstitusjonsopphold()
-                                                        .computeIfAbsent(miljoe, _ -> new ArrayList<>()).stream()
+                                                        .getOrDefault(miljoe, emptyList()).stream()
                                                         .map(InstdataDTO::getOppholdId)
                                                         .collect(Collectors.toSet()));
                                     }
