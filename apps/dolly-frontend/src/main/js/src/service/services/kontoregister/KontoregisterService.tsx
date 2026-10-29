@@ -11,6 +11,7 @@ export type KontoregisterData = {
 			swiftBicKode?: string
 			bankLandkode?: string
 			banknavn?: string
+			bankkode?: string
 			valutakode?: string
 			bankadresse1?: string
 			bankadresse2?: string

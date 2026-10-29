@@ -86,8 +86,9 @@ export const landkoder = [
 		landkode: 'AU',
 		land: 'Australia',
 		kreverIban: false,
-		kreverBankkode: false,
+		kreverBankkode: true,
 		bankkodeLengde: 6,
+		kreverBicOgBankkode: true,
 	},
 	{
 		landkode: 'BS',
@@ -215,8 +216,9 @@ export const landkoder = [
 		landkode: 'CA',
 		land: 'Canada',
 		kreverIban: false,
-		kreverBankkode: false,
+		kreverBankkode: true,
 		bankkodeLengde: 9,
+		kreverBicOgBankkode: true,
 	},
 	{
 		landkode: 'KY',
@@ -1003,8 +1005,9 @@ export const landkoder = [
 		landkode: 'NZ',
 		land: 'New Zeland',
 		kreverIban: false,
-		kreverBankkode: false,
+		kreverBankkode: true,
 		bankkodeLengde: 6,
+		kreverBicOgBankkode: true,
 	},
 	{
 		landkode: 'NI',
@@ -1376,8 +1379,9 @@ export const landkoder = [
 		landkode: 'ZA',
 		land: 'Sør-Afrika',
 		kreverIban: false,
-		kreverBankkode: false,
+		kreverBankkode: true,
 		bankkodeLengde: 6,
+		kreverBicOgBankkode: true,
 	},
 	{
 		landkode: 'GS',
@@ -1503,7 +1507,7 @@ export const landkoder = [
 		landkode: 'US',
 		land: 'USA',
 		kreverIban: false,
-		kreverBankkode: true,
+		kreverBankkode: false,
 		bankkodeLengde: 9,
 	},
 	{
@@ -1864,4 +1868,34 @@ export const landkodeIsoMapping = {
 	ALA: 'AX',
 	TLS: 'TL',
 	AUT: 'AT',
+}
+
+export type KontoregisterLandkode = {
+	landkode: string
+	land: string
+	kreverIban: boolean
+	ibanLengde?: number | null
+	kreverBankkode: boolean
+	bankkodeLengde?: number | null
+	kreverBicOgBankkode?: boolean
+}
+
+let gjeldendeLandkoder: KontoregisterLandkode[] = landkoder
+
+export const settKontoregisterLandkoder = (nyeLandkoder: KontoregisterLandkode[]) => {
+	gjeldendeLandkoder = nyeLandkoder
+}
+
+export const finnKontoregisterLandkode = (
+	landkode?: string | null,
+	kontoregisterLandkoder: KontoregisterLandkode[] = gjeldendeLandkoder,
+) => {
+	if (!landkode) {
+		return undefined
+	}
+	const isoLandkode = landkodeIsoMapping[landkode as keyof typeof landkodeIsoMapping]
+	const mappedLandkode = isoLandkode ?? landkode.substring(0, 2)
+	return kontoregisterLandkoder.find(
+		(kontoregisterLandkode) => kontoregisterLandkode.landkode === mappedLandkode,
+	)
 }

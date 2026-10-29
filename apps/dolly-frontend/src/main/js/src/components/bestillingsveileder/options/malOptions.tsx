@@ -93,7 +93,7 @@ export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 		_.set(
 			initialValuesMal,
 			'bankkonto.utenlandskBankkonto',
-			initialValuesMal.tpsMessaging.utenlandskBankkonto,
+			flyttIbanTilBankkode(initialValuesMal.tpsMessaging.utenlandskBankkonto),
 		)
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
 	}
@@ -452,11 +452,20 @@ const updateTypeForelderBarn = (relasjon: ForeldreBarnRelasjon) => {
 	return null
 }
 
+const flyttIbanTilBankkode = (utenlandskBankkonto: any) => {
+	if (utenlandskBankkonto?.iban && !utenlandskBankkonto.bankkode) {
+		utenlandskBankkonto.bankkode = utenlandskBankkonto.iban
+	}
+	delete utenlandskBankkonto?.iban
+	return utenlandskBankkonto
+}
+
 const getUpdatedBankkonto = (bankkonto: any) => {
 	if (bankkonto.norskBankkonto) {
 		delete bankkonto.utenlandskBankkonto
 	} else {
 		delete bankkonto.norskBankkonto
+		flyttIbanTilBankkode(bankkonto.utenlandskBankkonto)
 		for (let field of ['kontonummer', 'swift']) {
 			if (!bankkonto.utenlandskBankkonto[field]) {
 				bankkonto.utenlandskBankkonto[field] = ''

@@ -1,7 +1,10 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredString } from '@/utils/YupValidations'
 import * as _ from 'lodash-es'
-import { landkodeIsoMapping, landkoder } from '@/service/services/kontoregister/landkoder'
+import {
+	finnKontoregisterLandkode,
+	landkodeIsoMapping,
+} from '@/service/services/kontoregister/landkoder'
 
 const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
 	return val.test('is-input-or-checkbox', (value, testContext) => {
@@ -33,7 +36,7 @@ const replaceSubstringAtPos = (str, from, to, replaceWith) => {
 	return str.substring(0, from) + replaceWith + str.substring(to + 1)
 }
 
-const validateIban = (kontonummer, form) => {
+const validateIban = (kontonummer, testContext) => {
 	if (!kontonummer) {
 		return messages.required
 	}
@@ -45,25 +48,18 @@ const validateIban = (kontonummer, form) => {
 		return 'Kontonummer kan kun bestå av tegnene A-Z eller 0-9'
 	}
 
-	const path = form.path.substring(0, form.path.lastIndexOf('.'))
-	const values = form.options.context
+	const kontoregisterLandkode = finnKontoregisterLandkode(testContext.parent?.landkode)
+	if (!kontoregisterLandkode?.kreverIban) {
+		return ''
+	}
 
-	const landkode = _.get(values, `${path}.landkode`)
-	if (landkode) {
-		const isoLandkode = landkodeIsoMapping[landkode]
-		const mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
-		if (kontonummer.substring(0, 2) !== mappedLandkode) {
-			return `Feil landkode i kontonumer. Den bør være ${mappedLandkode} (${mappedLandkode}${kontonummer})`
-		}
+	const landkode = kontoregisterLandkode.landkode
+	if (kontonummer.substring(0, 2) !== landkode) {
+		return `Feil landkode i kontonummer. Den bør være ${landkode} (${landkode}${kontonummer})`
+	}
 
-		const kontoregisterLandkode = landkoder.find((k) => k.landkode === mappedLandkode)
-		if (
-			kontoregisterLandkode &&
-			kontoregisterLandkode.ibanLengde &&
-			kontonummer.length !== kontoregisterLandkode.ibanLengde
-		) {
-			return `Kontonummer for ${mappedLandkode} må være ${kontoregisterLandkode.ibanLengde} tegn (nå er den ${kontonummer.length} tegn)`
-		}
+	if (kontoregisterLandkode.ibanLengde && kontonummer.length !== kontoregisterLandkode.ibanLengde) {
+		return `Kontonummer for ${landkode} må være ${kontoregisterLandkode.ibanLengde} tegn`
 	}
 
 	return ''
@@ -72,7 +68,8 @@ const validateIban = (kontonummer, form) => {
 const validateSwift = (val) => {
 	return val.test('swift-validering', (val, testContext) => {
 		const context = testContext.options.context
-		const landkode = context.parent?.landkode
+		const parent = testContext.parent ?? context.parent
+		const landkode = parent?.landkode
 
 		let mappedLandkode = null
 
@@ -81,10 +78,15 @@ const validateSwift = (val) => {
 			mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
 		}
 
-		const value = context.parent?.swift
+		const value = parent?.swift
 		if (!value) {
 			if (mappedLandkode) {
-				const kontoregisterLandkode = landkoder.find((k) => k.landkode === mappedLandkode)
+				const kontoregisterLandkode = finnKontoregisterLandkode(mappedLandkode)
+				if (kontoregisterLandkode?.kreverBicOgBankkode) {
+					return testContext.createError({
+						message: `${kontoregisterLandkode.land} krever både BIC og bankkode`,
+					})
+				}
 				if (kontoregisterLandkode?.kreverIban) {
 					return testContext.createError({ message: messages.required })
 				}
@@ -121,6 +123,49 @@ const validateSwift = (val) => {
 	})
 }
 
+const validateBankkode = (schema: Yup.StringSchema<string | null | undefined>) => {
+	return schema.test('bankkode-validering', (value, testContext) => {
+		const kontoregisterLandkode = finnKontoregisterLandkode(testContext.parent?.landkode)
+		if (!kontoregisterLandkode?.bankkodeLengde) {
+			return true
+		}
+
+		if (!value?.trim()) {
+			if (kontoregisterLandkode.kreverBicOgBankkode) {
+				return testContext.createError({
+					message: `${kontoregisterLandkode.land} krever både BIC og bankkode`,
+				})
+			}
+			if (kontoregisterLandkode.kreverBankkode) {
+				return testContext.createError({ message: messages.required })
+			}
+			return true
+		}
+
+		if (value.length !== kontoregisterLandkode.bankkodeLengde) {
+			return testContext.createError({
+				message: `Bankkode for ${kontoregisterLandkode.landkode} må være ${kontoregisterLandkode.bankkodeLengde} tegn`,
+			})
+		}
+		return true
+	})
+}
+
+const brukerBankkode = (bankkonto?: { bankkode?: string | null; landkode?: string | null }) =>
+	Boolean(bankkonto?.bankkode?.trim()) &&
+	Boolean(finnKontoregisterLandkode(bankkonto?.landkode)?.bankkodeLengde)
+
+const validatePaakrevdVedBankkode = (
+	schema: Yup.StringSchema<string | null | undefined>,
+	feltnavn: string,
+) => {
+	return schema.test(
+		'paakrevd-ved-bankkode',
+		`${feltnavn} er påkrevd ved bruk av bankkode`,
+		(value, testContext) => !brukerBankkode(testContext.parent) || Boolean(value?.trim()),
+	)
+}
+
 export const bankkontoValidation = {
 	bankkonto: ifPresent(
 		'$bankkonto',
@@ -138,20 +183,21 @@ export const bankkontoValidation = {
 					swift: validateSwift(Yup.string()),
 					landkode: requiredString,
 					iban: Yup.string().nullable().optional(),
+					bankkode: validateBankkode(Yup.string().nullable()),
 					valuta: requiredString
 						.nullable()
 						.test('length', 'Valutakode kan kun bestå av tre store bokstaver', (val) =>
 							/^[A-Z]{3}$/.test(val),
 						),
-					banknavn: Yup.string().nullable().optional(),
-					bankAdresse1: Yup.string()
-						.nullable()
-						.optional()
-						.test(
-							'length',
-							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34,
-						),
+					banknavn: validatePaakrevdVedBankkode(Yup.string().nullable().optional(), 'Banknavn'),
+					bankAdresse1: validatePaakrevdVedBankkode(
+						Yup.string().nullable().optional(),
+						'Adresselinje 1',
+					).test(
+						'length',
+						'Bankadresse må være mellom 1 og 34 tegn',
+						(val) => !val || val.length <= 34,
+					),
 					bankAdresse2: Yup.string()
 						.nullable()
 						.optional()

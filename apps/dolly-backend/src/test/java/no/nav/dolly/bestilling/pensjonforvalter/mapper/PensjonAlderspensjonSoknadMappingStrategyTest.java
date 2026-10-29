@@ -14,6 +14,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -25,6 +27,7 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -192,7 +195,7 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
     }
 
     @Test
-    void mapAlderspensjonHarVaertGiftEnkemann_OK() {
+    void mapAlderspensjonEnkemannHarIngenRelasjonListe_OK() {
 
         var pensjon = PensjonData.Alderspensjon.builder()
                 .iverksettelsesdato(LocalDate.of(2023, 1, 11))
@@ -243,16 +246,11 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
         assertThat(target.getSivilstand(), is(equalTo(AlderspensjonSoknadRequest.SivilstandType.ENKE)));
         assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(2010, 1, 2))));
 
-        assertThat(target.getRelasjonListe().getFirst().getFnr(), is(equalTo("456")));
-        assertThat(target.getRelasjonListe().getFirst().getRelasjonType(), is(equalTo(AlderspensjonSoknadRequest.RelasjonType.EKTEF)));
-        assertThat(target.getRelasjonListe().getFirst().getRelasjonFraDato(), is(equalTo(LocalDate.of(1988, 1, 2))));
-        assertThat(target.getRelasjonListe().getFirst().getDodsdato(), is(equalTo(LocalDate.of(2010, 1, 2))));
-        assertThat(target.getRelasjonListe().getFirst().getHarVaertGift(), is(true));
-        assertThat(target.getRelasjonListe().getFirst().getVarigAdskilt(), is(true));
+        assertThat(target.getRelasjonListe().isEmpty(), is(true));
     }
 
     @Test
-    void mapAlderspensjonSkiltUtenPartner_OK() {
+    void mapAlderspensjonSkiltHarIngenRelasjonListe_OK() {
 
         var pensjon = PensjonData.Alderspensjon.builder()
                 .iverksettelsesdato(LocalDate.of(2023, 1, 11))
@@ -299,10 +297,166 @@ class PensjonAlderspensjonSoknadMappingStrategyTest {
         assertThat(target.getMiljoer(), hasItem("q2"));
         assertThat(target.getSivilstand(), is(equalTo(AlderspensjonSoknadRequest.SivilstandType.SKIL)));
         assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(2016, 1, 1))));
-        assertThat(target.getRelasjonListe().getFirst().getRelasjonType(), is(equalTo(AlderspensjonSoknadRequest.RelasjonType.EKTEF)));
-        assertThat(target.getRelasjonListe().getFirst().getRelasjonFraDato(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getRelasjonListe().isEmpty(), is(true));
+    }
+
+    @Test
+    void mapAlderspensjonMedTomRelasjonOgGiftPerson_OK() {
+
+        var context = giftContext();
+
+        var target = mapperFacade.map(alderspensjonMedRelasjoner(new PensjonData.SkjemaRelasjon()),
+                AlderspensjonSoknadRequest.class, context);
+
+        assertThat(target.getRelasjonListe().size(), is(1));
         assertThat(target.getRelasjonListe().getFirst().getFnr(), is(equalTo("456")));
-        assertThat(target.getRelasjonListe().getFirst().getSamlivsbruddDato(), is(equalTo(LocalDate.of(2016, 1, 1))));
+        assertThat(target.getRelasjonListe().getFirst().getRelasjonType(),
+                is(equalTo(AlderspensjonSoknadRequest.RelasjonType.EKTEF)));
+        assertThat(target.getRelasjonListe().getFirst().getSumAvForventetArbeidKapitalPensjonInntekt(), is(nullValue()));
+    }
+
+    @Test
+    void mapAlderspensjonGiftUtenGyldigFraOgMedBrukerDatoToAarTilbake_OK() {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", "123");
+        context.setProperty("miljoer", Set.of("q2"));
+        context.setProperty("pdlRelasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident("123")
+                .person(PdlPerson.Person.builder()
+                        .sivilstand(List.of(PdlPerson.Sivilstand.builder()
+                                .type(PdlPerson.SivilstandType.GIFT)
+                                .relatertVedSivilstand("456")
+                                .build()))
+                        .build())
+                .build()));
+        context.setProperty("dollyRelasjoner", emptyList());
+
+        var target = mapperFacade.map(alderspensjonMedRelasjoner(new PensjonData.SkjemaRelasjon()),
+                AlderspensjonSoknadRequest.class, context);
+
+        assertThat(target.getRelasjonListe().getFirst().getRelasjonFraDato(),
+                is(equalTo(LocalDate.now().minusYears(2))));
+    }
+
+    @Test
+    void mapAlderspensjonGiftUtenRelasjonerGirIngenRelasjonListe_OK() {
+
+        var pensjon = PensjonData.Alderspensjon.builder()
+                .iverksettelsesdato(LocalDate.of(2023, 1, 11))
+                .uttaksgrad(100)
+                .build();
+
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, giftContext());
+
+        assertThat(target.getSivilstand(), is(equalTo(AlderspensjonSoknadRequest.SivilstandType.GIFT)));
+        assertThat(target.getRelasjonListe().isEmpty(), is(true));
+    }
+
+    @Test
+    void mapAlderspensjonUgiftUtenSamboerGirIngenRelasjonListe_OK() {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", "123");
+        context.setProperty("miljoer", Set.of("q2"));
+        context.setProperty("pdlRelasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident("123")
+                .person(PdlPerson.Person.builder()
+                        .sivilstand(List.of(PdlPerson.Sivilstand.builder()
+                                .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
+                                .type(PdlPerson.SivilstandType.UGIFT)
+                                .build()))
+                        .build())
+                .build()));
+        context.setProperty("dollyRelasjoner", emptyList());
+
+        var target = mapperFacade.map(alderspensjonMedRelasjoner(new PensjonData.SkjemaRelasjon()),
+                AlderspensjonSoknadRequest.class, context);
+
+        assertThat(target.getRelasjonListe().isEmpty(), is(true));
+    }
+
+    @Test
+    void mapAlderspensjonUtenSivilstandGirIngenRelasjonListe_OK() {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", "123");
+        context.setProperty("miljoer", Set.of("q2"));
+        context.setProperty("pdlRelasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident("123")
+                .person(PdlPerson.Person.builder().build())
+                .build()));
+        context.setProperty("dollyRelasjoner", emptyList());
+
+        var target = mapperFacade.map(alderspensjonMedRelasjoner(new PensjonData.SkjemaRelasjon()),
+                AlderspensjonSoknadRequest.class, context);
+
+        assertThat(target.getSivilstand(), is(nullValue()));
+        assertThat(target.getRelasjonListe().isEmpty(), is(true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = PdlPerson.SivilstandType.class, names = {"SEPARERT", "REGISTRERT_PARTNER", "SEPARERT_PARTNER"})
+    void mapAlderspensjonMedGiftLignendeSivilstandGirRelasjonListe_OK(PdlPerson.SivilstandType type) {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", "123");
+        context.setProperty("miljoer", Set.of("q2"));
+        context.setProperty("pdlRelasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident("123")
+                .person(PdlPerson.Person.builder()
+                        .sivilstand(List.of(PdlPerson.Sivilstand.builder()
+                                .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
+                                .type(type)
+                                .relatertVedSivilstand("456")
+                                .build()))
+                        .build())
+                .build()));
+        context.setProperty("dollyRelasjoner", emptyList());
+
+        var target = mapperFacade.map(alderspensjonMedRelasjoner(new PensjonData.SkjemaRelasjon()),
+                AlderspensjonSoknadRequest.class, context);
+
+        assertThat(target.getRelasjonListe().size(), is(1));
+        assertThat(target.getRelasjonListe().getFirst().getFnr(), is(equalTo("456")));
+    }
+
+    private static PensjonData.Alderspensjon alderspensjonMedRelasjoner(PensjonData.SkjemaRelasjon relasjon) {
+
+        return PensjonData.Alderspensjon.builder()
+                .iverksettelsesdato(LocalDate.of(2023, 1, 11))
+                .uttaksgrad(100)
+                .relasjoner(List.of(relasjon))
+                .build();
+    }
+
+    private static MappingContext giftContext() {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", "123");
+        context.setProperty("miljoer", Set.of("q2"));
+        context.setProperty("pdlRelasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
+                        .ident("123")
+                        .person(PdlPerson.Person.builder()
+                                .sivilstand(List.of(PdlPerson.Sivilstand.builder()
+                                        .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
+                                        .type(PdlPerson.SivilstandType.GIFT)
+                                        .relatertVedSivilstand("456")
+                                        .build()))
+                                .build())
+                        .build(),
+                PdlPersonBolk.PersonBolk.builder()
+                        .ident("456")
+                        .person(PdlPerson.Person.builder()
+                                .sivilstand(List.of(PdlPerson.Sivilstand.builder()
+                                        .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
+                                        .type(PdlPerson.SivilstandType.GIFT)
+                                        .relatertVedSivilstand("123")
+                                        .build()))
+                                .build())
+                        .build()));
+        context.setProperty("dollyRelasjoner", emptyList());
+        return context;
     }
 
     @Test

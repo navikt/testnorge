@@ -42,6 +42,7 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoein
 						swift: kontoRegisterData.aktivKonto.utenlandskKontoInfo.swiftBicKode,
 						landkode: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankLandkode,
 						banknavn: kontoRegisterData.aktivKonto.utenlandskKontoInfo.banknavn,
+						bankkode: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankkode,
 						iban: kontoRegisterData.aktivKonto.kontonummer,
 						valuta: kontoRegisterData.aktivKonto.utenlandskKontoInfo.valutakode,
 						bankAdresse1: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankadresse1,

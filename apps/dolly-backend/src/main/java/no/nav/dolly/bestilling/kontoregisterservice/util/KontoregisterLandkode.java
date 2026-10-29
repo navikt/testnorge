@@ -1,8 +1,12 @@
 package no.nav.dolly.bestilling.kontoregisterservice.util;
 
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Objects.isNull;
 
 public enum KontoregisterLandkode {
     AD("Andorra", true, 24),
@@ -88,13 +92,13 @@ public enum KontoregisterLandkode {
     EG("Egypt", true, 29),
 
     // Land som krever bankkode
-    US("USA", false, null, true, 9),
+    AU("Australia", false, null, true, 6, true),
+    NZ("New Zeland", false, null, true, 6, true),
+    ZA("Sør-Afrika", false, null, true, 6, true),
+    CA("Canada", false, null, true, 9, true),
 
     // Land som kan ha bankkode
-    AU("Australia", false, null, false, 6),
-    NZ("New Zeland", false, null, false, 6),
-    ZA("Sør-Afrika", false, null, false, 6),
-    CA("Canada", false, null, false, 9),
+    US("USA", false, null, false, 9),
     IN("India", false, null, false, 11),
     RU("Russland", false, null, false, 9),
 
@@ -269,13 +273,20 @@ public enum KontoregisterLandkode {
     private final Integer ibanLengde;
     private final boolean kreverBankkode;
     private final Integer bankkodeLengde;
+    private final boolean kreverBicOgBankkode;
 
-    KontoregisterLandkode(String land, boolean kreverIban, Integer ibanLengde, boolean kreverBankkode, Integer bankkodeLengde) {
+    KontoregisterLandkode(String land, boolean kreverIban, Integer ibanLengde, boolean kreverBankkode, Integer bankkodeLengde,
+                          boolean kreverBicOgBankkode) {
         this.land = land;
         this.kreverIban = kreverIban;
         this.ibanLengde = ibanLengde;
         this.kreverBankkode = kreverBankkode;
         this.bankkodeLengde = bankkodeLengde;
+        this.kreverBicOgBankkode = kreverBicOgBankkode;
+    }
+
+    KontoregisterLandkode(String land, boolean kreverIban, Integer ibanLengde, boolean kreverBankkode, Integer bankkodeLengde) {
+        this(land, kreverIban, ibanLengde, kreverBankkode, bankkodeLengde, false);
     }
 
     KontoregisterLandkode(String land, Boolean kreverIban, Integer ibanLengde) {
@@ -296,6 +307,28 @@ public enum KontoregisterLandkode {
 
     public Integer getIbanLengde() {
         return ibanLengde;
+    }
+
+    public boolean isKreverBankkode() {
+        return kreverBankkode;
+    }
+
+    public Integer getBankkodeLengde() {
+        return bankkodeLengde;
+    }
+
+    public boolean isKreverBicOgBankkode() {
+        return kreverBicOgBankkode;
+    }
+
+    public static Optional<KontoregisterLandkode> fraLandkode(String landkode) {
+        if (isNull(landkode)) {
+            return Optional.empty();
+        }
+        var iso2Landkode = getIso2FromIso(landkode);
+        return Arrays.stream(values())
+                .filter(kontoregisterLandkode -> kontoregisterLandkode.name().equals(iso2Landkode))
+                .findFirst();
     }
 
     private static final Map<String, String> landkodeIsoMapping = new HashMap<>();

@@ -307,7 +307,6 @@ public class PensjonData {
         private String attesterer;
         private String navEnhetId;
 
-        @Schema
         private Integer uttaksgrad;
 
         private Boolean soknad;
@@ -315,7 +314,6 @@ public class PensjonData {
         private Boolean inkluderAfpPrivat;
         private AfpPrivatResultat afpPrivatResultat;
 
-        @Schema
         private List<SkjemaRelasjon> relasjoner;
 
         public List<SkjemaRelasjon> getRelasjoner() {
@@ -343,7 +341,7 @@ public class PensjonData {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjemaRelasjon {
-        @Schema
+
         private Integer sumAvForvArbKapPenInntekt;
     }
 

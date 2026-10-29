@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
@@ -109,7 +110,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                         }
 
                         if (!alderspensjon.getRelasjoner().isEmpty() &&
-                                (sivilstand.isPresent() || samboer.isPresent())) {
+                                ((sivilstand.isPresent() && sivilstand.get().isGift()) || samboer.isPresent())) {
 
                             request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonSoknadRequest.SkjemaRelasjon.class));
 
@@ -193,7 +194,8 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
 
         if (sivilstand.isPresent() && isNotBlank(sivilstand.get().getRelatertVedSivilstand())) {
 
-            return sivilstand.get().getGyldigFraOgMed();
+            var relasjonsdato = sivilstand.get().getGyldigFraOgMed();
+            return nonNull(relasjonsdato) ? relasjonsdato : now().minusYears(2);
         }
 
         return hovedperson.flatMap(personBolk -> personBolk.getSivilstand().stream()

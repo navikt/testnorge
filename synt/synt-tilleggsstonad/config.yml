@@ -1,0 +1,72 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: synthdata-arena-tilleggsstonad
+  namespace: dolly
+  labels:
+    team: dolly
+  annotations:
+    nais.io/run-as-user: "65532" # The nonroot user.
+spec:
+  image: {{image}}
+  startup:
+    path: "/internal/health/liveness"
+    port: 8080
+    initialDelay: 20
+    periodSeconds: 5
+    failureThreshold: 36
+    timeout: 2
+  liveness:
+    path: "/internal/health/liveness"
+    port: 8080
+    initialDelay: 30
+  readiness:
+    path: "/internal/health/readiness"
+    port: 8080
+    initialDelay: 30
+  prometheus:
+    enabled: true
+    path: "/internal/metrics"
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      memory: 2048Mi
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-auth-local
+        - application: synthdata-arena-vedtakshistorikk
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
+        - application: testnav-synt-vedtakshistorikk-service
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+  gcp:
+    buckets:
+      - name: synthdata-tilleggsstonad-model-bucket
+  ingresses:
+    - "https://synthdata-arena-tilleggsstonad.intern.dev.nav.no"
+
