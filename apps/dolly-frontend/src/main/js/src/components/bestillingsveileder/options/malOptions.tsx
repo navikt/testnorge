@@ -132,12 +132,13 @@ const getUpdatedHenvendelseData = (henvendelseData: HenvendelseTypes) => {
 	const newHenvendelseData = Object.assign({}, henvendelseData)
 	if (newHenvendelseData.meldinger) {
 		newHenvendelseData.meldinger = newHenvendelseData.meldinger.map((melding) =>
-			updateData(melding, initialMelding),
+			updateData(_.omit(melding, ['kjedeId', 'meldingsId']), initialMelding),
 		)
 	}
 	if (newHenvendelseData.samtalereferater) {
 		newHenvendelseData.samtalereferater = newHenvendelseData.samtalereferater.map(
-			(samtalereferat) => updateData(samtalereferat, initialSamtalereferat),
+			(samtalereferat) =>
+				updateData(_.omit(samtalereferat, ['kjedeId', 'meldingsId']), initialSamtalereferat),
 		)
 	}
 	return newHenvendelseData
