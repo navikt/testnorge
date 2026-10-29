@@ -84,6 +84,7 @@ export const rootPaths = [
 	'yrkesskader',
 	'organisasjon',
 	'skattekort',
+	'henvendelse',
 ]
 
 export const harAvhukedeAttributter = (values) => {

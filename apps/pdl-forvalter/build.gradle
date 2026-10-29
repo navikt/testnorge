@@ -9,8 +9,8 @@ sonarqube {
     }
 }
 
-properties {
-    compileJava.options.encoding = "UTF-8"
+tasks.named("compileJava") {
+    options.encoding = "UTF-8"
 }
 
 dependencies {
@@ -41,6 +41,7 @@ dependencies {
     runtimeOnly "io.r2dbc:r2dbc-pool"
 
     implementation "org.postgresql:postgresql"
+    implementation "org.springframework.boot:spring-boot-flyway"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
 

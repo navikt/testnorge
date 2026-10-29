@@ -16,7 +16,6 @@ import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.util.StringUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -140,7 +139,7 @@ public class PersonServiceClient {
                                                 .map(hendelse -> getTextValue(hendelse.path("hendelseId")))
                                                 .collect(Collectors.toSet()))
                                         .flatMap(Collection::stream)
-                                        .filter(StringUtil::isNotBlank)
+                                        .filter(StringUtils::isNotBlank)
                                         .collect(Collectors.toSet())))
                         .flatMap(hovedperson -> Mono.just(toStream(tree.path("relasjoner"))
                                         .collect(Collectors.toMap(relasjon -> getTextValue(relasjon.path("ident")),

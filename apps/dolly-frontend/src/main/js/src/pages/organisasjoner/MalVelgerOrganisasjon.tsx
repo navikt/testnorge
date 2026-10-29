@@ -91,7 +91,7 @@ export const MalVelgerOrganisasjon = ({ brukernavn, gruppeId: _gruppeId }: MalVe
 				size={'small'}
 				isSwitch
 			/>
-			<div style={{ marginTop: '10px' }}>
+			<div className="ny-bestilling-form_row" style={{ marginTop: '10px' }}>
 				<DollySelect
 					name="zIdent"
 					label="Bruker"

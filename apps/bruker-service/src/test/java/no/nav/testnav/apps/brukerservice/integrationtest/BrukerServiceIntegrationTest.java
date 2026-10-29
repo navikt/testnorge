@@ -4,8 +4,8 @@ import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.integrationtest.client.TokendingsClient;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +40,8 @@ class BrukerServiceIntegrationTest {
     }
 
     @AfterAll
-    static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
+    static void tearDown() {
+        mockBackEnd.close();
     }
 
     @BeforeEach
@@ -60,9 +60,11 @@ class BrukerServiceIntegrationTest {
     void should_create_new_user_login_change_username_and_then_delete_user() {
 
         mockBackEnd.enqueue(
-                new MockResponse().setResponseCode(200)
+                new MockResponse.Builder()
+                        .code(200)
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .setBody(objectMapper.writeValueAsString(new AccessToken("test"))));
+                        .body(objectMapper.writeValueAsString(new AccessToken("test")))
+                        .build());
 
         var token = tokendingsClient
                 .generateToken("dev-gcp:dolly:testnav-bruker-service", PID)
@@ -73,9 +75,11 @@ class BrukerServiceIntegrationTest {
         var expected = new BrukerDTO(null, "username", "email", ORGNUMMER, null, null);
 
         mockBackEnd.enqueue(
-                new MockResponse().setResponseCode(200)
+                new MockResponse.Builder()
+                        .code(200)
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .setBody(objectMapper.writeValueAsString(expected)));
+                        .body(objectMapper.writeValueAsString(expected))
+                        .build());
 
         var bruker = webClient
                 .post()
@@ -93,9 +97,11 @@ class BrukerServiceIntegrationTest {
                 .isEqualTo(expected);
 
         mockBackEnd.enqueue(
-                new MockResponse().setResponseCode(200)
+                new MockResponse.Builder()
+                        .code(200)
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .setBody("Testing"));
+                        .body("Testing")
+                        .build());
 
         // Login user
         var userJwt = webClient.post()
@@ -106,9 +112,11 @@ class BrukerServiceIntegrationTest {
                 .block();
 
         mockBackEnd.enqueue(
-                new MockResponse().setResponseCode(200)
+                new MockResponse.Builder()
+                        .code(200)
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .setBody("Testing"));
+                        .body("Testing")
+                        .build());
 
         // Change username
         webClient.patch()
@@ -123,9 +131,11 @@ class BrukerServiceIntegrationTest {
                 .block();
 
         mockBackEnd.enqueue(
-                new MockResponse().setResponseCode(200)
+                new MockResponse.Builder()
+                        .code(200)
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .setBody(objectMapper.writeValueAsString(BrukerDTO.builder().brukernavn("new-username").build())));
+                        .body(objectMapper.writeValueAsString(BrukerDTO.builder().brukernavn("new-username").build()))
+                        .build());
 
         // Get updated user
         var updatedUser = webClient.get()
@@ -142,9 +152,11 @@ class BrukerServiceIntegrationTest {
                 .isEqualTo("new-username");
 
         mockBackEnd.enqueue(
-                new MockResponse().setResponseCode(200)
+                new MockResponse.Builder()
+                        .code(200)
                         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .setBody("Testing"));
+                        .body("Testing")
+                        .build());
 
         // Delete user
         webClient.delete()

@@ -30,6 +30,7 @@ import BankkontoForm from '@/components/fagsystem/bankkonto/form/Form'
 import { KelvinAapForm } from '@/components/fagsystem/kelvin/form/Form'
 import { KdiForm } from '@/components/fagsystem/kdi/form/Form'
 import { Oppfoelgingsvedtak14aForm } from '@/components/fagsystem/oppfoelgingsvedtak14a/form/Form'
+import { HenvendelseForm } from '@/components/fagsystem/henvendelse/form/Form'
 
 export const DollyIdentValidation = Yup.object({
 	antall: ifPresent(
@@ -64,6 +65,7 @@ export const DollyIdentValidation = Yup.object({
 	...UdistubForm.validation,
 	...SkjermingForm.validation,
 	...FullmaktForm.validation,
+	...HenvendelseForm.validation,
 	...dokarkivValidation,
 	...histarkValidation,
 	...MiljoVelger.validation,

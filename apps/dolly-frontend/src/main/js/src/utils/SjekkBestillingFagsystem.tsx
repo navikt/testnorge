@@ -28,6 +28,7 @@ type Fagsystem = {
 	arenaforvalter?: boolean
 	sykemelding?: boolean
 	yrkesskader?: boolean
+	henvendelse?: boolean
 	inntektsmelding?: boolean
 	inntektstub?: boolean
 	inntekter?: boolean
@@ -110,6 +111,9 @@ export const harKelvinAapBestilling = (bestillingerFagsystemer: Fagsystem[]): bo
 
 export const harOppfoelgingsvedtak14aBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.oppfoelgingsvedtak14a)
+
+export const harHenvendelseBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
+	harFagsystem(bestillingerFagsystemer, (i) => !!i?.henvendelse)
 
 export const harArenaBestilling = (bestillingerFagsystemer: Fagsystem[]): boolean =>
 	harFagsystem(bestillingerFagsystemer, (i) => !!i?.arenaforvalter)

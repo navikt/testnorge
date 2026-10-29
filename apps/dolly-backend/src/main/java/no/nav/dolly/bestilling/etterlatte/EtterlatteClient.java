@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.poi.util.StringUtil.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service

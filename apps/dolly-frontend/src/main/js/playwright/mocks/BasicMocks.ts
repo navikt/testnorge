@@ -2491,3 +2491,73 @@ export const soekMalerBrukerMock = [
 		},
 	},
 ]
+
+export const henvendelseTemagrupperMock = [
+	{ kode: 'ARBD', navn: 'Arbeid' },
+	{ kode: 'HELSE', navn: 'Helse' },
+]
+
+export const henvendelseBestillingMock = {
+	id: 10,
+	antallIdenter: 1,
+	antallLevert: 1,
+	ferdig: true,
+	sistOppdatert: '2026-10-01T10:00:00.000000',
+	bruker: gjeldendeAzureBrukerMock,
+	gruppeId: 1,
+	stoppet: false,
+	environments: [],
+	status: [
+		{
+			id: 'HENVENDELSE',
+			navn: 'Henvendelse (Salesforce)',
+			statuser: [{ melding: 'OK', identer: ['12345678912'] }],
+		},
+	],
+	bestilling: {
+		henvendelse: {
+			meldinger: [{ temagruppe: 'ARBD', tema: 'test', fritekst: 'Melding fra Playwright' }],
+		},
+	},
+}
+
+export const henvendelseListeMock = {
+	data: [
+		{
+			henvendelseType: 'MELDINGSKJEDE',
+			kjedeId: 'MELDINGSKJEDE-123',
+			opprettetDato: '2026-10-01T10:00:00',
+			gjeldendeTemagruppe: 'ARBD',
+			gjeldendeTema: 'test',
+			meldinger: [{ fritekst: 'Melding fra Playwright', kanal: 'DIGITAL' }],
+		},
+		{
+			henvendelseType: 'SAMTALEREFERAT',
+			kjedeId: 'SAMTALEREFERAT-456',
+			opprettetDato: '2026-10-02T12:00:00',
+			gjeldendeTemagruppe: 'HELSE',
+			gjeldendeTema: 'test',
+		},
+	],
+	currentPage: 0,
+	pageSize: 200,
+	totalPages: 1,
+	hasNextPage: false,
+}
+
+export const henvendelseMalMock = {
+	id: 2,
+	malNavn: 'Henvendelse mal',
+	malBestilling: {
+		antallIdenter: 1,
+		pdldata: {
+			opprettNyPerson: {
+				identtype: 'FNR',
+			},
+		},
+		henvendelse: {
+			meldinger: [{ temagruppe: 'ARBD', fritekst: 'Melding fra mal' }],
+		},
+	},
+	bruker: gjeldendeAzureBrukerMock,
+}

@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Set;
 
-import static org.apache.poi.util.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class PensjonforvalterUtils {
