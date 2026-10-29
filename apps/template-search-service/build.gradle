@@ -32,7 +32,9 @@ dependencies {
     runtimeOnly "org.postgresql:r2dbc-postgresql"
 
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
-    testImplementation "org.testcontainers:junit-jupiter"
-    testImplementation "org.testcontainers:postgresql"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter"
+    testImplementation "org.testcontainers:testcontainers-postgresql"
+    testImplementation "org.testcontainers:testcontainers-r2dbc"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }

@@ -24,12 +24,12 @@ dependencies {
     implementation "no.nav.testnav.libs:reactive-security"
     implementation "no.nav.testnav.libs:testing"
 
-    implementation "org.aspectj:aspectjweaver:1.9.22"
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 
     implementation "org.opensearch.client:opensearch-java:$versions.opensearchClient"
     implementation "org.apache.httpcomponents.client5:httpclient5"
 
-    implementation "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.21.0"
+    implementation "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.1"
 
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
