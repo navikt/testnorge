@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.instdata.domain.InstdataRequest;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.core.ParameterizedTypeReference;
@@ -41,7 +41,7 @@ public class InstdataGetCommand implements Callable<Mono<InstdataResponse>> {
                         .environments(List.of(miljoe))
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, List<Instdata>>>() {
+                .bodyToMono(new ParameterizedTypeReference<Map<String, List<InstdataDTO>>>() {
                 })
                 .map(resultat -> InstdataResponse.builder()
                         .status(HttpStatus.OK)

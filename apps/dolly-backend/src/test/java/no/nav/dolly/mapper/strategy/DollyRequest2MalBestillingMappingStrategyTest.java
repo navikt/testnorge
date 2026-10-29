@@ -38,8 +38,6 @@ import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
 import no.nav.dolly.domain.resultset.inntektstub.Inntekt.InntektType;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
-import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
-import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdataKdi;
 import no.nav.dolly.domain.resultset.kelvinaap.RsKelvinAapRequestDTO;
@@ -238,18 +236,16 @@ class DollyRequest2MalBestillingMappingStrategyTest {
     @Test
     void shouldAccumulateInstdata() {
 
-        var target = mapperFacade.map(buildInstdata(InstdataInstitusjonstype.FO, InstdataKategori.F, "2023-01-01"), RsDollyUtvidetBestilling.class);
-        mapperFacade.map(buildInstdata(InstdataInstitusjonstype.AS, InstdataKategori.A, "2025-01-01"), target);
+        var target = mapperFacade.map(buildInstdata(RsInstdata.InstdataInstitusjonstype.FO, "2023-01-01"), RsDollyUtvidetBestilling.class);
+        mapperFacade.map(buildInstdata(RsInstdata.InstdataInstitusjonstype.AS, "2025-01-01"), target);
 
         assertThat(target.getInstdata(), hasItems(
                 RsInstdata.builder()
-                        .institusjonstype(InstdataInstitusjonstype.FO)
-                        .kategori(InstdataKategori.F)
+                        .institusjonstype(RsInstdata.InstdataInstitusjonstype.FO)
                         .startdato(LocalDate.of(2023, 1, 1).atStartOfDay())
                         .build(),
                 RsInstdata.builder()
-                        .institusjonstype(InstdataInstitusjonstype.AS)
-                        .kategori(InstdataKategori.A)
+                        .institusjonstype(RsInstdata.InstdataInstitusjonstype.AS)
                         .startdato(LocalDate.of(2025, 1, 1).atStartOfDay())
                         .build()));
     }
@@ -1304,12 +1300,11 @@ class DollyRequest2MalBestillingMappingStrategyTest {
                 .build();
     }
 
-    private static RsDollyUtvidetBestilling buildInstdata(InstdataInstitusjonstype institusjonstype, InstdataKategori kategori, String startdato) {
+    private static RsDollyUtvidetBestilling buildInstdata(RsInstdata.InstdataInstitusjonstype institusjonstype, String startdato) {
 
         return RsDollyUtvidetBestilling.builder()
                 .instdata(List.of(RsInstdata.builder()
                         .institusjonstype(institusjonstype)
-                        .kategori(kategori)
                         .startdato(LocalDate.parse(startdato).atStartOfDay())
                         .build()))
                 .build();

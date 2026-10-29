@@ -2,31 +2,35 @@ package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
 
     private static final String INSTDATA_URL = "/inst/api/v1/institusjonsopphold/person";
     private static final String ENVIRONMENTS = "environments";
 
     private final WebClient webClient;
-    private final Instdata instdata;
+    private final InstdataDTO instdata;
     private final String miljoe;
     private final String token;
 
     @Override
     public Mono<InstdataResponse> call() {
+
+        log.info("Instdata opprett til {}: {}", miljoe, instdata);
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -36,11 +40,13 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(instdata)
                 .retrieve()
-                .toBodilessEntity()
+                .toEntity(new ParameterizedTypeReference<Map<String, List<InstdataDTO>>>() {
+                })
                 .map(resultat -> InstdataResponse.builder()
                         .personident(instdata.getNorskident())
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
+                        .institusjonsopphold(resultat.getBody())
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
