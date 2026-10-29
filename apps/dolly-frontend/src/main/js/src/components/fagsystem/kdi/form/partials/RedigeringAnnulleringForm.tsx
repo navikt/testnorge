@@ -54,16 +54,18 @@ export const RedigeringAnnulleringForm = ({
 			>
 				Rediger melding
 			</Button>
-			<Button
-				data-color="danger"
-				size="xsmall"
-				variant="tertiary"
-				icon={<FileXMarkIcon aria-hidden />}
-				onClick={() => handleAnnullering(!harAnnullering)}
-				disabled={annulleringFoerLeggTil}
-			>
-				{harAnnullering ? 'Fjern annullering' : 'Annuller melding'}
-			</Button>
+			{!annulleringFoerLeggTil && (
+				<Button
+					data-color="danger"
+					size="xsmall"
+					variant="tertiary"
+					icon={<FileXMarkIcon aria-hidden />}
+					onClick={() => handleAnnullering(!harAnnullering)}
+					disabled={annulleringFoerLeggTil}
+				>
+					{harAnnullering ? 'Fjern annullering' : 'Annuller melding'}
+				</Button>
+			)}
 			{harAnnullering && (
 				<div className="flexbox--flex-wrap">
 					<PubliseringstidspunktField
