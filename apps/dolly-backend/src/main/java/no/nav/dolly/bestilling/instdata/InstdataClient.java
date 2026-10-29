@@ -51,13 +51,13 @@ public class InstdataClient implements ClientRegister {
     private static final String KDI_STATUS = "KDI_STATUS#%s";
     private static final String INSTDATA = "Institusjonsopphold";
 
-    private final MapperFacade mapperFacade;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final InstKdiHendelseService instKdiHendelseService;
     private final InstdataConsumer instdataConsumer;
     private final JsonMapper jsonMapper;
-    private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
-    private final InstKdiHendelseService instKdiHendelseService;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -141,7 +141,7 @@ public class InstdataClient implements ClientRegister {
             return Mono.just(emptyList());
         }
 
-        return Mono.zip(getOpprettedeOppholdIder(bestillingId, miljoe),
+        return Mono.zip(getOpprettedeOppholdIder(bestillingId, instdataRequest.getFirst().getNorskident(), miljoe),
                         instdataConsumer.getInstdata(instdataRequest.getFirst().getNorskident(), miljoe))
                 .map(tuple -> {
                     var opprettedeOppholdIder = tuple.getT1();
@@ -157,10 +157,11 @@ public class InstdataClient implements ClientRegister {
                 });
     }
 
-    private Mono<Set<String>> getOpprettedeOppholdIder(Long bestillingId, String miljoe) {
+    private Mono<Set<String>> getOpprettedeOppholdIder(Long bestillingId, String ident, String miljoe) {
 
         return transaksjonMappingRepository.findAllByBestillingId(bestillingId)
                 .filter(mapping -> mapping.getSystem().equals(INST2) &&
+                                   mapping.getIdent().equals(ident) &&
                                    mapping.getMiljoe().equals(miljoe))
                 .next()
                 .flatMap(mapping -> {
@@ -232,7 +233,9 @@ public class InstdataClient implements ClientRegister {
                 Mono.just(new TransaksjonMapping()) :
                 transaksjonMappingRepository.findAllByBestillingId(bestillingId)
                         .filter(mapping ->
-                                mapping.getSystem().equals(INST2) && mapping.getMiljoe().equals(miljoe))
+                                mapping.getSystem().equals(INST2) &&
+                                mapping.getIdent().equals(ident) &&
+                                mapping.getMiljoe().equals(miljoe))
                         .next()
                         .map(existingMapping -> {
                             existingMapping.setTransaksjonId(jsonMapper.writeValueAsString(oppholdIder));
@@ -240,14 +243,14 @@ public class InstdataClient implements ClientRegister {
                             return existingMapping;
                         })
                         .flatMap(transaksjonMappingRepository::save)
-                        .switchIfEmpty(transaksjonMappingRepository.save(TransaksjonMapping.builder()
-                                .bestillingId(bestillingId)
-                                .system(INST2)
-                                .ident(ident)
-                                .miljoe(miljoe)
-                                .transaksjonId(jsonMapper.writeValueAsString(oppholdIder))
-                                .datoEndret(now())
-                                .build()));
+                        .switchIfEmpty(Mono.defer(() -> transaksjonMappingRepository.save(TransaksjonMapping.builder()
+                                        .bestillingId(bestillingId)
+                                        .system(INST2)
+                                        .ident(ident)
+                                        .miljoe(miljoe)
+                                        .transaksjonId(jsonMapper.writeValueAsString(oppholdIder))
+                                        .datoEndret(now())
+                                        .build())));
     }
 
     private Mono<String> postInstdataKdi(InstdataKdiDTO instdata, String ident) {
