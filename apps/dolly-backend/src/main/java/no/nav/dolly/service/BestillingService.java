@@ -736,7 +736,11 @@ public class BestillingService {
         if (nonNull(bestilling.getOpprettetFraId())) {
             return bestillingRepository.findById(bestilling.getOpprettetFraId())
                     .map(original -> {
-                        bestilling.setUtlededeFagsystemer(resolveUtlededeFagsystemer(original.getBestKriterier(), bestilling));
+                        var gjenopprettKontekst = Bestilling.builder()
+                                .opprettetFraId(bestilling.getOpprettetFraId())
+                                .miljoer(original.getMiljoer())
+                                .build();
+                        bestilling.setUtlededeFagsystemer(resolveUtlededeFagsystemer(original.getBestKriterier(), gjenopprettKontekst));
                         return bestilling;
                     })
                     .defaultIfEmpty(bestilling);
