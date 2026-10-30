@@ -8,14 +8,17 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { LandVelger } from '@/components/landVelger/LandVelger'
+import { useBestillingsveileder } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { harFlereGjeldendeIdenttyper } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdentUtils'
 
-interface PdlNyPersonValues {
+interface PdlNyPersonProps {
 	nyPersonPath: string
 	eksisterendePersonPath?: string
 	formMethods: UseFormReturn
 	erNyIdent?: boolean
 	gruppeIdenter?: Array<string>
 	eksisterendeNyPerson?: Option
+	children?: React.ReactNode
 }
 
 export const PdlNyPerson = ({
@@ -25,7 +28,8 @@ export const PdlNyPerson = ({
 	erNyIdent = false,
 	gruppeIdenter,
 	eksisterendeNyPerson = null,
-}: PdlNyPersonValues) => {
+	children,
+}: PdlNyPersonProps) => {
 	const disableAlder =
 		formMethods.watch(`${nyPersonPath}.foedtEtter`) != null ||
 		formMethods.watch(`${nyPersonPath}.foedtFoer`) != null
@@ -33,6 +37,9 @@ export const PdlNyPerson = ({
 	const disableFoedtDato = !['', null].includes(formMethods.watch(`${nyPersonPath}.alder`))
 
 	const eksisterendePerson = eksisterendePersonPath && formMethods.watch(eksisterendePersonPath)
+
+	const opts = useBestillingsveileder()
+	const nyIdentForGruppe = erNyIdent && harFlereGjeldendeIdenttyper(opts)
 
 	const hasEksisterendePerson =
 		eksisterendePerson &&
@@ -48,8 +55,11 @@ export const PdlNyPerson = ({
 				label="Identtype"
 				options={Options('identtype')}
 				isDisabled={hasEksisterendePerson}
-				isClearable={!erNyIdent}
+				isClearable={!erNyIdent || nyIdentForGruppe}
+				placeholder={nyIdentForGruppe ? 'Samme som gjeldende' : undefined}
+				size={nyIdentForGruppe ? 'large' : undefined}
 			/>
+			{children}
 			{!erNyIdent && (
 				<>
 					<FormSelect

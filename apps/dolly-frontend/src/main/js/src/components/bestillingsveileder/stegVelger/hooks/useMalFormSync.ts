@@ -4,6 +4,7 @@ import * as _ from 'lodash-es'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { BestillingsveilederContextType } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { henvendelseAttributt } from '@/components/fagsystem/henvendelse/initialValues'
+import { getStandardIdenttype } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdentUtils'
 
 interface UseMalFormSyncProps {
 	context: BestillingsveilederContextType
@@ -107,12 +108,30 @@ const buildMalBasedValues = (
 	return baseNextValues
 }
 
+const fyllInnNyidentIdenttype = (nextValues: any, standardIdenttype: string | null) => {
+	const nyident = nextValues.pdldata?.person?.nyident
+	if (!Array.isArray(nyident) || !standardIdenttype) return
+
+	nextValues.pdldata.person.nyident = nyident.map((nyIdent: any) => ({
+		...nyIdent,
+		identtype: nyIdent.identtype ?? standardIdenttype,
+	}))
+}
+
 const normalizeFormValues = (
 	nextValues: any,
 	malValues: any,
 	formMethods: UseFormReturn<any>,
+	context: BestillingsveilederContextType,
 	isNy: boolean,
 ) => {
+	fyllInnNyidentIdenttype(
+		nextValues,
+		isNy
+			? (_.get(malValues, 'pdldata.opprettNyPerson.identtype') ?? null)
+			: getStandardIdenttype(context),
+	)
+
 	if (typeof nextValues.antall !== 'number') {
 		const prevAntall = parseAntall(formMethods.getValues('antall'))
 		const malAntall = malValues?.antall != null ? parseAntall(malValues.antall) : null
@@ -183,7 +202,7 @@ export const useMalFormSync = ({ context, formMethods, is }: UseMalFormSyncProps
 			const malValues = initialValuesBasedOnMal(context.mal, environments)
 
 			const nextValues = buildMalBasedValues(formMethods, malValues, currentMalId, is)
-			normalizeFormValues(nextValues, malValues, formMethods, isNy)
+			normalizeFormValues(nextValues, malValues, formMethods, context, isNy)
 			formMethods.reset(nextValues)
 
 			updateContextFromMal(context, formMethods, malValues, isNy)

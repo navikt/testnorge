@@ -17,9 +17,6 @@ export const identifikasjonAttributter = [
 	'pdldata.person.nyident',
 ]
 
-const hjelpetekst =
-	'Her kan du velge ny identitet for person, enten fra en eksisterende ident, eller ved å opprette en helt ny ident. Ny ident vil settes som gjeldende, og tidligere valgte attributter vil settes som identhistorikk på personen.'
-
 export const Identifikasjon = ({ formMethods }: IdentifikasjonValues) => {
 	return (
 		<Vis attributt={identifikasjonAttributter}>
@@ -39,7 +36,7 @@ export const Identifikasjon = ({ formMethods }: IdentifikasjonValues) => {
 				>
 					<UtenlandsId />
 				</Kategori>
-				<Kategori title="Ny identitet" vis="pdldata.person.nyident" hjelpetekst={hjelpetekst}>
+				<Kategori title="Ny identitet" vis="pdldata.person.nyident">
 					<NyIdent formMethods={formMethods} />
 				</Kategori>
 			</Panel>
