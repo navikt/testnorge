@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { postFetcher } from '@/api'
 
-const skattekortUrl = (miljoe: string) => `/testnav-dolly-proxy/skattekort/${miljoe}/api/v1/person`
+const skattekortUrl = (miljoe: string) => `/testnav-dolly-proxy/skattekort/${miljoe}/api/v2/person`
 
 const SKATTEKORT_MILJOER = ['q1', 'q2']
 
@@ -87,7 +87,7 @@ export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) =
 			const results = await Promise.allSettled(
 				SKATTEKORT_MILJOER.map(async (miljoe) => {
 					const miljoData = await fetchSkattekortFromMiljoe(miljoe, fnr)
-					return { miljo: miljoe, data: miljoData } as MiljoSkattekortData
+					return { miljo: miljoe, data: miljoData?.data ?? [] } as MiljoSkattekortData
 				}),
 			)
 			const fulfilled = results

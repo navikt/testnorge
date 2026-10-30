@@ -8,11 +8,6 @@ import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,14 +16,7 @@ public class SkattekortResponse {
 
     private HttpStatus status;
     private String feilmelding;
-    private List<SkattekortDTO> skattekort;
-
-    public List<SkattekortDTO> getSkattekort() {
-        if (isNull(skattekort)) {
-            return new ArrayList<>();
-        }
-        return skattekort;
-    }
+    private SkattekortV2DTO skattekort;
 
     public static Mono<SkattekortResponse> of(WebClientError.Description description) {
         return Mono.just(SkattekortResponse

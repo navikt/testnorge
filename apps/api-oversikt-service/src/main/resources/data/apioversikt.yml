@@ -178,7 +178,7 @@ system:
     namespace: okonomi
     cluster: dev-gcp
     write:
-      url: https://sokos-skattekort.intern.dev.nav.no/api/v1/person/docs
+      url: https://sokos-skattekort.intern.dev.nav.no/api/v2/person/docs
   - register: skjermingsregister
     kubernetes-name: skjermede-personer
     namespace: nom
