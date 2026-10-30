@@ -31,10 +31,7 @@ public abstract class AbstractConsumerTest {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.r2dbc.url", () -> "r2dbc:postgresql://localhost:" + TestDatabaseConfig.POSTGRES.getMappedPort(5432) + "/test");
-        registry.add("spring.r2dbc.username", TestDatabaseConfig.POSTGRES::getUsername);
-        registry.add("spring.r2dbc.password", TestDatabaseConfig.POSTGRES::getPassword);
-        registry.add("spring.flyway.enabled", () -> "false");
+        TestDatabaseConfig.registerDatabaseProperties(registry);
     }
 
     @BeforeEach

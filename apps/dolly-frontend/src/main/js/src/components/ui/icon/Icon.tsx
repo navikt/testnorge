@@ -19,6 +19,7 @@ import {
 	ChevronDownIcon,
 	ChevronUpDoubleCircleIcon,
 	ChevronUpIcon,
+	CloudIcon,
 	DownloadIcon,
 	EarthIcon,
 	EnvelopeClosedIcon,
@@ -192,6 +193,7 @@ export const icons = {
 	cv: FileTextIcon,
 	ansettelse: PersonPlusIcon,
 	'rediger-person': PersonPencilIcon,
+	salesforce: CloudIcon,
 }
 
 const px = (v: number) => `${v}px`

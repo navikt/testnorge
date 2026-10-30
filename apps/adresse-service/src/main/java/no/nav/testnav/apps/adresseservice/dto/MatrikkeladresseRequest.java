@@ -16,8 +16,8 @@ public class MatrikkeladresseRequest {
     private String tilleggsnavn;
 
     private String kommunenummer;
-    private String gaardsnummer;
-    private String brukesnummer;
+    private Long gaardsnummer;
+    private Long brukesnummer;
 
     private String postnummer;
     private String poststed;

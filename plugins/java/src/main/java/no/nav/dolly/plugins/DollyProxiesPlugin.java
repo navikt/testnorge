@@ -59,12 +59,12 @@ public class DollyProxiesPlugin implements Plugin<Project> {
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-oauth2-resource-server");
         dependencies.add("implementation", "org.springframework.cloud:spring-cloud-starter-gateway-server-webflux");
         dependencies.add("implementation", "org.springframework.boot:spring-boot-starter-webflux");
-        dependencies.add("runtimeOnly", "io.grpc:grpc-netty:" + versions.grpc);
+        dependencies.add("runtimeOnly", "io.grpc:grpc-netty");
         dependencies.add("runtimeOnly", "io.micrometer:micrometer-registry-prometheus");
         dependencies.add("testAnnotationProcessor", "org.projectlombok:lombok");
         dependencies.add("testImplementation", project.getDependencies().platform("org.junit:junit-bom:" + versions.junit));
         dependencies.add("testImplementation", "org.springframework.boot:spring-boot-starter-test");
-        dependencies.add("testImplementation", "org.wiremock:wiremock-standalone:3.13.0");
+        dependencies.add("testImplementation", "org.wiremock:wiremock-standalone:" + versions.wiremock);
         dependencies.add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher");
 
         var dependencyManagement = project.getExtensions().getByType(DependencyManagementExtension.class);

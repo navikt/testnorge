@@ -14,7 +14,7 @@ export enum VergemaalKodeverk {
 	Vergetype = 'Vergemål_Vergetype',
 }
 
-export enum FullmaktKodeverk {
+export enum HenvendelseKodeverk {
 	Tema = 'Tema',
 }
 

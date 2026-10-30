@@ -13,7 +13,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import org.apache.poi.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.utils.PensjonforvalterUtils.IDENT;
@@ -31,7 +32,7 @@ import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
-import static org.apache.poi.util.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrategy {
@@ -109,7 +110,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
                         }
 
                         if (!alderspensjon.getRelasjoner().isEmpty() &&
-                                (sivilstand.isPresent() || samboer.isPresent())) {
+                                ((sivilstand.isPresent() && sivilstand.get().isGift()) || samboer.isPresent())) {
 
                             request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonSoknadRequest.SkjemaRelasjon.class));
 
@@ -185,7 +186,7 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
 
         return hovedperson.flatMap(personBolk -> personBolk.getSivilstand().stream()
                 .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                .filter(StringUtil::isNotBlank)
+                .filter(StringUtils::isNotBlank)
                 .findFirst()).orElse(null);
     }
 
@@ -193,7 +194,8 @@ public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrateg
 
         if (sivilstand.isPresent() && isNotBlank(sivilstand.get().getRelatertVedSivilstand())) {
 
-            return sivilstand.get().getGyldigFraOgMed();
+            var relasjonsdato = sivilstand.get().getGyldigFraOgMed();
+            return nonNull(relasjonsdato) ? relasjonsdato : now().minusYears(2);
         }
 
         return hovedperson.flatMap(personBolk -> personBolk.getSivilstand().stream()

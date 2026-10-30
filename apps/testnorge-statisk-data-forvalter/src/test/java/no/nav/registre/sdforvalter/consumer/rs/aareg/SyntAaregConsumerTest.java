@@ -4,10 +4,10 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.command.PostSyntAaregCommand;
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
+import mockwebserver3.Dispatcher;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+import mockwebserver3.RecordedRequest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,8 +95,8 @@ public class SyntAaregConsumerTest {
     }
 
     @AfterEach
-    public void tearDown() throws IOException {
-        mockWebServer.shutdown();
+    public void tearDown() {
+        mockWebServer.close();
     }
 
     private Dispatcher getDispatcher() {
@@ -107,22 +107,25 @@ public class SyntAaregConsumerTest {
             @Override
             public MockResponse dispatch(@NotNull RecordedRequest request) {
 
-                if ("/synt-aareg/api/v1/generate_aareg".equals(request.getPath()) && "POST".equals(request.getMethod())) {
-                    return switch (request.getBody().readUtf8()) {
-                        case "[\"01010101010\",\"02020202020\"]" -> new MockResponse()
-                                .setResponseCode(200)
+                if ("/synt-aareg/api/v1/generate_aareg".equals(request.getTarget()) && "POST".equals(request.getMethod())) {
+                    var body = request.getBody() == null ? "" : request.getBody().utf8();
+                    return switch (body) {
+                        case "[\"01010101010\",\"02020202020\"]" -> new MockResponse.Builder()
+                                .code(200)
                                 .addHeader("Content-Type", "application/json")
-                                .setBody(getResourceFileContent("files/arbeidsforholdsmelding.json"));
-                        case "[\"03030303030\"]" -> new MockResponse()
-                                .setResponseCode(200)
+                                .body(getResourceFileContent("files/arbeidsforholdsmelding.json"))
+                                .build();
+                        case "[\"03030303030\"]" -> new MockResponse.Builder()
+                                .code(200)
                                 .addHeader("Content-Type", "application/json")
-                                .setBody(getResourceFileContent("files/arbeidsforholdsmelding_paged.json"));
-                        case "[\"01010101010\"]" -> new MockResponse().setResponseCode(500);
+                                .body(getResourceFileContent("files/arbeidsforholdsmelding_paged.json"))
+                                .build();
+                        case "[\"01010101010\"]" -> new MockResponse.Builder().code(500).build();
                         default ->
-                                throw new IllegalStateException("Unexpected request body: " + request.getBody().readUtf8());
+                                throw new IllegalStateException("Unexpected request body: " + body);
                     };
                 }
-                return new MockResponse().setResponseCode(404);
+                return new MockResponse.Builder().code(404).build();
 
             }
 

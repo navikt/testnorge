@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -16,13 +18,11 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsInstdata {
 
-    @Schema(
-            description = "Hvilken type institusjon oppholdet er registrert på. "
+    @Schema(description = "Hvilken type institusjon oppholdet er registrert på. "
                     + "Kan være kodeverdiene AS (Alders- og sykehjem), FO (Fengsel) eller HS (Helseinsitusjon)")
     private InstdataInstitusjonstype institusjonstype;
 
-    @Schema(
-            type = "LocalDateTime",
+    @Schema(type = "LocalDateTime",
             description = "Dato for begynnelsen av oppholdet")
     private LocalDateTime startdato;
 
@@ -31,28 +31,24 @@ public class RsInstdata {
     private LocalDateTime forventetSluttdato;
 
     @Schema(type = "LocalDateTime",
-            description = "Dato oppholdet var avsluttet")
-    private LocalDateTime faktiskSluttdato;
-
-    @Schema(type = "LocalDateTime",
             description = "Nytt Api har kun denne for slutt av opphold")
     private LocalDateTime sluttdato;
 
-    @Schema(description = "Kodeverdi for oppholdskategori. "
-            + "Kan være kodeverdiene A (Alders- og sykehjem), D (Dagpasient), F (Ferieopphold), "
-            + "H (Heldøgnpasient), P (Fødsel), R (Opptreningsinstitusjon), S (Soningsfange) eller V (Varetektsfange)")
-    private InstdataKategori kategori;
+    @EqualsAndHashCode.Exclude
+    @Schema(description = "Id for opphold; brukes ved endring")
+    private String oppholdId;
 
-    @Schema(description = "Kodeverdi for kilde. "
-            + "Defaultverdi settes i backend basert på institusjonstype hvis ikke angitt. "
-            + "(Kan være kodeverdiene APPBRK(Applikasjonsbruker), "
-            + "IT(Infotrygd), AINN(Altinn), PP01(Pensjon), TPS(TPS), INST(INST))")
-    private InstdataKilde kilde;
+    @Getter
+    public enum InstdataInstitusjonstype {
 
-    @Schema(description = "Settes i backend basert på institusjonstype hvis ikke utfylt "
-            + "(Unik id for en institusjon i TSS, bruk oppslag-api’et for å finne den)")
-    private String tssEksternId;
+        AS("Alders- og sykehjem"),
+        FO("Fengsel"),
+        HS("Helseinsitusjon");
 
-    @Schema(description = "Flag for å markere om personen ble overført til en annen institusjon")
-    private Boolean overfoert;
+        private final String beskrivelse;
+
+        InstdataInstitusjonstype(String beskrivelse) {
+            this.beskrivelse = beskrivelse;
+        }
+    }
 }

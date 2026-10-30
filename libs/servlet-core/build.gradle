@@ -12,6 +12,7 @@ sonarqube {
 dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "com.fasterxml.jackson.core:jackson-databind"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'

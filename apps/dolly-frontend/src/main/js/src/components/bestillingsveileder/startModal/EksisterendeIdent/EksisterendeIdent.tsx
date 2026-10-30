@@ -64,7 +64,7 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 	}
 
 	return (
-		<div className="eksisterende-ident-form">
+		<div className="ny-bestilling-form_row eksisterende-ident-form">
 			{error && (
 				<Alert variant="error">
 					<Icon kind="report-problem-triangle" />

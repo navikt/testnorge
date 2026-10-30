@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class InstdataResponse {
     private String feilmelding;
 
     private String personident;
-    private Map<String, List<Instdata>> institusjonsopphold;
+    private Map<String, List<InstdataDTO>> institusjonsopphold;
     private List<String> environments;
 
     public static Mono<InstdataResponse> of(WebClientError.Description description, String ident, List<String> miljoer) {
@@ -50,7 +49,7 @@ public class InstdataResponse {
         return environments;
     }
 
-    public Map<String, List<Instdata>> getInstitusjonsopphold() {
+    public Map<String, List<InstdataDTO>> getInstitusjonsopphold() {
 
         if (isNull(institusjonsopphold)) {
             institusjonsopphold = new HashedMap<>();

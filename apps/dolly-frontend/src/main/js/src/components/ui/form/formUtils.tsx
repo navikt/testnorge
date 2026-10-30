@@ -103,6 +103,7 @@ const getValgteAttributter = (values) => {
 		'dokarkiv',
 		'histark',
 		'medl',
+		'henvendelse',
 		'organisasjon.enhetstype',
 		'organisasjon.naeringskode',
 		'organisasjon.sektorkode',

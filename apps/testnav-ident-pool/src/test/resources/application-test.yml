@@ -7,14 +7,6 @@ spring:
     r2dbc:
       repositories:
         enabled: true
-  r2dbc:
-    url: r2dbc:tc:postgresql:///test?TC_IMAGE_TAG=16
-    username: test
-    password: test
-  datasource:
-    url: jdbc:tc:postgresql:///test?TC_IMAGE_TAG=16
-    username: test
-    password: test
   flyway:
     enabled: true
     locations: classpath:/db/migration

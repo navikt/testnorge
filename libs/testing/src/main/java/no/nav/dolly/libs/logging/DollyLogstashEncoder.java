@@ -12,9 +12,9 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -37,7 +37,10 @@ public class DollyLogstashEncoder extends LogstashEncoder {
     private static final Pattern IDENT = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
     private static final Pattern BEARER = Pattern.compile("Bearer [a-zA-Z0-9\\-_.]+");
 
-    private final DateFormat timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
+    private static final DateTimeFormatter TIMESTAMP = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX")
+            .withZone(ZoneId.systemDefault());
+
     private final ObjectMapper objectMapper = JsonMapper.builder().build();
     private int maxStackTraceLength = 1000;
     private boolean addCauses = true;
@@ -67,7 +70,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
             }
 
             g.writeName("@timestamp");
-            g.writeString(timestamp.format(new Date(event.getTimeStamp())));
+            g.writeString(TIMESTAMP.format(Instant.ofEpochMilli(event.getTimeStamp())));
             g.writeName("message");
             g.writeString(maskMessage(event.getFormattedMessage()));
             g.writeName("logger_name");
