@@ -12,7 +12,6 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.TransactionHelperService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -33,7 +32,9 @@ import java.util.Map;
 import static java.util.Collections.singleton;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -82,41 +83,8 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
-    void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
-
-        var progress = new BestillingProgress();
-        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
-
-        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
-                .institusjonsoppholdEnvironments(List.of("q2"))
-                .build()));
-        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of(InstdataDTO.builder()
-                .norskident(IDENT)
-                .build()));
-        when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
-                .status(HttpStatus.OK)
-                .institusjonsopphold(Map.of("q2", List.of()))
-                .build()));
-        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
-
-        var request = new RsDollyBestillingRequest();
-        request.setInstdata(List.of(RsInstdata.builder().build()));
-        request.setEnvironments(singleton("q2"));
-
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true))
-                .assertNext(_ -> {
-                    verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().getLast(), is(equalTo("INST2_STATUS#q2:opphold=1$OK")));
-                })
-                .verifyComplete();
-    }
-
-    @Disabled
-    @Test
-    void gjenopprettNaarInstdataFinnesFraFoer_SkalGiOk() {
+    void shouldOppretteInstdataNaarOppholdIkkeFinnesFraFoer() {
 
         var progress = new BestillingProgress();
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
@@ -128,13 +96,13 @@ class InstdataClientTest {
                 .norskident(IDENT)
                 .build()));
         when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
-                .institusjonsopphold(Map.of("q2", List.of(new InstdataDTO())))
-                .build()));
-        when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
-                .status(HttpStatus.OK)
-                .institusjonsopphold(Map.of(ENVIRONMENT, List.of()))
+                .institusjonsopphold(Map.of())
                 .build()));
         when(transaksjonMappingRepository.findAllByBestillingId(BESTILLING_ID)).thenReturn(Flux.empty());
+        when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()
+                .status(HttpStatus.OK)
+                .institusjonsopphold(Map.of("q2", List.of()))
+                .build()));
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
@@ -149,6 +117,57 @@ class InstdataClientTest {
                     assertThat(statusCaptor.getAllValues().getLast(), is(equalTo("INST2_STATUS#q2:opphold=1$OK")));
                 })
                 .verifyComplete();
+
+        verify(instdataConsumer).postInstdata(
+                List.of(InstdataDTO.builder().norskident(IDENT).build()), ENVIRONMENT);
+        verify(transaksjonMappingRepository, never()).save(any(TransaksjonMapping.class));
+    }
+
+    @Test
+    void shouldLagreEksisterendeOppholdIderUtenAaPostePaaNytt() {
+
+        var progress = new BestillingProgress();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+
+        when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
+                .institusjonsoppholdEnvironments(List.of("q2"))
+                .build()));
+        when(mapperFacade.mapAsList(anyList(), eq(InstdataDTO.class), any(MappingContext.class))).thenReturn(List.of(InstdataDTO.builder()
+                .norskident(IDENT)
+                .build()));
+        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
+                .institusjonsopphold(Map.of(ENVIRONMENT, List.of(
+                        InstdataDTO.builder().norskident(IDENT).oppholdId("42").build(),
+                        InstdataDTO.builder().norskident(IDENT).oppholdId("43").build())))
+                .build()));
+        when(transaksjonMappingRepository.findAllByBestillingId(BESTILLING_ID)).thenReturn(Flux.empty());
+        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class))).thenAnswer(invocation ->
+                Mono.just(invocation.getArgument(0)));
+        when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
+
+        var request = new RsDollyBestillingRequest();
+        request.setId(BESTILLING_ID);
+        request.setInstdata(List.of(RsInstdata.builder().build()));
+        request.setEnvironments(singleton("q2"));
+
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
+                .assertNext(_ -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().getLast(), is(equalTo("INST2_STATUS#q2:opphold=1$OK")));
+                })
+                .verifyComplete();
+
+        verify(instdataConsumer, never()).postInstdata(anyList(), anyString());
+        var mappingCaptor = ArgumentCaptor.forClass(TransaksjonMapping.class);
+        verify(transaksjonMappingRepository).save(mappingCaptor.capture());
+        var mapping = mappingCaptor.getValue();
+        assertThat(mapping.getBestillingId(), is(equalTo(BESTILLING_ID)));
+        assertThat(mapping.getIdent(), is(equalTo(IDENT)));
+        assertThat(mapping.getSystem(), is(equalTo("INST2")));
+        assertThat(mapping.getMiljoe(), is(equalTo(ENVIRONMENT)));
+        assertThat(jsonMapper.readValue(mapping.getTransaksjonId(), String[].class),
+                arrayContainingInAnyOrder("42", "43"));
     }
 
     @Test
@@ -239,6 +258,8 @@ class InstdataClientTest {
                 .institusjonsopphold(Map.of(ENVIRONMENT, List.of(InstdataDTO.builder().oppholdId("42").build())))
                 .build()));
         when(transaksjonMappingRepository.findAllByBestillingId(BESTILLING_ID)).thenReturn(Flux.just(mapping));
+        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class))).thenAnswer(invocation ->
+                Mono.just(invocation.getArgument(0)));
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         var request = new RsDollyBestillingRequest();
@@ -251,5 +272,9 @@ class InstdataClientTest {
                 .verifyComplete();
 
         verify(instdataConsumer, never()).postInstdata(anyList(), anyString());
+        var mappingCaptor = ArgumentCaptor.forClass(TransaksjonMapping.class);
+        verify(transaksjonMappingRepository).save(mappingCaptor.capture());
+        assertThat(mappingCaptor.getValue(), is(sameInstance(mapping)));
+        assertThat(mappingCaptor.getValue().getTransaksjonId(), is(equalTo("[\"42\"]")));
     }
 }
