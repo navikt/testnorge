@@ -3,16 +3,15 @@ package no.nav.dolly.bestilling.skattekort.command;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.skattekort.domain.SkattekortDTO;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortHentRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
+import no.nav.dolly.bestilling.skattekort.domain.SkattekortV2DTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
@@ -39,10 +38,10 @@ public class SkattekortHentCommand implements Callable<Mono<SkattekortResponse>>
                 .headers(WebClientHeader.bearer(token))
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(SkattekortDTO[].class)
+                .toEntity(SkattekortV2DTO.class)
                 .map(skattekort -> SkattekortResponse.builder()
-                        .status(HttpStatus.OK)
-                        .skattekort(Arrays.asList(skattekort))
+                        .status(HttpStatus.valueOf(skattekort.getStatusCode().value()))
+                        .skattekort(skattekort.getBody())
                         .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
