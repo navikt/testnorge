@@ -142,17 +142,26 @@ public class InstdataClient implements ClientRegister {
 
         return Mono.zip(getOpprettedeOppholdIder(bestillingId, instdataRequest.getFirst().getNorskident(), miljoe),
                         instdataConsumer.getInstdata(instdataRequest.getFirst().getNorskident(), miljoe))
-                .map(tuple -> {
+                .flatMap(tuple -> {
                     var opprettedeOppholdIder = tuple.getT1();
                     var eksisterende = tuple.getT2();
                     log.info("Instdata hentet data fra {}: {}", miljoe, eksisterende.getInstitusjonsopphold());
-                    return instdataRequest.stream()
+                    return Flux.fromIterable(instdataRequest)
                             .filter(request -> eksisterende.getInstitusjonsopphold()
                                     .getOrDefault(miljoe, emptyList())
                                     .stream()
                                     .noneMatch(fraMiljoe -> fraMiljoe.equals(request) ||
                                                             opprettedeOppholdIder.contains(fraMiljoe.getOppholdId())))
-                            .toList();
+                            .collectList()
+                            .flatMap(newInstdata -> newInstdata.isEmpty() ?
+                                    Flux.fromIterable(eksisterende.getInstitusjonsopphold()
+                                                    .getOrDefault(miljoe, emptyList()))
+                                            .map(instdata -> InstdataDTO.builder()
+                                                    .oppholdId(instdata.getOppholdId())
+                                                    .eksisterende(true)
+                                                    .build())
+                                            .collectList() :
+                                    Mono.just(newInstdata));
                 });
     }
 
@@ -201,7 +210,7 @@ public class InstdataClient implements ClientRegister {
 
         return (isNewOpphold ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
                 .flatMap(newInstdata -> {
-                    if (!newInstdata.isEmpty()) {
+                    if (!newInstdata.isEmpty() && !newInstdata.getFirst().isEksisterende()) {
                         return instdataConsumer.postInstdata(newInstdata, miljoe)
                                 .flatMap(response -> {
                                     if (response.getStatus().is2xxSuccessful()) {
@@ -221,7 +230,12 @@ public class InstdataClient implements ClientRegister {
                                         .zipWith(Mono.just(status)))
                                 .map(Tuple2::getT2);
                     } else {
-                        return Mono.just(miljoe + ":opphold=1$OK");
+                        return (!newInstdata.isEmpty() ? saveTransaksjonId(newInstdata.stream()
+                                        .map(InstdataDTO::getOppholdId)
+                                        .collect(Collectors.toSet()),
+                                instdata.getFirst().getNorskident(), miljoe, bestillingId) :
+                                Mono.just(new TransaksjonMapping()))
+                                .map(_ -> miljoe + ":opphold=1$OK");
                     }
                 });
     }
@@ -243,13 +257,13 @@ public class InstdataClient implements ClientRegister {
                         })
                         .flatMap(transaksjonMappingRepository::save)
                         .switchIfEmpty(Mono.defer(() -> transaksjonMappingRepository.save(TransaksjonMapping.builder()
-                                        .bestillingId(bestillingId)
-                                        .system(INST2)
-                                        .ident(ident)
-                                        .miljoe(miljoe)
-                                        .transaksjonId(jsonMapper.writeValueAsString(oppholdIder))
-                                        .datoEndret(now())
-                                        .build())));
+                                .bestillingId(bestillingId)
+                                .system(INST2)
+                                .ident(ident)
+                                .miljoe(miljoe)
+                                .transaksjonId(jsonMapper.writeValueAsString(oppholdIder))
+                                .datoEndret(now())
+                                .build())));
     }
 
     private Mono<String> postInstdataKdi(InstdataKdiDTO instdata, String ident) {
