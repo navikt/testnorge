@@ -75,8 +75,12 @@ public class TpsMessagingClient implements ClientRegister {
     @SuppressWarnings("S1144")
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (!isTpsMessage(bestilling)) {
+            return Mono.just(progress);
+        }
+
         return miljoerConsumer.getMiljoer()
-                .flatMap(miljoer -> !dollyPerson.isOrdre() && isTpsMessage(bestilling) ?
+                .flatMap(miljoer -> !dollyPerson.isOrdre() ?
                         transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
                                         BestillingProgress::setTpsMessagingStatus,
                                         prepTpsMessagingStatus(miljoer), SEP)
@@ -119,11 +123,11 @@ public class TpsMessagingClient implements ClientRegister {
 
     private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {
 
-        return nonNull(bestilling.getBankkonto()) ||
-                nonNull(bestilling.getSkjerming()) ||
-
-                (nonNull(bestilling.getPdldata()) &&
-                        nonNull(bestilling.getPdldata().getPerson()));
+        return (nonNull(bestilling.getBankkonto()) &&
+                (nonNull(bestilling.getBankkonto().getNorskBankkonto()) ||
+                        nonNull(bestilling.getBankkonto().getUtenlandskBankkonto()))) ||
+                nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling)) ||
+                nonNull(SkjermingUtil.getEgenansattDatoTom(bestilling));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(DollyPerson dollyPerson, BestillingProgress progress, String status) {

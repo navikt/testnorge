@@ -5,6 +5,7 @@ import {
 	getInitialNyIdent,
 	getInitialUtenlandskIdentifikasjonsnummer,
 } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getStandardIdenttype } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdentUtils'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
@@ -115,7 +116,9 @@ IdentifikasjonPanel.initialValues = ({ set, opts, del, has }) => {
 			label: 'Har ny ident',
 			checked: has('pdldata.person.nyident'),
 			add() {
-				set('pdldata.person.nyident', [getInitialNyIdent(identtype === 'NPID' ? 'PDL' : 'FREG')])
+				set('pdldata.person.nyident', [
+					getInitialNyIdent(identtype === 'NPID' ? 'PDL' : 'FREG', getStandardIdenttype(opts)),
+				])
 			},
 			remove() {
 				del('pdldata.person.nyident')

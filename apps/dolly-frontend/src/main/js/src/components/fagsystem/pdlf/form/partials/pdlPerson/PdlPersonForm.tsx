@@ -6,7 +6,7 @@ import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
@@ -16,12 +16,15 @@ import styled from 'styled-components'
 import { initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PersonIcon, PersonPlusIcon } from '@navikt/aksel-icons'
 
-interface PdlPersonValues {
+interface PdlPersonFormProps {
 	path: string
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	fullmektigsNavnPath?: string
 	label: string
+	nyPersonLabel?: string
+	eksisterendePersonLabel?: string
+	children?: React.ReactNode
 	formMethods: UseFormReturn
 	nyIdentValg?: NyIdent | null
 	eksisterendeNyPerson?: Option | null
@@ -50,12 +53,15 @@ export const PdlPersonForm = ({
 	eksisterendePersonPath,
 	fullmektigsNavnPath,
 	label,
+	nyPersonLabel = 'Opprett ny person',
+	eksisterendePersonLabel = 'Velg eksisterende person',
+	children,
 	formMethods,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
 	initialNyIdent = null,
 	initialEksisterendePerson = null,
-}: PdlPersonValues) => {
+}: PdlPersonFormProps) => {
 	const { gruppeId: gruppeIdParam } = useParams()
 	const formGruppeId = formMethods.watch('gruppeId')
 	const gruppeId = formGruppeId || gruppeIdParam
@@ -122,13 +128,13 @@ export const PdlPersonForm = ({
 							key={path + PersonType.NY_PERSON}
 							value={PersonType.NY_PERSON}
 							icon={<PersonPlusIcon aria-hidden />}
-							label="Opprett ny person"
+							label={nyPersonLabel}
 						/>
 						<ToggleGroup.Item
 							key={path + PersonType.EKSISTERENDE_PERSON}
 							value={PersonType.EKSISTERENDE_PERSON}
 							icon={<PersonIcon aria-hidden />}
-							label="Velg eksisterende person"
+							label={eksisterendePersonLabel}
 						/>
 					</StyledToggleGroup>
 					{type === PersonType.NY_PERSON && (
@@ -140,7 +146,9 @@ export const PdlPersonForm = ({
 							gruppeIdenter={gruppeIdenter}
 							eksisterendeNyPerson={eksisterendeNyPerson}
 							key={'person-' + path}
-						/>
+						>
+							{children}
+						</PdlNyPerson>
 					)}
 				</>
 			)}

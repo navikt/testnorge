@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifNotBlank, ifPresent, requiredString } from '@/utils/YupValidations'
+import { ifNotBlank, requiredString } from '@/utils/YupValidations'
 
 const personnavnSchema = Yup.object({
 	fornavn: ifNotBlank('$pdldata.person.navn[0].etternavn', requiredString),
@@ -27,6 +27,11 @@ export const utenlandskId = Yup.object({
 })
 
 export const nyident = Yup.object({
-	identtype: ifPresent('$identtype', requiredString),
-	eksisterendeIdent: ifPresent('$eksisterendeIdent', requiredString),
+	identtype: Yup.string().nullable(),
+	eksisterendeIdent: Yup.string()
+		.nullable()
+		.when('eksisterendePerson', {
+			is: true,
+			then: () => requiredString,
+		}),
 })

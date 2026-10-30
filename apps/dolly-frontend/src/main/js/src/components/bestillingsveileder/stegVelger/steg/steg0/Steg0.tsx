@@ -12,6 +12,7 @@ import {
 	getInitialSivilstand,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getStandardIdenttype } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdentUtils'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg0/VelgGruppe'
 import { MalVelgerIdent } from '@/components/bestillingsveileder/startModal/MalVelgerIdent'
 
@@ -53,7 +54,9 @@ const handleAttributeUpdates = (formMethods: any, opts: BestillingsveilederConte
 			formMethods.setValue('pdldata.person.vergemaal', newFormVergemaal)
 		},
 		'pdldata.person.nyident': () => {
-			formMethods.setValue('pdldata.person.nyident', [getInitialNyIdent(master)])
+			formMethods.setValue('pdldata.person.nyident', [
+				getInitialNyIdent(master, getStandardIdenttype(opts)),
+			])
 		},
 		'pdldata.person.sivilstand': () => {
 			formMethods.setValue('pdldata.person.sivilstand', [getInitialSivilstand(master)])

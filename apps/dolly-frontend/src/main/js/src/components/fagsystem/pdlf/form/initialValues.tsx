@@ -1,3 +1,5 @@
+import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
+
 const navn = {
 	fornavn: undefined as unknown as string,
 	mellomnavn: undefined as unknown as string,
@@ -353,8 +355,8 @@ export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
 	master: master,
 })
 
-export const getInitialNyIdent = (master = 'FREG') => ({
-	identtype: null as unknown as string,
+export const getInitialNyIdent = (master = 'FREG', identtype: string | null = null): NyIdent => ({
+	identtype,
 	eksisterendePerson: false,
 	kilde: 'Dolly',
 	master: master,
