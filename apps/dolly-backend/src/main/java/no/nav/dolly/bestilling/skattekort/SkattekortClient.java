@@ -101,6 +101,7 @@ public class SkattekortClient implements ClientRegister {
         Flux.fromIterable(MILJOER_SUPPORTED)
                 .flatMap(miljoe -> Flux.fromIterable(identer)
                         .flatMap(ident -> skattekortConsumer.hentSkattekort(SkattekortHentRequest.builder().fnr(ident).build(), miljoe)
+                                .filter(response -> nonNull(response.getSkattekort()))
                                 .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort().getData()))
                                 .flatMap(skattekort -> {
                                     var request = SkattekortRequest.builder()

@@ -87,7 +87,7 @@ export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) =
 			const results = await Promise.allSettled(
 				SKATTEKORT_MILJOER.map(async (miljoe) => {
 					const miljoData = await fetchSkattekortFromMiljoe(miljoe, fnr)
-					return { miljo: miljoe, data: miljoData.data } as MiljoSkattekortData
+					return { miljo: miljoe, data: miljoData?.data ?? [] } as MiljoSkattekortData
 				}),
 			)
 			const fulfilled = results
