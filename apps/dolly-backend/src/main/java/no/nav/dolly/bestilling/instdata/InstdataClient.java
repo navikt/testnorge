@@ -24,11 +24,11 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -203,9 +203,17 @@ public class InstdataClient implements ClientRegister {
                         response.getFeilmelding());
     }
 
+    private String getOppholdId(InstdataResponse response) {
+
+        return response.getInstitusjonsopphold().values().stream()
+                .flatMap(Collection::stream)
+                .map(InstdataDTO::getOppholdId)
+                .findFirst()
+                .orElse("1");
+    }
+
     private Mono<String> postInstdata(boolean isNewOpphold, List<InstdataDTO> instdata, String miljoe, Long bestillingId) {
 
-        var oppholdId = new AtomicInteger(0);
         var lagredeOppholdIder = new AtomicReference<Set<String>>(new HashSet<>());
 
         return (isNewOpphold ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
@@ -222,8 +230,8 @@ public class InstdataClient implements ClientRegister {
                                     }
                                     return Mono.just(response);
                                 })
-                                .map(response -> String.format("%s:opphold=%d$%s",
-                                        miljoe, oppholdId.incrementAndGet(), getStatus(response)))
+                                .map(response -> String.format("%s:oppholdId=%s$%s",
+                                        miljoe, getOppholdId(response), getStatus(response)))
                                 .collect(Collectors.joining(","))
                                 .flatMap(status -> saveTransaksjonId(lagredeOppholdIder.get(),
                                         instdata.getFirst().getNorskident(), miljoe, bestillingId)
@@ -235,7 +243,7 @@ public class InstdataClient implements ClientRegister {
                                         .collect(Collectors.toSet()),
                                 instdata.getFirst().getNorskident(), miljoe, bestillingId) :
                                 Mono.just(new TransaksjonMapping()))
-                                .map(_ -> miljoe + ":opphold=1$OK");
+                                .map(_ -> miljoe + ":oppholdId=1$OK");
                     }
                 });
     }
