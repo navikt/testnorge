@@ -80,7 +80,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	)
 }
 
-IdentifikasjonPanel.heading = 'Identifikasjon'
+IdentifikasjonPanel.heading = 'Identitet'
 
 IdentifikasjonPanel.initialValues = ({ set, opts, del, has }) => {
 	const { identtype, identMaster } = opts
