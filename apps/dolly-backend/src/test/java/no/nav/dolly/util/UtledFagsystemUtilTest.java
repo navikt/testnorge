@@ -31,6 +31,7 @@ import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
@@ -78,6 +79,13 @@ class UtledFagsystemUtilTest {
 
         var pdldata = new PdlPersondata();
         pdldata.setPerson(new PersonDTO());
+        return pdldata;
+    }
+
+    private static PdlPersondata pdldataMedNyident(IdentRequestDTO... nyident) {
+
+        var pdldata = pdldataMedPerson();
+        pdldata.getPerson().getNyident().addAll(List.of(nyident));
         return pdldata;
     }
 
@@ -198,6 +206,49 @@ class UtledFagsystemUtilTest {
                 Bestilling.builder().opprettFraIdenter(NPID + "," + FNR).build());
 
         assertThat(result, hasItem(SystemTyper.PEN_FORVALTER));
+    }
+
+    @Test
+    void shouldResolvePensjonWhenNpidIsPromotedByNyident() {
+
+        var kriterier = BestilteKriterier.builder()
+                .pdldata(pdldataMedNyident(IdentRequestDTO.builder().identtype(Identtype.FNR).build()))
+                .pensjonforvalter(PensjonData.builder()
+                        .inntekt(new PensjonData.PoppInntekt())
+                        .build())
+                .build();
+
+        var result = UtledFagsystemUtil.resolve(kriterier,
+                Bestilling.builder().ident(NPID).miljoer("q1").build());
+
+        assertThat(result, hasItem(SystemTyper.PEN_FORVALTER));
+        assertThat(result, hasItem(SystemTyper.PEN_INNTEKT));
+    }
+
+    @Test
+    void shouldResolvePenForvalterWhenNpidGetsExistingFnrAsNyident() {
+
+        var kriterier = BestilteKriterier.builder()
+                .pdldata(pdldataMedNyident(IdentRequestDTO.builder().eksisterendeIdent(FNR).build()))
+                .build();
+
+        var result = UtledFagsystemUtil.resolve(kriterier, Bestilling.builder().ident(NPID).build());
+
+        assertThat(result, hasItem(SystemTyper.PEN_FORVALTER));
+    }
+
+    @Test
+    void shouldNotResolvePenForvalterWhenNyidentKeepsNpid() {
+
+        var kriterier = BestilteKriterier.builder()
+                .pdldata(pdldataMedNyident(
+                        IdentRequestDTO.builder().identtype(Identtype.NPID).build(),
+                        IdentRequestDTO.builder().build()))
+                .build();
+
+        var result = UtledFagsystemUtil.resolve(kriterier, Bestilling.builder().ident(NPID).build());
+
+        assertThat(result, not(hasItem(SystemTyper.PEN_FORVALTER)));
     }
 
     @Test

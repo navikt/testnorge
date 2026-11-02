@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import org.apache.commons.lang3.StringUtils;
 
@@ -207,6 +208,9 @@ public class UtledFagsystemUtil {
 
     private boolean isNpid(BestilteKriterier kriterier, Bestilling bestilling) {
 
+        if (harNyidentUtenforNpid(kriterier)) {
+            return false;
+        }
         if (isNotBlank(bestilling.getIdent())) {
             return isNpidIdent(bestilling.getIdent());
         }
@@ -222,6 +226,21 @@ public class UtledFagsystemUtil {
         return nonNull(kriterier.getPdldata()) &&
                 nonNull(kriterier.getPdldata().getOpprettNyPerson()) &&
                 kriterier.getPdldata().getOpprettNyPerson().getIdenttype() == Identtype.NPID;
+    }
+
+    private boolean harNyidentUtenforNpid(BestilteKriterier kriterier) {
+
+        return harPerson(kriterier) &&
+                kriterier.getPdldata().getPerson().getNyident().stream()
+                        .anyMatch(UtledFagsystemUtil::isNyidentUtenforNpid);
+    }
+
+    private boolean isNyidentUtenforNpid(IdentRequestDTO nyident) {
+
+        if (isNotBlank(nyident.getEksisterendeIdent())) {
+            return !isNpidIdent(nyident.getEksisterendeIdent());
+        }
+        return nonNull(nyident.getIdenttype()) && nyident.getIdenttype() != Identtype.NPID;
     }
 
     private boolean isAlleNpid(String identer) {

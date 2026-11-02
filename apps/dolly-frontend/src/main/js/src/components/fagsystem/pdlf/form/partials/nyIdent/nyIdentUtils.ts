@@ -1,4 +1,5 @@
 import { BestillingsveilederContextType } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getTypePerson } from '@/utils/DataFormatter'
 
 export const harFlereGjeldendeIdenttyper = (opts: BestillingsveilederContextType | undefined) =>
@@ -36,4 +37,23 @@ export const getKonverterValg = (
 	}
 
 	return { visSyntetisk: false, visId2032: !opts?.id2032 }
+}
+
+const getMasterForIdenttype = (identtype: string | null | undefined) =>
+	identtype === 'NPID' ? 'PDL' : 'FREG'
+
+export const oppdaterNyidentForIdenttype = (
+	nyident: NyIdent[],
+	forrigeIdenttype: string | null | undefined,
+	nyIdenttype: string,
+): NyIdent[] => {
+	const forrigeMaster = getMasterForIdenttype(forrigeIdenttype)
+	const nyMaster = getMasterForIdenttype(nyIdenttype)
+
+	return nyident.map((ident) => ({
+		...ident,
+		...(!ident.eksisterendeIdent &&
+			ident.identtype === forrigeIdenttype && { identtype: nyIdenttype }),
+		...((!ident.master || ident.master === forrigeMaster) && { master: nyMaster }),
+	}))
 }

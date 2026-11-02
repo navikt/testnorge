@@ -10,7 +10,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
+import { oppdaterNyidentForIdenttype } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdentUtils'
 
 export function NyIdent() {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
@@ -60,10 +60,12 @@ export function NyIdent() {
 						onChange={(option: Option) => {
 							formMethods.setValue(identtypePath, option.value)
 							opts.updateContext && opts.updateContext({ identtype: option.value })
-							if (formMethods.getValues('pdldata.person.nyident')) {
-								formMethods.setValue('pdldata.person.nyident', [
-									getInitialNyIdent(option.value === 'NPID' ? 'PDL' : 'FREG', option.value),
-								])
+							const nyident = formMethods.getValues('pdldata.person.nyident')
+							if (nyident) {
+								formMethods.setValue(
+									'pdldata.person.nyident',
+									oppdaterNyidentForIdenttype(nyident, identtype, option.value),
+								)
 							}
 						}}
 						value={identtype}
