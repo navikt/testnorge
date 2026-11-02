@@ -7,6 +7,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skattekort.domain.ArbeidstakerSkatt;
 import no.nav.dolly.bestilling.skattekort.domain.Skattekort;
+import no.nav.dolly.bestilling.skattekort.domain.SkattekortDTO;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortHentRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
@@ -48,6 +49,7 @@ public class SkattekortClient implements ClientRegister {
 
     public static final Set<String> MILJOER_SUPPORTED = Set.of("q1", "q2");
     private static final Set<String> DEFAULT_MILJOER = Set.of("q2");
+    private static final String MILJOE_STATUS = "%s:%s";
 
     private final SkattekortConsumer skattekortConsumer;
     private final MapperFacade mapperFacade;
@@ -66,7 +68,7 @@ public class SkattekortClient implements ClientRegister {
                     .collect(Collectors.toSet());
             var miljoer = filteredMiljoer.isEmpty() ? DEFAULT_MILJOER : filteredMiljoer;
             return oppdaterStatus(progress, miljoer.stream()
-                    .map(miljo -> "%s:Avvik: Validering feilet: Trekkode er ikke gyldig".formatted(miljo))
+                    .map("%s:Avvik: Validering feilet: Trekkode er ikke gyldig"::formatted)
                     .collect(Collectors.joining(",")));
         }
 
@@ -77,7 +79,7 @@ public class SkattekortClient implements ClientRegister {
         var miljoer = filteredMiljoer.isEmpty() ? DEFAULT_MILJOER : filteredMiljoer;
 
         return oppdaterStatus(progress, miljoer.stream()
-                .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SKATTEKORT.name())))
+                .map(miljo -> MILJOE_STATUS.formatted(miljo, getInfoVenter(SKATTEKORT.name())))
                 .collect(Collectors.joining(",")))
                 .flatMap(updatedProgress -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
@@ -99,16 +101,20 @@ public class SkattekortClient implements ClientRegister {
         Flux.fromIterable(MILJOER_SUPPORTED)
                 .flatMap(miljoe -> Flux.fromIterable(identer)
                         .flatMap(ident -> skattekortConsumer.hentSkattekort(SkattekortHentRequest.builder().fnr(ident).build(), miljoe)
-                                .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort()))
+                                .filter(response -> nonNull(response.getSkattekort()))
+                                .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort().getData()))
                                 .flatMap(skattekort -> {
-                                    val context = MappingContextUtils.getMappingContext();
-                                    context.setProperty("ident", ident);
-
-                                    val request = mapperFacade.map(skattekort, SkattekortRequest.class, context);
+                                    var request = SkattekortRequest.builder()
+                                            .fnr(ident)
+                                            .skattekort(SkattekortDTO.builder()
+                                                    .inntektsaar(skattekort.getInntektsaar())
+                                                    .resultatForSkattekort(IKKE_SKATTEKORT.getDescription())
+                                                    .build())
+                                            .build();
                                     return skattekortConsumer.sendSkattekort(request, miljoe);
                                 })))
                 .collectList()
-                .subscribe(skattekorts -> log.info("Slettet skattekort for identer: {}", identer));
+                .subscribe(_ -> log.info("Slettet skattekort for identer: {}", identer));
     }
 
     private Mono<String> sendSkattekortForArbeidstaker(ArbeidstakerSkatt arbeidstaker, DollyPerson dollyPerson, String miljoe) {
@@ -122,50 +128,50 @@ public class SkattekortClient implements ClientRegister {
                 .flatMap(request -> skattekortConsumer.sendSkattekort(request, miljoe)
                         .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
                                 dollyPerson.getIdent(), miljoe)))
-                .onErrorResume(throwable -> Mono.just("%s:%s".formatted(miljoe, throwable.getMessage())))
+                .onErrorResume(throwable -> Mono.just(MILJOE_STATUS.formatted(miljoe, throwable.getMessage())))
                 .collect(Collectors.joining(","));
     }
 
     private static boolean isValidateOK(RsDollyUtvidetBestilling bestilling) {
 
         return bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
-                .map(ArbeidstakerSkatt::getArbeidstaker)
-                .flatMap(Collection::stream)
-                .map(Skattekortmelding::getResultatPaaForespoersel)
-                .anyMatch(status ->
-                        IKKE_TREKKPLIKT.equals(status) ||
-                                IKKE_SKATTEKORT.equals(status))
-                ||
-                bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
-                        .map(ArbeidstakerSkatt::getArbeidstaker)
-                        .flatMap(Collection::stream)
-                        .map(Skattekortmelding::getSkattekort)
-                        .filter(Objects::nonNull)
-                        .map(Skattekort::getForskuddstrekk)
-                        .flatMap(Collection::stream)
-                        .anyMatch(forskuddstrekk ->
-                                nonNull(forskuddstrekk.getFrikort()) &&
-                                        isGyldigTrekkode(forskuddstrekk.getFrikort().getTrekkode()) ||
-                                        nonNull(forskuddstrekk.getTrekkprosent()) &&
-                                                isGyldigTrekkode(forskuddstrekk.getTrekkprosent().getTrekkode()) ||
-                                        nonNull(forskuddstrekk.getTrekktabell()) &&
-                                                isGyldigTrekkode(forskuddstrekk.getTrekktabell().getTrekkode()))
-                ||
-                bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
-                        .map(ArbeidstakerSkatt::getArbeidstaker)
-                        .flatMap(Collection::stream)
-                        .map(Skattekortmelding::getTilleggsopplysning)
-                        .flatMap(Collection::stream)
-                        .anyMatch(tilleggsopplysning ->
-                                OPPHOLD_PAA_SVALBARD.equals(tilleggsopplysning) ||
-                                        KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning));
+                       .map(ArbeidstakerSkatt::getArbeidstaker)
+                       .flatMap(Collection::stream)
+                       .map(Skattekortmelding::getResultatPaaForespoersel)
+                       .anyMatch(status ->
+                               IKKE_TREKKPLIKT.equals(status) ||
+                               IKKE_SKATTEKORT.equals(status))
+               ||
+               bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
+                       .map(ArbeidstakerSkatt::getArbeidstaker)
+                       .flatMap(Collection::stream)
+                       .map(Skattekortmelding::getSkattekort)
+                       .filter(Objects::nonNull)
+                       .map(Skattekort::getForskuddstrekk)
+                       .flatMap(Collection::stream)
+                       .anyMatch(forskuddstrekk ->
+                               nonNull(forskuddstrekk.getFrikort()) &&
+                               isGyldigTrekkode(forskuddstrekk.getFrikort().getTrekkode()) ||
+                               nonNull(forskuddstrekk.getTrekkprosent()) &&
+                               isGyldigTrekkode(forskuddstrekk.getTrekkprosent().getTrekkode()) ||
+                               nonNull(forskuddstrekk.getTrekktabell()) &&
+                               isGyldigTrekkode(forskuddstrekk.getTrekktabell().getTrekkode()))
+               ||
+               bestilling.getSkattekort().getArbeidsgiverSkatt().stream()
+                       .map(ArbeidstakerSkatt::getArbeidstaker)
+                       .flatMap(Collection::stream)
+                       .map(Skattekortmelding::getTilleggsopplysning)
+                       .flatMap(Collection::stream)
+                       .anyMatch(tilleggsopplysning ->
+                               OPPHOLD_PAA_SVALBARD.equals(tilleggsopplysning) ||
+                               KILDESKATT_PAA_PENSJON.equals(tilleggsopplysning));
     }
 
     private static boolean isGyldigTrekkode(Trekkode trekkode) {
 
         return LOENN_FRA_NAV.equals(trekkode) ||
-                PENSJON_FRA_NAV.equals(trekkode) ||
-                UFOERETRYGD_FRA_NAV.equals(trekkode);
+               PENSJON_FRA_NAV.equals(trekkode) ||
+               UFOERETRYGD_FRA_NAV.equals(trekkode);
     }
 
     private String formatStatus(SkattekortResponse response, Integer year, String ident, String miljoe) {
@@ -175,7 +181,7 @@ public class SkattekortClient implements ClientRegister {
         } else {
             log.error("Feil ved innsending av skattekort for person: {}, miljoe: {}, inntektsaar: {}: {}",
                     ident, miljoe, year, response.getFeilmelding());
-            return "%s:%s".formatted(miljoe, errorStatusDecoder.getStatusMessage(response.getFeilmelding()));
+            return MILJOE_STATUS.formatted(miljoe, errorStatusDecoder.getStatusMessage(response.getFeilmelding()));
         }
     }
 
