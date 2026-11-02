@@ -29,6 +29,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
 
     public Mono<DbPerson> convert(DbPerson dbPerson) {
 
-        return Flux.fromIterable(dbPerson.getPerson().getForelderBarnRelasjon())
+        return Flux.fromIterable(new ArrayList<>(dbPerson.getPerson().getForelderBarnRelasjon()))
                 .filter(type -> isTrue(type.getIsNew()))
                 .concatMap(type -> handle(type, dbPerson.getPerson()))
                 .doOnNext(type -> {
