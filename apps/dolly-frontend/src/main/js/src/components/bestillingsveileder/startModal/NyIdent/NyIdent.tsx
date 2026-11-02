@@ -10,6 +10,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { oppdaterNyidentForIdenttype } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdentUtils'
 
 export function NyIdent() {
 	const opts = useContext(BestillingsveilederContext) as BestillingsveilederContextType
@@ -31,7 +32,10 @@ export function NyIdent() {
 
 	return (
 		<FormProvider {...formMethods}>
-			<div className="ny-bestilling-form_row" style={{ flexDirection: 'column', alignItems: 'start' }}>
+			<div
+				className="ny-bestilling-form_row"
+				style={{ flexDirection: 'column', alignItems: 'start' }}
+			>
 				<h3 style={{ marginBottom: 0 }}>Velg antall og type</h3>
 				<div className="ny-bestilling-form_selects">
 					<FormTextInput
@@ -56,6 +60,13 @@ export function NyIdent() {
 						onChange={(option: Option) => {
 							formMethods.setValue(identtypePath, option.value)
 							opts.updateContext && opts.updateContext({ identtype: option.value })
+							const nyident = formMethods.getValues('pdldata.person.nyident')
+							if (nyident) {
+								formMethods.setValue(
+									'pdldata.person.nyident',
+									oppdaterNyidentForIdenttype(nyident, identtype, option.value),
+								)
+							}
 						}}
 						value={identtype}
 						options={Options('identtype')}
