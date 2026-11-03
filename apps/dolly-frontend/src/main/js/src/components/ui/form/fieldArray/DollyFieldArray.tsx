@@ -145,8 +145,8 @@ export const DollyFaBlokkOrg = ({
 export const DollyFaBlokkNested = ({
 	idx,
 	children,
-	whiteBackground,
-	handleRemove = null,
+	whiteBackground = false,
+	handleRemove = null as unknown as () => void,
 	showDeleteButton = true,
 }) => (
 	<div className="dfa-blokk-nested">

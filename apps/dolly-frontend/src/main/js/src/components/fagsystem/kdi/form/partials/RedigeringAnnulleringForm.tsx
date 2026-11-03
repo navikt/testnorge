@@ -6,13 +6,21 @@ import { initialAnnullering } from '@/components/fagsystem/kdi/initialValues'
 import { PubliseringstidspunktField } from '@/components/fagsystem/kdi/form/partials/PubliseringstidspunktField'
 import { KdiMeldingProps } from '@/components/fagsystem/kdi/form/partials/types'
 
-export const RedigeringAnnulleringForm = ({
-	meldingId,
-	handleRedigering,
-}: {
-	meldingId: string
-	handleRedigering: any
-}) => {
+export const RedigeringKnapp = ({ handleRedigering }: { handleRedigering: () => void }) => (
+	<div>
+		<Button
+			variant="tertiary"
+			size="xsmall"
+			data-color="meta-purple"
+			icon={<PencilIcon aria-hidden />}
+			onClick={handleRedigering}
+		>
+			Rediger melding
+		</Button>
+	</div>
+)
+
+export const AnnulleringForm = ({ meldingId }: { meldingId: string }) => {
 	const formMethods = useFormContext()
 	const annulleringer = formMethods.watch('instdataKdi.annullering') || []
 
@@ -44,16 +52,6 @@ export const RedigeringAnnulleringForm = ({
 
 	return (
 		<div className="flexbox--full-width">
-			<Button
-				variant="tertiary"
-				size="xsmall"
-				data-color="meta-purple"
-				icon={<PencilIcon aria-hidden />}
-				onClick={handleRedigering}
-				style={{ marginRight: '10px' }}
-			>
-				Rediger melding
-			</Button>
 			{!annulleringFoerLeggTil && (
 				<Button
 					data-color="danger"
