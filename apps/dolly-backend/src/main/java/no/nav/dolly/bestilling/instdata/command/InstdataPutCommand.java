@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -55,11 +56,14 @@ public class InstdataPutCommand implements Callable<Mono<InstdataResponse>> {
                                 .environments(List.of(miljoe))
                                 .build());
                     } else {
-                    return Mono.just(InstdataResponse.builder()
-                            .status(error.getStatus())
-                            .feilmelding(error.getMessage())
-                            .environments(List.of(miljoe))
-                            .build());
+                        return Mono.just(InstdataResponse.builder()
+                                .status(error.getStatus())
+                                .feilmelding(error.getMessage())
+                                .environments(List.of(miljoe))
+                                .institusjonsopphold(Map.of(miljoe, List.of(InstdataDTO.builder()
+                                        .oppholdId(instdata.getOppholdId())
+                                        .build())))
+                                .build());
                     }
                 });
     }

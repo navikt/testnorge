@@ -16,6 +16,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.TransactionHelperService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,11 +25,11 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -142,17 +143,26 @@ public class InstdataClient implements ClientRegister {
 
         return Mono.zip(getOpprettedeOppholdIder(bestillingId, instdataRequest.getFirst().getNorskident(), miljoe),
                         instdataConsumer.getInstdata(instdataRequest.getFirst().getNorskident(), miljoe))
-                .map(tuple -> {
+                .flatMap(tuple -> {
                     var opprettedeOppholdIder = tuple.getT1();
                     var eksisterende = tuple.getT2();
                     log.info("Instdata hentet data fra {}: {}", miljoe, eksisterende.getInstitusjonsopphold());
-                    return instdataRequest.stream()
+                    return Flux.fromIterable(instdataRequest)
                             .filter(request -> eksisterende.getInstitusjonsopphold()
                                     .getOrDefault(miljoe, emptyList())
                                     .stream()
                                     .noneMatch(fraMiljoe -> fraMiljoe.equals(request) ||
                                                             opprettedeOppholdIder.contains(fraMiljoe.getOppholdId())))
-                            .toList();
+                            .collectList()
+                            .flatMap(newInstdata -> newInstdata.isEmpty() ?
+                                    Flux.fromIterable(eksisterende.getInstitusjonsopphold()
+                                                    .getOrDefault(miljoe, emptyList()))
+                                            .map(instdata -> InstdataDTO.builder()
+                                                    .oppholdId(instdata.getOppholdId())
+                                                    .eksisterende(true)
+                                                    .build())
+                                            .collectList() :
+                                    Mono.just(newInstdata));
                 });
     }
 
@@ -194,14 +204,23 @@ public class InstdataClient implements ClientRegister {
                         response.getFeilmelding());
     }
 
-    private Mono<String> postInstdata(boolean isNewOpphold, List<InstdataDTO> instdata, String miljoe, Long bestillingId) {
+    private String getOppholdId(InstdataResponse response) {
 
-        var oppholdId = new AtomicInteger(0);
+        return response.getInstitusjonsopphold().values().stream()
+                .flatMap(Collection::stream)
+                .map(InstdataDTO::getOppholdId)
+                .filter(StringUtils::isNotBlank)
+                .findFirst()
+                .orElse("1");
+    }
+
+    private Mono<String> postInstdata(boolean isOpprettEndre, List<InstdataDTO> instdata, String miljoe, Long bestillingId) {
+
         var lagredeOppholdIder = new AtomicReference<Set<String>>(new HashSet<>());
 
-        return (isNewOpphold ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
+        return (isOpprettEndre ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
                 .flatMap(newInstdata -> {
-                    if (!newInstdata.isEmpty()) {
+                    if (!newInstdata.isEmpty() && !newInstdata.getFirst().isEksisterende()) {
                         return instdataConsumer.postInstdata(newInstdata, miljoe)
                                 .flatMap(response -> {
                                     if (response.getStatus().is2xxSuccessful()) {
@@ -213,15 +232,20 @@ public class InstdataClient implements ClientRegister {
                                     }
                                     return Mono.just(response);
                                 })
-                                .map(response -> String.format("%s:opphold=%d$%s",
-                                        miljoe, oppholdId.incrementAndGet(), getStatus(response)))
+                                .map(response -> String.format("%s:oppholdId=%s$%s",
+                                        miljoe, getOppholdId(response), getStatus(response)))
                                 .collect(Collectors.joining(","))
                                 .flatMap(status -> saveTransaksjonId(lagredeOppholdIder.get(),
                                         instdata.getFirst().getNorskident(), miljoe, bestillingId)
                                         .zipWith(Mono.just(status)))
                                 .map(Tuple2::getT2);
                     } else {
-                        return Mono.just(miljoe + ":opphold=1$OK");
+                        return (!newInstdata.isEmpty() ? saveTransaksjonId(newInstdata.stream()
+                                        .map(InstdataDTO::getOppholdId)
+                                        .collect(Collectors.toSet()),
+                                instdata.getFirst().getNorskident(), miljoe, bestillingId) :
+                                Mono.just(new TransaksjonMapping()))
+                                .map(_ -> "%s:oppholdId=1$OK".formatted(miljoe));
                     }
                 });
     }
@@ -243,13 +267,13 @@ public class InstdataClient implements ClientRegister {
                         })
                         .flatMap(transaksjonMappingRepository::save)
                         .switchIfEmpty(Mono.defer(() -> transaksjonMappingRepository.save(TransaksjonMapping.builder()
-                                        .bestillingId(bestillingId)
-                                        .system(INST2)
-                                        .ident(ident)
-                                        .miljoe(miljoe)
-                                        .transaksjonId(jsonMapper.writeValueAsString(oppholdIder))
-                                        .datoEndret(now())
-                                        .build())));
+                                .bestillingId(bestillingId)
+                                .system(INST2)
+                                .ident(ident)
+                                .miljoe(miljoe)
+                                .transaksjonId(jsonMapper.writeValueAsString(oppholdIder))
+                                .datoEndret(now())
+                                .build())));
     }
 
     private Mono<String> postInstdataKdi(InstdataKdiDTO instdata, String ident) {

@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.instdata.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Transient;
 
 import java.time.LocalDate;
 
@@ -32,16 +34,18 @@ public class InstdataDTO {
     @EqualsAndHashCode.Exclude
     private String oppholdId;
 
+    @Transient
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    private boolean eksisterende;
+
     public enum InstdataInstitusjonstype {
 
         AS("Alders- og sykehjem"),
         FO("Fengsel"),
         HS("Helseinsitusjon");
 
-        private final String beskrivelse;
-
         InstdataInstitusjonstype(String beskrivelse) {
-            this.beskrivelse = beskrivelse;
         }
     }
 }

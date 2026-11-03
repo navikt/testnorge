@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INST2;
 import static no.nav.dolly.domain.resultset.SystemTyper.INST_KDI;
 import static no.nav.dolly.mapper.StatusMiljoeIdentForholdUtility.decodeMsg;
@@ -22,6 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingInstdataStatusMapper {
 
+    private static final String FEIL = "Feil: ";
     private static final String INST2_STATUS = "INST2_STATUS";
     private static final String KDI_STATUS = "KDI_STATUS";
 
@@ -57,6 +59,27 @@ public final class BestillingInstdataStatusMapper {
             }
         });
 
+        systemStatusEnvIdents.values().forEach(statusEnvIdents -> {
+            var okEnvIdents = statusEnvIdents.get("OK");
+            if (isNull(okEnvIdents)) {
+                return;
+            }
+
+            statusEnvIdents.forEach((status, envIdents) -> {
+                if (!"OK".equals(status)) {
+                    envIdents.forEach((environment, idents) ->
+                            okEnvIdents.computeIfPresent(environment, (_, okIdents) -> {
+                                okIdents.removeAll(idents);
+                                return okIdents.isEmpty() ? null : okIdents;
+                            }));
+                }
+            });
+
+            if (okEnvIdents.isEmpty()) {
+                statusEnvIdents.remove("OK");
+            }
+        });
+
         var statusRapporter = new ArrayList<RsStatusRapport>();
         statusRapporter.addAll(extractStatus(systemStatusEnvIdents, INST2_STATUS, INST2));
         statusRapporter.addAll(extractStatus(systemStatusEnvIdents, KDI_STATUS, INST_KDI));
@@ -72,16 +95,21 @@ public final class BestillingInstdataStatusMapper {
                 .id(type)
                 .navn(type.getBeskrivelse())
                 .statuser(
-                        meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
-                                        RsStatusRapport.Status.builder()
-                                                .melding(decodeMsg(entry.getKey()))
-                                                .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
-                                                                RsStatusRapport.Detaljert.builder()
-                                                                        .miljo(miljeStatus.getKey())
-                                                                        .identer(miljeStatus.getValue())
-                                                                        .build())
-                                                        .toList())
-                                                .build())
+                        meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry -> {
+                                    var status = decodeMsg(entry.getKey());
+                                    if (status.contains(FEIL)) {
+                                        status = FEIL + status.replace(FEIL, "");
+                                    }
+                                    return RsStatusRapport.Status.builder()
+                                            .melding(status)
+                                            .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
+                                                            RsStatusRapport.Detaljert.builder()
+                                                                    .miljo(miljeStatus.getKey())
+                                                                    .identer(miljeStatus.getValue())
+                                                                    .build())
+                                                    .toList())
+                                            .build();
+                                })
                                 .toList())
                 .build());
     }
@@ -91,9 +119,9 @@ public final class BestillingInstdataStatusMapper {
 
         var status = resolveStatus(errMsg);
         systemStatusEnvIdents
-                .computeIfAbsent(system, k -> new HashMap<>())
-                .computeIfAbsent(status, k -> new HashMap<>())
-                .computeIfAbsent(environ, k -> new HashSet<>())
+                .computeIfAbsent(system, _ -> new HashMap<>())
+                .computeIfAbsent(status, _ -> new HashMap<>())
+                .computeIfAbsent(environ, _ -> new HashSet<>())
                 .add(ident);
     }
 }
