@@ -16,6 +16,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.TransactionHelperService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -208,15 +209,16 @@ public class InstdataClient implements ClientRegister {
         return response.getInstitusjonsopphold().values().stream()
                 .flatMap(Collection::stream)
                 .map(InstdataDTO::getOppholdId)
+                .filter(StringUtils::isNotBlank)
                 .findFirst()
                 .orElse("1");
     }
 
-    private Mono<String> postInstdata(boolean isNewOpphold, List<InstdataDTO> instdata, String miljoe, Long bestillingId) {
+    private Mono<String> postInstdata(boolean isOpprettEndre, List<InstdataDTO> instdata, String miljoe, Long bestillingId) {
 
         var lagredeOppholdIder = new AtomicReference<Set<String>>(new HashSet<>());
 
-        return (isNewOpphold ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
+        return (isOpprettEndre ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
                 .flatMap(newInstdata -> {
                     if (!newInstdata.isEmpty() && !newInstdata.getFirst().isEksisterende()) {
                         return instdataConsumer.postInstdata(newInstdata, miljoe)
@@ -243,7 +245,7 @@ public class InstdataClient implements ClientRegister {
                                         .collect(Collectors.toSet()),
                                 instdata.getFirst().getNorskident(), miljoe, bestillingId) :
                                 Mono.just(new TransaksjonMapping()))
-                                .map(_ -> miljoe + ":oppholdId=1$OK");
+                                .map(_ -> "%s:oppholdId=1$OK".formatted(miljoe));
                     }
                 });
     }
