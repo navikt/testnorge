@@ -16,9 +16,6 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 		if (antallPersoner < 1) {
 			return 'Gruppen inneholder ingen personer å endre på'
 		}
-		if (antallPersoner > 50) {
-			return 'Maks 50 personer kan endres i én bestilling'
-		}
 		return 'Legg til på alle personer i gruppen'
 	}
 
@@ -36,7 +33,7 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 					},
 				})
 			}
-			disabled={antallPersoner < 1 || antallPersoner > 50}
+			disabled={antallPersoner < 1}
 			title={getButtonTitle()}
 		>
 			Legg til på alle
