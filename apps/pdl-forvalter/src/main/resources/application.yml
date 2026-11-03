@@ -55,3 +55,8 @@ management:
   health:
     elasticsearch:
       enabled: false
+
+logging:
+  level:
+    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE
+    no.nav.pdl.forvalter.consumer.PdlTestdataConsumer: TRACE

@@ -25,3 +25,7 @@ consumers:
     namespace: dolly
     name: ${ALTINN3_TILGANG_NAME}
     url: ${ALTINN3_TILGANG_URL}
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

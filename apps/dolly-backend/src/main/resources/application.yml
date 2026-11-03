@@ -55,6 +55,12 @@ springdoc:
 
 logging:
   level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE
+    org.jetbrains.nativecerts: TRACE
+    com.intellij.util.net.ssl: TRACE
+    reactor.netty.transport.TransportConnector: ERROR
+    reactor.netty.http.client.HttpClient: DEBUG
+#    no.nav.testnav.libs.reactivecore.logging.WebClientLogger: DEBUG
     org:
       hibernate:
         sql:
