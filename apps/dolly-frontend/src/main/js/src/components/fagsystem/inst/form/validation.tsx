@@ -15,7 +15,7 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
 		const selectedDate = new Date(val)
-		const opprinneligArrayPos = parseInt(testContext.path.match(/\d+/)[0])
+		const opprinneligArrayPos = Number.parseInt(testContext.path.match(/\d+/)[0])
 		const valgtOpphold = fullForm.instdata?.[opprinneligArrayPos]
 		const alleOpphold = (fullForm.instdata || []).filter(
 			(opphold: any, idx: number) =>

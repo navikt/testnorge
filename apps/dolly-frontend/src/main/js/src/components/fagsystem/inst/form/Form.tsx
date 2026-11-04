@@ -41,12 +41,12 @@ export const InstForm = () => {
 
 	const handleAppend = () => {
 		append(initialValues)
-		formMethods.trigger(instAttributt)
+		void formMethods.trigger(instAttributt)
 	}
 
 	const handleRemove = (idx: number) => {
 		remove(idx)
-		formMethods.trigger(instAttributt)
+		void formMethods.trigger(instAttributt)
 	}
 
 	const datoer = useWatch({ control: formMethods.control, name: instAttributt })
@@ -62,7 +62,7 @@ export const InstForm = () => {
 			])
 			.filter((felt: string) => formMethods.getFieldState(felt).error)
 		if (datofeltMedFeil.length > 0) {
-			formMethods.trigger(datofeltMedFeil)
+			void formMethods.trigger(datofeltMedFeil)
 		}
 	}, [datoer])
 
