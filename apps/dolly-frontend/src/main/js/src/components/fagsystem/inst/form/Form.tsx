@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
@@ -17,7 +18,7 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 import { Tag } from '@navikt/ds-react'
 
 export const initialValues = {
@@ -55,6 +56,23 @@ export const InstForm = () => {
 		remove(idx)
 		formMethods.trigger(instAttributt)
 	}
+
+	const datoer = useWatch({ control: formMethods.control, name: instAttributt })
+		?.map((opphold: any) => `${opphold?.startdato}|${opphold?.sluttdato}`)
+		.join(',')
+
+	useEffect(() => {
+		const opphold = formMethods.getValues(instAttributt) || []
+		const datofeltMedFeil = opphold
+			.flatMap((_: any, idx: number) => [
+				`${instAttributt}.${idx}.startdato`,
+				`${instAttributt}.${idx}.sluttdato`,
+			])
+			.filter((felt: string) => formMethods.getFieldState(felt).error)
+		if (datofeltMedFeil.length > 0) {
+			formMethods.trigger(datofeltMedFeil)
+		}
+	}, [datoer])
 
 	let excludeDates = []
 	let maxDate = addYears(new Date(), 5)

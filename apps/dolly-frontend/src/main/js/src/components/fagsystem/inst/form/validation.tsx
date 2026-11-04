@@ -1,6 +1,11 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 
+const skalValideresMot = (valgtOpphold, annetOpphold) => {
+	if (!valgtOpphold?.miljo) return true
+	return annetOpphold?.miljo === valgtOpphold.miljo
+}
+
 const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => {
 	const errorMsgAge =
 		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
@@ -10,8 +15,12 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
 		const selectedDate = new Date(val)
-		const arrayPos = parseInt(testContext.path.match(/\d+/)[0])
-		const alleOpphold = fullForm.instdata || []
+		const opprinneligArrayPos = parseInt(testContext.path.match(/\d+/)[0])
+		const valgtOpphold = fullForm.instdata?.[opprinneligArrayPos]
+		const alleOpphold = (fullForm.instdata || []).filter(
+			(opphold, idx) => idx === opprinneligArrayPos || skalValideresMot(valgtOpphold, opphold),
+		)
+		const arrayPos = alleOpphold.indexOf(valgtOpphold)
 
 		for (let i = 0; i < alleOpphold.length; i++) {
 			const sluttDatoValue = alleOpphold[i].sluttdato
