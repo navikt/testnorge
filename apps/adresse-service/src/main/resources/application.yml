@@ -22,3 +22,7 @@ opensearch:
 springdoc:
   swagger-ui:
     path: /swagger
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

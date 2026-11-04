@@ -36,3 +36,7 @@ open:
   search:
     index: bestilling
     index-dev: bestilling-dev
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

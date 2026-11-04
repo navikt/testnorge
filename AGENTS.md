@@ -17,19 +17,24 @@
 - PowerShell:
   ```powershell
   Set-Location apps/dolly-backend
-  ./gradlew build
+  ..\..\gradlew.bat build
   ```
 - bash/zsh:
   ```bash
   cd apps/dolly-backend
-  ./gradlew build
+  ../../gradlew build
   ```
+- The repo has a single Gradle wrapper in the root. Modules keep only `gradle/wrapper/gradle-wrapper.properties` so they can be opened as standalone IntelliJ projects; run the root wrapper from the module directory (`../../gradlew`). `./gradlewUpdate.sh` in the root updates the wrapper and copies the properties file to all modules.
+- Module `settings.gradle` files apply the `dolly-settings` settings plugin (`plugins/settings`) through `pluginManagement { includeBuild "../../plugins/settings" }`. It configures Develocity and publishes build scans only when the `CI` environment variable is set.
 - `build` normally runs `dollyValidation` for apps and proxies, so `dollyValidation` does not need to be executed explicitly during normal local development.
 - `dollyValidation` (`plugins/java/src/main/java/no/nav/dolly/plugins/DollyBuildValidationTask.java`) enforces consistency between:
   - module `build.gradle` dependencies on `no.nav.testnav.libs:*`
   - module `settings.gradle` `includeBuild ../../libs/<lib>` entries
-  - `.github/workflows/app.<name>.yml` / `proxy.<name>.yml` `on.push.paths`
+  - `.github/workflows/app.<name>.yml` / `proxy.<name>.yml` `on.push.paths`, which must also include `plugins/**`, `Dockerfile` and `Dockerfile.dockerignore`
 - When adding/removing shared libs, update all three files above in the same PR.
+- All apps, proxies, synt modules and mocks build their image from the root `Dockerfile` (with `Dockerfile.dockerignore`), using the module directory as build context: `docker build -f Dockerfile apps/<name>`. Module-specific JVM flags go in an optional `java-options` file in the module directory; the common workflows pass its content as build arg `JAVA_OPTIONS`, which reaches the container as `JDK_JAVA_OPTIONS`.
+- The common workflows build images with `nais/docker-build-push` using `no_cache: true` (each build only adds a new `app.jar` layer, so the BuildKit GHA cache never hits). Keep the default `salsa` and Trivy SBOM, as required by Nav's golden path.
+- Logging config is shared: `libs/testing/src/main/resources/logback-spring.xml` uses JSON with `DollyLogstashEncoder` (masks idents and bearer tokens) for `prod`, `dev` and `idporten`, and plain console for `local`, `virtual` and `localdb`. Set logger levels in the module `application.yml` under `logging.level`, not in a module `logback-spring.xml`.
 - `iTest` exists for supported modules, but is not normally run locally during day-to-day development.
 - On macOS, tests or local runs that rely on Docker/Testcontainers may require the environment variables documented in root `README.md`.
 

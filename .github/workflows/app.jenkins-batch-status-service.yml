@@ -12,6 +12,8 @@ on:
       - libs/reactive-security/**
       - libs/testing/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
 
 jobs:
   workflow:

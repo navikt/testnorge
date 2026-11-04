@@ -21,3 +21,7 @@ consumers:
     name: testnav-dolly-proxy
     namespace: dolly
     url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.logging: TRACE

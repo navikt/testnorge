@@ -56,3 +56,7 @@ consumers:
     name: ereg-services-{miljoe}
     cluster: dev-fss
     namespace: arbeidsforhold
+
+logging:
+  level:
+    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE

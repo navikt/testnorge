@@ -42,3 +42,7 @@ consumers:
     name: testnav-tenor-search-service
     cluster: dev-gcp
     namespace: dolly
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: INFO

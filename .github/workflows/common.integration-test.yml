@@ -39,7 +39,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-        run: ./gradlew assemble --scan
+        run: $GITHUB_WORKSPACE/gradlew --build-cache assemble --scan
       - name: "Start docker containers"
         run: |
           JWK=$(cat ./mocks/jwk.json) docker compose up --build --detach
@@ -54,7 +54,7 @@ jobs:
           cache-read-only: false
       - name: "Build"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew iTest --scan
+        run: $GITHUB_WORKSPACE/gradlew --build-cache iTest --scan
       - name: "Stop docker containers"
         run: |
           docker compose down --remove-orphans --volumes

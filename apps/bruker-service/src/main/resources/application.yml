@@ -19,3 +19,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-altinn3-tilgang-proxy
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

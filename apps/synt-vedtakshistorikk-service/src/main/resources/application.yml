@@ -48,3 +48,7 @@ consumers:
     namespace: dolly
     name: testnav-organisasjon-faste-data-service
     url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

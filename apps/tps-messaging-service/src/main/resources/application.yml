@@ -16,7 +16,6 @@ config:
   mq:
     test:
       host: 10.52.129.178
-      #      host: d26apvl300.test.local
       port: 1412
       queueManager: MTLS03
       user: ${mq.test.username:#{null}}
@@ -39,3 +38,7 @@ management:
   health:
     elasticsearch:
       enabled: false
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

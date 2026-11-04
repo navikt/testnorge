@@ -3,7 +3,12 @@ name: altinn3-tilgang-service-prod
 on:
   push:
     paths:
+      - .github/workflows/app.altinn3-tilgang-service-prod.yml
+      - libs/data-transfer-objects/**
+      - libs/testing/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
       - libs/reactive-core/**
       - libs/reactive-security/**
       - apps/altinn3-tilgang-service/**

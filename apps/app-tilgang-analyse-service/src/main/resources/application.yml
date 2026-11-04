@@ -18,3 +18,7 @@ consumers:
   github:
     url: https://api.github.com
     token: ${DOLLY_READER_TOKEN}
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

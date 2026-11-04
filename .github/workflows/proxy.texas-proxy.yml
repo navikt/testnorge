@@ -7,6 +7,8 @@ on:
       - libs/testing/**
       - libs/texas/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
       - proxies/texas-proxy/**
 
 jobs:

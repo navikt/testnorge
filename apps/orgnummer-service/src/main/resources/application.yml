@@ -28,3 +28,7 @@ consumers:
     name: testnav-miljoer-service
     cluster: dev-gcp
     namespace: dolly
+
+logging:
+  level:
+    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE

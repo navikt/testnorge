@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
       - libs/security-core/**
       - libs/reactive-core/**
       - libs/reactive-security/**

@@ -11,6 +11,8 @@ on:
       - libs/testing/**
       - libs/vault/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
 
 jobs:
   workflow:

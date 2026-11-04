@@ -3,3 +3,7 @@ spring:
     name: brreg-stub
   config:
     import: "classpath:dolly-application.yml"
+
+logging:
+  level:
+    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE

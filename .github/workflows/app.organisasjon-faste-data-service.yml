@@ -16,6 +16,8 @@ on:
       - libs/servlet-security/**
       - libs/testing/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
 
 jobs:
   workflow:

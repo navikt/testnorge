@@ -6,6 +6,12 @@ on:
       - apps/bruker-service/**
       - mocks/maskinporten-mock/**
       - mocks/tokendings-mock/**
+      - libs/testing/**
+      - Dockerfile
+      - Dockerfile.dockerignore
+      - docker-compose.yml
+      - .github/workflows/integration-tests.yml
+      - .github/workflows/common.integration-test.yml
   workflow_dispatch:
 
 jobs:

@@ -22,3 +22,7 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

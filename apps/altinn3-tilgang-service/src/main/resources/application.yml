@@ -25,3 +25,8 @@ altinn:
 server:
   error:
     include-stacktrace: never
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE
+    no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer: TRACE

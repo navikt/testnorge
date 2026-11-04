@@ -8,6 +8,8 @@ on:
       - libs/testing/**
       - libs/texas/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
 
 jobs:
   workflow:
