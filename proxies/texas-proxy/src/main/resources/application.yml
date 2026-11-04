@@ -43,3 +43,7 @@ springdoc:
       use-pkce-with-authorization-code-grant: true
       scopes:
         - api://${AZURE_APP_CLIENT_ID}/.default
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

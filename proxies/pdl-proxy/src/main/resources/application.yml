@@ -41,3 +41,7 @@ consumers:
     cluster: dev-fss
     name: pdl-api-q1
     namespace: pdl
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

@@ -26,3 +26,7 @@ consumers:
     namespace: dolly
     url: http://brreg-stub.dolly.svc.nais.local
     cluster: dev-fss
+
+logging:
+  level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

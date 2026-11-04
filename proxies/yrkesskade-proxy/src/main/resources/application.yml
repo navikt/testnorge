@@ -23,6 +23,7 @@ spring:
 
 logging:
   level:
+    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE
     reactor:
       netty: INFO
     org:
