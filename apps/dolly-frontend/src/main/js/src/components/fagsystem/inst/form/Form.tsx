@@ -12,12 +12,6 @@ import {
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { validation } from '@/components/fagsystem/inst/form/validation'
-import {
-	BestillingsveilederContextType,
-	useBestillingsveileder,
-} from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { getExcludedDatesAndMaxDate } from './utils'
-import { addYears } from 'date-fns'
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 import { Tag } from '@navikt/ds-react'
 
@@ -39,8 +33,6 @@ const MiljoTag = ({ miljo }: { miljo: string }) => {
 
 export const InstForm = () => {
 	const formMethods = useFormContext()
-	const opts = useBestillingsveileder() as BestillingsveilederContextType
-	const { personFoerLeggTil }: any = opts
 
 	const { fields, append, remove } = useFieldArray({
 		control: formMethods.control,
@@ -73,14 +65,6 @@ export const InstForm = () => {
 			formMethods.trigger(datofeltMedFeil)
 		}
 	}, [datoer])
-
-	let excludeDates = []
-	let maxDate = addYears(new Date(), 5)
-	if (opts.is.leggTil && personFoerLeggTil.instdata !== undefined) {
-		const dateInfo = getExcludedDatesAndMaxDate(personFoerLeggTil)
-		excludeDates = dateInfo[0]
-		maxDate = dateInfo[1]
-	}
 
 	return (
 		<Vis attributt={instAttributt}>
@@ -119,24 +103,9 @@ export const InstForm = () => {
 										isClearable={false}
 										isDisabled={erEksisterendeOpphold}
 									/>
-									<FormDatepicker
-										name={`${path}.startdato`}
-										label="Startdato"
-										excludeDates={excludeDates}
-										maxDate={maxDate}
-									/>
-									<FormDatepicker
-										name={`${path}.forventetSluttdato`}
-										label="Forventet sluttdato"
-										excludeDates={excludeDates}
-										maxDate={maxDate}
-									/>
-									<FormDatepicker
-										name={`${path}.sluttdato`}
-										label="Sluttdato"
-										excludeDates={excludeDates}
-										maxDate={maxDate}
-									/>
+									<FormDatepicker name={`${path}.startdato`} label="Startdato" />
+									<FormDatepicker name={`${path}.forventetSluttdato`} label="Forventet sluttdato" />
+									<FormDatepicker name={`${path}.sluttdato`} label="Sluttdato" />
 								</DollyFaBlokk>
 							)
 						})}

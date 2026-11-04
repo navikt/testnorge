@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 
-const skalValideresMot = (valgtOpphold, annetOpphold) => {
+const skalValideresMot = (valgtOpphold: any, annetOpphold: any) => {
 	if (!valgtOpphold?.miljo) return true
 	return annetOpphold?.miljo === valgtOpphold.miljo
 }
@@ -18,7 +18,8 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 		const opprinneligArrayPos = parseInt(testContext.path.match(/\d+/)[0])
 		const valgtOpphold = fullForm.instdata?.[opprinneligArrayPos]
 		const alleOpphold = (fullForm.instdata || []).filter(
-			(opphold, idx) => idx === opprinneligArrayPos || skalValideresMot(valgtOpphold, opphold),
+			(opphold: any, idx: number) =>
+				idx === opprinneligArrayPos || skalValideresMot(valgtOpphold, opphold),
 		)
 		const arrayPos = alleOpphold.indexOf(valgtOpphold)
 
