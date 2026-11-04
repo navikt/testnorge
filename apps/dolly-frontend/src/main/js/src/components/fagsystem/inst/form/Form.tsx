@@ -18,6 +18,7 @@ import {
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+import { Tag } from '@navikt/ds-react'
 
 export const initialValues = {
 	institusjonstype: '',
@@ -26,6 +27,14 @@ export const initialValues = {
 	sluttdato: '',
 }
 export const instAttributt = 'instdata'
+
+const MiljoTag = ({ miljo }: { miljo: string }) => {
+	return (
+		<Tag variant="strong" size="xsmall" data-color="info" style={{ marginLeft: '10px' }}>
+			{miljo?.toUpperCase()}
+		</Tag>
+	)
+}
 
 export const InstForm = () => {
 	const formMethods = useFormContext()
@@ -79,6 +88,11 @@ export const InstForm = () => {
 									showDeleteButton={!erEksisterendeOpphold}
 									hjelpetekst={null}
 									whiteBackground={false}
+									tag={
+										erEksisterendeOpphold ? (
+											<MiljoTag miljo={formMethods.getValues(`${path}.miljo`)} />
+										) : null
+									}
 								>
 									<FormSelect
 										name={`${path}.institusjonstype`}
