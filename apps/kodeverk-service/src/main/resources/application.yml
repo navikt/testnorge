@@ -19,7 +19,3 @@ consumers:
     namespace: team-rocket
     url: https://kodeverk-api.nav.no
     cluster: prod-gcp
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.logging: TRACE

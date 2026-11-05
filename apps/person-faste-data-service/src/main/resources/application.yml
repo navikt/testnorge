@@ -19,7 +19,3 @@ testnav:
     hosts:
       - testnav-person-faste-data-service.intern.dev.nav.no
       - testnav-person-faste-data-service.dolly.svc.cluster.local
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

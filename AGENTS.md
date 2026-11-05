@@ -34,7 +34,6 @@
 - When adding/removing shared libs, update all three files above in the same PR.
 - All apps, proxies, synt modules and mocks build their image from the root `Dockerfile` (with `Dockerfile.dockerignore`), using the module directory as build context: `docker build -f Dockerfile apps/<name>`. Module-specific JVM flags go in an optional `java-options` file in the module directory; the common workflows pass its content as build arg `JAVA_OPTIONS`, which reaches the container as `JDK_JAVA_OPTIONS`.
 - The common workflows build images with `nais/docker-build-push` using `no_cache: true` (each build only adds a new `app.jar` layer, so the BuildKit GHA cache never hits). Keep the default `salsa` and Trivy SBOM, as required by Nav's golden path.
-- Logging config is shared: `libs/testing/src/main/resources/logback-spring.xml` uses JSON with `DollyLogstashEncoder` (masks idents and bearer tokens) for `prod`, `dev` and `idporten`, and plain console for `local`, `virtual` and `localdb`. Set logger levels in the module `application.yml` under `logging.level`, not in a module `logback-spring.xml`.
 - `iTest` exists for supported modules, but is not normally run locally during day-to-day development.
 - On macOS, tests or local runs that rely on Docker/Testcontainers may require the environment variables documented in root `README.md`.
 

@@ -31,7 +31,3 @@ consumers:
     name: testnav-dolly-proxy
     cluster: dev-fss
     namespace: dolly
-
-logging:
-  level:
-    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE

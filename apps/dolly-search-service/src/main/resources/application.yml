@@ -35,7 +35,3 @@ server:
 open:
   search:
     pdl-index: pdl-person
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

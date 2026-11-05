@@ -17,7 +17,3 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   main:
     web-application-type: reactive
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

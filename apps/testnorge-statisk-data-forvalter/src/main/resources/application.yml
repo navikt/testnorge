@@ -71,7 +71,3 @@ consumers:
 
 aareg:
   pageSize: 50
-
-logging:
-  level:
-    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE

@@ -30,7 +30,3 @@ consumers:
     cluster: prod-gcp
     name: testnav-altinn3-tilgang-service-prod
     namespace: dolly
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

@@ -35,5 +35,4 @@ consumers:
 
 logging:
   level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE
     org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration: OFF

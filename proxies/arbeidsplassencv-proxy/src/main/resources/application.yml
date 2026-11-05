@@ -26,7 +26,3 @@ consumers:
     namespace: teampam
     url: http://pam-cv-api-gcp.teampam.svc.cluster.local
     cluster: dev-gcp
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: TRACE

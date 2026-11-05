@@ -28,7 +28,3 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: organisasjon-bestilling-service
-
-logging:
-  level:
-    no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor: TRACE

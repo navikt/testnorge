@@ -15,13 +15,10 @@ import java.io.StringWriter;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static java.util.Objects.isNull;
 
 /**
  * Configuration of encoder:
@@ -69,7 +66,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
             }
             if (includeContext && Optional.ofNullable(event.getMDCPropertyMap()).isPresent()) {
                 g.writeName("context");
-                g.writePOJO(maskContext(event.getMDCPropertyMap()));
+                g.writePOJO(event.getMDCPropertyMap());
             }
 
             g.writeName("@timestamp");
@@ -106,7 +103,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
                     appendStackTraceOf(throwable, writer);
                     appendCauseOf(throwable, writer);
                     appendSuppressedOf(throwable, writer);
-                    return truncated(maskMessage(writer.toString()));
+                    return truncated(writer.toString());
                 })
                 .orElse(null);
     }
@@ -174,16 +171,7 @@ public class DollyLogstashEncoder extends LogstashEncoder {
                 });
     }
 
-    private static Map<String, String> maskContext(Map<String, String> context) {
-        var masked = new LinkedHashMap<String, String>();
-        context.forEach((key, value) -> masked.put(key, maskMessage(value)));
-        return masked;
-    }
-
     private static String maskMessage(String message) {
-        if (isNull(message)) {
-            return null;
-        }
         var masked = IDENT.matcher(message).replaceAll(match ->
                 match.group().charAt(2) < '4' ?
                         match.group().substring(0, 6) + "xxxxx" :

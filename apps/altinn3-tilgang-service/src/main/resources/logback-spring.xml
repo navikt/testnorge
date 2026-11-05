@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod,dev">
+        <include resource="logback-spring-json.xml"/>
+    </springProfile>
+
+    <springProfile name="local,virtual">
+        <include resource="logback-spring-console.xml"/>
+    </springProfile>
+
+    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
+    <logger level="TRACE" name="no.nav.testnav.altinn3tilgangservice.consumer.altinn.AltinnConsumer" />
+</configuration>

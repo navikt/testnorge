@@ -20,7 +20,3 @@ consumers:
     namespace: dolly
     url: http://testnav-levende-arbeidsforhold-ansettelse.dolly.svc.cluster.local
     cluster: dev-gcp
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.logging: INFO

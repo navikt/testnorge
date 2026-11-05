@@ -61,7 +61,3 @@ opensearch:
   index:
     personer: pdl-person
     adresser: pdl-adresse
-
-logging:
-  level:
-    no.nav.testnav.libs.reactivecore.filter.RequestLogger: INFO
