@@ -57,8 +57,8 @@ class KafkaAvroDeserializationTest {
         var trustedPackages = System.getProperty("org.apache.avro.SERIALIZABLE_PACKAGES");
 
         assertThat(trustedPackages).isEqualTo("no.nav.testnav.libs.avro.organisasjon.v1");
-        assertThat(Files.readString(Path.of("Dockerfile")))
-                .contains("\"-Dorg.apache.avro.SERIALIZABLE_PACKAGES=" + trustedPackages + "\", \"-jar\"");
+        assertThat(Files.readString(Path.of("java-options")).trim().split("\\s+"))
+                .contains("-Dorg.apache.avro.SERIALIZABLE_PACKAGES=" + trustedPackages);
     }
 
     private Organisasjon organisasjon() {

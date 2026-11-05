@@ -33,6 +33,10 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
             "maskinporten-mock",
             "tokendings-mock"
     );
+    private static final List<String> SHARED_DOCKER_FILES = List.of(
+            "Dockerfile",
+            "Dockerfile.dockerignore"
+    );
 
     @Input
     public abstract Property<String> getCurrentProjectName();
@@ -217,6 +221,14 @@ public abstract class DollyBuildValidationTask extends DefaultTask {
         if (!foundTriggerOnPlugins) {
             log.warn("Workflow /.github/workflows/{} is missing trigger on 'plugins/**'", workflowFilename);
             errors = true;
+        }
+
+        // Check for trigger on the shared Dockerfile.
+        for (var dockerFile : SHARED_DOCKER_FILES) {
+            if (!triggerPaths.contains(dockerFile)) {
+                log.warn("Workflow /.github/workflows/{} is missing trigger on '{}'", workflowFilename, dockerFile);
+                errors = true;
+            }
         }
 
         // Check for trigger on workflow file.

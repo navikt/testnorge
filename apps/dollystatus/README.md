@@ -104,7 +104,7 @@ Etter deploy: åpne siden med en autentisert bruker og kontroller resultater, op
 Fra `apps/dollystatus`:
 
 ```bash
-./gradlew test dollyValidation
+../../gradlew test dollyValidation
 ```
 
 Fra `apps/dollystatus/src/main/js`:

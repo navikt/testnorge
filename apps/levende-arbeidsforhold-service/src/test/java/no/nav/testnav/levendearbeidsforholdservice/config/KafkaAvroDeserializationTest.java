@@ -58,8 +58,8 @@ class KafkaAvroDeserializationTest {
         var trustedPackages = System.getProperty("org.apache.avro.SERIALIZABLE_PACKAGES");
 
         assertThat(trustedPackages).isEqualTo("no.nav.person.pdl.leesah");
-        assertThat(Files.readString(Path.of("Dockerfile")))
-                .contains("\"-Dorg.apache.avro.SERIALIZABLE_PACKAGES=" + trustedPackages + "\", \"-jar\"");
+        assertThat(Files.readString(Path.of("java-options")).trim().split("\\s+"))
+                .contains("-Dorg.apache.avro.SERIALIZABLE_PACKAGES=" + trustedPackages);
     }
 
     private Personhendelse.Builder personhendelse(String opplysningstype) {
