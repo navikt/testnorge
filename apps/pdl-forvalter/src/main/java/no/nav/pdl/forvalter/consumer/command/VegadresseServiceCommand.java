@@ -44,8 +44,8 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                 .bodyToMono(VegadresseDTO[].class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(_ -> Mono.just(new VegadresseDTO[]{defaultAdresse()}))
-                .timeout(ADRESSE_TIMEOUT);
+                .timeout(ADRESSE_TIMEOUT)
+                .onErrorResume(_ -> Mono.just(new VegadresseDTO[]{defaultAdresse()}));
     }
 
     public static VegadresseDTO defaultAdresse() {

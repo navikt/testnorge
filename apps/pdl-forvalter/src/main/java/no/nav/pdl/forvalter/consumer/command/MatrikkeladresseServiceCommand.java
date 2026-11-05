@@ -66,8 +66,8 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .bodyToMono(MatrikkeladresseDTO[].class)
                 .retryWhen(WebClientError.is5xxException())
                 .doOnError(WebClientError.logTo(log))
-                .onErrorResume(_ -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}))
-                .timeout(ADRESSE_TIMEOUT);
+                .timeout(ADRESSE_TIMEOUT)
+                .onErrorResume(_ -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}));
     }
 
     private MultiValueMap<String, String> getQuery() {
