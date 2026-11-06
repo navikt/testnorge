@@ -65,9 +65,14 @@ import { Henvendelse } from '@/components/fagsystem/henvendelse/bestilling/Henve
 type BestillingsdataTypes = {
 	bestilling: any
 	erGruppevisning?: boolean
+	visKdiMeldingTittel?: boolean
 }
 
-export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: BestillingsdataTypes) => {
+export const Bestillingsdata = ({
+	bestilling,
+	erGruppevisning = false,
+	visKdiMeldingTittel = false,
+}: BestillingsdataTypes) => {
 	return (
 		<ErrorBoundary>
 			<Alder
@@ -142,7 +147,7 @@ export const Bestillingsdata = ({ bestilling, erGruppevisning = false }: Bestill
 				kontaktinformasjonForDoedsboListe={bestilling.pdldata?.person?.kontaktinformasjonForDoedsbo}
 			/>
 			<Inst inst={bestilling.instdata} />
-			<KdiBestilling kdi={bestilling.instdataKdi} />
+			<KdiBestilling kdi={bestilling.instdataKdi} visMeldingTittel={visKdiMeldingTittel} />
 			<Krrstub krrstub={bestilling.krrstub} />
 			<Medl medl={bestilling.medl} />
 			<Udistub udistub={bestilling.udistub} />

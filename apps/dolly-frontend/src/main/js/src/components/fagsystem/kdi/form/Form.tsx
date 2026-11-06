@@ -234,12 +234,7 @@ export const KdiForm = () => {
 		</HStack>
 	)
 
-	const renderHendelseMelding = (
-		melding: Melding,
-		nestetIdx: number,
-		erOpprettelse: boolean,
-		harRedigering: boolean,
-	) => {
+	const renderHendelseMelding = (melding: Melding, nestetIdx: number, harRedigering: boolean) => {
 		const { key, idx, meldingId, fieldId } = melding
 
 		if (!meldingId) {
@@ -269,7 +264,7 @@ export const KdiForm = () => {
 				whiteBackground={harRedigering}
 			>
 				{renderMeldingTittel(
-					erOpprettelse ? 'Oppretting' : 'Redigering',
+					'Eksisterende',
 					erAnnullert(meldingId) && (
 						<Tag variant="outline" size="xsmall" data-color="danger">
 							Annullert
@@ -327,12 +322,7 @@ export const KdiForm = () => {
 			>
 				<DollyFieldArrayWrapper nested>
 					{meldinger.map((melding, nestetIdx) =>
-						renderHendelseMelding(
-							melding,
-							nestetIdx,
-							melding === eksisterendeMeldinger[0],
-							status.harRedigering,
-						),
+						renderHendelseMelding(melding, nestetIdx, status.harRedigering),
 					)}
 				</DollyFieldArrayWrapper>
 				<RedigeringKnapp
