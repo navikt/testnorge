@@ -69,6 +69,8 @@ export const AnnulleringForm = ({ meldingId }: { meldingId: string }) => {
 					<PubliseringstidspunktField
 						path={`instdataKdi.annullering[${index}]`}
 						erEksisterendeMelding={annulleringFoerLeggTil}
+						label="Publiseringstidspunkt annullering"
+						size="large"
 					/>
 				</div>
 			)}

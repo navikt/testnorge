@@ -186,6 +186,11 @@ export const KdiForm = () => {
 			.filter(Boolean)
 			.sort((a, b) => publiseringstidspunktTid(b) - publiseringstidspunktTid(a))[0]
 
+		const naa = naaPubliseringstidspunkt()
+		if (!sisteMelding || publiseringstidspunktTid(naa) > publiseringstidspunktTid(sisteMelding)) {
+			return naa
+		}
+
 		return etterPubliseringstidspunkt(sisteMelding)
 	}
 
