@@ -340,7 +340,7 @@ class InstdataClientTest {
     }
 
     @Test
-    void shouldGjenoppretteManglendeTidligereOppholdFoerEndring() {
+    void shouldRegistrereKunMatchendeTidligereOppholdFoerEndring() {
 
         var currentOpphold = InstdataDTO.builder().norskident(IDENT).oppholdId("42").build();
         var request = stubEndring(currentOpphold);
@@ -351,7 +351,7 @@ class InstdataClientTest {
                 .norskident(IDENT).institusjonsnummer("eksisterende").build();
         var manglendeOpphold = InstdataDTO.builder()
                 .norskident(IDENT).institusjonsnummer("manglende").build();
-        var gjenoppretting = TestPublisher.<InstdataResponse>create();
+        var registrering = TestPublisher.<TransaksjonMapping>create();
 
         when(bestillingRepository.findBestillingerByIdent(IDENT)).thenReturn(Flux.just(tidligereBestilling));
         when(transaksjonMappingRepository.findAllBySystemAndIdent("INST2", IDENT)).thenReturn(Flux.just(
@@ -360,43 +360,83 @@ class InstdataClientTest {
         when(mapperFacade.mapAsList(eq(tidligereKriterier.getInstdata()), eq(InstdataDTO.class), any(MappingContext.class)))
                 .thenReturn(List.of(eksisterendeOpphold, manglendeOpphold));
         when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
-                .institusjonsopphold(Map.of(ENVIRONMENT, List.of(eksisterendeOpphold)))
+                .institusjonsopphold(Map.of(
+                        ENVIRONMENT, List.of(
+                                InstdataDTO.builder().norskident(IDENT).institusjonsnummer("eksisterende").oppholdId("41").build(),
+                                InstdataDTO.builder().norskident(IDENT).institusjonsnummer("eksisterende").oppholdId("43").build(),
+                                InstdataDTO.builder().norskident(IDENT).institusjonsnummer("annet").oppholdId("44").build()),
+                        "q1", List.of(
+                                InstdataDTO.builder().norskident(IDENT).institusjonsnummer("eksisterende").oppholdId("90").build())))
                 .build()));
-        when(instdataConsumer.postInstdata(List.of(manglendeOpphold), ENVIRONMENT)).thenReturn(gjenoppretting.flux());
+        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class)))
+                .thenReturn(registrering.mono())
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
         StepVerifier.create(instdataClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                         new BestillingProgress(), true))
                 .then(() -> {
-                    verify(instdataConsumer).postInstdata(List.of(manglendeOpphold), ENVIRONMENT);
-                    verify(instdataConsumer, never()).postInstdata(List.of(currentOpphold), ENVIRONMENT);
-                    gjenoppretting.emit(InstdataResponse.builder()
-                            .status(HttpStatus.OK)
-                            .institusjonsopphold(Map.of(ENVIRONMENT,
-                                    List.of(InstdataDTO.builder().oppholdId("41").build())))
-                            .build());
+                    var mappingCaptor = ArgumentCaptor.forClass(TransaksjonMapping.class);
+                    verify(transaksjonMappingRepository).save(mappingCaptor.capture());
+                    verify(instdataConsumer, never()).postInstdata(anyList(), anyString());
+                    registrering.emit(mappingCaptor.getValue());
                 })
                 .expectNextCount(1)
                 .verifyComplete();
 
         verify(instdataConsumer).postInstdata(List.of(currentOpphold), ENVIRONMENT);
+        verify(instdataConsumer, times(1)).postInstdata(anyList(), anyString());
         var mappingCaptor = ArgumentCaptor.forClass(TransaksjonMapping.class);
         verify(transaksjonMappingRepository, times(2)).save(mappingCaptor.capture());
-        var restoredMapping = mappingCaptor.getAllValues().getFirst();
-        assertThat(restoredMapping.getBestillingId(), is(equalTo(BESTILLING_ID)));
-        assertThat(restoredMapping.getIdent(), is(equalTo(IDENT)));
-        assertThat(restoredMapping.getMiljoe(), is(equalTo(ENVIRONMENT)));
-        assertThat(restoredMapping.getSystem(), is(equalTo("INST2")));
-        assertThat(restoredMapping.getTransaksjonId(), is(equalTo("[\"41\"]")));
+        var registeredMapping = mappingCaptor.getAllValues().getFirst();
+        assertThat(registeredMapping.getBestillingId(), is(equalTo(BESTILLING_ID)));
+        assertThat(registeredMapping.getIdent(), is(equalTo(IDENT)));
+        assertThat(registeredMapping.getMiljoe(), is(equalTo(ENVIRONMENT)));
+        assertThat(registeredMapping.getSystem(), is(equalTo("INST2")));
+        assertThat(jsonMapper.readValue(registeredMapping.getTransaksjonId(), String[].class),
+                arrayContainingInAnyOrder("41", "43"));
     }
 
     @Test
-    void shouldIkkeGjenoppretteTidligereBestillingMedMappingIMiljoe() {
+    void shouldIkkeRegistrereEllerOppretteTidligereOppholdUtenTreff() {
+
+        var currentOpphold = InstdataDTO.builder().norskident(IDENT).oppholdId("42").build();
+        var request = stubEndring(currentOpphold);
+        var tidligereBestilling = tidligereBestilling(100L);
+        var tidligereKriterier = jsonMapper.readValue(
+                tidligereBestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+
+        when(bestillingRepository.findBestillingerByIdent(IDENT)).thenReturn(Flux.just(tidligereBestilling));
+        when(transaksjonMappingRepository.findAllBySystemAndIdent("INST2", IDENT)).thenReturn(Flux.empty());
+        when(mapperFacade.mapAsList(eq(tidligereKriterier.getInstdata()), eq(InstdataDTO.class), any(MappingContext.class)))
+                .thenReturn(List.of(InstdataDTO.builder().norskident(IDENT).institusjonsnummer("tidligere").build()));
+        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstdataResponse.builder()
+                .institusjonsopphold(Map.of(ENVIRONMENT, List.of(currentOpphold)))
+                .build()));
+        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class)))
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
+
+        StepVerifier.create(instdataClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
+                        new BestillingProgress(), true))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        verify(instdataConsumer).postInstdata(List.of(currentOpphold), ENVIRONMENT);
+        verify(instdataConsumer, times(1)).postInstdata(anyList(), anyString());
+        var mappingCaptor = ArgumentCaptor.forClass(TransaksjonMapping.class);
+        verify(transaksjonMappingRepository).save(mappingCaptor.capture());
+        assertThat(mappingCaptor.getValue().getTransaksjonId(), is(equalTo("[\"42\"]")));
+    }
+
+    @Test
+    void shouldIkkeRegistrereTidligereBestillingMedMappingIMiljoe() {
 
         var currentOpphold = InstdataDTO.builder().norskident(IDENT).oppholdId("42").build();
         var request = stubEndring(currentOpphold);
         when(bestillingRepository.findBestillingerByIdent(IDENT)).thenReturn(Flux.just(tidligereBestilling(100L)));
         when(transaksjonMappingRepository.findAllBySystemAndIdent("INST2", IDENT)).thenReturn(Flux.just(
                 TransaksjonMapping.builder().bestillingId(100L).miljoe(ENVIRONMENT).build()));
+        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class)))
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
         StepVerifier.create(instdataClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                         new BestillingProgress(), true))
@@ -409,12 +449,14 @@ class InstdataClientTest {
     }
 
     @ParameterizedTest
-    @MethodSource("bestillingerSomIkkeSkalGjenopprettes")
-    void shouldHoppeOverBestillingerSomIkkeSkalGjenopprettes(Bestilling tidligereBestilling) {
+    @MethodSource("bestillingerSomIkkeSkalRegistreres")
+    void shouldHoppeOverBestillingerSomIkkeSkalRegistreres(Bestilling tidligereBestilling) {
 
         var currentOpphold = InstdataDTO.builder().norskident(IDENT).oppholdId("42").build();
         var request = stubEndring(currentOpphold);
         when(bestillingRepository.findBestillingerByIdent(IDENT)).thenReturn(Flux.just(tidligereBestilling));
+        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class)))
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
         StepVerifier.create(instdataClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                         new BestillingProgress(), true))
@@ -445,8 +487,6 @@ class InstdataClientTest {
                         .institusjonsopphold(Map.of(ENVIRONMENT, List.of(opphold)))
                         .build()));
         when(transaksjonMappingRepository.findAllByBestillingId(BESTILLING_ID)).thenReturn(Flux.empty());
-        when(transaksjonMappingRepository.save(any(TransaksjonMapping.class)))
-                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
         when(transactionHelperService.persister(any(), any(), any(), any()))
                 .thenReturn(Mono.just(new BestillingProgress()));
         return request;
@@ -460,7 +500,7 @@ class InstdataClientTest {
                 .build();
     }
 
-    private static Stream<Bestilling> bestillingerSomIkkeSkalGjenopprettes() {
+    private static Stream<Bestilling> bestillingerSomIkkeSkalRegistreres() {
 
         var opprettetFraId = tidligereBestilling(100L);
         opprettetFraId.setOpprettetFraId(99L);
