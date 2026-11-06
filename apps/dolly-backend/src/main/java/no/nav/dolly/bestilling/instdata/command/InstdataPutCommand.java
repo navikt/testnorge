@@ -41,10 +41,15 @@ public class InstdataPutCommand implements Callable<Mono<InstdataResponse>> {
                 .bodyValue(instdata)
                 .retrieve()
                 .toBodilessEntity()
-                .map(resultat -> InstdataResponse.builder()
+                .map(resultat ->
+                        InstdataResponse.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
-                        .build())
+                        .institusjonsopphold(Map.of(miljoe, List.of(InstdataDTO.builder()
+                                        .oppholdId(instdata.getOppholdId())
+                                .build())))
+                        .build()
+                )
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
                 .onErrorResume(throwable -> {
@@ -60,9 +65,6 @@ public class InstdataPutCommand implements Callable<Mono<InstdataResponse>> {
                                 .status(error.getStatus())
                                 .feilmelding(error.getMessage())
                                 .environments(List.of(miljoe))
-                                .institusjonsopphold(Map.of(miljoe, List.of(InstdataDTO.builder()
-                                        .oppholdId(instdata.getOppholdId())
-                                        .build())))
                                 .build());
                     }
                 });
