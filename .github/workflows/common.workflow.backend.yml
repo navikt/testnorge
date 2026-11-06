@@ -94,7 +94,7 @@ jobs:
           cache-read-only: false
       - name: "Build with tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
+        run: $GITHUB_WORKSPACE/gradlew --build-cache build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -105,6 +105,19 @@ jobs:
           name: ${{ needs.start.outputs.artifact}}
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
+      - name: "Resolve Java options"
+        if: |
+          needs.start.outputs.do-deploy == 'true' || 
+          needs.start.outputs.do-deploy-test == 'true'
+        id: java-options
+        env:
+          JAVA_OPTIONS_FILE: ${{ inputs.working-directory }}/java-options
+        run: |
+          options=""
+          if [ -f "$JAVA_OPTIONS_FILE" ]; then
+            options="$(tr -s '[:space:]' ' ' < "$JAVA_OPTIONS_FILE" | sed 's/^ //;s/ $//')"
+          fi
+          echo "value=$options" >> "$GITHUB_OUTPUT"
       - name: "Build and push Docker image"
         if: |
           needs.start.outputs.do-deploy == 'true' || 
@@ -114,6 +127,9 @@ jobs:
         with:
           team: dolly
           docker_context: ${{ inputs.working-directory }}
+          dockerfile: Dockerfile
+          build_args: JAVA_OPTIONS=${{ steps.java-options.outputs.value }}
+          no_cache: true
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
@@ -142,9 +158,22 @@ jobs:
           cache-read-only: false
       - name: "Build without tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build -x test
+        run: $GITHUB_WORKSPACE/gradlew --build-cache build -x test
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      - name: "Resolve Java options"
+        if: |
+          needs.start.outputs.do-deploy == 'true' || 
+          needs.start.outputs.do-deploy-test == 'true'
+        id: java-options
+        env:
+          JAVA_OPTIONS_FILE: ${{ inputs.working-directory }}/java-options
+        run: |
+          options=""
+          if [ -f "$JAVA_OPTIONS_FILE" ]; then
+            options="$(tr -s '[:space:]' ' ' < "$JAVA_OPTIONS_FILE" | sed 's/^ //;s/ $//')"
+          fi
+          echo "value=$options" >> "$GITHUB_OUTPUT"
       - name: "Build and push Docker image"
         if: |
           needs.start.outputs.do-deploy == 'true' || 
@@ -154,6 +183,9 @@ jobs:
         with:
           team: dolly
           docker_context: ${{ inputs.working-directory }}
+          dockerfile: Dockerfile
+          build_args: JAVA_OPTIONS=${{ steps.java-options.outputs.value }}
+          no_cache: true
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
@@ -210,7 +242,7 @@ jobs:
           cache-read-only: false
       - name: "Run Tests"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
+        run: $GITHUB_WORKSPACE/gradlew --build-cache test ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

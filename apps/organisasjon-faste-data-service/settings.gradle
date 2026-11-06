@@ -1,5 +1,9 @@
+pluginManagement {
+    includeBuild "../../plugins/settings"
+}
+
 plugins {
-    id "com.gradle.develocity" version "4.6.1"
+    id "dolly-settings"
 }
 
 rootProject.name = "organisasjon-faste-data-service"
@@ -16,10 +20,3 @@ includeBuild "../../libs/security-core"
 includeBuild "../../libs/servlet-core"
 includeBuild "../../libs/servlet-security"
 includeBuild "../../libs/testing"
-
-develocity {
-    buildScan {
-        termsOfUseUrl = "https://gradle.com/terms-of-service"
-        termsOfUseAgree = "yes"
-    }
-}

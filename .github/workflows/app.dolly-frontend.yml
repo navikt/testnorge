@@ -16,6 +16,8 @@ on:
       - libs/security-core/**
       - libs/testing/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
 
 jobs:
   playwright:

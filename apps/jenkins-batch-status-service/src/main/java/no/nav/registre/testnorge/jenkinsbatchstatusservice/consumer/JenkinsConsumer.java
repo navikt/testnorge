@@ -50,7 +50,7 @@ public class JenkinsConsumer {
     }
 
     private Mono<JenkinsCrumb> getCrumb(String token) {
-        return Mono.just(new GetCrumbCommand(webClient, token).call());
+        return new GetCrumbCommand(webClient, token).call();
     }
 
 }
