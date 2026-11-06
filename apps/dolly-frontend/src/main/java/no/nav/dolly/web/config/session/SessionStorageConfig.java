@@ -1,11 +1,13 @@
 package no.nav.dolly.web.config.session;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.convert.DurationStyle;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -14,6 +16,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.session.config.ReactiveSessionRepositoryCustomizer;
 import org.springframework.session.data.redis.ReactiveRedisSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
+import org.springframework.web.server.session.WebSessionIdResolver;
+
+import java.time.temporal.ChronoUnit;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -64,6 +69,20 @@ public class SessionStorageConfig {
         return builder.build();
     }
 
+    @Bean
+    static BeanPostProcessor signedSessionIdResolver(Environment environment) {
+        var key = SessionEncryptionKey.fromBase64(environment.getProperty("SESSION_ENCRYPTION_KEY", ""));
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) {
+                if (bean instanceof WebSessionIdResolver resolver && !(bean instanceof SignedSessionIdResolver)) {
+                    return new SignedSessionIdResolver(resolver, key);
+                }
+                return bean;
+            }
+        };
+    }
+
     @Bean("springSessionDefaultRedisSerializer")
     RedisSerializer<Object> springSessionDefaultRedisSerializer(
             @Value("${SESSION_ENCRYPTION_KEY:}") String sessionEncryptionKey,
@@ -79,7 +98,7 @@ public class SessionStorageConfig {
     ReactiveSessionRepositoryCustomizer<ReactiveRedisSessionRepository> sessionRepositoryCustomizer(
             @Value("${spring.session.timeout:3h}") String timeout
     ) {
-        var maxInactiveInterval = DurationStyle.detectAndParse(timeout);
+        var maxInactiveInterval = DurationStyle.detectAndParse(timeout, ChronoUnit.SECONDS);
         return repository -> {
             repository.setDefaultMaxInactiveInterval(maxInactiveInterval);
             repository.setRedisSessionMapper(new UnreadableSessionDiscardingMapper());

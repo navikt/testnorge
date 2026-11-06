@@ -1,11 +1,19 @@
 package no.nav.dolly.web.config.session;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.ReactiveRedisSessionRepository;
+import org.springframework.web.server.session.CookieWebSessionIdResolver;
+import org.springframework.web.server.session.DefaultWebSessionManager;
+import org.springframework.web.server.session.WebSessionIdResolver;
+import org.springframework.web.server.session.WebSessionManager;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -39,14 +47,23 @@ class SessionStorageConfigTest {
         }
     }
 
-    @Test
-    void shouldUseSessionTimeoutFromConfiguration() {
+    @ParameterizedTest
+    @ValueSource(strings = { "30m", "1800" })
+    void shouldUseSessionTimeoutFromConfiguration(String timeout) {
         var properties = new HashMap<String, Object>(baseProperties(EncryptingRedisSerializerTest.randomKey()));
-        properties.put("spring.session.timeout", "30m");
+        properties.put("spring.session.timeout", timeout);
         try (var context = context(properties)) {
             Session session = context.getBean(ReactiveRedisSessionRepository.class).createSession().block();
 
             assertThat(session.getMaxInactiveInterval()).isEqualTo(Duration.ofMinutes(30));
+        }
+    }
+
+    @Test
+    void shouldSignSessionCookie() {
+        try (var context = context(baseProperties(EncryptingRedisSerializerTest.randomKey()), CookieResolverConfig.class)) {
+            var sessionManager = (DefaultWebSessionManager) context.getBean(WebSessionManager.class);
+            assertThat(sessionManager.getSessionIdResolver()).isInstanceOf(SignedSessionIdResolver.class);
         }
     }
 
@@ -72,12 +89,24 @@ class SessionStorageConfigTest {
                 "SESSION_ENCRYPTION_KEY", encryptionKey);
     }
 
-    static AnnotationConfigApplicationContext context(Map<String, Object> properties) {
+    static AnnotationConfigApplicationContext context(Map<String, Object> properties, Class<?>... additionalConfig) {
         var context = new AnnotationConfigApplicationContext();
         context.getEnvironment().setActiveProfiles("idporten");
         context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test", properties));
         context.register(SessionStorageConfig.class);
+        if (additionalConfig.length > 0) {
+            context.register(additionalConfig);
+        }
         context.refresh();
         return context;
+    }
+
+    @Configuration
+    static class CookieResolverConfig {
+
+        @Bean
+        WebSessionIdResolver webSessionIdResolver() {
+            return new CookieWebSessionIdResolver();
+        }
     }
 }
