@@ -270,7 +270,9 @@ const getUpdatedSkattekortData = (skattekortData: any) => {
 }
 
 const getUpdatedInstData = (instData: any) =>
-	instData.map((data: any) => updateData(data, initialValues.instdata))
+	instData.map((data: any) =>
+		updateData(_.omit(data, ['oppholdId', 'miljo']), initialValues.instdata),
+	)
 
 const getUpdatedPdlfData = (pdlfData: any) => {
 	const newPdlfData = Object.assign({}, pdlfData)

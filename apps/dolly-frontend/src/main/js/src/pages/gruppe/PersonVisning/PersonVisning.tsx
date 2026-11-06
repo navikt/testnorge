@@ -565,6 +565,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArenaData ||
 		loadingApData ||
 		loadingSkattekort ||
+		loadingInstData ||
 		loadingKdiData ||
 		loadingKelvinAapBehandlingStatus ||
 		loadingOppfoelgingsvedtak14aData ||
@@ -619,6 +620,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 								}
 								if (skattekortData) {
 									personData.skattekort = skattekortData.flatMap((m: any) => m.data || [])
+								}
+								if (instData) {
+									personData.instdata = instData
 								}
 								if (kdiData) {
 									personData.instdataKdi = kdiData
