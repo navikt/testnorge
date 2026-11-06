@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
@@ -40,12 +41,15 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class InstdataClient implements ClientRegister {
 
+    private static final String IDENT = "ident";
     private static final String INST2 = "INST2";
     private static final String INST2_STATUS = "INST2_STATUS#%s";
     private static final String KDI_STATUS = "KDI_STATUS#%s";
@@ -58,6 +62,7 @@ public class InstdataClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
+    private final BestillingRepository bestillingRepository;
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -90,7 +95,7 @@ public class InstdataClient implements ClientRegister {
                                 .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
                                 .map(miljoe -> {
                                     var context = MappingContextUtils.getMappingContext();
-                                    context.setProperty("ident", dollyPerson.getIdent());
+                                    context.setProperty(IDENT, dollyPerson.getIdent());
                                     context.setProperty("miljoe", miljoe);
                                     return mapperFacade.map(instKdiData, InstdataKdiDTO.class, context);
                                 }))
@@ -105,7 +110,7 @@ public class InstdataClient implements ClientRegister {
                 .filter(_ -> !bestilling.getInstdata().isEmpty() && !bestilling.getEnvironments().isEmpty())
                 .flatMapMany(_ -> {
                     var context = MappingContextUtils.getMappingContext();
-                    context.setProperty("ident", dollyPerson.getIdent());
+                    context.setProperty(IDENT, dollyPerson.getIdent());
                     return Mono.just(mapperFacade.mapAsList(bestilling.getInstdata(), InstdataDTO.class, context));
                 })
                 .flatMap(instdata -> instdataConsumer.getMiljoer()
@@ -141,7 +146,7 @@ public class InstdataClient implements ClientRegister {
             return Mono.just(emptyList());
         }
 
-        return Mono.zip(getOpprettedeOppholdIder(bestillingId, instdataRequest.getFirst().getNorskident(), miljoe),
+        return (Mono.zip(getOpprettedeOppholdIder(bestillingId, instdataRequest.getFirst().getNorskident(), miljoe),
                         instdataConsumer.getInstdata(instdataRequest.getFirst().getNorskident(), miljoe))
                 .flatMap(tuple -> {
                     var opprettedeOppholdIder = tuple.getT1();
@@ -163,7 +168,48 @@ public class InstdataClient implements ClientRegister {
                                                     .build())
                                             .collectList() :
                                     Mono.just(newInstdata));
-                });
+                }));
+    }
+
+    private Mono<Void> gjenopprettTidligereBestillinger(String ident, String miljoe, Long bestillingId) {
+
+        return bestillingRepository.findBestillingerByIdent(ident)
+                .filter(bestilling -> isNull(bestilling.getOpprettetFraId()) &&
+                                      isNull(bestilling.getGjenopprettetFraIdent()) &&
+                                      isNull(bestilling.getOpprettetFraGruppeId()) &&
+                                      !bestillingId.equals(bestilling.getId()))
+                .flatMap(bestilling -> {
+                    var bestKriterier = jsonMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
+                    if (bestKriterier.getInstdata().isEmpty()) {
+                        return Mono.empty();
+                    }
+                    return transaksjonMappingRepository.findAllBySystemAndIdent(INST2, ident)
+                            .filter(mapping -> mapping.getMiljoe().equals(miljoe) &&
+                                               !mapping.getBestillingId().equals(bestillingId))
+                            .hasElements()
+                            .flatMap(exists -> {
+                                if (isTrue(exists)) {
+                                    return Mono.<Void>empty();
+                                }
+                                var context = MappingContextUtils.getMappingContext();
+                                context.setProperty(IDENT, ident);
+                                var request = mapperFacade.mapAsList(bestKriterier.getInstdata(), InstdataDTO.class, context);
+                                return instdataConsumer.getInstdata(ident, miljoe)
+                                        .flatMapMany(response -> Flux.fromIterable(request)
+                                                .filter(opphold -> response.getInstitusjonsopphold()
+                                                        .getOrDefault(miljoe, emptyList())
+                                                        .stream()
+                                                        .noneMatch(fraMiljoe -> fraMiljoe.equals(opphold)))
+                                                .collectList())
+                                        .flatMap(opphold -> instdataConsumer.postInstdata(opphold, miljoe))
+                                        .map(response -> response.getInstitusjonsopphold().getOrDefault(miljoe, emptyList()).stream()
+                                                .map(InstdataDTO::getOppholdId)
+                                                .collect(Collectors.toSet()))
+                                        .flatMap(oppholdIder -> saveTransaksjonId(oppholdIder, ident, miljoe, bestillingId))
+                                        .then();
+                            });
+                })
+                .then();
     }
 
     private Mono<Set<String>> getOpprettedeOppholdIder(Long bestillingId, String ident, String miljoe) {
@@ -218,7 +264,14 @@ public class InstdataClient implements ClientRegister {
 
         var lagredeOppholdIder = new AtomicReference<Set<String>>(new HashSet<>());
 
-        return (isOpprettEndre ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
+        return Mono.defer(() -> {
+                    if (instdata.stream().anyMatch(request -> isNotBlank(request.getOppholdId()))) {
+                        return gjenopprettTidligereBestillinger(instdata.getFirst().getNorskident(), miljoe, bestillingId);
+                    } else {
+                        return Mono.empty();
+                    }
+                })
+                .then(isOpprettEndre ? Mono.just(instdata) : filterInstdata(instdata, miljoe, bestillingId))
                 .flatMap(newInstdata -> {
                     if (!newInstdata.isEmpty() && !newInstdata.getFirst().isEksisterende()) {
                         return instdataConsumer.postInstdata(newInstdata, miljoe)
