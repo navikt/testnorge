@@ -229,7 +229,12 @@ export const KdiForm = () => {
 		</HStack>
 	)
 
-	const renderHendelseMelding = (melding: Melding, nestetIdx: number, erOpprettelse: boolean) => {
+	const renderHendelseMelding = (
+		melding: Melding,
+		nestetIdx: number,
+		erOpprettelse: boolean,
+		harRedigering: boolean,
+	) => {
 		const { key, idx, meldingId, fieldId } = melding
 
 		if (!meldingId) {
@@ -241,7 +246,7 @@ export const KdiForm = () => {
 					whiteBackground
 				>
 					{renderMeldingTittel(
-						'Ny redigering',
+						'Redigering',
 						<Tag variant="outline" size="xsmall" data-color="meta-purple">
 							Ny
 						</Tag>,
@@ -252,9 +257,14 @@ export const KdiForm = () => {
 		}
 
 		return (
-			<DollyFaBlokkNested key={fieldId} idx={nestetIdx} showDeleteButton={false}>
+			<DollyFaBlokkNested
+				key={fieldId}
+				idx={nestetIdx}
+				showDeleteButton={false}
+				whiteBackground={harRedigering}
+			>
 				{renderMeldingTittel(
-					erOpprettelse ? 'Opprettet' : 'Redigert',
+					erOpprettelse ? 'Oppretting' : 'Redigering',
 					erAnnullert(meldingId) && (
 						<Tag variant="outline" size="xsmall" data-color="danger">
 							Annullert
@@ -273,9 +283,9 @@ export const KdiForm = () => {
 		const sisteEksisterendeMelding = eksisterendeMeldinger[eksisterendeMeldinger.length - 1]
 
 		const status: HendelseStatus = {
-			erNy: !hendelseId && harEksisterendeMeldinger,
+			erNy: !hendelseId,
 			harRedigering: meldinger.some((melding) => !melding.meldingId && !!melding.hendelseId),
-			erAnnullert: erAnnullert(sisteEksisterendeMelding?.meldingId),
+			erAnnullert: meldinger.every((melding) => erAnnullert(melding.meldingId)),
 		}
 
 		if (!sisteEksisterendeMelding) {
@@ -312,14 +322,17 @@ export const KdiForm = () => {
 			>
 				<DollyFieldArrayWrapper nested>
 					{meldinger.map((melding, nestetIdx) =>
-						renderHendelseMelding(melding, nestetIdx, melding === eksisterendeMeldinger[0]),
+						renderHendelseMelding(
+							melding,
+							nestetIdx,
+							melding === eksisterendeMeldinger[0],
+							status.harRedigering,
+						),
 					)}
 				</DollyFieldArrayWrapper>
-				{!status.erAnnullert && (
-					<RedigeringKnapp
-						handleRedigering={() => handleRedigering(meldinger[meldinger.length - 1])}
-					/>
-				)}
+				<RedigeringKnapp
+					handleRedigering={() => handleRedigering(meldinger[meldinger.length - 1])}
+				/>
 			</HendelseKort>
 		)
 	}
