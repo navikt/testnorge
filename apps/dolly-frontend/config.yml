@@ -116,6 +116,7 @@ spec:
   image: "{{image}}"
   envFrom:
     - secret: idporten-dolly-prod
+    - secret: dolly-frontend-session-key
   env:
     - name: FRONTEND_TELEMETRY_ENABLED
       value: "true"

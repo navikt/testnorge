@@ -119,6 +119,8 @@ spec:
     limits:
       memory: 2048Mi
   image: "{{image}}"
+  envFrom:
+    - secret: dolly-frontend-dev-session-key
   env:
     - name: FRONTEND_TELEMETRY_ENABLED
       value: "false"
