@@ -2,6 +2,11 @@ POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
 server:
   port: 8020
+  reactive:
+    session:
+      cookie:
+        name: SESSION
+        secure: false
 
 management:
   health:

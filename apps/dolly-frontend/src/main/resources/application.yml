@@ -183,6 +183,13 @@ consumers:
 
 server:
   max-http-request-header-size: 128KB
+  reactive:
+    session:
+      cookie:
+        name: __Host-SESSION
+        secure: true
+        http-only: true
+        same-site: lax
 
 logging:
   pattern:
