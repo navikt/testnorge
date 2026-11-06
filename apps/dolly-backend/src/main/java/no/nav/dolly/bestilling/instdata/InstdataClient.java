@@ -171,7 +171,7 @@ public class InstdataClient implements ClientRegister {
                 }));
     }
 
-    private Mono<Void> gjenopprettTidligereBestillinger(String ident, String miljoe, Long bestillingId) {
+    private Mono<Void> registrerTidligereBestillinger(String ident, String miljoe, Long bestillingId) {
 
         return bestillingRepository.findBestillingerByIdent(ident)
                 .filter(bestilling -> isNull(bestilling.getOpprettetFraId()) &&
@@ -189,22 +189,19 @@ public class InstdataClient implements ClientRegister {
                             .hasElements()
                             .flatMap(exists -> {
                                 if (isTrue(exists)) {
-                                    return Mono.<Void>empty();
+                                    return Mono.empty();
                                 }
                                 var context = MappingContextUtils.getMappingContext();
                                 context.setProperty(IDENT, ident);
                                 var request = mapperFacade.mapAsList(bestKriterier.getInstdata(), InstdataDTO.class, context);
                                 return instdataConsumer.getInstdata(ident, miljoe)
-                                        .flatMapMany(response -> Flux.fromIterable(request)
-                                                .filter(opphold -> response.getInstitusjonsopphold()
-                                                        .getOrDefault(miljoe, emptyList())
-                                                        .stream()
-                                                        .noneMatch(fraMiljoe -> fraMiljoe.equals(opphold)))
-                                                .collectList())
-                                        .flatMap(opphold -> instdataConsumer.postInstdata(opphold, miljoe))
-                                        .map(response -> response.getInstitusjonsopphold().getOrDefault(miljoe, emptyList()).stream()
-                                                .map(InstdataDTO::getOppholdId)
-                                                .collect(Collectors.toSet()))
+                                        .flatMapMany(response ->
+                                                Flux.fromIterable(request)
+                                                        .flatMap(opphold -> Flux.fromIterable(response.getInstitusjonsopphold()
+                                                                        .getOrDefault(miljoe, emptyList()))
+                                                                .filter(fraMiljoe -> fraMiljoe.equals(opphold)))
+                                                        .map(InstdataDTO::getOppholdId)
+                                                        .collect(Collectors.toSet()))
                                         .flatMap(oppholdIder -> saveTransaksjonId(oppholdIder, ident, miljoe, bestillingId))
                                         .then();
                             });
@@ -266,7 +263,7 @@ public class InstdataClient implements ClientRegister {
 
         return Mono.defer(() -> {
                     if (instdata.stream().anyMatch(request -> isNotBlank(request.getOppholdId()))) {
-                        return gjenopprettTidligereBestillinger(instdata.getFirst().getNorskident(), miljoe, bestillingId);
+                        return registrerTidligereBestillinger(instdata.getFirst().getNorskident(), miljoe, bestillingId);
                     } else {
                         return Mono.empty();
                     }
