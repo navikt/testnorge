@@ -15,7 +15,7 @@ type HendelseKortProps = {
 	status: HendelseStatus
 	beskrivelse?: string
 	kanLukkes: boolean
-	startApen: boolean
+	startAapen: boolean
 	handleRemove?: () => void
 	children: ReactNode
 }
@@ -56,9 +56,17 @@ const KortHeader = styled.div`
 	padding: 8px 10px;
 `
 
-const KortInnhold = styled.div`
+const KortTittel = styled.div`
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 2rem;
+`
+
+const KortInnhold = styled.div<{ $kanLukkes: boolean }>`
 	padding: 0 10px 10px;
-	margin-top: 10px;
+	margin-top: ${({ $kanLukkes }) => ($kanLukkes ? '10px' : '0')};
 `
 
 export const HendelseKort = ({
@@ -66,19 +74,19 @@ export const HendelseKort = ({
 	status,
 	beskrivelse,
 	kanLukkes,
-	startApen,
+	startAapen,
 	handleRemove,
 	children,
 }: HendelseKortProps) => {
-	const [apen, setApen] = useState(startApen)
+	const [aapen, setAapen] = useState(startAapen)
 	const innholdId = useId()
 	const headingId = useId()
-	const visInnhold = !kanLukkes || apen
+	const visInnhold = !kanLukkes || aapen
 
 	return (
 		<Kort $status={status} aria-labelledby={headingId}>
 			<KortHeader>
-				<div style={{ flexGrow: 1 }}>
+				<KortTittel>
 					<HStack gap="space-8" align="center">
 						<Heading size="xsmall" level="3" id={headingId}>
 							{header}
@@ -104,25 +112,29 @@ export const HendelseKort = ({
 							{beskrivelse}
 						</BodyShort>
 					)}
-				</div>
+				</KortTittel>
 				{handleRemove && <DeleteButton onClick={handleRemove} />}
 				{kanLukkes && (
 					<Button
 						type="button"
 						variant="tertiary"
 						size="small"
-						aria-expanded={apen}
+						aria-expanded={aapen}
 						aria-controls={innholdId}
-						icon={apen ? <ChevronUpIcon aria-hidden /> : <ChevronDownIcon aria-hidden />}
-						onClick={() => setApen(!apen)}
+						icon={aapen ? <ChevronUpIcon aria-hidden /> : <ChevronDownIcon aria-hidden />}
+						onClick={() => setAapen(!aapen)}
 					>
 						<BodyShort as="span" size="small">
-							{apen ? 'Skjul' : 'Vis'}
+							{aapen ? 'Skjul' : 'Vis'}
 						</BodyShort>
 					</Button>
 				)}
 			</KortHeader>
-			{visInnhold && <KortInnhold id={innholdId}>{children}</KortInnhold>}
+			{visInnhold && (
+				<KortInnhold id={innholdId} $kanLukkes={kanLukkes}>
+					{children}
+				</KortInnhold>
+			)}
 		</Kort>
 	)
 }

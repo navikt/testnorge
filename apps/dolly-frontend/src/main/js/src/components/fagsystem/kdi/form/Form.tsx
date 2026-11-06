@@ -295,7 +295,7 @@ export const KdiForm = () => {
 					header={header}
 					status={status}
 					kanLukkes={false}
-					startApen
+					startAapen
 					handleRemove={antallMeldinger > 1 ? () => fieldArrays[key].remove(idx) : undefined}
 				>
 					{renderFelter(meldinger[0])}
@@ -318,7 +318,7 @@ export const KdiForm = () => {
 				status={status}
 				beskrivelse={beskrivelse}
 				kanLukkes
-				startApen={status.harRedigering}
+				startAapen={status.harRedigering}
 			>
 				<DollyFieldArrayWrapper nested>
 					{meldinger.map((melding, nestetIdx) =>
