@@ -2,6 +2,12 @@ POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.ekstern.dev.nav.no/login
 IDPORTEN_ISSUER_PROD: https://idporten.no
 
 spring:
+  data:
+    redis:
+      host: ${VALKEY_HOST_SESSION_IDPORTEN}
+      port: ${VALKEY_PORT_SESSION_IDPORTEN}
+      username: ${VALKEY_USERNAME_SESSION_IDPORTEN}
+      password: ${VALKEY_PASSWORD_SESSION_IDPORTEN}
   session:
     timeout: 3h
   security:

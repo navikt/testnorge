@@ -17,12 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
@@ -33,14 +27,11 @@ import org.springframework.security.oauth2.client.registration.ReactiveClientReg
 import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
-import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
-@EnableRedisWebSession(maxInactiveIntervalInSeconds = 10800)
 @Import({
         AzureAdTokenExchange.class,
         TokenXExchange.class,
@@ -87,34 +78,6 @@ class SessionConfig {
     }
 
     @Bean
-    LettuceConnectionFactory redisConnectionFactory(
-            RedisStandaloneConfiguration redisStandaloneConfiguration,
-            LettuceClientConfiguration lettuceClientConfiguration
-    ) {
-        return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    RedisStandaloneConfiguration redisStandaloneConfiguration() {
-        var config = new RedisStandaloneConfiguration();
-        config.setHostName(host);
-        config.setPort(port);
-        config.setUsername(username);
-        config.setPassword(password);
-        return config;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    LettuceClientConfiguration lettuceClientConfiguration() {
-        return LettuceClientConfiguration
-                .builder()
-                .useSsl()
-                .build();
-    }
-
-    @Bean
     ServerOAuth2AuthorizedClientRepository authorizedClientRepository() {
         return new WebSessionServerOAuth2AuthorizedClientRepository();
     }
@@ -148,14 +111,6 @@ class SessionConfig {
         manager.setAuthorizedClientProvider(authorizedClientProvider);
 
         return manager;
-    }
-
-    @Bean
-    RedisSerializer<Object> springSessionRedisSerializer() {
-        var mapper = JsonMapper.builder()
-                .addModules(SecurityJacksonModules.getModules(getClass().getClassLoader()))
-                .build();
-        return new GenericJacksonJsonRedisSerializer(mapper);
     }
 
 }

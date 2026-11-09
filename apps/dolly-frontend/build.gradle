@@ -39,4 +39,5 @@ dependencies {
 
     testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
     testImplementation "io.projectreactor:reactor-test"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter"
 }
