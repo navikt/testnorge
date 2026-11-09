@@ -46,7 +46,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
             return Mono.empty();
@@ -68,12 +68,12 @@ public class PensjonforvalterClient implements ClientRegister {
                                             Flux.concat(
                                                     pensjonPersondataService.lagrePersondata(dollyPerson.getIdent(),
                                                             utvidetPersondata, bestilling,
-                                                            tilgjengeligeMiljoer, isOpprettEndre),
+                                                            tilgjengeligeMiljoer, dollyPerson.isOpprettEndre()),
                                                     pensjonPensjonsdataService.lagrePensjonsdata(bestilling1,
                                                             dollyPerson.getIdent(), bestilteMiljoer.get()),
                                                     pensjonVedtakService.lagrePensjonVedtak(bestilling1,
                                                             dollyPerson.getIdent(), utvidetPersondata,
-                                                            bestilteMiljoer.get(), isOpprettEndre)
+                                                            bestilteMiljoer.get(), dollyPerson.isOpprettEndre())
                                             )))
 
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))

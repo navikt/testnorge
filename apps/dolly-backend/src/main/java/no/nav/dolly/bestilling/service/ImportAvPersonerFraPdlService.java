@@ -134,14 +134,14 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                         .zipWith(Mono.just(progress)))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(tuple ->
-                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), OPPRETT_ENDRE_TRUE)
+                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2())
                                 .zipWith(Mono.just(tuple.getT1())))
                 .flatMap(tuple ->
                         personServiceClient.syncPerson(tuple.getT2(), tuple.getT1())
                                 .zipWith(Mono.just(tuple.getT2())))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
-                        tuple.getT1(), OPPRETT_ENDRE_TRUE))
+                        tuple.getT1()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

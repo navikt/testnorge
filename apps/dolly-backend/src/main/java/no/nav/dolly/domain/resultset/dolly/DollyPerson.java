@@ -28,6 +28,10 @@ public class DollyPerson {
     private boolean isOpprett;
     private boolean isLeggTil;
 
+    public boolean isOpprettEndre() {
+        return isOpprett || isLeggTil;
+    }
+
     public List<Tags> getTags() {
         if (isNull(tags)) {
             tags = new ArrayList<>();

@@ -71,8 +71,7 @@ class Oppfoelgingsvedtak14aClientTest {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         new RsDollyUtvidetBestilling(),
                         DollyPerson.builder().ident(IDENT).build(),
-                        new BestillingProgress(),
-                        false))
+                        new BestillingProgress()))
                 .verifyComplete();
 
         verify(oppfoelgingsvedtak14aConsumer, never()).startOppfoelgingsperiode(anyString());
@@ -96,8 +95,7 @@ class Oppfoelgingsvedtak14aClientTest {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(NORG_ENHET),
                         DollyPerson.builder().ident(IDENT).build(),
-                        progress,
-                        false))
+                        progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
                     verify(norg2Consumer, never()).getNorgEnhet(anyString());
@@ -130,8 +128,7 @@ class Oppfoelgingsvedtak14aClientTest {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(null),
                         DollyPerson.builder().ident(IDENT).build(),
-                        progress,
-                        false))
+                        progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
                     verify(norg2Consumer).getNorgEnhet(KOMMUNE_ENHET);
@@ -161,8 +158,7 @@ class Oppfoelgingsvedtak14aClientTest {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(null),
                         DollyPerson.builder().ident(IDENT).build(),
-                        progress,
-                        false))
+                        progress))
                 .assertNext(_ -> verify(oppfoelgingsvedtak14aConsumer).opprettOppfoelgingsvedtak14a(any()))
                 .verifyComplete();
     }
@@ -182,8 +178,7 @@ class Oppfoelgingsvedtak14aClientTest {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(NORG_ENHET),
                         DollyPerson.builder().ident(IDENT).build(),
-                        progress,
-                        false))
+                        progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
                     verify(oppfoelgingsvedtak14aConsumer, never()).opprettOppfoelgingsvedtak14a(any());
@@ -214,8 +209,7 @@ class Oppfoelgingsvedtak14aClientTest {
         StepVerifier.create(oppfoelgingsvedtak14aClient.gjenopprett(
                         bestillingMed(NORG_ENHET),
                         DollyPerson.builder().ident(IDENT).build(),
-                        progress,
-                        false))
+                        progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().getLast())

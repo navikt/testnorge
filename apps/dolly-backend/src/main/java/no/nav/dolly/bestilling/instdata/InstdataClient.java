@@ -59,7 +59,7 @@ public class InstdataClient implements ClientRegister {
     private final TransaksjonMappingRepository transaksjonMappingRepository;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if ((bestilling.getInstdata().isEmpty() && isNull(bestilling.getInstdataKdi())) || bestilling.getEnvironments().isEmpty()) {
 
@@ -67,9 +67,9 @@ public class InstdataClient implements ClientRegister {
         }
 
         return oppdaterStatus(progress, prepInitStatus(bestilling))
-                .then(Flux.merge(doInst2Bestilling(bestilling, dollyPerson, isOpprettEndre)
+                .then(Flux.merge(doInst2Bestilling(bestilling, dollyPerson, dollyPerson.isOpprettEndre())
                                         .map(INST2_STATUS::formatted),
-                                doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), isOpprettEndre)
+                                doInstKdiBestilling(bestilling, dollyPerson, progress.getBestillingId(), dollyPerson.isOpprettEndre())
                                         .map(KDI_STATUS::formatted))
                         .collect(Collectors.joining("|"))
                         .filter(resultat -> !resultat.isBlank())

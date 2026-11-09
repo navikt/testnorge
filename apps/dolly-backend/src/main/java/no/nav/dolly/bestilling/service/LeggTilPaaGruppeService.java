@@ -136,14 +136,14 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(_ -> opprettDollyPersonLeggTil(progress.get(), bestKriterier))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
-                .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get(), true)
+                .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get())
                         .thenReturn(dollyPerson))
                 .flatMap(dollyPerson ->
                         personServiceClient.syncPerson(dollyPerson, progress.get())
                                 .zipWith(Mono.just(dollyPerson)))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
-                        tuple.getT1(), true))
+                        tuple.getT1()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

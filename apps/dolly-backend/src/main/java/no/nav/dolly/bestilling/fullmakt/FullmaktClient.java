@@ -37,13 +37,13 @@ public class FullmaktClient implements ClientRegister {
     private final PdlDataConsumer pdlDataConsumer;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (bestilling.getFullmakt().isEmpty()) {
             return Mono.empty();
         }
 
-        fiksDatoerForGjenoppretting(bestilling.getFullmakt(), isOpprettEndre);
+        fiksDatoerForGjenoppretting(bestilling.getFullmakt(), dollyPerson.isOpprettEndre());
 
         return oppdaterStatus(progress, getInfoVenter(FULLMAKT.name()))
                 .then(Flux.fromIterable(bestilling.getFullmakt())
@@ -94,7 +94,7 @@ public class FullmaktClient implements ClientRegister {
                         .map(FullmaktPostResponse.Fullmakt::getFullmaktId)
                         .flatMap(fullmaktsId -> fullmaktConsumer.deleteFullmaktData(ident, fullmaktsId)))
                 .collectList()
-                .subscribe(result -> log.info("Fullmakt, slettet {} identer", identer.size()));
+                .subscribe(_ -> log.info("Fullmakt, slettet {} identer", identer.size()));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

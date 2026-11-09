@@ -130,13 +130,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(progress -> opprettDollyPersonNyPerson(progress, bestKriterier))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
-                .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, bestProgress.get(), OPPRETT_ENDRE_TRUE)
+                .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, bestProgress.get())
                         .thenReturn(dollyPerson))
                 .flatMap(dollyPerson -> personServiceClient.syncPerson(dollyPerson, bestProgress.get())
                         .zipWith(Mono.just(dollyPerson)))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
-                        bestProgress.get(), OPPRETT_ENDRE_TRUE))
+                        bestProgress.get()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

@@ -119,14 +119,14 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(this::opprettDollyPersonForGjenopprett)
                 .flatMap(dollyPerson ->
-                        gjenopprettKlienterStart(dollyPerson, bestKriterier, bestProgress.get(), OPPRETT_ENDRE_FALSE)
+                        gjenopprettKlienterStart(dollyPerson, bestKriterier, bestProgress.get())
                                 .thenReturn(dollyPerson))
                 .flatMap(dollyPerson -> personServiceClient.syncPerson(dollyPerson, bestProgress.get())
                         .zipWith(Mono.just(dollyPerson)))
                 .doOnNext(progress1 -> log.info("Status på progress {}", progress1))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
-                        tuple.getT1(), OPPRETT_ENDRE_FALSE))
+                        tuple.getT1()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout))
                 .switchIfEmpty(Mono.error(new DollyFunctionalException("Gjenopprett bestilling ikke fullført; annen feil")))
                 .doOnNext(_ -> log.info("Fullført gjenopprett bestilling: {}", bestillingId))

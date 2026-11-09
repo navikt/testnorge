@@ -61,7 +61,7 @@ class InntektstubClientTest {
     @Test
     void shouldImportFraTenor_OK() {
 
-        val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(TESTNORGE_IDENT).build();
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
         when(transactionHelperService.persister(any(), any(), anyString()))
@@ -69,7 +69,7 @@ class InntektstubClientTest {
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
                 .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.OK).build()));
 
-        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
+        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress()))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
@@ -84,7 +84,7 @@ class InntektstubClientTest {
     @Test
     void shouldImportFraTenor_Error() {
 
-        val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(TESTNORGE_IDENT).build();
         val statusCaptor = ArgumentCaptor.forClass(String.class);
 
         when(transactionHelperService.persister(any(), any(), anyString()))
@@ -94,7 +94,7 @@ class InntektstubClientTest {
                 .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .message("Blah").build()));
 
-        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
+        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress()))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2)).persister(any(), any(),
                             statusCaptor.capture());
@@ -109,12 +109,12 @@ class InntektstubClientTest {
     @Test
     void shouldIkkeFunnetFraTenorSjekk_OK() {
 
-        val dollyPerson = DollyPerson.builder().ident(TESTNORGE_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(TESTNORGE_IDENT).build();
 
         when(inntektstubConsumer.sjekkImporterInntekt(eq(TESTNORGE_IDENT), anyBoolean()))
                 .thenReturn(Mono.just(ResponseDTO.builder().status(HttpStatus.NOT_FOUND).build()));
 
-        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress(), true))
+        StepVerifier.create(inntektstubClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyPerson, new BestillingProgress()))
                 .expectNextCount(0)
                 .verifyComplete();
 
@@ -125,7 +125,7 @@ class InntektstubClientTest {
     void shouldSendInntektsdataToInntektstub_OK() {
 
         val statusCaptor = ArgumentCaptor.forClass(String.class);
-        val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
         bestilling.setInntektstub(buildInntektsinformasjon());
 
@@ -140,7 +140,7 @@ class InntektstubClientTest {
                     return Flux.just(Inntektsinformasjon.builder().build());
                 });
 
-        StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
+        StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress()))
                 .assertNext(_ -> {
                     verify(inntektstubConsumer).getInntekter(anyString());
                     verify(inntektstubConsumer).postInntekter(any());
@@ -163,7 +163,7 @@ class InntektstubClientTest {
     void shouldSendInntektsdataToInntektstub_FeilVedLagring() {
 
         val statusCaptor = ArgumentCaptor.forClass(String.class);
-        val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
         bestilling.setInntektstub(buildInntektsinformasjon());
 
@@ -176,7 +176,7 @@ class InntektstubClientTest {
                         .feilmelding("Feil ved lagring")
                         .build()));
 
-        StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
+        StepVerifier.create(inntektstubClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress()))
                 .assertNext(_ -> {
                     verify(inntektstubConsumer).getInntekter(anyString());
                     verify(inntektstubConsumer).postInntekter(any());
@@ -192,7 +192,7 @@ class InntektstubClientTest {
     void shouldSendInntekterDataToInntektstub() {
 
         val statusCaptor = ArgumentCaptor.forClass(String.class);
-        val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
         bestilling.setInntekter(List.of(RsInntekter.builder()
                 .perioder(List.of(YearMonth.of(2025, 12), YearMonth.of(2025, 11)))
@@ -211,7 +211,7 @@ class InntektstubClientTest {
                 });
 
         StepVerifier.create(inntektstubClient.gjenopprett(
-                        bestilling, dollyPerson, new BestillingProgress(), true))
+                        bestilling, dollyPerson, new BestillingProgress()))
                 .assertNext(_ -> {
                     verify(inntektstubConsumer).getInntekter(DOLLY_IDENT);
                     verify(inntektstubConsumer).postInntekter(any());
@@ -233,7 +233,7 @@ class InntektstubClientTest {
     @Test
     void shouldFailGjenopprettWhenGetInntekterThrowsInternalServerError() {
 
-        val dollyPerson = DollyPerson.builder().ident(DOLLY_IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build();
         val bestilling = new RsDollyUtvidetBestilling();
         val internalServerError = WebClientResponseException.create(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -249,7 +249,7 @@ class InntektstubClientTest {
                 .thenReturn(Flux.error(internalServerError));
 
         StepVerifier.create(inntektstubClient.gjenopprett(
-                        bestilling, dollyPerson, new BestillingProgress(), true))
+                        bestilling, dollyPerson, new BestillingProgress()))
                 .expectErrorSatisfies(error -> {
                     org.assertj.core.api.Assertions.assertThat(error).isSameAs(internalServerError);
                     org.assertj.core.api.Assertions.assertThat(
@@ -282,7 +282,7 @@ class InntektstubClientTest {
                 Inntektsinformasjon.builder().build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(
-                        bestilling, DollyPerson.builder().ident(DOLLY_IDENT).build(), new BestillingProgress(), true))
+                        bestilling, DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build(), new BestillingProgress()))
                 .expectNextCount(1)
                 .verifyComplete();
 
@@ -307,7 +307,7 @@ class InntektstubClientTest {
                 .thenReturn(Flux.just(Inntektsinformasjon.builder().build()));
 
         StepVerifier.create(inntektstubClient.gjenopprett(
-                        bestilling, DollyPerson.builder().ident(TESTNORGE_IDENT).build(), new BestillingProgress(), true))
+                        bestilling, DollyPerson.builder().isOpprett(true).ident(TESTNORGE_IDENT).build(), new BestillingProgress()))
                 .expectNextCount(1)
                 .verifyComplete();
 
@@ -319,8 +319,8 @@ class InntektstubClientTest {
     void shouldNotUpdateStatusWhenBestillingHasNoInntektsdata() {
 
         StepVerifier.create(inntektstubClient.gjenopprett(
-                        new RsDollyUtvidetBestilling(), DollyPerson.builder().ident(DOLLY_IDENT).build(),
-                        new BestillingProgress(), true))
+                        new RsDollyUtvidetBestilling(), DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build(),
+                        new BestillingProgress()))
                 .verifyComplete();
 
         verifyNoInteractions(transactionHelperService, inntektstubConsumer);
@@ -358,7 +358,7 @@ class InntektstubClientTest {
                 });
 
         StepVerifier.create(inntektstubClient.gjenopprett(
-                        bestilling, DollyPerson.builder().ident(DOLLY_IDENT).build(), new BestillingProgress(), true))
+                        bestilling, DollyPerson.builder().isOpprett(true).ident(DOLLY_IDENT).build(), new BestillingProgress()))
                 .expectNextCount(1)
                 .verifyComplete();
 

@@ -41,15 +41,15 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling)) {
 
             return getPersonData(dollyPerson.getIdent())
-                            .map(person -> prepRequest(bestilling, person))
-                            .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
-                                    .map(this::getStatus))
-                            .collect(Collectors.joining())
+                    .map(person -> prepRequest(bestilling, person))
+                    .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
+                            .map(this::getStatus))
+                    .collect(Collectors.joining())
                     .flatMap(status -> oppdaterStatus(progress, status));
         }
         return Mono.empty();
@@ -59,7 +59,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         skjermingsRegisterConsumer.deleteSkjerming(identer)
-                .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
+                .subscribe(_ -> log.info("Slettet identer fra Skjermingsregisteret"));
     }
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {

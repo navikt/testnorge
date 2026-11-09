@@ -112,13 +112,13 @@ public class OppdaterPersonService extends DollyBestillingService {
                         .zipWith(Mono.just(progress)))
                 .doOnNext(_ -> counterCustomRegistry.invoke(request))
                 .flatMap(tuple ->
-                        gjenopprettKlienterStart(tuple.getT1(), request, tuple.getT2(), true)
+                        gjenopprettKlienterStart(tuple.getT1(), request, tuple.getT2())
                                 .zipWith(Mono.just(tuple.getT1())))
                 .flatMap(tuple -> personServiceClient.syncPerson(tuple.getT2(), tuple.getT1())
                         .zipWith(Mono.just(tuple.getT2())))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), request,
-                        tuple.getT1(), true))
+                        tuple.getT1()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout))
                 .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppdatering ikke fullført; annen feil")))
                 .doOnNext(_ -> log.info("Fullført oppdatering av ident: {}", bestProgress.get().getIdent()))

@@ -51,7 +51,7 @@ public class HistarkClient implements ClientRegister {
     private final DokumentService dokumentService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (isNull(bestilling.getHistark())) {
 
@@ -62,7 +62,7 @@ public class HistarkClient implements ClientRegister {
                 .then(transaksjonMappingService.existAlready(HISTARK,
                         dollyPerson.getIdent(), "NA", bestilling.getId()))
                 .flatMap(eksisterer -> {
-                    if (isFalse(eksisterer) || isOpprettEndre) {
+                    if (isFalse(eksisterer) || dollyPerson.isOpprettEndre()) {
                         return Flux.fromIterable(bestilling.getHistark().getDokumenter())
                                 .flatMap(dokument -> buildRequest(dokument, dollyPerson.getIdent(), progress.getBestillingId()))
                                 .flatMap(histarkConsumer::postHistark)

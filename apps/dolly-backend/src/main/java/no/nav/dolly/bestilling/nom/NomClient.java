@@ -45,7 +45,7 @@ public class NomClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (isNull(bestilling.getNomdata())) {
             return Mono.empty();
@@ -69,8 +69,8 @@ public class NomClient implements ClientRegister {
                 })
                 .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                 .onErrorResume(error -> Mono.just(NomRessursResponse.builder()
-                                .melding(WebClientError.describe(error).getMessage())
-                                .build()))
+                        .melding(WebClientError.describe(error).getMessage())
+                        .build()))
                 .map(NomClient::getStatus)
                 .flatMap(status -> oppdaterStatus(progress, status));
     }
@@ -100,7 +100,7 @@ public class NomClient implements ClientRegister {
         Flux.fromIterable(identer)
                 .flatMap(ident -> nomConsumer.avsluttRessurs(ident, LocalDate.now()))
                 .collectList()
-                .subscribe(result ->
+                .subscribe(_ ->
                         log.info("Nom, avsluttet {} identer", identer.size()));
     }
 

@@ -64,7 +64,7 @@ class SkattekortClientTest {
     @Test
     void shouldValidateSkattekortMedTilleggsopplysningOK() {
 
-        val dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(IDENT).build();
         val argumentCaptor = ArgumentCaptor.forClass(String.class);
         val bestilling = RsDollyUtvidetBestilling.builder()
                 .environments(Set.of("q2"))
@@ -91,8 +91,8 @@ class SkattekortClientTest {
                 .build()));
 
         StepVerifier.create(
-                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
-                .assertNext(progress -> {
+                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress()))
+                .assertNext(_ -> {
                     verify(mapperFacade).map(any(), eq(SkattekortRequest.class), any());
                     verify(skattekortConsumer).sendSkattekort(any(), eq("q2"));
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), anyString());
@@ -104,7 +104,7 @@ class SkattekortClientTest {
     @Test
     void shouldFailSkattekortMedTilleggsopplysningOK() {
 
-        val dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(IDENT).build();
         val bestilling = RsDollyUtvidetBestilling.builder()
                 .environments(Set.of("q1"))
                 .skattekort(SkattekortRequestDTO.builder()
@@ -121,8 +121,8 @@ class SkattekortClientTest {
                 .thenReturn(Mono.just(new BestillingProgress()));
 
         StepVerifier.create(
-                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
-                .assertNext(progress -> {
+                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress()))
+                .assertNext(_ -> {
                     verify(transactionHelperService).persister(any(), any(), any(), anyString());
                     assertThat(argumentCaptor.getAllValues(), hasItems(is(equalTo("q1:Avvik: Validering feilet: Trekkode er ikke gyldig"))));
                 })
@@ -132,7 +132,7 @@ class SkattekortClientTest {
     @Test
     void shouldValidateSkattekortMedTrekkodeOK() {
 
-        val dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(IDENT).build();
         val argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         val bestilling = RsDollyUtvidetBestilling.builder()
@@ -173,8 +173,8 @@ class SkattekortClientTest {
                 .build()));
 
         StepVerifier.create(
-                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
-                .assertNext(progress -> {
+                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress()))
+                .assertNext(_ -> {
                     verify(mapperFacade).map(any(), eq(SkattekortRequest.class), any());
                     verify(skattekortConsumer).sendSkattekort(any(), eq("q1"));
                     verify(transactionHelperService, times(2)).persister(any(), any(), any(), anyString());
@@ -186,7 +186,7 @@ class SkattekortClientTest {
     @Test
     void shouldFailSkattekortMedUgyldigTrekkodeOK() {
 
-        val dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        val dollyPerson = DollyPerson.builder().isOpprett(true).ident(IDENT).build();
         val bestilling = RsDollyUtvidetBestilling.builder()
                 .environments(Set.of("q2"))
                 .skattekort(SkattekortRequestDTO.builder()
@@ -210,8 +210,8 @@ class SkattekortClientTest {
                 .thenReturn(Mono.just(new BestillingProgress()));
 
         StepVerifier.create(
-                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress(), true))
-                .assertNext(progress -> {
+                        skattekortClient.gjenopprett(bestilling, dollyPerson, new BestillingProgress()))
+                .assertNext(_ -> {
                     verify(transactionHelperService).persister(any(), any(), any(), anyString());
                     assertThat(argumentCaptor.getAllValues(), hasItems(is(equalTo("q2:Avvik: Validering feilet: Trekkode er ikke gyldig"))));
                 })

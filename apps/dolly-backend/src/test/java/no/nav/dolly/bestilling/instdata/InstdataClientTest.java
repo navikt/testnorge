@@ -12,20 +12,19 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.TransactionHelperService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -62,9 +61,6 @@ class InstdataClientTest {
     @Mock
     private TransaksjonMappingRepository transaksjonMappingRepository;
 
-    @Spy
-    private JsonMapper jsonMapper = JsonMapper.builder().build();
-
     @Captor
     ArgumentCaptor<String> statusCaptor;
 
@@ -77,17 +73,16 @@ class InstdataClientTest {
         var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         StepVerifier.create(instdataClient.gjenopprett(new RsDollyBestillingRequest(), dollyPerson,
-                                new BestillingProgress(), false))
+                                new BestillingProgress()))
                 .expectNextCount(0)
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
     void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
         var progress = new BestillingProgress();
-        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).isOpprett(true).build();
 
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
                 .institusjonsoppholdEnvironments(List.of("q2"))
@@ -105,7 +100,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -114,7 +109,6 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Disabled
     @Test
     void gjenopprettNaarInstdataFinnesFraFoer_SkalGiOk() {
 
@@ -142,7 +136,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -167,7 +161,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton("q2"));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress))
                 .assertNext(_ -> {
                     verify(instdataConsumer, never()).getInstdata(anyString(), anyString());
                     verify(transactionHelperService, times(2))
@@ -177,11 +171,12 @@ class InstdataClientTest {
                 .verifyComplete();
     }
 
-    @Test
-    void shouldLagreOppholdIdFraResponsPaaBestilling() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldLagreOppholdIdFraResponsPaaBestilling(boolean isLeggTil) {
 
         var progress = new BestillingProgress();
-        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).isOpprett(!isLeggTil).isLeggTil(isLeggTil).build();
 
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(MiljoerResponse.builder()
                 .institusjonsoppholdEnvironments(List.of(ENVIRONMENT))
@@ -203,7 +198,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton(ENVIRONMENT));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress))
                 .expectNextCount(1)
                 .verifyComplete();
 
@@ -246,7 +241,7 @@ class InstdataClientTest {
         request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singleton(ENVIRONMENT));
 
-        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false))
+        StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress))
                 .expectNextCount(1)
                 .verifyComplete();
 

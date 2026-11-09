@@ -8,14 +8,12 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.consumer.dokumentarkiv.SafConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DokumentService;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.dolly.service.TransaksjonMappingService;
@@ -58,15 +56,11 @@ class DokarkivClientTest {
     @Mock
     private DokumentService dokumentService;
     @Mock
-    private ErrorStatusDecoder errorStatusDecoder;
-    @Mock
     private MapperFacade mapperFacade;
     @Mock
     private JsonMapper jsonMapper;
     @Mock
     private PersonServiceConsumer personServiceConsumer;
-    @Mock
-    private SafConsumer safConsumer;
     @Mock
     private TransactionHelperService transactionHelperService;
     @Mock
@@ -75,7 +69,7 @@ class DokarkivClientTest {
     private DokarkivClient dokarkivClient;
 
     private final RsDollyUtvidetBestilling bestilling = new RsDollyUtvidetBestilling();
-    private final DollyPerson person = DollyPerson.builder().ident("syntetisk-person").build();
+    private final DollyPerson person = DollyPerson.builder().isOpprett(true).ident("syntetisk-person").build();
     private final BestillingProgress progress = new BestillingProgress();
     private final DokarkivRequest request = new DokarkivRequest();
 
@@ -124,7 +118,7 @@ class DokarkivClientTest {
         when(jsonMapper.writeValueAsString(any())).thenReturn("[]");
         when(transaksjonMappingService.save(any())).thenReturn(Mono.empty());
 
-        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
+        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress))
                 .thenAwait(Duration.ofSeconds(77))
                 .assertNext(result -> assertThat(result.getDokarkivStatus()).isEqualTo("q2:OK"))
                 .verifyComplete();
@@ -166,7 +160,7 @@ class DokarkivClientTest {
             String chunk = invocation.getArgument(1);
             var receivedLength = receivedLengths.getOrDefault(uploadId, 0);
             assertThat(activeUploads.add(uploadId)).isTrue();
-            assertThat(chunk.length()).isEqualTo(Math.min(500_000, encodedLength - receivedLength));
+            assertThat(chunk).hasSize(Math.min(500_000, encodedLength - receivedLength));
             assertThat(content.regionMatches(receivedLength, chunk, 0, chunk.length())).isTrue();
             receivedLengths.put(uploadId, receivedLength + chunk.length());
             chunkCounts.merge(uploadId, 1, Integer::sum);
@@ -194,7 +188,7 @@ class DokarkivClientTest {
         when(jsonMapper.writeValueAsString(any())).thenReturn("[]");
         when(transaksjonMappingService.save(any())).thenReturn(Mono.empty());
 
-        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
+        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress))
                 .thenAwait(Duration.ofSeconds(1))
                 .assertNext(result -> assertThat(result.getDokarkivStatus()).contains("q1:OK", "q2:OK"))
                 .verifyComplete();
@@ -216,7 +210,7 @@ class DokarkivClientTest {
         when(dokarkivConsumer.initProxyUpload()).thenReturn(Mono.just("upload-reference"));
         when(dokarkivConsumer.appendProxyChunk(eq("upload-reference"), anyString())).thenReturn(Mono.never());
 
-        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
+        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress))
                 .thenAwait(Duration.ofMinutes(2))
                 .assertNext(result -> assertThat(result.getDokarkivStatus())
                         .isEqualTo("q2:Mottaker svarer ikke; eller har for lang svartid."))
@@ -241,7 +235,7 @@ class DokarkivClientTest {
         logger.setLevel(Level.ERROR);
 
         try {
-            StepVerifier.create(dokarkivClient.gjenopprett(bestilling, person, progress, true))
+            StepVerifier.create(dokarkivClient.gjenopprett(bestilling, person, progress))
                     .expectNext(progress)
                     .verifyComplete();
 
@@ -263,7 +257,7 @@ class DokarkivClientTest {
         when(mapperFacade.map(any(), eq(DokarkivRequest.class), any())).thenReturn(request);
         when(dokarkivConsumer.postDokarkiv("q2", request)).thenReturn(Mono.never());
 
-        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress, true))
+        StepVerifier.withVirtualTime(() -> dokarkivClient.gjenopprett(bestilling, person, progress))
                 .thenAwait(Duration.ofSeconds(119))
                 .expectNoEvent(Duration.ofMillis(999))
                 .thenAwait(Duration.ofMillis(1))

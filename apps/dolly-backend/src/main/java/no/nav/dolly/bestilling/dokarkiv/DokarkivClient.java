@@ -67,7 +67,7 @@ public class DokarkivClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (bestilling.getDokarkiv().isEmpty()) {
             return Mono.empty();
@@ -79,7 +79,7 @@ public class DokarkivClient implements ClientRegister {
                 .then(getPersonData(dollyPerson.getIdent())
                         .flatMap(person -> getFilteredMiljoer(bestilling.getEnvironments())
                                 .flatMapMany(miljoer -> Flux.fromIterable(miljoer)
-                                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), dollyPerson.isOpprettEndre())
                                                 .flatMap(isOpprettDokument -> isTrue(isOpprettDokument)
                                                         ?
                                                         Flux.fromIterable(bestilling.getDokarkiv())

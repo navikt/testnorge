@@ -111,7 +111,7 @@ class AaregClientTest {
                 .build();
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                                .build(), bestillingProgress, false)
+                                .build(), bestillingProgress)
                 .subscribe(_ ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)));
     }
@@ -137,7 +137,7 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                                .build(), bestillingProgress, false))
+                                .build(), bestillingProgress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -171,7 +171,7 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                                .build(), bestillingProgress, false))
+                                .build(), bestillingProgress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
@@ -205,7 +205,7 @@ class AaregClientTest {
 
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                        .build(), bestillingProgress, false))
+                        .build(), bestillingProgress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());

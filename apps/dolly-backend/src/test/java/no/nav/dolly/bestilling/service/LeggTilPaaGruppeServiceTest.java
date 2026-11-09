@@ -33,7 +33,6 @@ import java.util.function.BiConsumer;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
@@ -136,12 +135,12 @@ class LeggTilPaaGruppeServiceTest {
         lenient().doAnswer(invocation -> Mono.just(invocation.getArgument(0)))
                 .when(service).sendOrdrePerson(any());
         lenient().doAnswer(invocation -> Mono.just(DollyPerson.builder()
-                        .ident(((BestillingProgress) invocation.getArgument(0)).getIdent()).build()))
+                        .ident(((BestillingProgress) invocation.getArgument(0)).getIdent()).isLeggTil(true).build()))
                 .when(service).opprettDollyPersonLeggTil(any(), any());
         lenient().doAnswer(invocation -> Mono.just(invocation.getArgument(2)))
-                .when(service).gjenopprettKlienterStart(any(), any(), any(), anyBoolean());
+                .when(service).gjenopprettKlienterStart(any(), any(), any());
         lenient().doAnswer(invocation -> Mono.just(invocation.getArgument(2)))
-                .when(service).gjenopprettKlienterFerdigstill(any(), any(), any(), anyBoolean());
+                .when(service).gjenopprettKlienterFerdigstill(any(), any(), any());
         lenient().when(personServiceClient.syncPerson(any(), any()))
                 .thenAnswer(invocation -> Mono.just(invocation.getArgument(1)));
         lenient().when(transactionHelperService.persister(any(BestillingProgress.class),
@@ -160,7 +159,7 @@ class LeggTilPaaGruppeServiceTest {
         service.executeAsync(bestilling);
 
         verify(personServiceClient, times(2)).syncPerson(any(), any());
-        verify(service, times(2)).gjenopprettKlienterFerdigstill(any(), any(), any(), anyBoolean());
+        verify(service, times(2)).gjenopprettKlienterFerdigstill(any(), any(), any());
         verify(service).saveBestillingToOpenSearchServer(any(), eq(bestilling));
         verify(service).doFerdig(bestilling);
     }
@@ -174,13 +173,13 @@ class LeggTilPaaGruppeServiceTest {
             BestillingProgress progress = invocation.getArgument(0);
             return IDENT_1.equals(progress.getIdent()) ?
                     Mono.error(new IllegalStateException("Feil i første ident")) :
-                    Mono.just(DollyPerson.builder().ident(progress.getIdent()).build());
+                    Mono.just(DollyPerson.builder().ident(progress.getIdent()).isLeggTil(true).build());
         }).when(service).opprettDollyPersonLeggTil(any(), any());
 
         service.executeAsync(bestilling);
 
         verify(personServiceClient, times(1)).syncPerson(any(), any());
-        verify(service, times(1)).gjenopprettKlienterFerdigstill(any(), any(), any(), anyBoolean());
+        verify(service, times(1)).gjenopprettKlienterFerdigstill(any(), any(), any());
         verify(service).doFerdig(bestilling);
     }
 
@@ -332,7 +331,7 @@ class LeggTilPaaGruppeServiceTest {
 
         service.executeAsync(bestilling);
 
-        verify(service, never()).gjenopprettKlienterFerdigstill(any(), any(), any(), anyBoolean());
+        verify(service, never()).gjenopprettKlienterFerdigstill(any(), any(), any());
         verify(transactionHelperService).persister(any(BestillingProgress.class), any(BiConsumer.class),
                 eq("Feil: Oppretting ikke fullført; annen feil"));
         verify(service).doFerdig(bestilling);

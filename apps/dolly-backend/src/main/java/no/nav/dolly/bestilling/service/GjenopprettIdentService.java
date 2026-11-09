@@ -113,7 +113,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 .filter(BestillingProgress::isIdentGyldig)
                 .flatMap(this::opprettDollyPersonForGjenopprett)
                 .flatMap(dollyPerson ->
-                        gjenopprettKlienterStart(dollyPerson, new RsDollyBestillingRequest(), bestProgress.get(), OPPRETT_ENDRE_FALSE)
+                        gjenopprettKlienterStart(dollyPerson, new RsDollyBestillingRequest(), bestProgress.get())
                                 .zipWith(Mono.just(dollyPerson)))
                 .flatMap(tuple -> personServiceClient.syncPerson(tuple.getT2(), tuple.getT1())
                         .zipWith(Mono.just(tuple.getT2())))
@@ -130,7 +130,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                 tuple.getT1().getId(), tuple.getT2().getT2().getIdent()))
                 .concatMap(bestillingRequest ->
                         gjenopprettKlienterFerdigstill(bestillingRequest.getT2().getT2(), bestillingRequest.getT1(),
-                                bestillingRequest.getT2().getT1(), OPPRETT_ENDRE_FALSE))
+                                bestillingRequest.getT2().getT1()))
                 .collectList()
                 .map(_ -> bestProgress.get())
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));

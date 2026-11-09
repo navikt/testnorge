@@ -64,9 +64,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class DollyBestillingService {
 
-    protected static final boolean OPPRETT_ENDRE_FALSE = false;
-    protected static final boolean OPPRETT_ENDRE_TRUE = true;
-
     protected final BestillingProgressRepository bestillingProgressRepository;
     protected final BestillingRepository bestillingRepository;
     protected final BestillingService bestillingService;
@@ -146,12 +143,12 @@ public class DollyBestillingService {
 
     private Mono<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
                                                          GjenopprettSteg steg,
-                                                         BestillingProgress progress, boolean isOpprettEndre) {
+                                                         BestillingProgress progress) {
 
         return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress))
                 .onErrorResume(throwable -> {
                     var description = WebClientError.describe(throwable);
                     var error = errorStatusDecoder.getErrorText(description.getStatus(), description.getMessage());
@@ -210,17 +207,17 @@ public class DollyBestillingService {
     }
 
     protected Mono<BestillingProgress> gjenopprettKlienterStart(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                                                BestillingProgress progress, boolean isOpprettEndre) {
+                                                                BestillingProgress progress) {
 
-        return gjenopprettKlienter(dollyPerson, bestKriterier, fase1Klienter(), progress, isOpprettEndre)
+        return gjenopprettKlienter(dollyPerson, bestKriterier, fase1Klienter(), progress)
                 .then(Mono.just(progress));
     }
 
     protected Mono<BestillingProgress> gjenopprettKlienterFerdigstill(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
-                                                                      BestillingProgress progress, boolean isOpprettEndre) {
+                                                                      BestillingProgress progress) {
 
         return Flux.fromIterable(remainingFaser())
-                .concatMap(steg -> gjenopprettKlienter(dollyPerson, bestKriterier, steg, progress, isOpprettEndre))
+                .concatMap(steg -> gjenopprettKlienter(dollyPerson, bestKriterier, steg, progress))
                 .then(Mono.just(progress));
     }
 

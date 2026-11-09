@@ -140,13 +140,13 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                 .flatMap(_ -> opprettDollyPersonNyPerson(progress.get(), bestKriterier))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(dollyPerson ->
-                        gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get(), OPPRETT_ENDRE_TRUE)
+                        gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get())
                                 .thenReturn(dollyPerson))
                 .flatMap(dollyPerson -> personServiceClient.syncPerson(dollyPerson, progress.get())
                         .zipWith(Mono.just(dollyPerson)))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
-                        tuple.getT1(), OPPRETT_ENDRE_TRUE))
+                        tuple.getT1()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

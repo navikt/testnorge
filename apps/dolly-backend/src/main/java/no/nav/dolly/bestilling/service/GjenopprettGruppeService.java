@@ -128,7 +128,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 .flatMap(this::opprettDollyPersonForGjenopprett)
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(dollyPerson ->
-                        gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get(), OPPRETT_ENDRE_FALSE)
+                        gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get())
                                 .thenReturn(dollyPerson))
                 .flatMap(dollyPerson -> personServiceClient.syncPerson(dollyPerson, progress.get())
                         .zipWith(Mono.just(dollyPerson)))
@@ -145,7 +145,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         tuple.getT1().getId(), ident))
                 .concatMap(tuple ->
                         gjenopprettKlienterFerdigstill(tuple.getT2(), tuple.getT1(),
-                                progress.get(), OPPRETT_ENDRE_FALSE))
+                                progress.get()))
                 .then(Mono.just(progress.get()))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
