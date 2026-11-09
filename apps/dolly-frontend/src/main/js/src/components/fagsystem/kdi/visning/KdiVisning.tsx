@@ -129,7 +129,11 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 				<ErrorBoundary>
 					<DollyFieldArray
 						data={hendelser}
-						getHeader={(hendelse: KdiHendelse) => codeToNorskLabel(hendelse.type)}
+						getHeader={(hendelse: KdiHendelse) =>
+							`${codeToNorskLabel(hendelse.type)} (${hendelse.meldinger.length} ${
+								hendelse.meldinger.length === 1 ? 'melding' : 'meldinger'
+							})`
+						}
 						expandable={antallMeldinger > 5}
 					>
 						{(hendelse: KdiHendelse) => (
