@@ -14,11 +14,14 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.ClientAuthorizationException;
+import org.springframework.security.oauth2.client.ClientAuthorizationRequiredException;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.web.server.ServerWebExchange;
@@ -204,5 +207,68 @@ class SessionTokenResolverTest {
                 )
                 .expectNextCount(1)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnSessionExpiredWhenRefreshIsRejected() {
+        when(authorizedClientManager.authorize(any(OAuth2AuthorizeRequest.class)))
+                .thenReturn(Mono.error(new ClientAuthorizationException(new OAuth2Error("invalid_grant"), "idporten")));
+
+        StepVerifier.create(
+                        sessionTokenResolver.getToken(exchange)
+                                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(
+                                        Mono.just(new SecurityContextImpl(buildOAuth2AuthenticationToken()))))
+                )
+                .expectError(SessionExpiredException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldReturnSessionExpiredWhenClientMustBeAuthorizedAgain() {
+        when(authorizedClientManager.authorize(any(OAuth2AuthorizeRequest.class)))
+                .thenReturn(Mono.error(new ClientAuthorizationRequiredException("idporten")));
+
+        StepVerifier.create(
+                        sessionTokenResolver.getToken(exchange)
+                                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(
+                                        Mono.just(new SecurityContextImpl(buildOAuth2AuthenticationToken()))))
+                )
+                .expectError(SessionExpiredException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldKeepSessionWhenTokenEndpointFailsTemporarily() {
+        when(authorizedClientManager.authorize(any(OAuth2AuthorizeRequest.class)))
+                .thenReturn(Mono.error(new ClientAuthorizationException(new OAuth2Error("server_error"), "idporten")));
+
+        StepVerifier.create(
+                        sessionTokenResolver.getToken(exchange)
+                                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(
+                                        Mono.just(new SecurityContextImpl(buildOAuth2AuthenticationToken()))))
+                )
+                .expectErrorMatches(error -> error instanceof ClientAuthorizationException
+                        && !(error instanceof SessionExpiredException))
+                .verify();
+    }
+
+    @Test
+    void shouldReturnSessionExpiredWhenAccessTokenIsExpired() {
+        var expiredAccessToken = new OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                "expired-token",
+                Instant.now().minusSeconds(300),
+                Instant.now().minusSeconds(180)
+        );
+        when(authorizedClientManager.authorize(any(OAuth2AuthorizeRequest.class)))
+                .thenReturn(Mono.just(new OAuth2AuthorizedClient(buildClientRegistration(), "user", expiredAccessToken)));
+
+        StepVerifier.create(
+                        sessionTokenResolver.getToken(exchange)
+                                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(
+                                        Mono.just(new SecurityContextImpl(buildOAuth2AuthenticationToken()))))
+                )
+                .expectError(SessionExpiredException.class)
+                .verify();
     }
 }

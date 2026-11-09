@@ -37,7 +37,7 @@ import { executeMutateAndValidate, validateAndNavigate } from './utils/navigatio
 import StepErrorBoundary from './StepErrorBoundary'
 import {
 	clearBestillingFormState,
-	loadBestillingFormState,
+	loadBestillingFormStateForCurrentPage,
 	saveBestillingFormState,
 } from '@/utils/bestillingFormPersistence'
 import {
@@ -89,7 +89,7 @@ export const StegVelger = ({
 	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const [savedState] = useState(() => loadBestillingFormState())
+	const [savedState] = useState(() => loadBestillingFormStateForCurrentPage())
 	const [step, setStep] = useState(savedState?.step ?? 0)
 
 	const effectiveInitialValues = savedState
@@ -109,8 +109,8 @@ export const StegVelger = ({
 	const matchMutate = useMatchMutate()
 
 	useEffect(() => {
+		clearBestillingFormState()
 		if (savedState) {
-			clearBestillingFormState()
 			window.dispatchEvent(new CustomEvent(BESTILLING_RESTORED_EVENT))
 		}
 	}, [])

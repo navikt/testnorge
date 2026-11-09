@@ -4,6 +4,13 @@ import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import {
+	BACKGROUND_REQUEST_HEADERS,
+	handleSessionExpired,
+	isBackgroundRequest,
+	isSessionExpired,
+	SESSION_HEADER,
+} from '@/components/utlogging/sessionExpired'
 import { Logger } from '@/logger/Logger'
 
 const originalFetch = globalThis.fetch
@@ -16,6 +23,11 @@ axios.defaults.validateStatus = (status) => {
 const fetchRetry = fetch_retry(originalFetch)
 
 const logoutOnForbidden = ['dolly-backend']
+
+const awaitSessionRedirect = (): Promise<never> => {
+	handleSessionExpired()
+	return new Promise<never>(() => {})
+}
 
 export const multiFetcherAll = (urlListe, headers = null) =>
 	Promise.all(
@@ -45,6 +57,9 @@ export const postFetcher = (url, body, headers = { 'Content-Type': 'application/
 			return res.data
 		})
 		.catch((reason) => {
+			if (isSessionExpired(reason.response?.status, reason.response?.headers?.[SESSION_HEADER])) {
+				return awaitSessionRedirect()
+			}
 			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
 				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
 			}
@@ -162,6 +177,12 @@ export const fetcher = (url, headers?, timeout = 15000) =>
 			return res.data
 		})
 		.catch((reason) => {
+			if (isSessionExpired(reason.response?.status, reason.response?.headers?.[SESSION_HEADER])) {
+				if (isBackgroundRequest(headers)) {
+					throw new Error('Sesjonen er utløpt')
+				}
+				return awaitSessionRedirect()
+			}
 			if (reason.response?.status === 401 || reason.response?.status === 403) {
 				if (logoutOnForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
@@ -173,6 +194,8 @@ export const fetcher = (url, headers?, timeout = 15000) =>
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
+
+export const backgroundFetcher = (url: string) => fetcher(url, BACKGROUND_REQUEST_HEADERS)
 
 export const imageFetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) =>
@@ -204,6 +227,9 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
+			if (isSessionExpired(response?.status, response?.headers.get(SESSION_HEADER))) {
+				return false
+			}
 			if (
 				config.retry !== false &&
 				!response?.ok &&
@@ -239,6 +265,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 	}).then((response: Response) => {
 		if (response.redirected) {
 			window.location.href = response.url
+		}
+		if (isSessionExpired(response.status, response.headers.get(SESSION_HEADER))) {
+			return awaitSessionRedirect()
 		}
 		if (!response.ok && response.status !== 400 && !runningE2ETest()) {
 			if (response?.status === 401 && logoutOnForbidden.some((value) => url.includes(value))) {

@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import useSWR, { mutate as globalMutate } from 'swr'
+import { BACKGROUND_REQUEST_HEADERS } from '@/components/utlogging/sessionExpired'
 
 export interface InfoStripeType {
 	id: number
@@ -29,7 +30,7 @@ export const useDollyInfostriper = (inkluderFremtidige = false) => {
 	const { data, isLoading, error, mutate } = useSWR<InfoStripeType[], Error>(
 		listUrl,
 		async (url: string) => {
-			const resp = await fetch(url)
+			const resp = await fetch(url, { headers: BACKGROUND_REQUEST_HEADERS })
 			if (!resp.ok) throw new Error(`Failed ${resp.status}`)
 			return resp.json()
 		},

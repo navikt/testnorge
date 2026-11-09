@@ -16,6 +16,7 @@ sonarqube {
 }
 
 dependencies {
+    implementation "com.github.ben-manes.caffeine:caffeine"
     implementation "io.grpc:grpc-netty"
     implementation "io.grpc:grpc-netty-shaded"
     implementation 'org.apache.commons:commons-lang3'

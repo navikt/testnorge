@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '@/api'
+import { fetcher, backgroundFetcher } from '@/api'
 import { Bestilling } from '@/types/bestilling'
 
 export type { Bestilling }
@@ -74,10 +74,14 @@ export const useBestillingById = (
 	const shouldFetch = !!bestillingId && !erOrganisasjon
 	const key: string | null = shouldFetch ? getBestillingByIdUrl(bestillingId) : null
 
-	const { data, isLoading, error, mutate } = useSWR<Bestilling, Error>(key, fetcher, {
-		refreshInterval: autoRefresh ? refreshInterval : 0,
-		dedupingInterval: autoRefresh ? refreshInterval : 2000,
-	})
+	const { data, isLoading, error, mutate } = useSWR<Bestilling, Error>(
+		key,
+		autoRefresh ? backgroundFetcher : fetcher,
+		{
+			refreshInterval: autoRefresh ? refreshInterval : 0,
+			dedupingInterval: autoRefresh ? refreshInterval : 2000,
+		},
+	)
 
 	return {
 		bestilling: data,

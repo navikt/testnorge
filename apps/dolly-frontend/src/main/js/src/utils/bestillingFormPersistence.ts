@@ -1,12 +1,18 @@
+export const BESTILLING_SAVE_EVENT = 'dolly-save-and-reload'
+
 const STORAGE_KEY = 'dolly-bestilling-saved-form'
 const MAX_AGE_MS = 60 * 60 * 1000
 
 const EXCLUDED_KEYS = ['dokarkiv', 'histark']
 
+const currentPath = () => window.location.pathname + window.location.search
+
 interface SavedFormState {
 	formValues: Record<string, any>
 	step: number
 	savedAt: number
+	path?: string
+	locationState?: unknown
 }
 
 export function saveBestillingFormState(formValues: Record<string, any>, step: number): void {
@@ -14,7 +20,13 @@ export function saveBestillingFormState(formValues: Record<string, any>, step: n
 	for (const key of EXCLUDED_KEYS) {
 		delete stripped[key]
 	}
-	const state: SavedFormState = { formValues: stripped, step, savedAt: Date.now() }
+	const state: SavedFormState = {
+		formValues: stripped,
+		step,
+		savedAt: Date.now(),
+		path: currentPath(),
+		locationState: window.history.state?.usr,
+	}
 	sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
@@ -32,6 +44,15 @@ export function loadBestillingFormState(): SavedFormState | null {
 		clearBestillingFormState()
 		return null
 	}
+}
+
+export function loadBestillingFormStateForCurrentPage(): SavedFormState | null {
+	const saved = loadBestillingFormState()
+	return saved?.path === currentPath() ? saved : null
+}
+
+export function requestBestillingSave(): void {
+	window.dispatchEvent(new CustomEvent(BESTILLING_SAVE_EVENT))
 }
 
 export function clearBestillingFormState(): void {
