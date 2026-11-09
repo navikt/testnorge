@@ -1,5 +1,5 @@
 import { getMeldingTittel, grupperKdiHendelser } from '@/components/fagsystem/kdi/utils'
-import { KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
+import type { KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 const melding = (
 	meldingId: string | null,

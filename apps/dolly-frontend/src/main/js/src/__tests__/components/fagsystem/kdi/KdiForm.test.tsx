@@ -1,8 +1,10 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { FieldValues, FormProvider, useForm, UseFormReturn } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
+import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { vi } from 'vitest'
-import { ReactNode, useEffect } from 'react'
+import { useEffect } from 'react'
+import type { ReactNode } from 'react'
 import { KdiForm, publiseringstidspunktTid } from '@/components/fagsystem/kdi/form/Form'
 
 vi.mock('@/components/bestillingsveileder/VisAttributt', () => ({
@@ -11,7 +13,8 @@ vi.mock('@/components/bestillingsveileder/VisAttributt', () => ({
 vi.mock('@/components/ui/panel/Panel', () => ({
 	default: ({ children }: { children: ReactNode }) => <>{children}</>,
 }))
-vi.mock('@/components/ui/form/formUtils', () => ({
+vi.mock('@/components/ui/form/formUtils', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@/components/ui/form/formUtils')>()),
 	erForsteEllerTest: () => true,
 	usePanelError: () => false,
 }))

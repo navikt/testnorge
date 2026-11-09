@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { KdiVisning } from '@/components/fagsystem/kdi/visning/KdiVisning'
 import { KdiBestilling } from '@/components/fagsystem/kdi/bestilling/KdiBestilling'
-import { KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
+import type { KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 vi.mock('@/utils/hooks/useInstitusjon', () => ({
 	useFengsel: () => ({ fengsler: { '874718602': 'Testfengsel' } }),
