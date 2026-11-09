@@ -129,16 +129,7 @@ import { Button } from '@navikt/ds-react'
 import { PlusCircleIcon } from '@navikt/aksel-icons'
 import { OpprettMal } from '@/pages/maler/OpprettMal'
 import { malTyper } from '@/pages/maler/MalModal'
-
-const getIdenttype = (ident: string) => {
-	if (parseInt(ident.charAt(0)) > 3) {
-		return 'DNR'
-	} else if (parseInt(ident.charAt(2)) % 4 >= 2) {
-		return 'NPID'
-	} else {
-		return 'FNR'
-	}
-}
+import { getIdenttypeFraIdent } from '@/utils/identtype'
 
 export const DEFAULT_RETRY_COUNT = 8
 
@@ -574,6 +565,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 		loadingArenaData ||
 		loadingApData ||
 		loadingSkattekort ||
+		loadingInstData ||
 		loadingKdiData ||
 		loadingKelvinAapBehandlingStatus ||
 		loadingOppfoelgingsvedtak14aData ||
@@ -629,6 +621,9 @@ const PersonVisning = (props: PersonVisningProps) => {
 								if (skattekortData) {
 									personData.skattekort = skattekortData.flatMap((m: any) => m.data || [])
 								}
+								if (instData) {
+									personData.instdata = instData
+								}
 								if (kdiData) {
 									personData.instdataKdi = kdiData
 								}
@@ -646,7 +641,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 									personData,
 									bestillingListe,
 									ident.master,
-									getIdenttype(ident.ident),
+									getIdenttypeFraIdent(ident.ident),
 									gruppeId,
 									navigate,
 								)

@@ -30,6 +30,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
 
     testImplementation "io.projectreactor:reactor-test"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
     testImplementation "org.springframework.security:spring-security-test"
 }

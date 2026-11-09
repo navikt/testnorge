@@ -1,5 +1,9 @@
+pluginManagement {
+    includeBuild "../../plugins/settings"
+}
+
 plugins {
-    id "com.gradle.develocity" version "4.4.2"
+    id "dolly-settings"
 }
 
 rootProject.name = "brreg-stub"
@@ -9,10 +13,3 @@ includeBuild "../../plugins/java"
 includeBuild "../../libs/servlet-core"
 includeBuild "../../libs/testing"
 includeBuild "../../libs/vault"
-
-develocity {
-    buildScan {
-        termsOfUseUrl = "https://gradle.com/terms-of-service"
-        termsOfUseAgree = "yes"
-    }
-}

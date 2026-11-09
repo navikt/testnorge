@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { BACKGROUND_REQUEST_HEADERS } from '@/components/utlogging/sessionExpired'
 
 const POLL_INTERVAL_MS = 2 * 60_000
 
@@ -23,7 +24,10 @@ export const useVersionCheck = (overrideCommitHash?: string) => {
 		const checkVersion = () => {
 			if (detectedRef.current) return
 
-			fetch(`/version.json?_t=${Date.now()}`, { cache: 'no-store' })
+			fetch(`/version.json?_t=${Date.now()}`, {
+				cache: 'no-store',
+				headers: BACKGROUND_REQUEST_HEADERS,
+			})
 				.then((response) => {
 					if (!response.ok) return
 					return response.json()

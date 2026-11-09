@@ -9,6 +9,7 @@ import { Navigate } from 'react-router'
 import { Logger } from '@/logger/Logger'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 import { LogoutErrorStates } from '@/components/utlogging/logoutState'
+import { loadBestillingFormState } from '@/utils/bestillingFormPersistence'
 
 export default () => {
 	const [loading, setLoading] = useState(true)
@@ -93,7 +94,8 @@ export default () => {
 	}
 
 	if (sessionUpdated) {
-		return <Navigate to={'/'} />
+		const savedBestilling = loadBestillingFormState()
+		return <Navigate to={savedBestilling?.path ?? '/'} state={savedBestilling?.locationState} />
 	}
 
 	return (

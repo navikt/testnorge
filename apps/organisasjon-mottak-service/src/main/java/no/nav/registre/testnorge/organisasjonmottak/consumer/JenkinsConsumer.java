@@ -55,7 +55,7 @@ public class JenkinsConsumer {
                 .ofNullable(env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase()))
                 .orElseThrow(() -> new IllegalArgumentException("Finner ikke url for miljo: " + miljo));
 
-        var jenkinsCrumb = new GetCrumbCommand(webClient, accessTokenValue).call();
+        var jenkinsCrumb = new GetCrumbCommand(webClient, accessTokenValue).call().block();
         var id = new StartBEREG007Command(webClient, accessTokenValue, server, miljo, jenkinsCrumb, flatFile).call();
 
         uuids.forEach(uuid -> {

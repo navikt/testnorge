@@ -15,8 +15,9 @@ public class DollyLibsPublishPlugin implements Plugin<Project> {
         plugins.apply("maven-publish");
         plugins.apply("signing");
 
-        if (project.hasProperty("releaseVersion")) {
-            project.setVersion(project.getProperties().get("releaseVersion"));
+        var releaseVersion = project.getProviders().gradleProperty("releaseVersion");
+        if (releaseVersion.isPresent()) {
+            project.setVersion(releaseVersion.get());
         }
 
         var publishing = project.getExtensions().getByType(PublishingExtension.class);

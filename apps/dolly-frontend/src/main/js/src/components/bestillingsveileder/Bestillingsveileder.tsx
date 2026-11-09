@@ -35,6 +35,10 @@ export const Bestillingsveileder = () => {
 		...effectiveState,
 		gruppeId: gruppeId ? parseInt(gruppeId, 10) : (effectiveState?.gruppeId ?? null),
 	})
+	useEffect(() => {
+		window.history.replaceState({ ...window.history.state, usr: baseConfig }, '')
+	}, [baseConfig])
+
 	const options = useMemo(
 		() => deriveBestillingsveilederState(baseConfig, dollyEnvironments),
 		[baseConfig, dollyEnvironments],

@@ -16,7 +16,7 @@ sonarqube {
 }
 
 dependencies {
-    implementation "io.grpc:grpc-netty:$versions.grpc"
+    implementation "io.grpc:grpc-netty"
     implementation "no.nav.testnav.libs:reactive-core"
     implementation "no.nav.testnav.libs:reactive-frontend"
     implementation "no.nav.testnav.libs:reactive-security"
@@ -27,5 +27,5 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.cloud:spring-cloud-starter-gateway-server-webflux"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }

@@ -8,6 +8,7 @@ const mockFetcher = vi.fn()
 
 vi.mock('@/api', () => ({
 	fetcher: (...args: any[]) => mockFetcher(...args),
+	backgroundFetcher: (...args: any[]) => mockFetcher(...args),
 	multiFetcherAareg: vi.fn(),
 }))
 

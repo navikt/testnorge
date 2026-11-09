@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild "plugins/settings"
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -9,17 +10,10 @@ pluginManagement {
 }
 
 plugins {
-    id "com.gradle.develocity" version "4.4.2"
+    id "dolly-settings"
 }
 
 rootProject.name = "testnav"
-
-develocity {
-    buildScan {
-        termsOfUseUrl = "https://gradle.com/terms-of-service"
-        termsOfUseAgree = "yes"
-    }
-}
 
 def includeAllBuildsFrom(String subdir) {
     file(subdir).eachDir {

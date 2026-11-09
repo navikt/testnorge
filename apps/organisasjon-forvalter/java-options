@@ -1,0 +1,1 @@
+-Dorg.apache.avro.SERIALIZABLE_PACKAGES=no.nav.testnav.libs.avro.organisasjon.v1

@@ -27,7 +27,7 @@ jobs:
           java-version: 25
           distribution: 'temurin'
       - name: "Gradle"
-        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
         with:
           cache-read-only: false
       - name: "Auth"
@@ -39,7 +39,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-        run: ./gradlew assemble --scan
+        run: $GITHUB_WORKSPACE/gradlew --build-cache assemble --scan
       - name: "Start docker containers"
         run: |
           JWK=$(cat ./mocks/jwk.json) docker compose up --build --detach
@@ -49,12 +49,12 @@ jobs:
           echo Wait on service...
           bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' ${{ inputs.healthcheck }})" != "200" ]]; do echo ...; sleep 5; done; echo Service is up;'
       - name: "Run integration tests"
-        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
         with:
           cache-read-only: false
       - name: "Build"
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew iTest --scan
+        run: $GITHUB_WORKSPACE/gradlew --build-cache iTest --scan
       - name: "Stop docker containers"
         run: |
           docker compose down --remove-orphans --volumes

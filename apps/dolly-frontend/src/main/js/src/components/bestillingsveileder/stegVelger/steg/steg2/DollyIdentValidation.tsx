@@ -39,7 +39,11 @@ export const DollyIdentValidation = Yup.object({
 			.transform((v, o) => (o === '' ? null : v))
 			.positive('Må være et positivt tall')
 			.min(1, 'Må minst opprette 1 person')
-			.max(50, 'Kan kun bestille max 50 identer om gangen.')
+			.when('$is', ([is], schema) =>
+				is?.leggTilPaaGruppe
+					? schema
+					: schema.max(50, 'Kan kun bestille max 50 identer om gangen.'),
+			)
 			.required('Oppgi antall personer'),
 	),
 	...pdlfValidation,

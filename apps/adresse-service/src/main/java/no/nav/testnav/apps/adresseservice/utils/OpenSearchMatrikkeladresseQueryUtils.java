@@ -43,7 +43,7 @@ public class OpenSearchMatrikkeladresseQueryUtils {
 
     public static void addGaardsnummerQuery(BoolQuery.Builder queryBuilder, MatrikkeladresseRequest request) {
 
-        if (isNotBlank(request.getGaardsnummer())) {
+        if (nonNull(request.getGaardsnummer())) {
 
             queryBuilder.must(q -> q.match(matchQuery("matrikkeladresse.matrikkelenhet.matrikkelnummer.gardsnummer", request.getGaardsnummer())));
         }
@@ -51,7 +51,7 @@ public class OpenSearchMatrikkeladresseQueryUtils {
 
     public static void addBruksnummerQuery(BoolQuery.Builder queryBuilder, MatrikkeladresseRequest request) {
 
-        if (isNotBlank(request.getBrukesnummer())) {
+        if (nonNull(request.getBrukesnummer())) {
 
             queryBuilder.must(q -> q.match(matchQuery("matrikkeladresse.matrikkelenhet.matrikkelnummer.bruksnummer", request.getBrukesnummer())));
         }

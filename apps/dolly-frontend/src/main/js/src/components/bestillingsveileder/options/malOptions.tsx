@@ -270,7 +270,9 @@ const getUpdatedSkattekortData = (skattekortData: any) => {
 }
 
 const getUpdatedInstData = (instData: any) =>
-	instData.map((data: any) => updateData(data, initialValues.instdata))
+	instData.map((data: any) =>
+		updateData(_.omit(data, ['oppholdId', 'miljo']), initialValues.instdata),
+	)
 
 const getUpdatedPdlfData = (pdlfData: any) => {
 	const newPdlfData = Object.assign({}, pdlfData)
@@ -422,10 +424,11 @@ const getUpdatedPdldata = (pdldata: any) => {
 	}
 
 	if (person?.nyident) {
-		newPdldata.person.nyident = person.nyident.map((ident: NyIdent) => {
-			ident.syntetisk = true
-			return ident
-		})
+		newPdldata.person.nyident = person.nyident.map((nyIdent: NyIdent) => ({
+			...nyIdent,
+			syntetisk: nyIdent.syntetisk || undefined,
+			id2032: nyIdent.id2032 || undefined,
+		}))
 	}
 
 	return newPdldata

@@ -1,5 +1,9 @@
+pluginManagement {
+    includeBuild "../../plugins/settings"
+}
+
 plugins {
-    id "com.gradle.develocity" version "4.4.2"
+    id "dolly-settings"
 }
 
 rootProject.name = "dolly-proxy"
@@ -11,10 +15,3 @@ includeBuild "../../libs/reactive-proxy"
 includeBuild "../../libs/reactive-security"
 includeBuild "../../libs/security-core"
 includeBuild "../../libs/testing"
-
-develocity {
-    buildScan {
-        termsOfUseUrl = "https://gradle.com/terms-of-service"
-        termsOfUseAgree = "yes"
-    }
-}

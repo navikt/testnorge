@@ -45,7 +45,7 @@ repositories {
 
 dependencies {
     implementation "io.spring.gradle:dependency-management-plugin:1.1.7"
-    implementation "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.2.2.6593"
-    implementation "org.springframework.boot:spring-boot-gradle-plugin:4.0.5"
-    implementation "org.yaml:snakeyaml:2.2"
+    implementation "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.5.0.8588"
+    implementation "org.springframework.boot:spring-boot-gradle-plugin:4.1.2"
+    implementation "org.yaml:snakeyaml:2.7"
 }

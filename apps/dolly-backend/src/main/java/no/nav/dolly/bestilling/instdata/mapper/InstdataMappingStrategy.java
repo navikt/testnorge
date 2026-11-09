@@ -1,58 +1,107 @@
 package no.nav.dolly.bestilling.instdata.mapper;
 
+import lombok.Getter;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
-import no.nav.dolly.domain.resultset.inst.InstdataKategori;
+import no.nav.dolly.bestilling.instdata.domain.InstdataDTO;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
-
-import static no.nav.dolly.domain.resultset.inst.TssEksternId.ADAMSTUEN_SYKEHJEM;
-import static no.nav.dolly.domain.resultset.inst.TssEksternId.HELGELANDSSYKEHUSET_HF;
-import static no.nav.dolly.domain.resultset.inst.TssEksternId.INDRE_OSTFOLD_FENGSEL;
-import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
 public class InstdataMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RsInstdata.class, Instdata.class)
+        factory.classMap(RsInstdata.class, InstdataDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsInstdata rsInstdata, Instdata instdata, MappingContext context) {
+                    public void mapAtoB(RsInstdata rsInstdata, InstdataDTO instdata, MappingContext context) {
 
                         instdata.setNorskident((String) context.getProperty("ident"));
                         instdata.setRegistrertAv("Dolly");
 
-                        instdata.setOppholdstype(nullcheckSetDefaultValue(rsInstdata.getKategori(),
-                                decideKategori(instdata.getInstitusjonstype())).name());
-                        instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(),
-                                decideTssEksternId(instdata.getInstitusjonstype())));
+                        instdata.setOppholdstype(mapKategori(rsInstdata.getInstitusjonstype()).name());
+                        instdata.setInstitusjonsnummer(mapInstitusjonsnummer(rsInstdata.getInstitusjonstype()));
+                        instdata.setTssEksternId(mapTssEksternId(rsInstdata.getInstitusjonstype()));
                     }
 
-                    private InstdataKategori decideKategori(InstdataInstitusjonstype type) {
+                    private static InstdataOppholdstype mapKategori(RsInstdata.InstdataInstitusjonstype type) {
 
                         return switch (type) {
-                            case AS -> InstdataKategori.A;
-                            case FO -> InstdataKategori.S;
-                            default -> InstdataKategori.R;
+                            case AS -> InstdataOppholdstype.A;
+                            case FO -> InstdataOppholdstype.S;
+                            default -> InstdataOppholdstype.R;
                         };
                     }
 
-                    private String decideTssEksternId(InstdataInstitusjonstype type) {
+                    private static String mapInstitusjonsnummer(RsInstdata.InstdataInstitusjonstype type) {
 
                         return switch (type) {
-                            case AS -> ADAMSTUEN_SYKEHJEM.getId();
-                            case FO -> INDRE_OSTFOLD_FENGSEL.getId();
-                            default -> HELGELANDSSYKEHUSET_HF.getId();
+                            case AS -> Institusjonsnummer.ADAMSTUEN_SYKEHJEM.getId();
+                            case FO -> Institusjonsnummer.INDRE_OSTFOLD_FENGSEL.getId();
+                            default -> Institusjonsnummer.HELGELANDSSYKEHUSET_HF.getId();
+                        };
+                    }
+
+                    private static String mapTssEksternId(RsInstdata.InstdataInstitusjonstype type) {
+
+                        return switch (type) {
+                            case AS -> TssEksternId.ADAMSTUEN_SYKEHJEM.getId();
+                            case FO -> TssEksternId.INDRE_OSTFOLD_FENGSEL.getId();
+                            default -> TssEksternId.HELGELANDSSYKEHUSET_HF.getId();
                         };
                     }
                 })
                 .byDefault()
                 .register();
+    }
+
+    @Getter
+    public enum InstdataOppholdstype {
+
+        A ("Alders- og sykehjem"),
+        D ("Dagpasient"),
+        F ("Ferieopphold"),
+        H ("Heldøgnpasient"),
+        P ("Fødsel"),
+        R ("Opptreningsinstitusjon"),
+        S ("Soningsfange"),
+        V ("Varetektsfange");
+
+        private final String beskrivelse;
+
+        InstdataOppholdstype(String beskrivelse) {
+            this.beskrivelse = beskrivelse;
+        }
+    }
+
+    @Getter
+    public enum Institusjonsnummer {
+
+        ADAMSTUEN_SYKEHJEM("1877666"),
+        INDRE_OSTFOLD_FENGSEL("9700072"),
+        HELGELANDSSYKEHUSET_HF("1879731");
+
+        Institusjonsnummer(String id) {
+            this.id = id;
+        }
+
+        private final String id;
+    }
+
+    @Getter
+    public enum TssEksternId {
+
+        ADAMSTUEN_SYKEHJEM("80000464106"),
+        INDRE_OSTFOLD_FENGSEL("80000465653"),
+        HELGELANDSSYKEHUSET_HF("80000464241");
+
+        TssEksternId(String id) {
+            this.id = id;
+        }
+
+        private final String id;
     }
 }

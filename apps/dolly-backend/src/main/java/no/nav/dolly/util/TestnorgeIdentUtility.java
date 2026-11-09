@@ -2,7 +2,7 @@ package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
 
-import static org.apache.poi.util.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class TestnorgeIdentUtility {

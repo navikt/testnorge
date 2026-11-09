@@ -1,7 +1,7 @@
 plugins {
     id "dolly-apps"
 
-    id "uk.co.boothen.gradle.wsimport" version "0.22"
+    id "uk.co.boothen.gradle.wsimport" version "0.25"
 }
 
 sonarqube {
@@ -19,7 +19,7 @@ wsimport {
 
 dependencies {
 
-    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:2.1.21'
+    runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect'
 
     implementation("io.dropwizard:dropwizard-jackson:4.0.13") {
         exclude group: "com.google.code.findbugs"
@@ -43,17 +43,12 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-vault-config-databases"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
-    implementation "org.apache.cxf:cxf-rt-bindings-soap"
-    implementation "org.apache.cxf:cxf-rt-ws-policy"
-    implementation "org.apache.cxf:cxf-core"
-    implementation "org.apache.cxf:cxf-rt-frontend-jaxws"
-    implementation "org.apache.cxf:cxf-rt-transports-http"
-    implementation "org.apache.cxf:cxf-rt-ws-security"
     implementation "jakarta.servlet:jakarta.servlet-api"
 
     implementation "org.postgresql:postgresql"
     implementation "com.zaxxer:HikariCP"
 
+    implementation "org.springframework.boot:spring-boot-flyway"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
 
@@ -61,20 +56,26 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    implementation "no.nav.common:auth:3.2026.04.08_08.37-229807cc181a"
-    implementation "no.nav.common:util:3.2026.04.08_08.37-229807cc181a"
-    implementation "no.nav.common:cxf:3.2026.04.08_08.37-229807cc181a"
-
     implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     implementation "jakarta.jws:jakarta.jws-api:3.0.0"
-    implementation "io.grpc:grpc-netty-shaded:1.76.0"
+    implementation "io.grpc:grpc-netty-shaded"
 
-    testImplementation "org.testcontainers:junit-jupiter"
-    testImplementation "org.testcontainers:postgresql"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter"
+    testImplementation "org.testcontainers:testcontainers-postgresql"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.boot:spring-boot-test-autoconfigure"
     testImplementation "org.springframework.boot:spring-boot-webmvc-test"
     testImplementation "org.springframework.boot:spring-boot-resttestclient"
+
+    testImplementation "org.apache.cxf:cxf-rt-bindings-soap"
+    testImplementation "org.apache.cxf:cxf-rt-ws-policy"
+    testImplementation "org.apache.cxf:cxf-core"
+    testImplementation "org.apache.cxf:cxf-rt-frontend-jaxws"
+    testImplementation "org.apache.cxf:cxf-rt-transports-http"
+    testImplementation "org.apache.cxf:cxf-rt-ws-security"
+    testImplementation "no.nav.common:auth:3.2026.04.08_08.37-229807cc181a"
+    testImplementation "no.nav.common:util:3.2026.04.08_08.37-229807cc181a"
+    testImplementation "no.nav.common:cxf:3.2026.04.08_08.37-229807cc181a"
 
 }

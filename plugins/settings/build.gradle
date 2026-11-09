@@ -1,0 +1,20 @@
+plugins {
+    id "java-gradle-plugin"
+}
+
+gradlePlugin {
+    plugins {
+        dollySettings {
+            id = "dolly-settings"
+            implementationClass = "no.nav.dolly.plugins.settings.DollySettingsPlugin"
+        }
+    }
+}
+
+repositories {
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation "com.gradle:develocity-gradle-plugin:4.6.1"
+}

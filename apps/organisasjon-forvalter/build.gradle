@@ -17,8 +17,8 @@ sonarqube {
     }
 }
 
-properties {
-    compileJava.options.encoding = "UTF-8"
+tasks.named("compileJava") {
+    options.encoding = "UTF-8"
 }
 
 dependencies {
@@ -40,6 +40,8 @@ dependencies {
 
     implementation "org.apache.avro:avro:$versions.apacheAvro"
 
+    implementation "org.springframework.boot:spring-boot-flyway"
+
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
     implementation "org.postgresql:postgresql"
@@ -49,7 +51,7 @@ dependencies {
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     testImplementation "com.h2database:h2"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }
 
 description = "organisasjon-forvalter"

@@ -14,14 +14,23 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.client.oidc.authentication.OidcIdTokenValidator;
+import org.springframework.security.oauth2.client.oidc.authentication.ReactiveOidcIdTokenDecoderFactory;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
 import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimValidator;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 
 @Slf4j
@@ -32,6 +41,8 @@ class IdportenSecurityConfig {
 
     private static final String LOGOUT = "/logout";
     private static final String LOGIN = "/login";
+    private static final String ACR_VALUES = "acr_values";
+    static final String REQUIRED_ACR = "idporten-loa-high";
     private final String jwk;
     private final String wellKnownUrl;
     private final String postLogoutRedirectUri;
@@ -49,8 +60,22 @@ class IdportenSecurityConfig {
     @Bean
     ServerOAuth2AuthorizationRequestResolver pkceResolver(ReactiveClientRegistrationRepository repo) {
         var resolver = new DefaultServerOAuth2AuthorizationRequestResolver(repo);
-        resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
+        resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce()
+                .andThen(builder -> builder.additionalParameters(parameters ->
+                        parameters.put(ACR_VALUES, REQUIRED_ACR))));
         return resolver;
+    }
+
+    static ReactiveOidcIdTokenDecoderFactory idTokenDecoderFactory() {
+        var decoderFactory = new ReactiveOidcIdTokenDecoderFactory();
+        decoderFactory.setJwtValidatorFactory(IdportenSecurityConfig::idTokenValidator);
+        return decoderFactory;
+    }
+
+    static OAuth2TokenValidator<Jwt> idTokenValidator(ClientRegistration clientRegistration) {
+        return JwtValidators.createDefaultWithValidators(List.of(
+                new OidcIdTokenValidator(clientRegistration),
+                new JwtClaimValidator<String>("acr", REQUIRED_ACR::equals)));
     }
 
     @SneakyThrows
@@ -62,6 +87,7 @@ class IdportenSecurityConfig {
     ) {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
         var authenticationManager = new AuthorizationCodeReactiveAuthenticationManger(webClient, JWK.parse(jwk));
+        authenticationManager.setJwtDecoderFactory(idTokenDecoderFactory());
         var logoutSuccessHandler = new LogoutSuccessHandler();
         logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(webClient, wellKnownUrl, postLogoutRedirectUri));
 

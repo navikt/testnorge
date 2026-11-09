@@ -8,7 +8,7 @@ import static java.lang.Integer.parseInt;
 import static no.nav.dolly.domain.resultset.IdentType.DNR;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static no.nav.dolly.domain.resultset.IdentType.NPID;
-import static org.apache.poi.util.StringUtil.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IdentTypeUtil {

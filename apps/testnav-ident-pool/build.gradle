@@ -9,8 +9,8 @@ sonarqube {
     }
 }
 
-properties {
-    compileJava.options.encoding = "UTF-8"
+tasks.named("compileJava") {
+    options.encoding = "UTF-8"
 }
 
 dependencies {
@@ -31,6 +31,7 @@ dependencies {
 
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
     implementation "org.aspectj:aspectjweaver:$versions.jweaver"
+    implementation "org.springframework.boot:spring-boot-flyway"
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-database-postgresql"
 
@@ -42,9 +43,10 @@ dependencies {
 
     testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation "org.springframework.boot:spring-boot-webtestclient"
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.testcontainers:r2dbc'
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter"
+    testImplementation "org.testcontainers:testcontainers-postgresql"
+    testImplementation "org.testcontainers:testcontainers-r2dbc"
 }
 
 description = "testnav-ident-pool"

@@ -32,7 +32,7 @@ dependencies {
     implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     implementation "tools.jackson.dataformat:jackson-dataformat-xml"
-    implementation "org.apache.commons:commons-text:1.11.0"
+    implementation "org.apache.commons:commons-text:1.15.0"
 
-    testImplementation "org.wiremock:wiremock-standalone:3.13.0"
+    testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }

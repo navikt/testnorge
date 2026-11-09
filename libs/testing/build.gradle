@@ -14,9 +14,10 @@ dependencies {
     implementation "tools.jackson.core:jackson-core"
     implementation "tools.jackson.core:jackson-databind"
     implementation "tools.jackson.dataformat:jackson-dataformat-xml"
+    implementation "com.fasterxml.jackson.core:jackson-databind"
     implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
     implementation "org.bouncycastle:bcpkix-jdk18on:$versions.bouncyCastle"
     implementation "org.springframework.boot:spring-boot-starter-test"
     implementation "org.springframework.boot:spring-boot-webtestclient"
-    implementation "org.wiremock:wiremock-standalone:3.13.0"
+    implementation "org.wiremock:wiremock-standalone:$versions.wiremock"
 }
