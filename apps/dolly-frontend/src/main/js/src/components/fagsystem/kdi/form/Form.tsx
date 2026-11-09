@@ -159,9 +159,6 @@ export const KdiForm = () => {
 		(antall, hendelse) => antall + hendelse.meldinger.length,
 		0,
 	)
-	const harEksisterendeMeldinger = hendelser.some((hendelse) =>
-		hendelse.meldinger.some((melding) => !!melding.meldingId),
-	)
 
 	const erAnnullert = (meldingId?: string) =>
 		!!meldingId &&
@@ -306,6 +303,7 @@ export const KdiForm = () => {
 		const sistePubliseringstidspunkt = formatDateTimeWithSeconds(
 			sisteEksisterendeMelding.publiseringstidspunkt,
 		)
+
 		const beskrivelse = [
 			`${meldinger.length} ${meldinger.length === 1 ? 'melding' : 'meldinger'}`,
 			`sist publisert ${sistePubliseringstidspunkt}`,
