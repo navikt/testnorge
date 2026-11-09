@@ -108,7 +108,10 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 	const annullering = data?.annullering ?? []
 
 	const hendelser = grupperKdiHendelser(data)
-
+	const antallMeldinger = hendelser.reduce(
+		(antall, hendelse) => antall + hendelse.meldinger.length,
+		0,
+	)
 	const manglerFagsystemdata = harKdiBestilling && (!data || hendelser.length < 1)
 
 	return (
@@ -127,6 +130,7 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 					<DollyFieldArray
 						data={hendelser}
 						getHeader={(hendelse: KdiHendelse) => codeToNorskLabel(hendelse.type)}
+						expandable={antallMeldinger > 5}
 					>
 						{(hendelse: KdiHendelse) => (
 							<DollyFieldArray data={hendelse.meldinger} nested>
