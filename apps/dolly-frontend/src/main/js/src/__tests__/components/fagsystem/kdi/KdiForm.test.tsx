@@ -13,11 +13,6 @@ vi.mock('@/components/bestillingsveileder/VisAttributt', () => ({
 vi.mock('@/components/ui/panel/Panel', () => ({
 	default: ({ children }: { children: ReactNode }) => <>{children}</>,
 }))
-vi.mock('@/components/ui/form/formUtils', async (importOriginal) => ({
-	...(await importOriginal<typeof import('@/components/ui/form/formUtils')>()),
-	erForsteEllerTest: () => true,
-	usePanelError: () => false,
-}))
 vi.mock('@/utils/hooks/useInstitusjon', () => ({
 	useFengsel: () => ({ fengsler: { '874718602': 'Testfengsel' } }),
 }))
