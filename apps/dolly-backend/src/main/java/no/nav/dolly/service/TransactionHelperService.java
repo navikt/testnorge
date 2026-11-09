@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.util.ClearCacheUtil;
@@ -140,20 +141,19 @@ public class TransactionHelperService {
     @Retryable
     public Mono<Bestilling> oppdaterBestillingFerdig(Long id, String feil) {
 
-        return transactionalOperator.execute(   _ ->
+        return transactionalOperator.execute(_ ->
 
-            bestillingRepository.findByIdAndLock(id)
-                    .flatMap(bestilling -> {
-                        bestilling.setSistOppdatert(now());
-                        bestilling.setFerdig(true);
-                        bestilling.setFeil(feil);
-                        return bestillingService.cleanBestilling(bestilling)
-                                .flatMap(bestillingRepository::save)
-                                .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
-                    })
-                    .switchIfEmpty(Mono.error(new RuntimeException("Bestilling med id " + id + " finnes ikke."))))
-                    .collectList()
-                    .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
-                    .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()));
+                        bestillingRepository.findByIdAndLock(id)
+                                .flatMap(bestilling -> {
+                                    bestilling.setSistOppdatert(now());
+                                    bestilling.setFerdig(true);
+                                    bestilling.setFeil(feil);
+                                    return bestillingService.cleanBestilling(bestilling)
+                                            .flatMap(bestillingRepository::save)
+                                            .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
+                                }))
+                .switchIfEmpty(Mono.error(new DollyFunctionalException("Bestilling med id " + id + " finnes ikke.")))
+                .next()
+                .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()));
     }
 }

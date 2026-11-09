@@ -22,16 +22,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @UtilityClass
 public class OriginatorUtility {
 
-    public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, Testident testident, MapperFacade mapperFacade) {
-
-        return prepOriginator(bestillingRequest, testident, null, mapperFacade);
-    }
-
-    public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, String ident, MapperFacade mapperFacade) {
-
-        return prepOriginator(bestillingRequest, null, ident, mapperFacade);
-    }
-
     public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, MapperFacade mapperFacade) {
 
         return prepOriginator(bestillingRequest, null, null, mapperFacade);

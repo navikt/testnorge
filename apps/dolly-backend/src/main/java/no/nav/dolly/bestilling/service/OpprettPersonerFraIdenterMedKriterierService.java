@@ -7,8 +7,10 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.opensearch.service.OpenSearchService;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -18,16 +20,18 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -42,18 +46,18 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             BestillingProgressRepository bestillingProgressRepository,
             BestillingRepository bestillingRepository,
             BestillingService bestillingService,
+            CacheManager cacheManager,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             IdentService identService,
+            JsonMapper jsonMapper,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService,
-            CacheManager cacheManager
+            TransactionHelperService transactionHelperService
     ) {
         super(
                 bestillingProgressRepository,
@@ -63,9 +67,9 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                 counterCustomRegistry,
                 errorStatusDecoder,
                 identService,
+                jsonMapper,
                 clientRegisters,
                 mapperFacade,
-                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -80,51 +84,69 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
-        var request = getDollyBestillingRequest(bestilling);
-
-        Mono.just(request)
+        var request = new AtomicReference<RsDollyBestillingRequest>();
+        getDollyBestillingRequest(bestilling)
+                .doOnNext(request::set)
                 .filter(bestKriterier -> isBlank(bestKriterier.getFeil()))
                 .flatMapMany(bestKriterier ->
                         availCheckService.checkAvailable(bestilling.getOpprettFraIdenter())
-                                .flatMap(avail -> opprettPerson(bestilling, bestKriterier, avail), 3))
-
-                .subscribe(progress -> log.info("Fullført oppretting av ident: {}", progress.getIdent()),
-                        _ -> doFerdig(bestilling).subscribe(),
-                        () -> saveBestillingToOpenSearchServer(request, bestilling)
+                                .zipWith(Mono.just(bestKriterier)))
+                .filter(tuple -> tuple.getT1().isAvailable())
+                .flatMap(tuple ->
+                        opprettPerson(bestilling.getId(), request.get(), tuple.getT1().getIdent()), 3)
+                .subscribe(null,
+                        e -> {
+                            var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
+                            log.error("Feil ved utføring av {}, bestId: {} melding: {}",
+                                    getBestillingType(bestilling), bestilling.getId(), melding, e);
+                            transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(),
+                                            StringUtils.left("Feil ved utføring av : " + melding, 1000))
+                                    .subscribe(null, ex -> log.error("Kunne ikke sette bestilling {} ferdig: {}",
+                                            bestilling.getId(), ex.getMessage(), ex));
+                        },
+                        () -> saveBestillingToOpenSearchServer(request.get(), bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();
                                 })
                                 .then(doFerdig(bestilling))
                                 .subscribe());
-
     }
 
-    private Flux<BestillingProgress> opprettPerson(Bestilling bestilling,
+    private Mono<BestillingProgress> opprettPerson(Long bestillingId,
                                                    RsDollyUtvidetBestilling bestKriterier,
-                                                   AvailCheckService.AvailStatus availStatus) {
+                                                   String ident) {
 
-        return Flux.from(bestillingService.isStoppet(bestilling.getId()))
-                .takeWhile(BooleanUtils::isFalse)
-                .concatMap(_ -> Mono.just(availStatus))
-                .filter(AvailCheckService.AvailStatus::isAvailable)
-                .map(AvailCheckService.AvailStatus::getIdent)
-                .map(availIdent -> OriginatorUtility.prepOriginator(bestKriterier,
-                        availIdent, mapperFacade))
-                .concatMap(originator -> opprettProgress(bestilling, PDLF, originator.getIdent())
-                        .zipWith(Mono.just(originator)))
-                .concatMap(tuple -> opprettPerson(tuple.getT2(), tuple.getT1()))
-                .concatMap(progress -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse()))
-                .concatMap(this::sendOrdrePerson)
+        var progress = new AtomicReference<BestillingProgress>();
+        return bestillingService.isStoppet(bestillingId)
+                .filter(BooleanUtils::isFalse)
+                .flatMap(_ -> prossesserPerson(bestillingId, bestKriterier, ident, progress)
+                        .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
+                        .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", ident))
+                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, progress.get(), ident, e)));
+    }
+
+    private Mono<BestillingProgress> prossesserPerson(Long bestillingId,
+                                                      RsDollyUtvidetBestilling bestKriterier,
+                                                      String ident, AtomicReference<BestillingProgress> progress) {
+
+        return opprettProgress(bestillingId, ident)
+                .doOnNext(progress::set)
+                .flatMap(bestillingProgress -> opprettPerson(bestKriterier, bestillingProgress))
+                .flatMap(progress1 -> leggIdentTilGruppe(progress1, bestKriterier.getBeskrivelse()))
+                .flatMap(this::sendOrdrePerson)
+                .doOnNext(progress::set)
                 .filter(BestillingProgress::isIdentGyldig)
-                .concatMap(progress -> opprettDollyPerson(progress, bestilling.getBruker())
-                        .zipWith(Mono.just(progress)))
+                .flatMap(_ -> opprettDollyPersonNyPerson(progress.get(), bestKriterier))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
-                .concatMap(tuple ->
-                        gjenopprettKlienterStart(tuple.getT1(), bestKriterier, tuple.getT2(), true)
-                                .then(personServiceClient.syncPerson(tuple.getT1(), tuple.getT2())
-                                        .filter(BestillingProgress::isPdlSync)
-                                        .then(gjenopprettKlienterFerdigstill(tuple.getT1(), bestKriterier,
-                                                tuple.getT2(), true))));
+                .flatMap(dollyPerson ->
+                        gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get(), OPPRETT_ENDRE_TRUE)
+                                .thenReturn(dollyPerson))
+                .flatMap(dollyPerson -> personServiceClient.syncPerson(dollyPerson, progress.get())
+                        .zipWith(Mono.just(dollyPerson)))
+                .filter(tuple -> tuple.getT1().isPdlSync())
+                .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
+                        tuple.getT1(), OPPRETT_ENDRE_TRUE))
+                .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

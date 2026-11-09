@@ -5,10 +5,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
-import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -39,26 +38,24 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 public class LeggTilPaaGruppeService extends DollyBestillingService {
 
-    private final ApplicationConfig applicationConfig;
     private final PersonServiceClient personServiceClient;
 
     public LeggTilPaaGruppeService(
-            ApplicationConfig applicationConfig,
             BestillingProgressRepository bestillingProgressRepository,
             BestillingRepository bestillingRepository,
             BestillingService bestillingService,
+            CacheManager cacheManager,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             IdentService identService,
+            JsonMapper jsonMapper,
             List<ClientRegister> clientRegisters,
             MapperFacade mapperFacade,
-            JsonMapper jsonMapper,
             OpenSearchService openSearchService,
             PdlDataConsumer pdlDataConsumer,
             PersonServiceClient personServiceClient,
             TestgruppeRepository testgruppeRepository,
-            TransactionHelperService transactionHelperService,
-            CacheManager cacheManager
+            TransactionHelperService transactionHelperService
     ) {
         super(
                 bestillingProgressRepository,
@@ -68,28 +65,29 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 counterCustomRegistry,
                 errorStatusDecoder,
                 identService,
+                jsonMapper,
                 clientRegisters,
                 mapperFacade,
-                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
                 transactionHelperService
         );
-        this.applicationConfig = applicationConfig;
         this.personServiceClient = personServiceClient;
     }
 
     @Async
     public void executeAsync(Bestilling bestilling) {
 
-        var bestKriterier = getDollyBestillingRequest(bestilling);
+        log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
-        Mono.just(bestKriterier)
-                .filter(request -> isBlank(request.getFeil()))
+        var request = new AtomicReference<RsDollyBestillingRequest>();
+        getDollyBestillingRequest(bestilling)
+                .doOnNext(request::set)
+                .filter(bestKriterier -> isBlank(bestKriterier.getFeil()))
                 .flatMapMany(_ ->
                         identService.getTestidenterByGruppeId(bestilling.getGruppeId()))
-                .flatMap(testident -> leggTilPaaPerson(bestilling, bestKriterier, testident), 3)
+                .flatMap(testident -> leggTilPaaPerson(bestilling.getId(), request.get(), testident.getIdent()), 3)
                 .subscribe(null, e -> {
                             var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
                             log.error("Feil ved utføring av legg-til på gruppe, bestId: {} melding: {}",
@@ -99,7 +97,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                     .subscribe(null, ex -> log.error("Kunne ikke sette bestilling {} ferdig: {}",
                                             bestilling.getId(), ex.getMessage(), ex));
                         },
-                        () -> saveToOpenSearchUnlessStoppet(bestKriterier, bestilling)
+                        () -> saveToOpenSearchUnlessStoppet(request.get(), bestilling)
                                 .then(Mono.defer(() -> doFerdig(bestilling)))
                                 .subscribe(null, e -> log.error("Kunne ikke sette bestilling {} ferdig: {}",
                                         bestilling.getId(), e.getMessage(), e)));
@@ -116,39 +114,36 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 });
     }
 
-    private Mono<BestillingProgress> leggTilPaaPerson(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, Testident testident) {
+    private Mono<BestillingProgress> leggTilPaaPerson(Long bestillingId, RsDollyUtvidetBestilling bestKriterier, String ident) {
 
         var progress = new AtomicReference<BestillingProgress>();
-        return bestillingService.isStoppet(bestilling.getId())
+        return bestillingService.isStoppet(bestillingId)
                 .filter(BooleanUtils::isFalse)
-                .flatMap(_ -> prossesserIdent(bestilling, bestKriterier, testident, progress)
+                .flatMap(_ -> prossesserIdent(bestillingId, bestKriterier, ident, progress)
                         .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
-                        .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", testident.getIdent()))
-                        .onErrorResume(e -> setOpprettIdentFeilet(bestilling.getId(), progress.get(), testident.getIdent(), e)));
+                        .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", ident))
+                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, progress.get(), ident, e)));
     }
 
-    private Mono<BestillingProgress> prossesserIdent(Bestilling bestilling, RsDollyUtvidetBestilling bestKriterier, Testident testident,
-                                                       AtomicReference<BestillingProgress> progress) {
+    private Mono<BestillingProgress> prossesserIdent(Long bestillingId, RsDollyUtvidetBestilling bestKriterier,
+                                                     String ident, AtomicReference<BestillingProgress> progress) {
 
-        return Mono.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
-                .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), originator.getIdent())
-                        .doOnNext(progress::set)
-                        .thenReturn(originator))
-                .flatMap(originator -> oppdaterPerson(originator, progress.get()))
+        return opprettProgress(bestillingId, ident)
+                .doOnNext(progress::set)
+                .flatMap(originator -> oppdaterPerson(bestKriterier, progress.get(), ident))
                 .flatMap(this::sendOrdrePerson)
                 .doOnNext(progress::set)
                 .filter(BestillingProgress::isIdentGyldig)
-                .flatMap(_ -> opprettDollyPersonLeggTil(progress.get(), bestilling.getBruker()))
-                .flatMap(dollyPerson -> updateIdent(dollyPerson, progress.get()))
+                .flatMap(_ -> opprettDollyPersonLeggTil(progress.get(), bestKriterier))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, progress.get(), true)
                         .thenReturn(dollyPerson))
                 .flatMap(dollyPerson ->
                         personServiceClient.syncPerson(dollyPerson, progress.get())
-                        .zipWith(Mono.just(dollyPerson)))
+                                .zipWith(Mono.just(dollyPerson)))
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
                         tuple.getT1(), true))
-                .timeout(Duration.ofSeconds(applicationConfig.getOpprettPersonTimeout()));
+                .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }
