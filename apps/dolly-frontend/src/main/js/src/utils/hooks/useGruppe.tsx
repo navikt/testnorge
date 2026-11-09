@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '@/api'
+import { fetcher, backgroundFetcher } from '@/api'
 import {
 	Bestilling,
 	BestillingStatus,
@@ -71,7 +71,7 @@ export const useGruppeById = (
 ) => {
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		gruppeId ? getPaginertGruppeUrl(gruppeId, pageNo, pageSize, sortKolonne, sortRetning) : null,
-		fetcher,
+		autoRefresh ? backgroundFetcher : fetcher,
 		{
 			refreshInterval: autoRefresh ? 2000 : null,
 			dedupingInterval: autoRefresh ? 2000 : null,

@@ -3,8 +3,9 @@ import { Alert, Button, GlobalAlert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
+import { BESTILLING_SAVE_EVENT } from '@/utils/bestillingFormPersistence'
 
-export const BESTILLING_SAVE_EVENT = 'dolly-save-and-reload'
+export { BESTILLING_SAVE_EVENT }
 export const BESTILLING_RESTORED_EVENT = 'dolly-form-restored'
 
 const isBestillingPath = (pathname: string) =>

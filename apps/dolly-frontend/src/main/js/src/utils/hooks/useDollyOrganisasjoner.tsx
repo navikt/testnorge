@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import { fetcher, multiFetcherAareg } from '@/api'
+import { fetcher, multiFetcherAareg, backgroundFetcher } from '@/api'
 import {
 	Organisasjon,
 	OrganisasjonFasteData,
@@ -253,7 +253,7 @@ export const useOrganisasjonBestillingStatus = (
 
 	const { data, isLoading, error } = useSWR<Bestillingsstatus, Error>(
 		shouldFetch() ? getOrganisasjonBestillingStatusUrl(bestillingId) : null,
-		fetcher,
+		autoRefresh ? backgroundFetcher : fetcher,
 		{
 			refreshInterval: autoRefresh ? 3000 : 0,
 			dedupingInterval: autoRefresh ? 3000 : 0,

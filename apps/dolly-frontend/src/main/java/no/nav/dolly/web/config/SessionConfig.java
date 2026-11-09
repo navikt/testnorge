@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWK;
 import io.valkey.DefaultJedisClientConfig;
 import io.valkey.Jedis;
 import lombok.SneakyThrows;
+import no.nav.dolly.web.config.session.SingleFlightRefreshAuthorizedClientProvider;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizationSuccessHandler;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
@@ -27,8 +29,13 @@ import org.springframework.security.oauth2.client.registration.ReactiveClientReg
 import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebSession;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+
+import static java.util.Objects.isNull;
 
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
@@ -39,6 +46,9 @@ import java.time.Duration;
         UserJwtExchange.class
 })
 class SessionConfig {
+
+    private static final Duration REFRESH_CLOCK_SKEW = Duration.ofSeconds(30);
+    private static final Duration REFRESH_RETENTION = Duration.ofMinutes(10);
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -102,15 +112,33 @@ class SessionConfig {
                 ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
                         .authorizationCode()
                         .refreshToken(configurer -> configurer
-                                .clockSkew(Duration.ofSeconds(120))
+                                .clockSkew(REFRESH_CLOCK_SKEW)
                                 .accessTokenResponseClient(refreshTokenResponseClient))
                         .build();
 
+        var saveAndPersistSession = saveAndPersistSession(authorizedClientRepository);
         var manager = new DefaultReactiveOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
-        manager.setAuthorizedClientProvider(authorizedClientProvider);
+        manager.setAuthorizedClientProvider(new SingleFlightRefreshAuthorizedClientProvider(
+                authorizedClientProvider, saveAndPersistSession, REFRESH_CLOCK_SKEW, REFRESH_RETENTION));
+        manager.setAuthorizationSuccessHandler(saveAndPersistSession);
 
         return manager;
     }
+
+    static ReactiveOAuth2AuthorizationSuccessHandler saveAndPersistSession(
+            ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+        return (authorizedClient, principal, attributes) -> {
+            var exchange = (ServerWebExchange) attributes.get(ServerWebExchange.class.getName());
+            if (isNull(exchange)) {
+                return Mono.empty();
+            }
+            return authorizedClientRepository
+                    .saveAuthorizedClient(authorizedClient, principal, exchange)
+                    .then(Mono.defer(() -> exchange.getSession().flatMap(WebSession::save)));
+        };
+    }
+
 
 }

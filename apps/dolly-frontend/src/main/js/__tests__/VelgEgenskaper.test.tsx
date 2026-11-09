@@ -34,7 +34,12 @@ describe('Velg egenskaper', () => {
 		} as BestillingsveilederContextType
 		sessionStorage.setItem(
 			'dolly-bestilling-saved-form',
-			JSON.stringify({ formValues: initialValues, step: 1, savedAt: Date.now() }),
+			JSON.stringify({
+				formValues: initialValues,
+				step: 1,
+				savedAt: Date.now(),
+				path: window.location.pathname + window.location.search,
+			}),
 		)
 
 		render(

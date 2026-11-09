@@ -9,7 +9,7 @@ spring:
       username: ${VALKEY_USERNAME_SESSION_IDPORTEN}
       password: ${VALKEY_PASSWORD_SESSION_IDPORTEN}
   session:
-    timeout: 3h
+    timeout: 30m
   security:
     oauth2:
       client:
