@@ -82,12 +82,12 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} og type={} er startet i miljøer {} ...", bestilling.getId(), getBestillingType(bestilling), bestilling.getMiljoer());
 
-        var request = new AtomicReference<RsDollyBestillingRequest>();
+        var bestRequest = new AtomicReference<RsDollyBestillingRequest>();
         getDollyBestillingRequest(bestilling)
-                .doOnNext(request::set)
+                .doOnNext(bestRequest::set)
                 .filter(bestKriterier-> isBlank(bestKriterier.getFeil()))
-                .flatMapMany(originator -> Flux.range(0, bestilling.getAntallIdenter())
-                        .flatMap(_ -> opprettPerson(bestilling.getId(), request.get()), 3))
+                .flatMapMany(request -> Flux.range(0, bestilling.getAntallIdenter())
+                        .flatMap(_ -> opprettPerson(bestilling.getId(), request), 3))
                 .subscribe(null,
                         e -> {
                             var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
@@ -98,7 +98,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                     .subscribe(null, ex -> log.error("Kunne ikke sette bestilling {} ferdig: {}",
                                             bestilling.getId(), ex.getMessage(), ex));
                         },
-                        () -> saveBestillingToOpenSearchServer(request.get(), bestilling)
+                        () -> saveBestillingToOpenSearchServer(bestRequest.get(), bestilling)
                                 .onErrorResume(e -> {
                                     log.warn("Feil ved lagring til OpenSearch for bestilling {}: {}", bestilling.getId(), e.getMessage());
                                     return Mono.empty();

@@ -130,7 +130,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
         return opprettProgress(bestillingId, ident)
                 .doOnNext(progress::set)
-                .flatMap(originator -> oppdaterPerson(bestKriterier, progress.get(), ident))
+                .flatMap(bestProgress -> oppdaterPerson(bestKriterier, bestProgress, ident))
                 .flatMap(this::sendOrdrePerson)
                 .doOnNext(progress::set)
                 .filter(BestillingProgress::isIdentGyldig)
