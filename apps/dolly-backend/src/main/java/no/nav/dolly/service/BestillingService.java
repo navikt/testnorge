@@ -183,7 +183,7 @@ public class BestillingService {
     @Retryable
     public Mono<Bestilling> cancelBestilling(Long bestillingId) {
 
-        return bestillingRepository.findById(bestillingId)
+        return bestillingRepository.findByIdAndLock(bestillingId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Bestilling med id %d ikke funnet".formatted(bestillingId))))
                 .flatMap(bestilling -> bestillingKontrollRepository.findByBestillingId(bestillingId)
                         .switchIfEmpty(bestillingKontrollRepository.save(BestillingKontroll.builder()
@@ -327,7 +327,6 @@ public class BestillingService {
     }
 
     @Transactional
-// Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Mono<Bestilling> createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
 
         return fetchBestillingById(bestillingId)
@@ -367,7 +366,6 @@ public class BestillingService {
     }
 
     @Transactional
-// Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Mono<Bestilling> createBestillingForGjenopprettFraIdent(String ident, List<String> miljoer) {
 
         return identRepository.findByIdent(ident)
@@ -399,7 +397,6 @@ public class BestillingService {
     }
 
     @Transactional
-// Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Mono<Bestilling> createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
 
         return testgruppeRepository.findById(gruppeId)

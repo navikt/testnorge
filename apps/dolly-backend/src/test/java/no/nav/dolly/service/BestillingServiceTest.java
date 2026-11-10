@@ -38,8 +38,10 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,7 +134,8 @@ class BestillingServiceTest {
     @Test
     void cancelBestilling_OK() {
 
-        when(bestillingRepository.findById(BEST_ID)).thenReturn(Mono.just(Bestilling.builder().build()));
+        var bestilling = Bestilling.builder().id(BEST_ID).build();
+        when(bestillingRepository.findByIdAndLock(BEST_ID)).thenReturn(Mono.just(bestilling));
         when(brukerService.fetchOrCreateBruker()).thenReturn(Mono.just(Bruker.builder().build()));
         when(bestillingKontrollRepository.findByBestillingId(BEST_ID)).thenReturn(Mono.empty());
         when(bestillingKontrollRepository.save(any())).thenReturn(Mono.just(BestillingKontroll.builder()
@@ -140,15 +143,18 @@ class BestillingServiceTest {
                 .stoppet(true)
                 .build()));
         when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
-        when(bestillingRepository.save(any())).thenReturn(Mono.just(Bestilling.builder().id(BEST_ID).build()));
+        when(bestillingRepository.save(any())).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
-        StepVerifier.create(bestillingService.cancelBestilling(1L))
-                .assertNext(bestilling -> {
-                    assertThat(bestilling.getId(), is(BEST_ID));
-                    assertThat(bestilling.isFerdig(), is(false));
+        StepVerifier.create(bestillingService.cancelBestilling(BEST_ID))
+                .assertNext(result -> {
+                    assertThat(result.getId(), is(BEST_ID));
+                    assertThat(result.isFerdig(), is(true));
+                    assertThat(result.isStoppet(), is(true));
                 })
                 .verifyComplete();
 
+        verify(bestillingRepository).findByIdAndLock(BEST_ID);
+        verify(bestillingRepository).save(bestilling);
         verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
         verify(bestillingKontrollRepository).save(any(BestillingKontroll.class));
     }
@@ -156,11 +162,14 @@ class BestillingServiceTest {
     @Test
     void cancelBestilling_NotFound() {
 
-        when(bestillingRepository.findById(BEST_ID)).thenReturn(Mono.empty());
+        when(bestillingRepository.findByIdAndLock(BEST_ID)).thenReturn(Mono.empty());
 
         StepVerifier.create(bestillingService.cancelBestilling(BEST_ID))
                 .expectError(NotFoundException.class)
                 .verify();
+
+        verify(bestillingRepository, never()).save(any());
+        verifyNoInteractions(bestillingKontrollRepository, bestillingProgressRepository, brukerService);
     }
 
     @Test

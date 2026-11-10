@@ -137,7 +137,6 @@ public class BestillingController extends AbstractJwtClaimsExtractor {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
-    @Transactional
     public Mono<RsBestillingStatus> stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "organisasjonBestilling", required = false) Boolean organisasjonBestilling) {
 
         return (isTrue(organisasjonBestilling)
@@ -149,7 +148,6 @@ public class BestillingController extends AbstractJwtClaimsExtractor {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
-    @Transactional
     public Mono<RsBestillingStatus> gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         return bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer)

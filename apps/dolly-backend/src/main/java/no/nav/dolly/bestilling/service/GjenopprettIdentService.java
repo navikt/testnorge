@@ -83,13 +83,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
-        var bestProgress = new AtomicReference<BestillingProgress>();
-
-        gjenopprettIdent(bestilling, bestProgress, bestilling.getGjenopprettetFraIdent())
-                .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
-                .doOnNext(progress -> log.info("Fullført gjenoppretting av ident: {}", progress.getIdent()))
-                .onErrorResume(e -> setOpprettIdentFeilet(bestilling.getId(), bestProgress.get(), bestProgress.get().getIdent(), e))
-                .subscribe(null,
+        gjenopprettIdent(bestilling, bestilling.getGjenopprettetFraIdent())
+                    .subscribe(null,
                         e -> {
                             var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
                             log.error("Feil ved utføring av {}, bestId: {} melding: {}",
@@ -103,9 +98,11 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                 .subscribe());
     }
 
-    private Mono<BestillingProgress> gjenopprettIdent(Bestilling bestilling, AtomicReference<BestillingProgress> bestProgress, String ident) {
+    private Mono<BestillingProgress> gjenopprettIdent(Bestilling bestilling, String ident) {
 
+        var bestProgress = new AtomicReference<BestillingProgress>();
         var isVisited = new AtomicBoolean(false);
+
         return opprettProgress(bestilling.getId(), ident)
                 .doOnNext(bestProgress::set)
                 .flatMap(this::sendOrdrePerson)
@@ -121,7 +118,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 .flatMapMany(tuple ->
                         identRepository.getBestillingerByIdent(ident)
                                 .filter(coBestilling ->
-                                        isVisited.getAndSet(true) ||
+                                        !isVisited.getAndSet(true) ||
                                         !"{}".equals(coBestilling.getBestkriterier()))
                                 .flatMap(coBestilling -> createBestilling(bestilling, coBestilling)
                                         .zipWith(Mono.just(tuple))))
@@ -133,6 +130,9 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                 bestillingRequest.getT2().getT1()))
                 .collectList()
                 .map(_ -> bestProgress.get())
-                .timeout(Duration.ofSeconds(opprettPersonTimeout));
+                .timeout(Duration.ofSeconds(opprettPersonTimeout))
+                .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
+                .doOnNext(_ -> log.info("Fullført gjenoppretting av ident: {}", ident))
+                .onErrorResume(e -> setOpprettIdentFeilet(bestilling.getId(), bestProgress.get(), ident, e));
     }
 }
