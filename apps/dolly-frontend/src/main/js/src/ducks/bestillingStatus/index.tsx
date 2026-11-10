@@ -51,9 +51,9 @@ export const successMiljoSelector = (statusArray, ident = null) => {
 	const success_list = statusArray
 		?.filter((curr) => !_.isNil(curr))
 		?.reduce((acc, curr) => {
-			const statuser = curr.statuser.filter((v) => v.melding === 'OK')
+			const statuser = curr.statuser?.filter((v) => v.melding === 'OK')
 
-			if (statuser.length) {
+			if (statuser?.length) {
 				// Dette er statuser som er OK
 				const detaljert = statuser[0].detaljert
 				const envs = detaljert && detaljert.map((v) => v.miljo)
