@@ -18,6 +18,13 @@ import java.util.Set;
 public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Long> {
 
     Mono<DbPerson> findByIdent(String ident);
+
+    @Query("""
+            select * from person p
+            where p.ident = :ident for update;
+            """)
+    Mono<DbPerson> findByIdentAndLock(String ident);
+
     Flux<DbPerson> findByIdentIn(List<String> ident);
 
     Mono<DbPerson> save(DbPerson person);
@@ -26,6 +33,13 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
     Flux<DbPerson> findByIdentInOrderBySistOppdatertDesc(Collection<String> idents);
 
     Mono<DbPerson> findById(Long id);
+
+    @Query("""
+            select * from person p
+            where p.id = :id for update;
+            """)
+    Mono<DbPerson> findByIdAndLock(Long id);
+
     Flux<DbPerson> findByIdIn(Set<Long> ids);
 
     @Modifying

@@ -4,10 +4,13 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,13 +19,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,74 +43,109 @@ class IdentitetServiceTest {
     @InjectMocks
     private IdentitetService identitetService;
 
-    @Test
-    void shouldRetryStandaloneUpdateWithFreshPersonAfterOptimisticLockingFailure() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldUpdateStandaloneOnLockedPerson(boolean standalone) {
 
-        var stalePerson = person(1L, IDENT, 4);
-        var freshPerson = person(1L, IDENT, 5);
-        var savedPerson = person(1L, IDENT, 6);
-        when(personRepository.findByIdent(IDENT))
-                .thenReturn(Mono.just(stalePerson), Mono.just(freshPerson));
-        when(personRepository.save(stalePerson))
-                .thenReturn(Mono.error(new OptimisticLockingFailureException("stale")));
-        when(personRepository.save(freshPerson)).thenReturn(Mono.just(savedPerson));
-        when(relasjonRepository.findByPersonId(savedPerson.getId())).thenReturn(Flux.empty());
+        var hovedperson = person(1L, IDENT, 4);
+        hovedperson.getPerson().setStandalone(!standalone);
+        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(hovedperson));
+        when(personRepository.save(hovedperson)).thenReturn(Mono.just(hovedperson));
+        when(relasjonRepository.findByPersonId(hovedperson.getId())).thenReturn(Flux.empty());
 
-        StepVerifier.withVirtualTime(() -> identitetService.updateStandalone(IDENT, true))
-                .thenAwait(Duration.ofMillis(100))
+        StepVerifier.create(identitetService.updateStandalone(IDENT, standalone))
                 .verifyComplete();
 
-        assertThat(freshPerson.getPerson().isStandalone()).isTrue();
-        verify(personRepository, times(2)).findByIdent(IDENT);
-        verify(personRepository, times(2)).save(any(DbPerson.class));
+        assertThat(hovedperson.getPerson().isStandalone()).isEqualTo(standalone);
+        verify(personRepository).findByIdentAndLock(IDENT);
+        verify(personRepository).save(hovedperson);
+        verify(personRepository, never()).findByIdent(IDENT);
     }
 
     @Test
-    void shouldPropagateOriginalOptimisticLockingFailureAfterThreeRetries() {
+    void shouldPropagateOptimisticLockingFailureWithoutRetrying() {
 
         var optimisticLockingFailure = new OptimisticLockingFailureException("stale");
-        when(personRepository.findByIdent(IDENT)).thenAnswer(_ -> Mono.just(person(1L, IDENT, 4)));
+        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(person(1L, IDENT, 4)));
         when(personRepository.save(any(DbPerson.class))).thenReturn(Mono.error(optimisticLockingFailure));
 
-        StepVerifier.withVirtualTime(() -> identitetService.updateStandalone(IDENT, true))
-                .thenAwait(Duration.ofSeconds(1))
+        StepVerifier.create(identitetService.updateStandalone(IDENT, true))
                 .expectErrorSatisfies(error -> assertThat(error).isSameAs(optimisticLockingFailure))
                 .verify();
 
-        verify(personRepository, times(4)).findByIdent(IDENT);
-        verify(personRepository, times(4)).save(any(DbPerson.class));
+        verify(personRepository).findByIdentAndLock(IDENT);
+        verify(personRepository).save(any(DbPerson.class));
+        verifyNoInteractions(relasjonRepository);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldUpdateMatchingRelationOnLockedRelatedPersonOnlyOnce(boolean standalone) {
+
+        var hovedperson = person(1L, IDENT, 4);
+        var relatertPerson = relatertPerson(2L, 2);
+        var matchingRelation = relatertPerson.getPerson().getForelderBarnRelasjon().getFirst();
+        matchingRelation.setEksisterendePerson(!standalone);
+        var unrelatedRelation = ForelderBarnRelasjonDTO.builder()
+                .relatertPerson(RELATERT_IDENT)
+                .eksisterendePerson(!standalone)
+                .build();
+        relatertPerson.getPerson().setForelderBarnRelasjon(List.of(matchingRelation, unrelatedRelation));
+        var relasjon = DbRelasjon.builder()
+                .personId(hovedperson.getId())
+                .relatertPersonId(relatertPerson.getId())
+                .build();
+        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(hovedperson));
+        when(personRepository.save(hovedperson)).thenReturn(Mono.just(hovedperson));
+        when(relasjonRepository.findByPersonId(hovedperson.getId())).thenReturn(Flux.just(relasjon, relasjon));
+        when(personRepository.findByIdAndLock(relatertPerson.getId())).thenReturn(Mono.just(relatertPerson));
+        when(personRepository.save(relatertPerson)).thenReturn(Mono.just(relatertPerson));
+
+        StepVerifier.create(identitetService.updateStandalone(IDENT, standalone))
+                .verifyComplete();
+
+        assertThat(matchingRelation.isEksisterendePerson()).isEqualTo(standalone);
+        assertThat(unrelatedRelation.isEksisterendePerson()).isEqualTo(!standalone);
+        verify(personRepository).findByIdAndLock(relatertPerson.getId());
+        verify(personRepository).save(relatertPerson);
+        verify(personRepository, never()).findById(relatertPerson.getId());
     }
 
     @Test
-    void shouldRetryRelatedPersonUpdateWithFreshPersonAfterOptimisticLockingFailure() {
+    void shouldRejectMissingPersonWithoutSavingOrUpdatingRelations() {
+
+        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.empty());
+
+        StepVerifier.create(identitetService.updateStandalone(IDENT, true))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(personRepository, never()).save(any(DbPerson.class));
+        verifyNoInteractions(relasjonRepository);
+    }
+
+    @Test
+    void shouldPropagateRelatedPersonSaveFailureWithoutRetrying() {
 
         var hovedperson = person(1L, IDENT, 4);
-        var lagretHovedperson = person(1L, IDENT, 5);
-        lagretHovedperson.getPerson().setStandalone(true);
-        var staleRelatertPerson = relatertPerson(2L, 2);
-        var freshRelatertPerson = relatertPerson(2L, 3);
-        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(hovedperson));
-        when(personRepository.save(hovedperson)).thenReturn(Mono.just(lagretHovedperson));
-        when(relasjonRepository.findByPersonId(lagretHovedperson.getId())).thenReturn(Flux.just(
+        var relatertPerson = relatertPerson(2L, 2);
+        var saveFailure = new OptimisticLockingFailureException("stale related person");
+        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(hovedperson));
+        when(personRepository.save(hovedperson)).thenReturn(Mono.just(hovedperson));
+        when(relasjonRepository.findByPersonId(hovedperson.getId())).thenReturn(Flux.just(
                 DbRelasjon.builder()
-                        .personId(lagretHovedperson.getId())
-                        .relatertPersonId(freshRelatertPerson.getId())
+                        .personId(hovedperson.getId())
+                        .relatertPersonId(relatertPerson.getId())
                         .build()));
-        when(personRepository.findById(freshRelatertPerson.getId()))
-                .thenReturn(Mono.just(staleRelatertPerson), Mono.just(freshRelatertPerson));
-        when(personRepository.save(staleRelatertPerson))
-                .thenReturn(Mono.error(new OptimisticLockingFailureException("stale")));
-        when(personRepository.save(freshRelatertPerson)).thenReturn(Mono.just(freshRelatertPerson));
+        when(personRepository.findByIdAndLock(relatertPerson.getId())).thenReturn(Mono.just(relatertPerson));
+        when(personRepository.save(relatertPerson)).thenReturn(Mono.error(saveFailure));
 
-        StepVerifier.withVirtualTime(() -> identitetService.updateStandalone(IDENT, true))
-                .thenAwait(Duration.ofMillis(100))
-                .verifyComplete();
+        StepVerifier.create(identitetService.updateStandalone(IDENT, true))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(saveFailure))
+                .verify();
 
-        assertThat(freshRelatertPerson.getPerson()
-                .getForelderBarnRelasjon()
-                .getFirst()
-                .isEksisterendePerson()).isTrue();
-        verify(personRepository, times(2)).findById(freshRelatertPerson.getId());
+        verify(personRepository).findByIdAndLock(relatertPerson.getId());
+        verify(personRepository).save(relatertPerson);
     }
 
     private static DbPerson person(Long id, String ident, Integer versjon) {

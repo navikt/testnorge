@@ -30,7 +30,6 @@ import java.util.stream.Stream;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static no.nav.pdl.forvalter.utils.OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure;
 
 @Slf4j
 @Service
@@ -81,11 +80,10 @@ public class IdentitetService {
     @Transactional
     public Mono<Void> updateStandalone(String ident, Boolean standalone) {
 
-        return retryOnOptimisticLockingFailure(() ->
-                personRepository.findByIdent(ident)
-                        .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
-                        .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
-                        .flatMap(personRepository::save))
+        return personRepository.findByIdentAndLock(ident)
+                .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
+                .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
+                .flatMap(personRepository::save)
                 .flatMapMany(this::setStandaloneRelasjoner)
                 .then();
     }
@@ -102,10 +100,9 @@ public class IdentitetService {
 
     private Mono<DbPerson> setStandalonePerson(Long id, String motpartsIdent, Boolean standalone) {
 
-        return retryOnOptimisticLockingFailure(() ->
-                personRepository.findById(id)
+        return personRepository.findByIdAndLock(id)
                         .flatMap(dbPerson -> updateStandaloneRelasjon(dbPerson, motpartsIdent, standalone))
-                        .flatMap(personRepository::save));
+                        .flatMap(personRepository::save);
     }
 
     private Mono<DbPerson> updateStandaloneRelasjon(DbPerson dbPerson, String motpartsIdent, Boolean standalone) {
