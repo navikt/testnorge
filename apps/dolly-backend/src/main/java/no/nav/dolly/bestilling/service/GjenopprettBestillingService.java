@@ -112,7 +112,17 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         var bestProgress = new AtomicReference<BestillingProgress>();
         return bestillingService.isStoppet(bestillingId)
                 .filter(BooleanUtils::isFalse)
-                .flatMap(_ -> opprettProgress(bestillingId, ident))
+                .flatMap(_ -> gjenopprettBestillingIdent(bestillingId, bestKriterier, bestProgress, ident)
+                        .switchIfEmpty(Mono.error(new DollyFunctionalException("Gjenopprett bestilling ikke fullført; annen feil")))
+                        .doOnNext(_ -> log.info("Fullført gjenoppretting for ident {}", ident))
+                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, bestProgress.get(), ident, e)));
+    }
+
+    private Mono<BestillingProgress> gjenopprettBestillingIdent(Long bestillingId, RsDollyBestillingRequest bestKriterier,
+                                                                AtomicReference<BestillingProgress> bestProgress,
+                                                                String ident) {
+
+        return opprettProgress(bestillingId, ident)
                 .doOnNext(bestProgress::set)
                 .flatMap(this::sendOrdrePerson)
                 .doOnNext(bestProgress::set)
@@ -127,10 +137,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                 .filter(tuple -> tuple.getT1().isPdlSync())
                 .flatMap(tuple -> gjenopprettKlienterFerdigstill(tuple.getT2(), bestKriterier,
                         tuple.getT1()))
-                .timeout(Duration.ofSeconds(opprettPersonTimeout))
-                .switchIfEmpty(Mono.error(new DollyFunctionalException("Gjenopprett bestilling ikke fullført; annen feil")))
-                .doOnNext(_ -> log.info("Fullført gjenopprett bestilling: {}", bestillingId))
-                .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, bestProgress.get(), ident, e))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

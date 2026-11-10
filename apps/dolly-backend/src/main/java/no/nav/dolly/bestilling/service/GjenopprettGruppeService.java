@@ -112,7 +112,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 .filter(BooleanUtils::isFalse)
                 .flatMap(_ -> gjenopprettIdent(bestKriterier, bestilling, ident, bestProgress)
                         .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
-                        .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", ident))
+                        .doOnNext(_ -> log.info("Fullført gjenoppretting av ident: {}", ident))
                         .onErrorResume(e -> setOpprettIdentFeilet(bestilling.getId(), bestProgress.get(), ident, e)));
     }
 
