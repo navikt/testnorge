@@ -128,7 +128,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 .flatMap(this::sendOrdrePerson)
                 .doOnNext(bestProgress::set)
                 .filter(BestillingProgress::isIdentGyldig)
-                .flatMap(progress -> opprettDollyPersonNyPerson(progress, bestKriterier))
+                .flatMap(progress -> opprettDollyPersonNyoppretting(progress, bestKriterier))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(dollyPerson -> gjenopprettKlienterStart(dollyPerson, bestKriterier, bestProgress.get())
                         .thenReturn(dollyPerson))

@@ -236,7 +236,7 @@ public class DollyBestillingService {
                 .doOnNext(dollyPerson -> dollyPerson.setLeggTil(true));
     }
 
-    protected Mono<DollyPerson> opprettDollyPersonNyPerson(BestillingProgress progress, RsDollyUtvidetBestilling bestkriterier) {
+    protected Mono<DollyPerson> opprettDollyPersonNyoppretting(BestillingProgress progress, RsDollyUtvidetBestilling bestkriterier) {
 
         return opprettDollyPerson(progress, bestkriterier)
                 .doOnNext(dollyPerson -> dollyPerson.setOpprett(true));

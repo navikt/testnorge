@@ -471,7 +471,7 @@ class DollyBestillingServiceTest {
                 .bestillingId(BESTILLING_ID).ident(IDENT).master(PDL).build();
         stubPersonGroup();
 
-        StepVerifier.create(dollyBestillingService.opprettDollyPersonNyPerson(progress, new RsDollyUtvidetBestilling()))
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonNyoppretting(progress, new RsDollyUtvidetBestilling()))
                 .assertNext(person -> {
                     assertThat(person.getIdent()).isEqualTo(IDENT);
                     assertThat(person.getMaster()).isEqualTo(PDL);

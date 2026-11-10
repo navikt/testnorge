@@ -130,7 +130,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 .flatMap(this::sendOrdrePerson)
                 .doOnNext(bestProgress::set)
                 .filter(BestillingProgress::isIdentGyldig)
-                .flatMap(progress -> opprettDollyPersonNyPerson(progress, bestKriterier)
+                .flatMap(progress -> opprettDollyPersonNyoppretting(progress, bestKriterier)
                         .zipWith(Mono.just(progress)))
                 .doOnNext(_ -> counterCustomRegistry.invoke(bestKriterier))
                 .flatMap(tuple ->
