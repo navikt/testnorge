@@ -138,15 +138,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                 .filter(coBestilling -> ident.equals(coBestilling.getIdent()) &&
                                                         (!isVisited.getAndSet(true) ||
                                                          !"{}".equals(coBestilling.getBestkriterier())))
-                                .zipWith(Mono.just(tuple.getT2())))
-                .flatMap(tuple -> createBestilling(bestilling, tuple.getT1())
-                        .zipWith(Mono.just(tuple.getT2())))
+                                .concatMap(coBestilling -> createBestilling(bestilling, coBestilling)
+                                        .zipWith(Mono.just(tuple.getT2()))))
                 .doOnNext(tuple -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                         tuple.getT1().getId(), ident))
                 .concatMap(tuple ->
                         gjenopprettKlienterFerdigstill(tuple.getT2(), tuple.getT1(),
                                 progress.get()))
-                .then(Mono.just(progress.get()))
+                .then(Mono.defer(() -> Mono.just(progress.get())))
                 .timeout(Duration.ofSeconds(opprettPersonTimeout));
     }
 }

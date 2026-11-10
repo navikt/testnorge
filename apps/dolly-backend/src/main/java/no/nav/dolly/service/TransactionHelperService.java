@@ -153,7 +153,7 @@ public class TransactionHelperService {
                                             .doOnNext(ignore -> new ClearCacheUtil(cacheManager).run());
                                 }))
                 .switchIfEmpty(Mono.error(new DollyFunctionalException("Bestilling med id " + id + " finnes ikke.")))
-                .next()
+                .singleOrEmpty()
                 .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()));
     }
 }
