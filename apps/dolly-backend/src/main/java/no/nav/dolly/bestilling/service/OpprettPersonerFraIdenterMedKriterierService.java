@@ -88,12 +88,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         getDollyBestillingRequest(bestilling)
                 .doOnNext(request::set)
                 .filter(bestKriterier -> isBlank(bestKriterier.getFeil()))
-                .flatMapMany(bestKriterier ->
-                        availCheckService.checkAvailable(bestilling.getOpprettFraIdenter())
-                                .zipWith(Mono.just(bestKriterier)))
-                .filter(tuple -> tuple.getT1().isAvailable())
-                .flatMap(tuple ->
-                        opprettPerson(bestilling.getId(), request.get(), tuple.getT1().getIdent()), 3)
+                .flatMapMany(_ ->
+                        availCheckService.checkAvailable(bestilling.getOpprettFraIdenter()))
+                .filter(AvailCheckService.AvailStatus::isAvailable)
+                .flatMap(avalStatus ->
+                        opprettPerson(bestilling.getId(), request.get(), avalStatus.getIdent()), 3)
                 .subscribe(null,
                         e -> {
                             var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
