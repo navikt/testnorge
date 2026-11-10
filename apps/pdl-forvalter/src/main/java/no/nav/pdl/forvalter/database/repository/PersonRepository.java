@@ -34,12 +34,6 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
 
     Mono<DbPerson> findById(Long id);
 
-    @Query("""
-            select * from person p
-            where p.id = :id for update;
-            """)
-    Mono<DbPerson> findByIdAndLock(Long id);
-
     Flux<DbPerson> findByIdIn(Set<Long> ids);
 
     @Modifying

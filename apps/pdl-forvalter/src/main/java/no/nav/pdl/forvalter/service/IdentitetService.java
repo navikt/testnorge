@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import io.r2dbc.spi.R2dbcException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -19,14 +20,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -80,12 +84,22 @@ public class IdentitetService {
     @Transactional
     public Mono<Void> updateStandalone(String ident, Boolean standalone) {
 
-        return personRepository.findByIdentAndLock(ident)
+        return Mono.defer(() -> personRepository.findByIdentAndLock(ident)
                 .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
                 .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
                 .flatMap(personRepository::save)
                 .flatMapMany(this::setStandaloneRelasjoner)
-                .then();
+                .then())
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
+                        .filter(this::isDeadlock)
+                        .onRetryExhaustedThrow((_, signal) -> signal.failure()));
+    }
+
+    private boolean isDeadlock(Throwable throwable) {
+
+        return nonNull(throwable) &&
+               throwable instanceof R2dbcException r2dbcException &&
+                "40P01".equals(r2dbcException.getSqlState());
     }
 
     private Flux<DbPerson> setStandaloneRelasjoner(DbPerson person) {
@@ -100,7 +114,7 @@ public class IdentitetService {
 
     private Mono<DbPerson> setStandalonePerson(Long id, String motpartsIdent, Boolean standalone) {
 
-        return personRepository.findByIdAndLock(id)
+        return personRepository.findById(id)
                         .flatMap(dbPerson -> updateStandaloneRelasjon(dbPerson, motpartsIdent, standalone))
                         .flatMap(personRepository::save);
     }
