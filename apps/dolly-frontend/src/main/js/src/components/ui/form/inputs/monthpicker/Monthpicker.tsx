@@ -7,7 +7,7 @@ import * as _ from 'lodash-es'
 interface MonthpickerProps {
 	name: string
 	label: string
-	date?: Date
+	date?: Date | null
 	handleDateChange?: (dato: string, type: string) => void
 	onChange?: (date: Date) => void
 	minDate?: Date
@@ -50,7 +50,7 @@ export const Monthpicker = ({
 
 	return (
 		<Label name={name} label={label}>
-			<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
+			<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate ?? undefined}>
 				<MonthPicker.Input
 					error={!!errorOutput}
 					label={null}
