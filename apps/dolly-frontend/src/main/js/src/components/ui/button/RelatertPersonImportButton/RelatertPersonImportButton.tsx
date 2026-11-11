@@ -79,12 +79,14 @@ export const RelatertPersonImportButton = ({
 											? data?.identer
 											: [relatertPersonIdenter[0]?.id]
 									setFeilmelding(null)
-									const results = await Promise.allSettled(
-										identer.map((ident) =>
-											DollyApi.importerRelatertPerson(gruppeId, ident, master),
-										),
-									)
-									const hasFailure = results.some((r) => r.status === 'rejected')
+									let hasFailure = false
+									for (const ident of identer) {
+										try {
+											await DollyApi.importerRelatertPerson(gruppeId, ident, master)
+										} catch {
+											hasFailure = true
+										}
+									}
 									if (hasFailure) {
 										setFeilmelding('Noe gikk galt')
 									} else {
