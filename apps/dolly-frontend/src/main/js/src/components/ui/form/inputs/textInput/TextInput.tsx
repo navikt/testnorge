@@ -104,12 +104,16 @@ export const TextInput = ({
 	useEffect(() => {
 		if (value !== undefined) {
 			setFieldValue(value)
-		} else if (name) {
-			setFieldValue(formValue ?? '')
-		} else {
+		} else if (!name) {
 			setFieldValue('')
 		}
-	}, [value, formValue, name])
+	}, [value])
+
+	useEffect(() => {
+		if (value === undefined && name) {
+			setFieldValue(formValue ?? '')
+		}
+	}, [formValue, name])
 
 	const handleChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
