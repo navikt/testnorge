@@ -76,8 +76,8 @@ export const validation = {
 			Yup.object({
 				perioder: Yup.array()
 					.of(Yup.string())
-					.min(1, 'Velg minst én måned')
-					.required('Velg minst én måned'),
+					.min(1, 'Velg minst én måned eller velg periode')
+					.required('Velg minst én måned eller velg periode'),
 				rapporteringsdato: Yup.date().nullable(),
 				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
 				opplysningspliktig: requiredString,

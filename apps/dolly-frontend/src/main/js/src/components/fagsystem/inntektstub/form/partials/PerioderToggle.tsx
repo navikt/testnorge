@@ -21,12 +21,26 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin: 10px 0 10px 0;
 `
 
+const COMBOBOX_HOYDE = '3rem'
+const MONTHPICKER_HOYDE = '38px'
+
+const PeriodeInnhold = styled.div<{ $periodeValg: PeriodeValg }>`
+	margin-bottom: ${({ $periodeValg }) =>
+		$periodeValg === PeriodeValg.PERIODE
+			? `calc(1rem + ${COMBOBOX_HOYDE} - ${MONTHPICKER_HOYDE})`
+			: '1rem'};
+
+	.skjemaelement {
+		margin-bottom: 0;
+	}
+`
+
 const ManglendeMaanederIkon = styled.span`
 	display: flex;
 	align-items: center;
 	align-self: flex-end;
 	height: 2rem;
-	margin: 0 0.75rem 1.25rem -0.5rem;
+	margin: 0 0.75rem 0.25rem -0.5rem;
 	font-size: 1.5rem;
 `
 
@@ -101,41 +115,43 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 				<ToggleGroup.Item value={PeriodeValg.ENKELTMAANEDER}>Velg enkeltmåneder</ToggleGroup.Item>
 				<ToggleGroup.Item value={PeriodeValg.PERIODE}>Velg periode</ToggleGroup.Item>
 			</StyledToggleGroup>
-			{periodeValg === PeriodeValg.ENKELTMAANEDER ? (
-				<MonthCombobox name={perioderPath} label="Perioder" />
-			) : (
-				<Label
-					name={perioderPath}
-					label=""
-					containerClass="flexbox--full-width"
-					manualError={ugyldigPeriode ? 'Fra-måned kan ikke være etter til-måned' : undefined}
-				>
-					<div className="flexbox--flex-wrap">
-						<Monthpicker
-							name={`${path}.periodeFra`}
-							label="F.o.m. måned"
-							date={fraMaaned}
-							onChange={handleFraChange}
-						/>
-						{harManglendeMaaneder(perioder) && (
-							<Tooltip
-								content="Perioden mangler enkelte måneder. Endre fra- eller til-måned for å fylle inn alle månedene i perioden."
-								maxChar={150}
-							>
-								<ManglendeMaanederIkon tabIndex={0}>
-									<LinkBrokenIcon aria-hidden />
-								</ManglendeMaanederIkon>
-							</Tooltip>
-						)}
-						<Monthpicker
-							name={`${path}.periodeTil`}
-							label="T.o.m. måned"
-							date={tilMaaned}
-							onChange={handleTilChange}
-						/>
-					</div>
-				</Label>
-			)}
+			<PeriodeInnhold $periodeValg={periodeValg}>
+				{periodeValg === PeriodeValg.ENKELTMAANEDER ? (
+					<MonthCombobox name={perioderPath} label="Perioder" />
+				) : (
+					<Label
+						name={perioderPath}
+						label=""
+						containerClass="flexbox--full-width"
+						manualError={ugyldigPeriode ? 'Fra-måned kan ikke være etter til-måned' : undefined}
+					>
+						<div className="flexbox--flex-wrap">
+							<Monthpicker
+								name={`${path}.periodeFra`}
+								label="F.o.m. måned"
+								date={fraMaaned}
+								onChange={handleFraChange}
+							/>
+							{harManglendeMaaneder(perioder) && (
+								<Tooltip
+									content="Perioden mangler enkelte måneder. Endre fra- eller til-måned for å fylle inn alle månedene i perioden."
+									maxChar={150}
+								>
+									<ManglendeMaanederIkon tabIndex={0}>
+										<LinkBrokenIcon aria-hidden />
+									</ManglendeMaanederIkon>
+								</Tooltip>
+							)}
+							<Monthpicker
+								name={`${path}.periodeTil`}
+								label="T.o.m. måned"
+								date={tilMaaned}
+								onChange={handleTilChange}
+							/>
+						</div>
+					</Label>
+				)}
+			</PeriodeInnhold>
 		</div>
 	)
 }
