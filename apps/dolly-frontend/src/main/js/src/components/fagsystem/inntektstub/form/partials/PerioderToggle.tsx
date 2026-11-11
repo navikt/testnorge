@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
-import { ToggleGroup } from '@navikt/ds-react'
+import { ToggleGroup, Tooltip } from '@navikt/ds-react'
+import { LinkBrokenIcon } from '@navikt/aksel-icons'
 import { useFormContext } from 'react-hook-form'
 import { eachMonthOfInterval, format, isAfter, parse } from 'date-fns'
 import { MonthCombobox } from '@/components/ui/form/inputs/monthsCombobox/MonthCombobox'
@@ -20,22 +21,51 @@ const StyledToggleGroup = styled(ToggleGroup)`
 	margin: 10px 0 10px 0;
 `
 
+const ManglendeMaanederIkon = styled.span`
+	display: flex;
+	align-items: center;
+	align-self: flex-end;
+	height: 2rem;
+	margin: 0 0.75rem 1.25rem -0.5rem;
+	font-size: 1.5rem;
+`
+
 interface PerioderToggleProps {
 	path: string
 }
 
 const parseMonth = (value?: string) => (value ? parse(value, VALUE_FORMAT, new Date()) : null)
 
+const getSorterteMaaneder = (perioder: unknown): string[] =>
+	Array.isArray(perioder) ? [...perioder].sort() : []
+
+const harManglendeMaaneder = (perioder: string[]) => {
+	const forsteMaaned = parseMonth(perioder[0])
+	const sisteMaaned = parseMonth(perioder.at(-1))
+	if (!forsteMaaned || !sisteMaaned) return false
+	const antallMaanederIPerioden = eachMonthOfInterval({
+		start: forsteMaaned,
+		end: sisteMaaned,
+	}).length
+	return new Set(perioder).size < antallMaanederIPerioden
+}
+
 export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 	const formMethods = useFormContext()
 	const perioderPath = `${path}.perioder`
-	const eksisterendePerioder: string[] = formMethods.getValues(perioderPath) ?? []
+	const perioder = getSorterteMaaneder(formMethods.watch(perioderPath))
 
 	const [periodeValg, setPeriodeValg] = useState(PeriodeValg.ENKELTMAANEDER)
-	const [fraMaaned, setFraMaaned] = useState<Date | null>(() => parseMonth(eksisterendePerioder[0]))
-	const [tilMaaned, setTilMaaned] = useState<Date | null>(() =>
-		parseMonth(eksisterendePerioder.at(-1)),
-	)
+	const [fraMaaned, setFraMaaned] = useState<Date | null>(null)
+	const [tilMaaned, setTilMaaned] = useState<Date | null>(null)
+
+	const handlePeriodeValgChange = (valg: PeriodeValg) => {
+		if (valg === PeriodeValg.PERIODE) {
+			setFraMaaned(parseMonth(perioder[0]))
+			setTilMaaned(parseMonth(perioder.at(-1)))
+		}
+		setPeriodeValg(valg)
+	}
 
 	const oppdaterPerioder = (fra: Date | null, til: Date | null) => {
 		if (!fra || !til || isAfter(fra, til)) {
@@ -64,7 +94,7 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 	return (
 		<div className="toggle--wrapper">
 			<StyledToggleGroup
-				onChange={(value) => setPeriodeValg(value as PeriodeValg)}
+				onChange={(value) => handlePeriodeValgChange(value as PeriodeValg)}
 				value={periodeValg}
 				size="small"
 			>
@@ -87,6 +117,16 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 							date={fraMaaned}
 							onChange={handleFraChange}
 						/>
+						{harManglendeMaaneder(perioder) && (
+							<Tooltip
+								content="Perioden mangler enkelte måneder. Endre fra- eller til-måned for å fylle inn alle månedene i perioden."
+								maxChar={150}
+							>
+								<ManglendeMaanederIkon tabIndex={0}>
+									<LinkBrokenIcon aria-hidden />
+								</ManglendeMaanederIkon>
+							</Tooltip>
+						)}
 						<Monthpicker
 							name={`${path}.periodeTil`}
 							label="T.o.m. måned"
