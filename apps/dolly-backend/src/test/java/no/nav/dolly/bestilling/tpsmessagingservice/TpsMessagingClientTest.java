@@ -6,13 +6,13 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.dto.kontoregister.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,6 +25,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -54,28 +55,28 @@ class TpsMessagingClientTest {
     private TpsMessagingClient tpsMessagingClient;
 
     @Test
-    void shouldSkipStatusWhenBestillingHasNoTpsData() {
+    void shouldSkipStartedStatusWhenBestillingHasNoTpsData() {
 
-        var pdldata = new PdlPersondata();
-        pdldata.setPerson(new PersonDTO());
-
-        var bestilling = RsDollyUtvidetBestilling.builder()
-                .pdldata(pdldata)
-                .bankkonto(new BankkontoData())
-                .skjerming(RsSkjerming.builder().build())
-                .build();
+        var bestilling = RsDollyUtvidetBestilling.builder().build();
         var progress = new BestillingProgress();
+        when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of("q1")));
+        when(personServiceConsumer.getPdlPersoner(List.of(IDENT))).thenReturn(Flux.empty());
+        when(applicationConfig.getClientTimeout()).thenReturn(10L);
+        when(transactionHelperService.persister(eq(progress), any(), any(), eq(""), eq("$")))
+                .thenReturn(Mono.just(progress));
 
         StepVerifier.create(tpsMessagingClient.gjenopprett(bestilling,
-                        DollyPerson.builder().ident(IDENT).build(), progress, true))
+                        DollyPerson.builder().ident(IDENT).build(), progress))
                 .expectNext(progress)
                 .verifyComplete();
 
-        verifyNoInteractions(miljoerConsumer, transactionHelperService, personServiceConsumer, tpsMessagingConsumer);
+        verify(transactionHelperService).persister(eq(progress), any(), any(), eq(""), eq("$"));
+        verifyNoInteractions(tpsMessagingConsumer);
     }
 
-    @Test
-    void shouldPrepareStatusWhenBestillingHasTpsData() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldSendTpsDataAndUpdateStatusOnlyOutsideOrderMode(boolean ordre) {
 
         var bestilling = RsDollyUtvidetBestilling.builder()
                 .bankkonto(BankkontoData.builder()
@@ -87,17 +88,28 @@ class TpsMessagingClientTest {
         var progress = new BestillingProgress();
 
         when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of("q1")));
-        when(transactionHelperService.persister(eq(progress), any(), any(), anyString(), eq("$")))
-                .thenReturn(Mono.just(progress));
-        when(personServiceConsumer.getPdlPersoner(any())).thenReturn(Flux.empty());
-        when(tpsMessagingConsumer.sendNorskBankkontoRequest(eq(IDENT), any(), any())).thenReturn(Flux.empty());
+        if (!ordre) {
+            when(transactionHelperService.persister(eq(progress), any(), any(), anyString(), eq("$")))
+                    .thenReturn(Mono.just(progress));
+        }
+        when(personServiceConsumer.getPdlPersoner(List.of(IDENT))).thenReturn(Flux.empty());
+        when(tpsMessagingConsumer.sendNorskBankkontoRequest(eq(IDENT), isNull(),
+                eq(bestilling.getBankkonto().getNorskBankkonto())))
+                .thenReturn(Flux.just(TpsMeldingResponseDTO.builder().miljoe("q1").status("OK").build()));
         when(applicationConfig.getClientTimeout()).thenReturn(10L);
 
         StepVerifier.create(tpsMessagingClient.gjenopprett(bestilling,
-                        DollyPerson.builder().ident(IDENT).build(), progress, true))
+                        DollyPerson.builder().ident(IDENT).isOrdre(ordre).build(), progress))
                 .expectNext(progress)
                 .verifyComplete();
 
-        verify(transactionHelperService).persister(eq(progress), any(), any(), startsWith("Startet#q1:"), eq("$"));
+        verify(tpsMessagingConsumer).sendNorskBankkontoRequest(eq(IDENT), isNull(),
+                eq(bestilling.getBankkonto().getNorskBankkonto()));
+        if (ordre) {
+            verifyNoInteractions(transactionHelperService);
+        } else {
+            verify(transactionHelperService).persister(eq(progress), any(), any(), startsWith("Startet#q1:"), eq("$"));
+            verify(transactionHelperService).persister(eq(progress), any(), any(), eq("NorskBankkonto#q1:OK"), eq("$"));
+        }
     }
 }
