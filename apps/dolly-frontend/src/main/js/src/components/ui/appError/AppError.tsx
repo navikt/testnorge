@@ -4,6 +4,8 @@ import './appError.less'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { CSSProperties, useEffect } from 'react'
+import { Link } from '@navikt/ds-react'
+import logoutBruker from '@/components/utlogging/logoutBruker'
 
 type Props = {
 	style?: CSSProperties | undefined
@@ -49,9 +51,9 @@ export const AppError = ({ error, stackTrace, style }: Props) => {
 				Noe gikk galt under visning av elementet. <br />
 				Dersom refresh av siden ikke fungerer, forsøk å trykke{' '}
 				<b>
-					<a href={window.location.protocol + '//' + window.location.host + '/oauth2/logout'}>
+					<Link as="button" type="button" onClick={() => logoutBruker()}>
 						her
-					</a>
+					</Link>
 				</b>
 				, clear cookies eller kontakt Team Dolly på slack{' '}
 				<b>

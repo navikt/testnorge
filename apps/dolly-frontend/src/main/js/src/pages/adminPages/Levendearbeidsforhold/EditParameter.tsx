@@ -6,6 +6,7 @@ import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useForm } from 'react-hook-form'
 import { FetchData } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
+import { csrfFetch } from '@/api/csrf'
 
 interface Props {
 	name: string
@@ -27,7 +28,7 @@ export const EditParameter = ({ name, label, initialValue, options, data, setDat
 	} = useForm<{ value: string }>({ defaultValues: { value: initialValue } })
 
 	async function oppdaterParameterverdi(value: string) {
-		await fetch(`/testnav-levende-arbeidsforhold-ansettelse/api/v1/parameter/${name}`, {
+		await csrfFetch(`/testnav-levende-arbeidsforhold-ansettelse/api/v1/parameter/${name}`, {
 			method: 'PUT',
 			body: value,
 		}).then((res) => (res.status === 200 ? onSubmit(value) : console.error('Feil feil feil')))

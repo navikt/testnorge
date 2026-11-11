@@ -12,6 +12,7 @@ import {
 	SESSION_HEADER,
 } from '@/components/utlogging/sessionExpired'
 import { Logger } from '@/logger/Logger'
+import { CSRF_HEADER, csrfFetch, installAxiosCsrf, isCsrfRejected } from '@/api/csrf'
 
 const originalFetch = globalThis.fetch
 
@@ -20,7 +21,9 @@ axios.defaults.validateStatus = (status) => {
 	return (status >= 200 && status < 300) || status === 404
 }
 
-const fetchRetry = fetch_retry(originalFetch)
+installAxiosCsrf(axios)
+
+const fetchRetry = fetch_retry(csrfFetch as typeof fetch)
 
 const logoutOnForbidden = ['dolly-backend']
 
@@ -29,7 +32,7 @@ const awaitSessionRedirect = (): Promise<never> => {
 	return new Promise<never>(() => {})
 }
 
-export const multiFetcherAll = (urlListe, headers = null) =>
+export const multiFetcherAll = (urlListe: any[], headers = null) =>
 	Promise.all(
 		urlListe.map((url) =>
 			fetcher(url, headers, 0).then((result) => {
@@ -38,7 +41,7 @@ export const multiFetcherAll = (urlListe, headers = null) =>
 		),
 	)
 
-export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
+export const multiFetcherInst = (miljoUrlListe: any[], headers = null, path = null) =>
 	Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
@@ -47,7 +50,11 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 		),
 	)
 
-export const postFetcher = (url, body, headers = { 'Content-Type': 'application/json' }) =>
+export const postFetcher = (
+	url: string,
+	body: object | string,
+	headers = { 'Content-Type': 'application/json' },
+) =>
 	axios
 		.post(url, body, { headers: headers })
 		.then((res) => {
@@ -230,6 +237,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			if (isSessionExpired(response?.status, response?.headers.get(SESSION_HEADER))) {
 				return false
 			}
+			if (isCsrfRejected(response?.status, response?.headers.get(CSRF_HEADER))) {
+				return false
+			}
 			if (
 				config.retry !== false &&
 				!response?.ok &&
@@ -268,6 +278,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		}
 		if (isSessionExpired(response.status, response.headers.get(SESSION_HEADER))) {
 			return awaitSessionRedirect()
+		}
+		if (isCsrfRejected(response.status, response.headers.get(CSRF_HEADER))) {
+			throw new Error('Forespørselen ble avvist. Last inn siden på nytt.')
 		}
 		if (!response.ok && response.status !== 400 && !runningE2ETest()) {
 			if (response?.status === 401 && logoutOnForbidden.some((value) => url.includes(value))) {

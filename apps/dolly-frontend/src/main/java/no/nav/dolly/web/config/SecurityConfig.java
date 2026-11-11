@@ -2,6 +2,7 @@ package no.nav.dolly.web.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.config.csrf.CsrfProtection;
 import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Configuration
-@Profile({"prod", "dev", "test"})
+@Profile({ "prod", "dev", "test" })
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 class SecurityConfig {
@@ -24,10 +25,10 @@ class SecurityConfig {
 
     @Bean
     SecurityWebFilterChain configure(ServerHttpSecurity http) {
-        return http
+        return CsrfProtection.apply(http)
                 .cors(ServerHttpSecurity.CorsSpec::disable)
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(spec -> spec
+                        .pathMatchers("/session/**").authenticated()
                         .anyExchange()
                         .permitAll())
                 .oauth2ResourceServer(spec -> spec.jwt(jwtSpec -> jwtDecoder()))

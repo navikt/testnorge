@@ -15,7 +15,9 @@ interface SavedFormState {
 	locationState?: unknown
 }
 
-export function saveBestillingFormState(formValues: Record<string, any>, step: number): void {
+let pendingFormState: string | null = null
+
+function serialize(formValues: Record<string, any>, step: number): string {
 	const stripped = { ...formValues }
 	for (const key of EXCLUDED_KEYS) {
 		delete stripped[key]
@@ -27,7 +29,22 @@ export function saveBestillingFormState(formValues: Record<string, any>, step: n
 		path: currentPath(),
 		locationState: window.history.state?.usr,
 	}
-	sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+	return JSON.stringify(state)
+}
+
+export function saveBestillingFormState(formValues: Record<string, any>, step: number): void {
+	sessionStorage.setItem(STORAGE_KEY, serialize(formValues, step))
+}
+
+export function rememberBestillingFormState(formValues: Record<string, any>, step: number): void {
+	pendingFormState = serialize(formValues, step)
+}
+
+export function savePendingBestillingFormState(): void {
+	if (pendingFormState) {
+		sessionStorage.setItem(STORAGE_KEY, pendingFormState)
+		pendingFormState = null
+	}
 }
 
 export function loadBestillingFormState(): SavedFormState | null {
