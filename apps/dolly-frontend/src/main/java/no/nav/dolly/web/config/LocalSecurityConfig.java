@@ -3,15 +3,14 @@ package no.nav.dolly.web.config;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
+import no.nav.dolly.web.config.csrf.CsrfProtection;
 import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 
 @Slf4j
@@ -29,8 +28,8 @@ class LocalSecurityConfig {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
         var logoutSuccessHandler = new LogoutSuccessHandler();
 
-        return http.cors(ServerHttpSecurity.CorsSpec::disable)
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        return CsrfProtection.apply(http)
+                .cors(ServerHttpSecurity.CorsSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
                                 "/*.css",
                                 "/*.js",
@@ -50,7 +49,6 @@ class LocalSecurityConfig {
                 .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN))
                 .logout(logoutSpec -> logoutSpec
                         .logoutUrl(LOGOUT)
-                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGOUT))
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }

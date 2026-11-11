@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { describe, expect, it } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import { StegVelger } from '@/components/bestillingsveileder/stegVelger/StegVelger'
 import {
 	BestillingsveilederContext,
@@ -8,6 +8,12 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 import { MemoryRouter } from 'react-router'
+import { CSRF_FAILED_EVENT } from '@/api/csrf'
+import {
+	clearBestillingFormState,
+	loadBestillingFormState,
+	savePendingBestillingFormState,
+} from '@/utils/bestillingFormPersistence'
 
 const malMock = {
 	id: '123',
@@ -77,5 +83,28 @@ describe('Mal selection sync', () => {
 			'UGIFT',
 		)
 		expect(sivilstand).toBe(true)
+	})
+	it('should keep form state in memory until reload when CSRF fails', async () => {
+		clearBestillingFormState()
+		render(
+			<MemoryRouter>
+				<InitialWrapper>
+					<StegVelger
+						initialValues={{ pdldata: { opprettNyPerson: { identtype: 'FNR', id2032: false } } }}
+						onSubmit={async () => {}}
+					/>
+				</InitialWrapper>
+			</MemoryRouter>,
+		)
+		await screen.findByTestId('stegevelger-form-snapshot')
+
+		act(() => {
+			window.dispatchEvent(new CustomEvent(CSRF_FAILED_EVENT))
+		})
+		expect(loadBestillingFormState()).toBeNull()
+
+		savePendingBestillingFormState()
+		expect(loadBestillingFormState()?.formValues?.pdldata?.opprettNyPerson?.identtype).toBe('FNR')
+		clearBestillingFormState()
 	})
 })

@@ -5,6 +5,7 @@ import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import React, { useEffect, useState } from 'react'
 import { FetchData, Jobbstatus } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
 import { StatusBox } from '@/pages/adminPages/Levendearbeidsforhold/StatusBox'
+import { csrfFetch } from '@/api/csrf'
 
 export default () => {
 	const isAdmin = useErDollyAdmin()
@@ -58,7 +59,7 @@ export default () => {
 	 */
 	async function sendSporringScheduler(url: string) {
 		setHenterStatus(true)
-		await fetch(url, {
+		await csrfFetch(url, {
 			method: 'PUT',
 		})
 			.then(async (res) => {

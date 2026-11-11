@@ -1,5 +1,6 @@
 package no.nav.dolly.web.config.authentication;
 
+import no.nav.dolly.web.config.csrf.SessionCsrfTokenRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
@@ -28,11 +29,16 @@ class DollyAuthenticationSuccessHandlerTest {
             MockServerWebExchange.from(MockServerHttpRequest.get("/login/oauth2/code/idporten"));
 
     @Test
-    void shouldRedirectIdportenLoginToBruker() {
+    void shouldRemoveCsrfTokenFromBeforeLogin() {
+        var repository = new SessionCsrfTokenRepository();
+        var tokenBeforeLogin = repository.generateToken(exchange).block();
+        repository.saveToken(exchange, tokenBeforeLogin).block();
+
         new DollyAuthenticationSuccessHandler()
                 .onAuthenticationSuccess(webFilterExchange(), mock(Authentication.class))
                 .block();
 
+        assertThat(repository.loadToken(exchange).blockOptional()).isEmpty();
         assertThat(exchange.getResponse().getHeaders().getFirst(HttpHeaders.LOCATION)).isEqualTo("/bruker");
     }
 

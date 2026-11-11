@@ -26,6 +26,9 @@
 	"/session/ping": {
 		"changeOrigin": false
 	},
+	"/session/csrf": {
+		"changeOrigin": false
+	},
 	"/session/user": {
 		"changeOrigin": false
 	},

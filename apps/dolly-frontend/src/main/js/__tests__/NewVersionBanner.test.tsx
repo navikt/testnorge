@@ -1,8 +1,9 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { AppBanner, BESTILLING_SAVE_EVENT } from '@/components/versionBanner/NewVersionBanner'
 import React from 'react'
 import { MemoryRouter } from 'react-router'
+import { CSRF_FAILED_EVENT } from '@/api/csrf'
 
 vi.mock('@/utils/hooks/useVersionCheck', () => ({
 	useVersionCheck: vi.fn(),
@@ -111,5 +112,20 @@ describe('NewVersionBanner', () => {
 		expect(
 			screen.getByText(/Alle endringene dine vil bli lagret før siden lastes inn igjen/),
 		).toBeDefined()
+	})
+	it('should ask for reload when CSRF fails', () => {
+		mockedUseVersionCheck.mockReturnValue({ isNewVersionAvailable: false })
+
+		render(
+			<MemoryRouter initialEntries={['/gruppe/1/bestilling']}>
+				<AppBanner />
+			</MemoryRouter>,
+		)
+		act(() => {
+			window.dispatchEvent(new CustomEvent(CSRF_FAILED_EVENT))
+		})
+
+		expect(screen.getByText('Last inn siden på nytt')).toBeDefined()
+		expect(screen.getByText(/Bestillingen din blir lagret/)).toBeDefined()
 	})
 })

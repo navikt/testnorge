@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWK;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
+import no.nav.dolly.web.config.csrf.CsrfProtection;
 import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
 import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.authentication.OidcIdTokenValidator;
@@ -26,7 +26,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -39,10 +38,10 @@ import java.util.List;
 @EnableWebFluxSecurity
 class IdportenSecurityConfig {
 
+    static final String REQUIRED_ACR = "idporten-loa-high";
     private static final String LOGOUT = "/logout";
     private static final String LOGIN = "/login";
     private static final String ACR_VALUES = "acr_values";
-    static final String REQUIRED_ACR = "idporten-loa-high";
     private final String jwk;
     private final String wellKnownUrl;
     private final String postLogoutRedirectUri;
@@ -91,9 +90,8 @@ class IdportenSecurityConfig {
         var logoutSuccessHandler = new LogoutSuccessHandler();
         logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(webClient, wellKnownUrl, postLogoutRedirectUri));
 
-        return http
+        return CsrfProtection.apply(http)
                 .cors(ServerHttpSecurity.CorsSpec::disable)
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
                                 "/*.css",
                                 "/*.js",
@@ -122,7 +120,6 @@ class IdportenSecurityConfig {
                 }))
                 .logout(logoutSpec -> logoutSpec
                         .logoutUrl(LOGOUT)
-                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGOUT))
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }
