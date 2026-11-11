@@ -52,7 +52,7 @@ export const multiFetcherInst = (miljoUrlListe: any[], headers = null, path = nu
 
 export const postFetcher = (
 	url: string,
-	body: string,
+	body: object | string,
 	headers = { 'Content-Type': 'application/json' },
 ) =>
 	axios
