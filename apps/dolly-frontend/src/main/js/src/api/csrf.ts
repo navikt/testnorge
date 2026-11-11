@@ -129,7 +129,9 @@ export const installAxiosCsrf = (instance: AxiosInstance) => {
 		if (!needsCsrfToken(config.method, config.url)) {
 			return config
 		}
-		config.csrfTokenRequest = loadCsrfToken()
+		if (!config.csrfRetried || !config.csrfTokenRequest) {
+			config.csrfTokenRequest = loadCsrfToken()
+		}
 		const csrfToken = await tokenHeader(config.csrfTokenRequest)
 		if (csrfToken) {
 			config.headers.set(csrfToken.headerName, csrfToken.token)
@@ -148,9 +150,9 @@ export const installAxiosCsrf = (instance: AxiosInstance) => {
 			throw error
 		}
 		config.csrfRetried = true
-		if (config.csrfTokenRequest) {
-			await refreshCsrfToken(config.csrfTokenRequest)
-		}
+		config.csrfTokenRequest = config.csrfTokenRequest
+			? refreshCsrfToken(config.csrfTokenRequest)
+			: loadCsrfToken()
 		return instance.request(config)
 	})
 }
