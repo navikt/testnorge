@@ -34,7 +34,7 @@ export const BarnetilleggForm = ({ formMethods }) => {
 	const barnetilleggPath = 'pensjonforvalter.uforetrygd.barnetilleggDetaljer'
 
 	const [harBarnetillegg, setHarBarnetillegg] = useState(
-		formMethods.watch(barnetilleggPath) !== null,
+		formMethods.watch(barnetilleggPath) != null,
 	)
 
 	const handleBarnetilleggChange = (value) => {
