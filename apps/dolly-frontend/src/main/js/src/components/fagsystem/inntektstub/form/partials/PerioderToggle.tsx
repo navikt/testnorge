@@ -52,7 +52,7 @@ interface PerioderToggleProps {
 const parseMonth = (value?: string) => (value ? parse(value, VALUE_FORMAT, new Date()) : null)
 
 const getSorterteMaaneder = (perioder: unknown): string[] =>
-	Array.isArray(perioder) ? [...perioder].sort() : []
+	Array.isArray(perioder) ? [...perioder].sort((a: string, b: string) => a.localeCompare(b)) : []
 
 const harManglendeMaaneder = (perioder: string[]) => {
 	const forsteMaaned = parseMonth(perioder[0])
@@ -92,7 +92,7 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 			)
 			formMethods.setValue(perioderPath, maaneder, { shouldTouch: true })
 		}
-		formMethods.trigger(perioderPath)
+		void formMethods.trigger(perioderPath)
 	}
 
 	const handleFraChange = (dato?: Date) => {
