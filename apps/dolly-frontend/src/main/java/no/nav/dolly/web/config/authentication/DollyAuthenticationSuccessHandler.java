@@ -1,6 +1,7 @@
 package no.nav.dolly.web.config.authentication;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.config.csrf.SessionCsrfTokenRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.DefaultServerRedirectStrategy;
 import org.springframework.security.web.server.ServerRedirectStrategy;
@@ -42,6 +43,7 @@ public class DollyAuthenticationSuccessHandler implements ServerAuthenticationSu
         return exchange.getSession()
                 .doOnNext(session -> {
                     var now = clock.instant();
+                    session.getAttributes().remove(SessionCsrfTokenRepository.SESSION_ATTRIBUTE);
                     session.getAttributes().remove(EXPIRED);
                     session.getAttributes().put(AUTH_TIME, now);
                     session.getAttributes().put(LAST_USER_ACTIVITY, now);

@@ -182,6 +182,10 @@ const mockRoutes: RouteInfo[] = [
 	{ url: soekMalerOversikt, response: soekMalerOversiktMock },
 	{ url: soekMalerBruker, response: soekMalerBrukerMock },
 	{ url: '**/dolly-logg', response: [] },
+	{
+		url: '**/session/csrf',
+		response: { headerName: 'X-CSRF-TOKEN', parameterName: '_csrf', token: 'playwright' },
+	},
 ]
 
 export const test = base.extend({

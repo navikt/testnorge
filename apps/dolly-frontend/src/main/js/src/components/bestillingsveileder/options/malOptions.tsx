@@ -328,7 +328,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.opprettNyPerson.syntetisk = true
 		newPdldata.opprettNyPerson.identtype = nyPerson.identtype ?? 'FNR'
 		newPdldata.opprettNyPerson.id2032 = nyPerson.id2032 ?? false
-		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
+		if (nyPerson.alder == null && nyPerson.foedtFoer == null && nyPerson.foedtEtter == null) {
 			newPdldata.opprettNyPerson = {
 				identtype: nyPerson.identtype ?? 'FNR',
 				id2032: nyPerson.id2032 ?? false,
@@ -364,7 +364,9 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon.map(
 			(relasjon: ForeldreBarnRelasjon) => {
 				relasjon.typeForelderBarn = updateTypeForelderBarn(relasjon)
-				if (relasjon.relatertPersonsRolle === 'BARN' && relasjon.deltBosted) {
+				if (relasjon.relatertPersonsRolle === 'BARN' && _.isEmpty(relasjon.deltBosted)) {
+					relasjon.deltBosted = null
+				} else if (relasjon.relatertPersonsRolle === 'BARN') {
 					relasjon.deltBosted = updateAdressetyper(relasjon.deltBosted, true)
 				}
 				if (relasjon.nyRelatertPerson) {

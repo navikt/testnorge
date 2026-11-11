@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
@@ -23,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.test.publisher.TestPublisher;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -344,7 +346,7 @@ class DeltBostedServiceTest {
         dbPerson.getPerson().setDeltBosted(new ArrayList<>(List.of(deltBosted)));
 
         StepVerifier.create(deltBostedService.convert(dbPerson))
-                .assertNext(result ->
+                .assertNext(_ ->
                         verify(personRepository, never()).findByIdentInOrderBySistOppdatertDesc(anyList()))
                 .verifyComplete();
     }
@@ -394,11 +396,18 @@ class DeltBostedServiceTest {
                         .build());
         when(personRepository.findByIdent(BARN_IDENT))
                 .thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(Mono.just(barnDbPerson));
 
         StepVerifier.create(deltBostedService.handle(deltBosted, hovedperson, BARN_IDENT))
                 .verifyComplete();
 
         assertThat(barnDbPerson.getPerson().getDeltBosted(), hasSize(1));
+        var savedDeltBosted = barnDbPerson.getPerson().getDeltBosted().getFirst();
+        assertThat(savedDeltBosted.getStartdatoForKontrakt(), is(equalTo(LocalDateTime.of(2023, 1, 1, 0, 0))));
+        assertThat(savedDeltBosted.getId(), is(1));
+        assertThat(savedDeltBosted.getKilde(), is("Dolly"));
+        assertThat(savedDeltBosted.getMaster(), is(DbVersjonDTO.Master.FREG));
+        verify(personRepository).save(barnDbPerson);
     }
 
     @Test
@@ -428,12 +437,14 @@ class DeltBostedServiceTest {
                         .build());
         when(personRepository.findByIdent(BARN_IDENT))
                 .thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(Mono.just(barnDbPerson));
 
         StepVerifier.create(deltBostedService.handle(deltBosted, hovedperson, BARN_IDENT))
                 .verifyComplete();
 
         assertThat(barnDbPerson.getPerson().getDeltBosted().getFirst().getStartdatoForKontrakt(),
                 is(equalTo(startdato)));
+        verify(personRepository).save(barnDbPerson);
     }
 
     // ---- handle (3-arg overload): partner adresse lookup ----
@@ -478,12 +489,14 @@ class DeltBostedServiceTest {
                 .thenReturn(deltBostedMapped);
         when(personRepository.findByIdent(FORELDER2_IDENT)).thenReturn(Mono.just(partnerDbPerson));
         when(personRepository.findByIdent(BARN_IDENT)).thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(Mono.just(barnDbPerson));
 
         StepVerifier.create(deltBostedService.handle(deltBostedInput, hovedperson, BARN_IDENT))
                 .verifyComplete();
 
         assertThat(deltBostedMapped.getVegadresse(), is(notNullValue()));
         assertThat(deltBostedMapped.getVegadresse().getKommunenummer(), is(equalTo("0302")));
+        verify(personRepository).save(barnDbPerson);
     }
 
     @Test
@@ -523,6 +536,7 @@ class DeltBostedServiceTest {
                 .verifyComplete();
 
         assertThat(deltBostedMapped.getVegadresse(), is(nullValue()));
+        verify(personRepository, never()).save(any(DbPerson.class));
     }
 
     @Test
@@ -550,6 +564,7 @@ class DeltBostedServiceTest {
                 .verifyComplete();
 
         verify(personRepository, never()).findByIdent(anyString());
+        verify(personRepository, never()).save(any(DbPerson.class));
     }
 
     // ---- handle (3-arg overload): with explicit adresse ----
@@ -578,12 +593,65 @@ class DeltBostedServiceTest {
                 .thenReturn(Mono.just(serviceResponse));
         when(personRepository.findByIdent(BARN_IDENT))
                 .thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(Mono.just(barnDbPerson));
 
         StepVerifier.create(deltBostedService.handle(deltBostedInput, hovedperson, BARN_IDENT))
                 .verifyComplete();
 
         assertThat(barnDbPerson.getPerson().getDeltBosted(), hasSize(1));
         verify(personRepository, never()).findByIdent(FORELDER2_IDENT);
+        verify(personRepository).save(barnDbPerson);
+    }
+
+    @Test
+    void shouldWaitForChildToBeSavedBeforeCompleting() {
+
+        var deltBosted = DeltBostedDTO.builder()
+                .ukjentBosted(UkjentBostedDTO.builder().bostedskommune("0301").build())
+                .build();
+        var hovedperson = buildVoksenPerson(FORELDER1_IDENT, List.of());
+        var barnDbPerson = buildDbPerson(BARN_IDENT, buildBarnPerson(BARN_IDENT, List.of()));
+        var existingDeltBosted = DeltBostedDTO.builder().id(5).build();
+        barnDbPerson.getPerson().getDeltBosted().add(existingDeltBosted);
+        var pendingSave = TestPublisher.<DbPerson>create();
+
+        when(mapperFacade.map(deltBosted, DeltBostedDTO.class)).thenReturn(deltBosted);
+        when(personRepository.findByIdent(BARN_IDENT)).thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(pendingSave.mono());
+
+        StepVerifier.create(deltBostedService.handle(deltBosted, hovedperson, BARN_IDENT))
+                .then(() -> {
+                    pendingSave.assertSubscribers();
+                    assertThat(barnDbPerson.getPerson().getDeltBosted(), hasSize(2));
+                    assertThat(barnDbPerson.getPerson().getDeltBosted().getFirst(), is(deltBosted));
+                    assertThat(deltBosted.getId(), is(6));
+                    assertThat(barnDbPerson.getPerson().getDeltBosted().get(1), is(existingDeltBosted));
+                    pendingSave.emit(barnDbPerson);
+                })
+                .verifyComplete();
+
+        verify(personRepository).save(barnDbPerson);
+    }
+
+    @Test
+    void shouldPropagateChildSaveFailure() {
+
+        var deltBosted = DeltBostedDTO.builder()
+                .ukjentBosted(UkjentBostedDTO.builder().bostedskommune("0301").build())
+                .build();
+        var hovedperson = buildVoksenPerson(FORELDER1_IDENT, List.of());
+        var barnDbPerson = buildDbPerson(BARN_IDENT, buildBarnPerson(BARN_IDENT, List.of()));
+        var saveFailure = new IllegalStateException("Could not save child");
+
+        when(mapperFacade.map(deltBosted, DeltBostedDTO.class)).thenReturn(deltBosted);
+        when(personRepository.findByIdent(BARN_IDENT)).thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(Mono.error(saveFailure));
+
+        StepVerifier.create(deltBostedService.handle(deltBosted, hovedperson, BARN_IDENT))
+                .expectErrorMatches(throwable -> throwable == saveFailure)
+                .verify();
+
+        verify(personRepository).save(barnDbPerson);
     }
 
     // ---- handle (3-arg overload): separert partner also triggers lookup ----
@@ -628,12 +696,14 @@ class DeltBostedServiceTest {
                 .thenReturn(deltBostedMapped);
         when(personRepository.findByIdent(FORELDER2_IDENT)).thenReturn(Mono.just(partnerDbPerson));
         when(personRepository.findByIdent(BARN_IDENT)).thenReturn(Mono.just(barnDbPerson));
+        when(personRepository.save(barnDbPerson)).thenReturn(Mono.just(barnDbPerson));
 
         StepVerifier.create(deltBostedService.handle(deltBostedInput, hovedperson, BARN_IDENT))
                 .verifyComplete();
 
         assertThat(deltBostedMapped.getMatrikkeladresse(), is(notNullValue()));
         assertThat(deltBostedMapped.getMatrikkeladresse().getKommunenummer(), is(equalTo("0302")));
+        verify(personRepository).save(barnDbPerson);
     }
 
     // ---- helpers ----

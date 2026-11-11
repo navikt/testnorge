@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.consumers.Altinn3PersonOrganisasjonTilgangConsumer;
 import no.nav.dolly.web.service.BrukerService;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/session")
@@ -32,6 +36,20 @@ public class SessionController {
     @GetMapping("/ping")
     public ResponseEntity<HttpStatus> ping() {
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/csrf")
+    public Mono<ResponseEntity<Map<String, String>>> csrf(ServerWebExchange exchange) {
+        Mono<CsrfToken> csrfToken = exchange.getAttribute(CsrfToken.class.getName());
+        return Mono.justOrEmpty(csrfToken)
+                .flatMap(token -> token)
+                .map(token -> ResponseEntity.ok()
+                        .cacheControl(CacheControl.noStore())
+                        .body(Map.of(
+                                "headerName", token.getHeaderName(),
+                                "parameterName", token.getParameterName(),
+                                "token", token.getToken())))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/user")

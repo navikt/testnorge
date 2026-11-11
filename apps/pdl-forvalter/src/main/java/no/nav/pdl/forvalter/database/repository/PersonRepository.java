@@ -18,6 +18,7 @@ import java.util.Set;
 public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Long> {
 
     Mono<DbPerson> findByIdent(String ident);
+
     Flux<DbPerson> findByIdentIn(List<String> ident);
 
     Mono<DbPerson> save(DbPerson person);
@@ -26,6 +27,7 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
     Flux<DbPerson> findByIdentInOrderBySistOppdatertDesc(Collection<String> idents);
 
     Mono<DbPerson> findById(Long id);
+
     Flux<DbPerson> findByIdIn(Set<Long> ids);
 
     @Modifying

@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import io.r2dbc.spi.R2dbcException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -16,21 +17,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static no.nav.pdl.forvalter.utils.OptimisticLockingRetryUtils.retryOnOptimisticLockingFailure;
 
 @Slf4j
 @Service
@@ -43,6 +48,7 @@ public class IdentitetService {
 
     private final PersonRepository personRepository;
     private final RelasjonRepository relasjonRepository;
+    private final ReactiveTransactionManager transactionManager;
 
     @Transactional(readOnly = true)
     public Flux<PersonIDDTO> getfragment(String fragment, Paginering paginering) {
@@ -78,16 +84,29 @@ public class IdentitetService {
                         Sort.by(SORT_BY_FIELD).descending()));
     }
 
-    @Transactional
     public Mono<Void> updateStandalone(String ident, Boolean standalone) {
 
-        return retryOnOptimisticLockingFailure(() ->
-                personRepository.findByIdent(ident)
+        return Mono.defer(() -> personRepository.findByIdent(ident)
                         .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
                         .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
-                        .flatMap(personRepository::save))
-                .flatMapMany(this::setStandaloneRelasjoner)
-                .then();
+                        .flatMap(personRepository::save)
+                        .flatMapMany(this::setStandaloneRelasjoner)
+                        .then())
+                .as(TransactionalOperator.create(transactionManager)::transactional)
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
+                        .filter(this::isDeadlock)
+                        .onRetryExhaustedThrow((_, signal) -> signal.failure()));
+    }
+
+    private boolean isDeadlock(Throwable throwable) {
+
+        for (Throwable cause = throwable; nonNull(cause); cause = cause.getCause()) {
+            if (cause instanceof R2dbcException r2dbcException &&
+                "40P01".equals(r2dbcException.getSqlState())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Flux<DbPerson> setStandaloneRelasjoner(DbPerson person) {
@@ -102,10 +121,9 @@ public class IdentitetService {
 
     private Mono<DbPerson> setStandalonePerson(Long id, String motpartsIdent, Boolean standalone) {
 
-        return retryOnOptimisticLockingFailure(() ->
-                personRepository.findById(id)
+        return personRepository.findById(id)
                         .flatMap(dbPerson -> updateStandaloneRelasjon(dbPerson, motpartsIdent, standalone))
-                        .flatMap(personRepository::save));
+                        .flatMap(personRepository::save);
     }
 
     private Mono<DbPerson> updateStandaloneRelasjon(DbPerson dbPerson, String motpartsIdent, Boolean standalone) {
