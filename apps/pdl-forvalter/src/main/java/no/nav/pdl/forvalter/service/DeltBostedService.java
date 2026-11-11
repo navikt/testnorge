@@ -35,6 +35,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.TRUE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -103,6 +104,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                                 .map(PersonDTO::getForelderBarnRelasjon)
                                                 .flatMap(Flux::fromIterable)
                                                 .filter(ForelderBarnRelasjonDTO::isForeldre)
+                                                .filter(forelder -> isNotBlank(forelder.getIdentForRelasjon()))
                                                 .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                                                 .collect(Collectors.toSet())
                                                 .flatMapMany(barna ->
