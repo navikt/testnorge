@@ -102,10 +102,12 @@ export const TextInput = ({
 	const shouldShowError = (error && (showError || isTouched || hasSubmitted)) || !!props.manualError
 
 	useEffect(() => {
-		if (name) {
+		if (value !== undefined) {
+			setFieldValue(value)
+		} else if (name) {
 			setFieldValue(formValue ?? '')
 		} else {
-			setFieldValue(value ?? '')
+			setFieldValue('')
 		}
 	}, [value, formValue, name])
 
