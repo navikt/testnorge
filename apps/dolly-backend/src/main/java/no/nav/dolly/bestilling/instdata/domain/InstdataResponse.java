@@ -2,9 +2,8 @@ package no.nav.dolly.bestilling.instdata.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.http.HttpStatus;
@@ -16,8 +15,7 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

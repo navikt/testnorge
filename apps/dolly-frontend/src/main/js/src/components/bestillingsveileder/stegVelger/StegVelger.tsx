@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -35,9 +35,11 @@ import { useMalFormSync } from './hooks/useMalFormSync'
 import { useId2032Sync, useIdenttypeSync } from './hooks/useFormFieldSync'
 import { executeMutateAndValidate, validateAndNavigate } from './utils/navigationHelpers'
 import StepErrorBoundary from './StepErrorBoundary'
+import { CSRF_FAILED_EVENT } from '@/api/csrf'
 import {
 	clearBestillingFormState,
-	loadBestillingFormState,
+	loadBestillingFormStateForCurrentPage,
+	rememberBestillingFormState,
 	saveBestillingFormState,
 } from '@/utils/bestillingFormPersistence'
 import {
@@ -88,8 +90,8 @@ export const StegVelger = ({
 	const [formMutate, setFormMutate] = useState(() => null as any)
 	const [mutateLoading, setMutateLoading] = useState(false)
 	const [loading, setLoading] = useState(false)
-
-	const [savedState] = useState(() => loadBestillingFormState())
+	const submittedValues = useRef<any>(null)
+	const [savedState] = useState(() => loadBestillingFormStateForCurrentPage())
 	const [step, setStep] = useState(savedState?.step ?? 0)
 
 	const effectiveInitialValues = savedState
@@ -109,8 +111,8 @@ export const StegVelger = ({
 	const matchMutate = useMatchMutate()
 
 	useEffect(() => {
+		clearBestillingFormState()
 		if (savedState) {
-			clearBestillingFormState()
 			window.dispatchEvent(new CustomEvent(BESTILLING_RESTORED_EVENT))
 		}
 	}, [])
@@ -123,8 +125,19 @@ export const StegVelger = ({
 				console.error('Failed to save bestilling form state:', e)
 			}
 		}
+		const csrfHandler = () => {
+			try {
+				rememberBestillingFormState(submittedValues.current ?? formMethods.getValues(), step)
+			} catch (e) {
+				console.error('Failed to remember bestilling form state:', e)
+			}
+		}
 		window.addEventListener(BESTILLING_SAVE_EVENT, handler)
-		return () => window.removeEventListener(BESTILLING_SAVE_EVENT, handler)
+		window.addEventListener(CSRF_FAILED_EVENT, csrfHandler)
+		return () => {
+			window.removeEventListener(BESTILLING_SAVE_EVENT, handler)
+			window.removeEventListener(CSRF_FAILED_EVENT, csrfHandler)
+		}
 	}, [step])
 
 	const validationPaths = Object.keys(validationResolver.fields)
@@ -184,6 +197,7 @@ export const StegVelger = ({
 		clearBestillingFormState()
 		sessionStorage.clear()
 		errorContext?.setShowError(false)
+		submittedValues.current = values
 		await onSubmit(values)
 
 		formMethods.reset()

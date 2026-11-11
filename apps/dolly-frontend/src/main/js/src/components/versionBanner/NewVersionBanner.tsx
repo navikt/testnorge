@@ -3,8 +3,13 @@ import { Alert, Button, GlobalAlert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
+import {
+	BESTILLING_SAVE_EVENT,
+	savePendingBestillingFormState,
+} from '@/utils/bestillingFormPersistence'
+import { CSRF_FAILED_EVENT } from '@/api/csrf'
 
-export const BESTILLING_SAVE_EVENT = 'dolly-save-and-reload'
+export { BESTILLING_SAVE_EVENT }
 export const BESTILLING_RESTORED_EVENT = 'dolly-form-restored'
 
 const isBestillingPath = (pathname: string) =>
@@ -16,6 +21,7 @@ export const AppBanner = () => {
 	const isOnBestilling = isBestillingPath(location.pathname)
 	const [dismissed, setDismissed] = useState(false)
 	const [showRestored, setShowRestored] = useState(false)
+	const [reloadRequired, setReloadRequired] = useState(false)
 
 	useEffect(() => {
 		const handler = () => setShowRestored(true)
@@ -23,19 +29,44 @@ export const AppBanner = () => {
 		return () => window.removeEventListener(BESTILLING_RESTORED_EVENT, handler)
 	}, [])
 
+	useEffect(() => {
+		const handler = () => setReloadRequired(true)
+		window.addEventListener(CSRF_FAILED_EVENT, handler)
+		return () => window.removeEventListener(CSRF_FAILED_EVENT, handler)
+	}, [])
+
 	const handleReload = () => {
 		if (isBestillingPath(window.location.pathname)) {
+			savePendingBestillingFormState()
 			window.dispatchEvent(new CustomEvent(BESTILLING_SAVE_EVENT))
 		}
 		window.location.reload()
 	}
 
-	const showVersion = isNewVersionAvailable && !dismissed
+	const showVersion = isNewVersionAvailable && !dismissed && !reloadRequired
 
-	if (!showVersion && !showRestored) return null
+	if (!showVersion && !showRestored && !reloadRequired) return null
 
 	return (
 		<StickyAlertWrapper>
+			{reloadRequired && (
+				<StyledGlobalAlert status="warning">
+					<GlobalAlert.Header>
+						<GlobalAlert.Title as="h2">Last inn siden på nytt</GlobalAlert.Title>
+					</GlobalAlert.Header>
+					<GlobalAlert.Content>
+						<StyledContent>
+							<span>
+								Dolly kunne ikke fullføre handlingen din. Last inn siden på nytt og prøv igjen.
+								{isOnBestilling && ' Bestillingen din blir lagret før siden lastes inn på nytt.'}
+							</span>
+							<Button variant="tertiary" size="xsmall" onClick={handleReload}>
+								Last inn på nytt
+							</Button>
+						</StyledContent>
+					</GlobalAlert.Content>
+				</StyledGlobalAlert>
+			)}
 			{showVersion && (
 				<StyledGlobalAlert status="announcement">
 					<GlobalAlert.Header>

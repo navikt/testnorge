@@ -7,6 +7,7 @@ services:
       - altinn
     build:
       context: ./apps/altinn3-tilgang-service
+      dockerfile: ../../Dockerfile
     environment:
       - ALTINN_URL=http//altinn:8080
       - AZURE_OPENID_CONFIG_ISSUER=dummy
@@ -25,6 +26,7 @@ services:
   tokendings:
     build:
       context: ./mocks/tokendings-mock
+      dockerfile: ../../Dockerfile
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - SPRING_PROFILES_ACTIVE=virtual
@@ -34,6 +36,7 @@ services:
   maskinporten:
     build:
       context: ./mocks/maskinporten-mock
+      dockerfile: ../../Dockerfile
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - SPRING_PROFILES_ACTIVE=virtual
@@ -60,6 +63,7 @@ services:
       - tokendings
     build:
       context: ./apps/bruker-service
+      dockerfile: ../../Dockerfile
     environment:
       - AZURE_OPENID_CONFIG_ISSUER=dummy
       - CRYPTOGRAPHY_SECRET=dummy

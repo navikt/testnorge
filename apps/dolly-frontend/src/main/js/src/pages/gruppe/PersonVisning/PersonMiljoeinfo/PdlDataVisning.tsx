@@ -9,9 +9,9 @@ import { usePdlMiljoeinfo } from '@/utils/hooks/usePdlPerson'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type PdlDataVisningProps = {
-	ident: Ident
-	bankIdBruker: boolean
-	miljoe: string
+	ident?: Ident | string
+	bankIdBruker?: boolean
+	miljoe?: string
 }
 
 export const ApiFeilmelding = ({ feil }) => {

@@ -35,6 +35,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.TRUE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -103,6 +104,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                                                 .map(PersonDTO::getForelderBarnRelasjon)
                                                 .flatMap(Flux::fromIterable)
                                                 .filter(ForelderBarnRelasjonDTO::isForeldre)
+                                                .filter(forelder -> isNotBlank(forelder.getIdentForRelasjon()))
                                                 .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                                                 .collect(Collectors.toSet())
                                                 .flatMapMany(barna ->
@@ -229,13 +231,14 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                 .flatMap(_ -> {
                     if (deltBosted.countAdresser() > 0) {
                         return personRepository.findByIdent(barnIdent)
-                                .doOnNext(dbPerson -> {
+                                .map(dbPerson -> {
                                     if (isNull(deltBosted.getStartdatoForKontrakt())) {
                                         deltBosted.setStartdatoForKontrakt(
                                                 FoedselsdatoUtility.getFoedselsdato(dbPerson.getPerson()));
                                     }
-                                    setDeltBosted(dbPerson.getPerson(), deltBosted);
+                                    return setDeltBosted(dbPerson, deltBosted);
                                 })
+                                .flatMap(personRepository::save)
                                 .then();
                     }
                     return Mono.empty();
@@ -265,16 +268,17 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         return Mono.empty();
     }
 
-    private void setDeltBosted(PersonDTO barn, DeltBostedDTO deltBosted) {
+    private DbPerson setDeltBosted(DbPerson barn, DeltBostedDTO deltBosted) {
 
-        deltBosted.setId(barn.getDeltBosted().stream()
+        deltBosted.setId(barn.getPerson().getDeltBosted().stream()
                                  .findFirst()
                                  .map(DeltBostedDTO::getId)
                                  .orElse(0) + 1);
 
         deltBosted.setKilde(getKilde(deltBosted));
         deltBosted.setMaster(getMaster(deltBosted, IdenttypeUtility.getIdenttype(barn.getIdent())));
-        barn.getDeltBosted().addFirst(deltBosted);
+        barn.getPerson().getDeltBosted().addFirst(deltBosted);
+        return barn;
     }
 
     @Override

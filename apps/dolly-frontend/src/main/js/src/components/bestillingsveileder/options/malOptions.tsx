@@ -270,7 +270,9 @@ const getUpdatedSkattekortData = (skattekortData: any) => {
 }
 
 const getUpdatedInstData = (instData: any) =>
-	instData.map((data: any) => updateData(data, initialValues.instdata))
+	instData.map((data: any) =>
+		updateData(_.omit(data, ['oppholdId', 'miljo']), initialValues.instdata),
+	)
 
 const getUpdatedPdlfData = (pdlfData: any) => {
 	const newPdlfData = Object.assign({}, pdlfData)
@@ -326,7 +328,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.opprettNyPerson.syntetisk = true
 		newPdldata.opprettNyPerson.identtype = nyPerson.identtype ?? 'FNR'
 		newPdldata.opprettNyPerson.id2032 = nyPerson.id2032 ?? false
-		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
+		if (nyPerson.alder == null && nyPerson.foedtFoer == null && nyPerson.foedtEtter == null) {
 			newPdldata.opprettNyPerson = {
 				identtype: nyPerson.identtype ?? 'FNR',
 				id2032: nyPerson.id2032 ?? false,
@@ -362,7 +364,9 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon.map(
 			(relasjon: ForeldreBarnRelasjon) => {
 				relasjon.typeForelderBarn = updateTypeForelderBarn(relasjon)
-				if (relasjon.relatertPersonsRolle === 'BARN' && relasjon.deltBosted) {
+				if (relasjon.relatertPersonsRolle === 'BARN' && _.isEmpty(relasjon.deltBosted)) {
+					relasjon.deltBosted = null
+				} else if (relasjon.relatertPersonsRolle === 'BARN') {
 					relasjon.deltBosted = updateAdressetyper(relasjon.deltBosted, true)
 				}
 				if (relasjon.nyRelatertPerson) {
@@ -422,10 +426,11 @@ const getUpdatedPdldata = (pdldata: any) => {
 	}
 
 	if (person?.nyident) {
-		newPdldata.person.nyident = person.nyident.map((ident: NyIdent) => {
-			ident.syntetisk = true
-			return ident
-		})
+		newPdldata.person.nyident = person.nyident.map((nyIdent: NyIdent) => ({
+			...nyIdent,
+			syntetisk: nyIdent.syntetisk || undefined,
+			id2032: nyIdent.id2032 || undefined,
+		}))
 	}
 
 	return newPdldata

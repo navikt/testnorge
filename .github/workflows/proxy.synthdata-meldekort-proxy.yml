@@ -11,6 +11,8 @@ on:
       - libs/security-core/**
       - libs/testing/**
       - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
       - proxies/synthdata-meldekort-proxy/**
 
 jobs:

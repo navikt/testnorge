@@ -16,6 +16,7 @@ sonarqube {
 }
 
 dependencies {
+    implementation "com.github.ben-manes.caffeine:caffeine"
     implementation "io.grpc:grpc-netty"
     implementation "io.grpc:grpc-netty-shaded"
     implementation 'org.apache.commons:commons-lang3'
@@ -39,4 +40,5 @@ dependencies {
 
     testImplementation "org.wiremock:wiremock-standalone:$versions.wiremock"
     testImplementation "io.projectreactor:reactor-test"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter"
 }

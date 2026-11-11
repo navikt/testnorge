@@ -71,7 +71,7 @@ spec:
       enabled: true
       runtime: java
   valkey:
-    - instance: session
+    - instance: session-idporten
       access: readwrite
   readiness:
     path: /internal/health/readiness
@@ -90,6 +90,7 @@ spec:
   image: "{{image}}"
   envFrom:
     - secret: idporten-dolly-prod
+    - secret: dolly-idporten-session-key
   env:
     - name: FRONTEND_TELEMETRY_ENABLED
       value: "true"

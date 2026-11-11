@@ -14,6 +14,36 @@ import {
 	initialKdiTesting,
 	instdataKdiAttributt,
 } from '@/components/fagsystem/kdi/initialValues'
+import { initialInst, initialInstTesting } from '@/components/fagsystem/inst/initialValues'
+
+interface EksisterendeInstOpphold {
+	institusjonstype?: string
+	startdato?: string
+	forventetSluttdato?: string
+	sluttdato?: string
+	oppholdId?: string
+}
+
+interface EksisterendeInstMiljo {
+	miljo: string
+	data?: EksisterendeInstOpphold[]
+}
+
+const mapEksisterendeInstData = (instdata?: EksisterendeInstMiljo[]) => {
+	if (!Array.isArray(instdata)) {
+		return []
+	}
+	return instdata.flatMap((miljoData) =>
+		(miljoData.data ?? []).map((opphold) => ({
+			institusjonstype: opphold.institusjonstype ?? initialInst.institusjonstype,
+			startdato: opphold.startdato ?? initialInst.startdato,
+			forventetSluttdato: opphold.forventetSluttdato ?? initialInst.forventetSluttdato,
+			sluttdato: opphold.sluttdato ?? initialInst.sluttdato,
+			oppholdId: opphold.oppholdId ?? null,
+			miljo: miljoData.miljo,
+		})),
+	)
+}
 
 export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
@@ -49,20 +79,18 @@ InstitusjonsoppholdPanel.heading = 'Institusjonsopphold'
 
 InstitusjonsoppholdPanel.initialValues = ({ set, opts, del, has }: any) => {
 	const eksisterendeKdiData = opts?.personFoerLeggTil?.instdataKdi
+	const eksisterendeInstData = mapEksisterendeInstData(opts?.personFoerLeggTil?.instdata)
 
 	return {
 		instdata: {
 			label: 'Institusjonsopphold',
 			checked: has('instdata'),
 			add() {
-				set('instdata', [
-					{
-						institusjonstype: runningE2ETest() ? 'AS' : '',
-						startdato: runningE2ETest() ? new Date() : '',
-						forventetSluttdato: '',
-						sluttdato: '',
-					},
-				])
+				if (runningE2ETest()) {
+					set('instdata', [initialInstTesting])
+					return
+				}
+				set('instdata', eksisterendeInstData.length > 0 ? eksisterendeInstData : [initialInst])
 			},
 			remove() {
 				del('instdata')

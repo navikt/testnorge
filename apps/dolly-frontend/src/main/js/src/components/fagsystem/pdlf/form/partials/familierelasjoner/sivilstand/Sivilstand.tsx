@@ -116,13 +116,13 @@ export const SivilstandForm = ({
 					isExpanded={
 						isTestnorgeIdent ||
 						!isEmpty(formMethods.watch(`${path}.nyRelatertPerson`), ['syntetisk']) ||
-						formMethods.watch(`${path}.relatertVedSivilstand`) !== null
+						formMethods.watch(`${path}.relatertVedSivilstand`) != null
 					}
 				/>
 			)}
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) === null && kanVelgeMaster}
+				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) == null && kanVelgeMaster}
 			/>
 		</div>
 	)

@@ -15,6 +15,7 @@ export type Relasjon = {
 	id: number
 	relasjonType: string
 	relatertPerson: PersonData
+	sistOppdatert?: string
 }
 
 export type PersonData = {
@@ -257,7 +258,7 @@ export type DeltBostedValues = {
 }
 
 export type NyIdent = {
-	identtype?: string
+	identtype?: string | null
 	kjoenn?: string
 	foedtEtter?: string
 	foedtFoer?: string
@@ -268,6 +269,9 @@ export type NyIdent = {
 	}
 	eksisterendeIdent?: string
 	master?: string
+	id2032?: boolean
+	eksisterendePerson?: boolean
+	kilde?: string
 }
 
 export type FalskIdentitetData = {

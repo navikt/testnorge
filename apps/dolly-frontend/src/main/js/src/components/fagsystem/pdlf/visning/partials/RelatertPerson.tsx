@@ -6,7 +6,7 @@ import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/Pd
 import styled from 'styled-components'
 import React from 'react'
 
-const StyledPdlData = styled.div`
+export const StyledPdlData = styled.div`
 	margin-bottom: 10px;
 	display: flex;
 	flex-wrap: wrap;
@@ -20,15 +20,9 @@ type RelatertPersonData = {
 	data: PersonData
 	tittel: string
 	marginTop?: string
-	visIdenttype?: boolean
 }
 
-export const RelatertPerson = ({
-	data,
-	tittel,
-	marginTop = '0',
-	visIdenttype = false,
-}: RelatertPersonData) => {
+export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPersonData) => {
 	if (!data) {
 		return null
 	}
@@ -47,7 +41,6 @@ export const RelatertPerson = ({
 			<div className="person-visning_content">
 				<h4 style={{ width: '100%', marginTop: marginTop }}>{tittel}</h4>
 				<TitleValue title="Ident" value={data.ident} visKopier />
-				{visIdenttype && <TitleValue title="Identtype" value={data.identtype} />}
 				<TitleValue title="Fornavn" value={data.navn?.[0].fornavn} />
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
 				<TitleValue title="Etternavn" value={data.navn?.[0].etternavn} />

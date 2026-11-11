@@ -12,14 +12,18 @@ import {
 	showLabel,
 } from '@/utils/DataFormatter'
 import { useFengsel } from '@/utils/hooks/useInstitusjon'
-import { publiseringstidspunktTid } from '@/components/fagsystem/kdi/form/Form'
-import { getTidspunktLabel } from '@/components/fagsystem/kdi/utils'
+import {
+	getTidspunktLabel,
+	grupperKdiHendelser,
+	KdiHendelse,
+} from '@/components/fagsystem/kdi/utils'
 import { KdiMeldingProps, KdiProps } from '@/components/fagsystem/kdi/form/partials/types'
 
 type KdiMeldingVisningProps = {
 	melding: KdiMeldingProps
 	id: number
 	annulleringListe?: Array<KdiMeldingProps>
+	tittel?: string
 }
 
 type KdiVisningProps = {
@@ -40,7 +44,7 @@ export const sjekkManglerKdiData = (kdiData: KdiProps) => {
 	)
 }
 
-export const KdiMelding = ({ melding, id, annulleringListe }: KdiMeldingVisningProps) => {
+export const KdiMelding = ({ melding, id, annulleringListe, tittel }: KdiMeldingVisningProps) => {
 	const annullering = annulleringListe?.find((a) => a.annullertMeldingId === melding.meldingId)
 
 	const { fengsler } = useFengsel()
@@ -52,7 +56,7 @@ export const KdiMelding = ({ melding, id, annulleringListe }: KdiMeldingVisningP
 
 	return (
 		<>
-			{melding.type && <h4 style={{ marginTop: '0px' }}>{codeToNorskLabel(melding.type)}</h4>}
+			{tittel && <h4 style={{ marginTop: '0px' }}>{tittel}</h4>}
 			<div className="person-visning_content" key={id} style={{ marginBottom: 0 }}>
 				<TitleValue
 					title="Publiseringstidspunkt"
@@ -103,16 +107,12 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 
 	const annullering = data?.annullering ?? []
 
-	const meldinger = Object.entries(data ?? {})
-		.flatMap(([type, values]) => values?.map((melding) => ({ ...melding, type })))
-		?.filter((melding) => melding && melding.type !== 'annullering')
-		?.sort(
-			(a, b) =>
-				publiseringstidspunktTid(a.publiseringstidspunkt) -
-				publiseringstidspunktTid(b.publiseringstidspunkt),
-		)
-
-	const manglerFagsystemdata = harKdiBestilling && (!data || !meldinger || meldinger?.length < 1)
+	const hendelser = grupperKdiHendelser(data)
+	const antallMeldinger = hendelser.reduce(
+		(antall, hendelse) => antall + hendelse.meldinger.length,
+		0,
+	)
+	const manglerFagsystemdata = harKdiBestilling && (!data || hendelser.length < 1)
 
 	return (
 		<div>
@@ -127,9 +127,21 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 				</Alert>
 			) : (
 				<ErrorBoundary>
-					<DollyFieldArray data={meldinger} nested>
-						{(melding: KdiMeldingProps, idx: number) => (
-							<KdiMelding melding={melding} id={idx} annulleringListe={annullering} />
+					<DollyFieldArray
+						data={hendelser}
+						getHeader={(hendelse: KdiHendelse) =>
+							`${codeToNorskLabel(hendelse.type)} (${hendelse.meldinger.length} ${
+								hendelse.meldinger.length === 1 ? 'melding' : 'meldinger'
+							})`
+						}
+						expandable={antallMeldinger > 5}
+					>
+						{(hendelse: KdiHendelse) => (
+							<DollyFieldArray data={hendelse.meldinger} nested>
+								{(melding: KdiMeldingProps, idx: number) => (
+									<KdiMelding melding={melding} id={idx} annulleringListe={annullering} />
+								)}
+							</DollyFieldArray>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>

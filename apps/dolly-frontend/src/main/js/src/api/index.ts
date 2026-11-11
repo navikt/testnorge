@@ -4,7 +4,15 @@ import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import {
+	BACKGROUND_REQUEST_HEADERS,
+	handleSessionExpired,
+	isBackgroundRequest,
+	isSessionExpired,
+	SESSION_HEADER,
+} from '@/components/utlogging/sessionExpired'
 import { Logger } from '@/logger/Logger'
+import { CSRF_HEADER, csrfFetch, installAxiosCsrf, isCsrfRejected } from '@/api/csrf'
 
 const originalFetch = globalThis.fetch
 
@@ -13,11 +21,18 @@ axios.defaults.validateStatus = (status) => {
 	return (status >= 200 && status < 300) || status === 404
 }
 
-const fetchRetry = fetch_retry(originalFetch)
+installAxiosCsrf(axios)
+
+const fetchRetry = fetch_retry(csrfFetch as typeof fetch)
 
 const logoutOnForbidden = ['dolly-backend']
 
-export const multiFetcherAll = (urlListe, headers = null) =>
+const awaitSessionRedirect = (): Promise<never> => {
+	handleSessionExpired()
+	return new Promise<never>(() => {})
+}
+
+export const multiFetcherAll = (urlListe: any[], headers = null) =>
 	Promise.all(
 		urlListe.map((url) =>
 			fetcher(url, headers, 0).then((result) => {
@@ -26,7 +41,7 @@ export const multiFetcherAll = (urlListe, headers = null) =>
 		),
 	)
 
-export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
+export const multiFetcherInst = (miljoUrlListe: any[], headers = null, path = null) =>
 	Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
@@ -35,7 +50,11 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) =>
 		),
 	)
 
-export const postFetcher = (url, body, headers = { 'Content-Type': 'application/json' }) =>
+export const postFetcher = (
+	url: string,
+	body: object | string,
+	headers = { 'Content-Type': 'application/json' },
+) =>
 	axios
 		.post(url, body, { headers: headers })
 		.then((res) => {
@@ -45,6 +64,9 @@ export const postFetcher = (url, body, headers = { 'Content-Type': 'application/
 			return res.data
 		})
 		.catch((reason) => {
+			if (isSessionExpired(reason.response?.status, reason.response?.headers?.[SESSION_HEADER])) {
+				return awaitSessionRedirect()
+			}
 			if (reason.code === 'ECONNABORTED' || reason.message?.includes('timeout')) {
 				throw new Error(`Tjenesten tok for lang tid å svare: ${url}`)
 			}
@@ -162,6 +184,12 @@ export const fetcher = (url, headers?, timeout = 15000) =>
 			return res.data
 		})
 		.catch((reason) => {
+			if (isSessionExpired(reason.response?.status, reason.response?.headers?.[SESSION_HEADER])) {
+				if (isBackgroundRequest(headers)) {
+					throw new Error('Sesjonen er utløpt')
+				}
+				return awaitSessionRedirect()
+			}
 			if (reason.response?.status === 401 || reason.response?.status === 403) {
 				if (logoutOnForbidden.some((value) => url.includes(value))) {
 					console.error('Auth feilet, navigerer til login')
@@ -173,6 +201,8 @@ export const fetcher = (url, headers?, timeout = 15000) =>
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
 		})
+
+export const backgroundFetcher = (url: string) => fetcher(url, BACKGROUND_REQUEST_HEADERS)
 
 export const imageFetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) =>
@@ -204,6 +234,12 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, error, response) => {
+			if (isSessionExpired(response?.status, response?.headers.get(SESSION_HEADER))) {
+				return false
+			}
+			if (isCsrfRejected(response?.status, response?.headers.get(CSRF_HEADER))) {
+				return false
+			}
 			if (
 				config.retry !== false &&
 				!response?.ok &&
@@ -239,6 +275,12 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 	}).then((response: Response) => {
 		if (response.redirected) {
 			window.location.href = response.url
+		}
+		if (isSessionExpired(response.status, response.headers.get(SESSION_HEADER))) {
+			return awaitSessionRedirect()
+		}
+		if (isCsrfRejected(response.status, response.headers.get(CSRF_HEADER))) {
+			throw new Error('Forespørselen ble avvist. Last inn siden på nytt.')
 		}
 		if (!response.ok && response.status !== 400 && !runningE2ETest()) {
 			if (response?.status === 401 && logoutOnForbidden.some((value) => url.includes(value))) {

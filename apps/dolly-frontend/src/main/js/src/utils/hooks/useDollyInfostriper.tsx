@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 import useSWR, { mutate as globalMutate } from 'swr'
+import { BACKGROUND_REQUEST_HEADERS } from '@/components/utlogging/sessionExpired'
+import { csrfFetch } from '@/api/csrf'
 
 export interface InfoStripeType {
 	id: number
@@ -29,7 +31,7 @@ export const useDollyInfostriper = (inkluderFremtidige = false) => {
 	const { data, isLoading, error, mutate } = useSWR<InfoStripeType[], Error>(
 		listUrl,
 		async (url: string) => {
-			const resp = await fetch(url)
+			const resp = await fetch(url, { headers: BACKGROUND_REQUEST_HEADERS })
 			if (!resp.ok) throw new Error(`Failed ${resp.status}`)
 			return resp.json()
 		},
@@ -43,7 +45,7 @@ export const useDollyInfostriper = (inkluderFremtidige = false) => {
 
 	const createInfostripe = useCallback(
 		async (input: CreateInfostripeInput) => {
-			const resp = await fetch(INFOSTRIPE_URL, {
+			const resp = await csrfFetch(INFOSTRIPE_URL, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(input),
@@ -57,7 +59,7 @@ export const useDollyInfostriper = (inkluderFremtidige = false) => {
 	const updateInfostripe = useCallback(
 		async (input: UpdateInfostripeInput) => {
 			const url = `${INFOSTRIPE_URL}/${input.id}`
-			const resp = await fetch(url, {
+			const resp = await csrfFetch(url, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(input),
@@ -73,7 +75,7 @@ export const useDollyInfostriper = (inkluderFremtidige = false) => {
 			const url = `${INFOSTRIPE_URL}/${id}`
 			const previous = data
 			await mutate((curr) => (curr ? curr.filter((c) => c.id !== id) : curr), { revalidate: false })
-			const resp = await fetch(url, { method: 'DELETE' })
+			const resp = await csrfFetch(url, { method: 'DELETE' })
 			if (!resp.ok) {
 				await mutate(previous, { revalidate: false })
 				throw new Error(`Delete failed ${resp.status}`)

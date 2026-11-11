@@ -64,7 +64,7 @@ export const VergemaalForm = ({
 				formMethods={formMethods}
 				isExpanded={
 					!isEmpty(formMethods.watch(`${path}.nyVergeIdent`), ['syntetisk']) ||
-					formMethods.watch(`${path}.vergeIdent`) !== null
+					formMethods.watch(`${path}.vergeIdent`) != null
 				}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />

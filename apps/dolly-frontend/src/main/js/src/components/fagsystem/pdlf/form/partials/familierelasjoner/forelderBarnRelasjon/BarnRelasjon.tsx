@@ -19,14 +19,14 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const erRedigering = !path?.includes('pdldata')
 
-	const [deltBosted, setDeltBosted] = useState(formMethods.watch(`${path}.deltBosted`) !== null)
+	const [deltBosted, setDeltBosted] = useState(formMethods.watch(`${path}.deltBosted`) != null)
 
 	const hideDeltBostedCheckbox =
 		(formMethods.getValues('pdldata.person.deltBosted')?.length > 0 && !deltBosted) || erRedigering
 
 	useEffect(() => {
 		const currentValues = formMethods.watch(`${path}.deltBosted`)
-		if (deltBosted && currentValues === null) {
+		if (deltBosted && currentValues == null) {
 			formMethods.setValue(`${path}.deltBosted`, initialDeltBosted)
 		} else if (!deltBosted) {
 			formMethods.setValue(`${path}.deltBosted`, null)

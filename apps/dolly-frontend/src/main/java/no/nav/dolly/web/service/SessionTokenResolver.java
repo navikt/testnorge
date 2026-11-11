@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.ClientAuthorizationRequiredException;
+import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -32,6 +36,11 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @RequiredArgsConstructor
 public class SessionTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
+
+    private static final Set<String> REJECTED_AUTHORIZATION_ERRORS = Set.of(
+            OAuth2ErrorCodes.INVALID_GRANT,
+            OAuth2ErrorCodes.INVALID_TOKEN);
+
     private final ObjectProvider<ReactiveOAuth2AuthorizedClientManager> authorizedClientManagerProvider;
 
     @Override
@@ -52,8 +61,11 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                                         .build();
 
                                 return manager.authorize(authorizeRequest)
+                                        .onErrorMap(SessionTokenResolver::isRejectedAuthorization,
+                                                error -> new SessionExpiredException("Klarte ikke å fornye token", error))
+                                        .filter(SessionTokenResolver::isAccessTokenValid)
                                         .map(this::toToken)
-                                        .switchIfEmpty(Mono.error(new CredentialsExpiredException("Klarte ikke å fornye token")));
+                                        .switchIfEmpty(Mono.error(new SessionExpiredException("Klarte ikke å fornye token")));
                             } else if (authentication instanceof JwtAuthenticationToken) {
 
                                 return getJwtAuthenticationToken()
@@ -67,6 +79,17 @@ public class SessionTokenResolver extends Oauth2AuthenticationToken implements T
                             return Mono.error(new RuntimeException("Klarte ikke å caste authentication til token"));
                         }
                 );
+    }
+
+    private static boolean isRejectedAuthorization(Throwable error) {
+        return error instanceof ClientAuthorizationRequiredException
+                || error instanceof OAuth2AuthorizationException authorizationException
+                && REJECTED_AUTHORIZATION_ERRORS.contains(authorizationException.getError().getErrorCode());
+    }
+
+    private static boolean isAccessTokenValid(OAuth2AuthorizedClient authorizedClient) {
+        var expiresAt = authorizedClient.getAccessToken().getExpiresAt();
+        return isNull(expiresAt) || expiresAt.isAfter(Instant.now());
     }
 
     private Token toToken(OAuth2AuthorizedClient authorizedClient) {

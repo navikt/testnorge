@@ -8,6 +8,8 @@ import { ArrowsCirclepathIcon } from '@navikt/aksel-icons'
 type PubliseringstidspunktFieldProps = {
 	path: string
 	erEksisterendeMelding: boolean
+	label?: string
+	size?: string
 	onSort?: () => void
 	sortVersjon?: number
 }
@@ -15,6 +17,8 @@ type PubliseringstidspunktFieldProps = {
 export const PubliseringstidspunktField = ({
 	path,
 	erEksisterendeMelding,
+	label = 'Publiseringstidspunkt',
+	size,
 	onSort,
 	sortVersjon,
 }: PubliseringstidspunktFieldProps) => {
@@ -53,7 +57,8 @@ export const PubliseringstidspunktField = ({
 			<FormDatepicker
 				key={publiseringstidspunkt ? 'set' : 'unset'}
 				name={`${path}.publiseringstidspunkt`}
-				label="Publiseringstidspunkt"
+				label={label}
+				size={size}
 				format={'DD.MM.YYYY HH:mm:ss'}
 				disabled={erEksisterendeMelding}
 			/>

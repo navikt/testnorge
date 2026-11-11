@@ -13,11 +13,11 @@ interface UtenlandskAdresseForm {
 export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
 		formMethods.watch(`${path}.adressenavnNummer`) !== '' &&
-		formMethods.watch(`${path}.adressenavnNummer`) !== null
+		formMethods.watch(`${path}.adressenavnNummer`) != null
 
 	const harPostboksnummer =
 		formMethods.watch(`${path}.postboksNummerNavn`) !== '' &&
-		formMethods.watch(`${path}.postboksNummerNavn`) !== null
+		formMethods.watch(`${path}.postboksNummerNavn`) != null
 
 	const erKontaktadresse = path.includes('kontaktadresse')
 

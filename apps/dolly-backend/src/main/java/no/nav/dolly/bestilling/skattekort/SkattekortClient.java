@@ -7,6 +7,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skattekort.domain.ArbeidstakerSkatt;
 import no.nav.dolly.bestilling.skattekort.domain.Skattekort;
+import no.nav.dolly.bestilling.skattekort.domain.SkattekortDTO;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortHentRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortRequest;
 import no.nav.dolly.bestilling.skattekort.domain.SkattekortResponse;
@@ -48,6 +49,7 @@ public class SkattekortClient implements ClientRegister {
 
     public static final Set<String> MILJOER_SUPPORTED = Set.of("q1", "q2");
     private static final Set<String> DEFAULT_MILJOER = Set.of("q2");
+    private static final String MILJOE_STATUS = "%s:%s";
 
     private final SkattekortConsumer skattekortConsumer;
     private final MapperFacade mapperFacade;
@@ -77,7 +79,7 @@ public class SkattekortClient implements ClientRegister {
         var miljoer = filteredMiljoer.isEmpty() ? DEFAULT_MILJOER : filteredMiljoer;
 
         return oppdaterStatus(progress, miljoer.stream()
-                .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SKATTEKORT.name())))
+                .map(miljo -> MILJOE_STATUS.formatted(miljo, getInfoVenter(SKATTEKORT.name())))
                 .collect(Collectors.joining(",")))
                 .flatMap(updatedProgress -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> Flux.fromIterable(bestilling.getSkattekort().getArbeidsgiverSkatt())
@@ -99,12 +101,16 @@ public class SkattekortClient implements ClientRegister {
         Flux.fromIterable(MILJOER_SUPPORTED)
                 .flatMap(miljoe -> Flux.fromIterable(identer)
                         .flatMap(ident -> skattekortConsumer.hentSkattekort(SkattekortHentRequest.builder().fnr(ident).build(), miljoe)
-                                .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort()))
+                                .filter(response -> nonNull(response.getSkattekort()))
+                                .flatMapMany(skattekort -> Flux.fromIterable(skattekort.getSkattekort().getData()))
                                 .flatMap(skattekort -> {
-                                    val context = MappingContextUtils.getMappingContext();
-                                    context.setProperty("ident", ident);
-
-                                    val request = mapperFacade.map(skattekort, SkattekortRequest.class, context);
+                                    var request = SkattekortRequest.builder()
+                                            .fnr(ident)
+                                            .skattekort(SkattekortDTO.builder()
+                                                    .inntektsaar(skattekort.getInntektsaar())
+                                                    .resultatForSkattekort(IKKE_SKATTEKORT.getDescription())
+                                                    .build())
+                                            .build();
                                     return skattekortConsumer.sendSkattekort(request, miljoe);
                                 })))
                 .collectList()
@@ -122,7 +128,7 @@ public class SkattekortClient implements ClientRegister {
                 .flatMap(request -> skattekortConsumer.sendSkattekort(request, miljoe)
                         .map(response -> formatStatus(response, request.getSkattekort().getInntektsaar(),
                                 dollyPerson.getIdent(), miljoe)))
-                .onErrorResume(throwable -> Mono.just("%s:%s".formatted(miljoe, throwable.getMessage())))
+                .onErrorResume(throwable -> Mono.just(MILJOE_STATUS.formatted(miljoe, throwable.getMessage())))
                 .collect(Collectors.joining(","));
     }
 
@@ -175,7 +181,7 @@ public class SkattekortClient implements ClientRegister {
         } else {
             log.error("Feil ved innsending av skattekort for person: {}, miljoe: {}, inntektsaar: {}: {}",
                     ident, miljoe, year, response.getFeilmelding());
-            return "%s:%s".formatted(miljoe, errorStatusDecoder.getStatusMessage(response.getFeilmelding()));
+            return MILJOE_STATUS.formatted(miljoe, errorStatusDecoder.getStatusMessage(response.getFeilmelding()));
         }
     }
 
