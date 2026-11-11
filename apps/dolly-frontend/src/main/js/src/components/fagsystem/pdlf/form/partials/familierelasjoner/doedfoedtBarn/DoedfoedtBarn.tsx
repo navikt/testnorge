@@ -16,7 +16,7 @@ export const DoedfoedtBarnForm = ({ formMethods, path }: DoedfoedtBarnProps) => 
 			<FormDatepicker name={`${path}.dato`} label="Dødsdato" maxDate={new Date()} />
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) === null}
+				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) == null}
 			/>
 		</div>
 	)

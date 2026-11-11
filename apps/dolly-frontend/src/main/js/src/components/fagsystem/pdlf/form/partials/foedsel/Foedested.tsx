@@ -43,7 +43,7 @@ export const FoedestedForm = ({ formMethods, path }: FoedestedTypes) => {
 				size="large"
 				isDisabled={
 					formMethods.watch(`${path}.foedeland`) !== 'NOR' &&
-					formMethods.watch(`${path}.foedeland`) !== null
+					formMethods.watch(`${path}.foedeland`) != null
 				}
 			/>
 			<LandVelger
