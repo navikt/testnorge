@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.r2dbc.UncategorizedR2dbcException;
+import org.springframework.transaction.ReactiveTransaction;
+import org.springframework.transaction.ReactiveTransactionManager;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -26,6 +30,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -45,16 +51,28 @@ class IdentitetServiceTest {
     @Mock
     private RelasjonRepository relasjonRepository;
 
+    @Mock
+    private ReactiveTransactionManager transactionManager;
+
     @InjectMocks
     private IdentitetService identitetService;
 
+    @BeforeEach
+    void setUp() {
+
+        when(transactionManager.getReactiveTransaction(any()))
+                .thenAnswer(_ -> Mono.just(mock(ReactiveTransaction.class)));
+        lenient().when(transactionManager.commit(any())).thenReturn(Mono.empty());
+        lenient().when(transactionManager.rollback(any())).thenReturn(Mono.empty());
+    }
+
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void shouldUpdateStandaloneOnLockedPerson(boolean standalone) {
+    void shouldUpdateStandaloneInTransaction(boolean standalone) {
 
         var hovedperson = person(1L, IDENT, 4);
         hovedperson.getPerson().setStandalone(!standalone);
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(hovedperson));
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(hovedperson));
         when(personRepository.save(hovedperson)).thenReturn(Mono.just(hovedperson));
         when(relasjonRepository.findByPersonId(hovedperson.getId())).thenReturn(Flux.empty());
 
@@ -62,24 +80,27 @@ class IdentitetServiceTest {
                 .verifyComplete();
 
         assertThat(hovedperson.getPerson().isStandalone()).isEqualTo(standalone);
-        verify(personRepository).findByIdentAndLock(IDENT);
+        verify(personRepository).findByIdent(IDENT);
         verify(personRepository).save(hovedperson);
-        verify(personRepository, never()).findByIdent(IDENT);
+        verify(transactionManager).commit(any());
+        verify(transactionManager, never()).rollback(any());
     }
 
     @Test
     void shouldPropagateOptimisticLockingFailureWithoutRetrying() {
 
         var optimisticLockingFailure = new OptimisticLockingFailureException("stale");
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(person(1L, IDENT, 4)));
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(person(1L, IDENT, 4)));
         when(personRepository.save(any(DbPerson.class))).thenReturn(Mono.error(optimisticLockingFailure));
 
         StepVerifier.create(identitetService.updateStandalone(IDENT, true))
                 .expectErrorSatisfies(error -> assertThat(error).isSameAs(optimisticLockingFailure))
                 .verify();
 
-        verify(personRepository).findByIdentAndLock(IDENT);
+        verify(personRepository).findByIdent(IDENT);
         verify(personRepository).save(any(DbPerson.class));
+        verify(transactionManager).rollback(any());
+        verify(transactionManager, never()).commit(any());
         verifyNoInteractions(relasjonRepository);
     }
 
@@ -100,7 +121,7 @@ class IdentitetServiceTest {
                 .personId(hovedperson.getId())
                 .relatertPersonId(relatertPerson.getId())
                 .build();
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(hovedperson));
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(hovedperson));
         when(personRepository.save(hovedperson)).thenReturn(Mono.just(hovedperson));
         when(relasjonRepository.findByPersonId(hovedperson.getId())).thenReturn(Flux.just(relasjon, relasjon));
         when(personRepository.findById(relatertPerson.getId())).thenReturn(Mono.just(relatertPerson));
@@ -118,7 +139,7 @@ class IdentitetServiceTest {
     @Test
     void shouldRejectMissingPersonWithoutSavingOrUpdatingRelations() {
 
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.empty());
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.empty());
 
         StepVerifier.create(identitetService.updateStandalone(IDENT, true))
                 .expectError(NotFoundException.class)
@@ -134,7 +155,7 @@ class IdentitetServiceTest {
         var hovedperson = person(1L, IDENT, 4);
         var relatertPerson = relatertPerson(2L, 2);
         var saveFailure = new OptimisticLockingFailureException("stale related person");
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.just(hovedperson));
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(hovedperson));
         when(personRepository.save(hovedperson)).thenReturn(Mono.just(hovedperson));
         when(relasjonRepository.findByPersonId(hovedperson.getId())).thenReturn(Flux.just(
                 DbRelasjon.builder()
@@ -152,8 +173,9 @@ class IdentitetServiceTest {
         verify(personRepository).save(relatertPerson);
     }
 
-    @Test
-    void shouldRereadBothPersonsWhenRelatedPersonSaveDeadlocks() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldRereadBothPersonsInNewTransactionWhenRelatedPersonSaveDeadlocks(boolean wrapped) {
 
         var hovedperson = person(1L, IDENT, 4);
         var freshHovedperson = person(1L, IDENT, 5);
@@ -161,7 +183,8 @@ class IdentitetServiceTest {
         var freshRelatertPerson = relatertPerson(2L, 3);
         var deadlock = mock(R2dbcException.class);
         when(deadlock.getSqlState()).thenReturn("40P01");
-        when(personRepository.findByIdentAndLock(IDENT))
+        var failure = wrapped ? new UncategorizedR2dbcException("execute", "UPDATE person", deadlock) : deadlock;
+        when(personRepository.findByIdent(IDENT))
                 .thenReturn(Mono.just(hovedperson))
                 .thenReturn(Mono.just(freshHovedperson));
         when(personRepository.save(same(hovedperson))).thenReturn(Mono.just(hovedperson));
@@ -174,7 +197,7 @@ class IdentitetServiceTest {
         when(personRepository.findById(relatertPerson.getId()))
                 .thenReturn(Mono.just(relatertPerson))
                 .thenReturn(Mono.just(freshRelatertPerson));
-        when(personRepository.save(same(relatertPerson))).thenReturn(Mono.error(deadlock));
+        when(personRepository.save(same(relatertPerson))).thenReturn(Mono.error(failure));
         when(personRepository.save(same(freshRelatertPerson))).thenReturn(Mono.just(freshRelatertPerson));
 
         StepVerifier.withVirtualTime(() -> identitetService.updateStandalone(IDENT, true))
@@ -184,27 +207,38 @@ class IdentitetServiceTest {
         assertThat(freshHovedperson.getPerson().isStandalone()).isTrue();
         assertThat(freshRelatertPerson.getPerson().getForelderBarnRelasjon()
                 .getFirst().isEksisterendePerson()).isTrue();
-        verify(personRepository, times(2)).findByIdentAndLock(IDENT);
+        verify(personRepository, times(2)).findByIdent(IDENT);
         verify(personRepository, times(2)).findById(relatertPerson.getId());
         verify(personRepository).save(same(hovedperson));
         verify(personRepository).save(same(freshHovedperson));
         verify(personRepository).save(same(relatertPerson));
         verify(personRepository).save(same(freshRelatertPerson));
+        var transactionOrder = inOrder(transactionManager);
+        transactionOrder.verify(transactionManager).getReactiveTransaction(any());
+        transactionOrder.verify(transactionManager).rollback(any());
+        transactionOrder.verify(transactionManager).getReactiveTransaction(any());
+        transactionOrder.verify(transactionManager).commit(any());
+        transactionOrder.verifyNoMoreInteractions();
     }
 
-    @Test
-    void shouldPropagateOriginalDeadlockAfterThreeRetries() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shouldPropagateOriginalDeadlockAfterThreeRetries(boolean wrapped) {
 
         var deadlock = mock(R2dbcException.class);
         when(deadlock.getSqlState()).thenReturn("40P01");
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.error(deadlock));
+        var failure = wrapped ? new UncategorizedR2dbcException("execute", "UPDATE person", deadlock) : deadlock;
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.error(failure));
 
         StepVerifier.withVirtualTime(() -> identitetService.updateStandalone(IDENT, true))
                 .thenAwait(Duration.ofSeconds(3))
-                .expectErrorSatisfies(error -> assertThat(error).isSameAs(deadlock))
+                .expectErrorSatisfies(error -> assertThat(error).isSameAs(failure))
                 .verify();
 
-        verify(personRepository, times(4)).findByIdentAndLock(IDENT);
+        verify(personRepository, times(4)).findByIdent(IDENT);
+        verify(transactionManager, times(4)).getReactiveTransaction(any());
+        verify(transactionManager, times(4)).rollback(any());
+        verify(transactionManager, never()).commit(any());
         verify(personRepository, never()).save(any(DbPerson.class));
         verifyNoInteractions(relasjonRepository);
     }
@@ -215,13 +249,13 @@ class IdentitetServiceTest {
 
         var databaseFailure = mock(R2dbcException.class);
         when(databaseFailure.getSqlState()).thenReturn(sqlState);
-        when(personRepository.findByIdentAndLock(IDENT)).thenReturn(Mono.error(databaseFailure));
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.error(databaseFailure));
 
         StepVerifier.create(identitetService.updateStandalone(IDENT, true))
                 .expectErrorSatisfies(error -> assertThat(error).isSameAs(databaseFailure))
                 .verify();
 
-        verify(personRepository).findByIdentAndLock(IDENT);
+        verify(personRepository).findByIdent(IDENT);
         verify(personRepository, never()).save(any(DbPerson.class));
         verifyNoInteractions(relasjonRepository);
     }

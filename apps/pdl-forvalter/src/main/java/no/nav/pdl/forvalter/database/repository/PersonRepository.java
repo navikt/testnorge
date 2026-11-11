@@ -19,12 +19,6 @@ public interface PersonRepository extends ReactiveSortingRepository<DbPerson, Lo
 
     Mono<DbPerson> findByIdent(String ident);
 
-    @Query("""
-            select * from person p
-            where p.ident = :ident for update;
-            """)
-    Mono<DbPerson> findByIdentAndLock(String ident);
-
     Flux<DbPerson> findByIdentIn(List<String> ident);
 
     Mono<DbPerson> save(DbPerson person);

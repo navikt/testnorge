@@ -17,7 +17,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -46,6 +48,7 @@ public class IdentitetService {
 
     private final PersonRepository personRepository;
     private final RelasjonRepository relasjonRepository;
+    private final ReactiveTransactionManager transactionManager;
 
     @Transactional(readOnly = true)
     public Flux<PersonIDDTO> getfragment(String fragment, Paginering paginering) {
@@ -81,15 +84,15 @@ public class IdentitetService {
                         Sort.by(SORT_BY_FIELD).descending()));
     }
 
-    @Transactional
     public Mono<Void> updateStandalone(String ident, Boolean standalone) {
 
-        return Mono.defer(() -> personRepository.findByIdentAndLock(ident)
-                .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
-                .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
-                .flatMap(personRepository::save)
-                .flatMapMany(this::setStandaloneRelasjoner)
-                .then())
+        return Mono.defer(() -> personRepository.findByIdent(ident)
+                        .switchIfEmpty(Mono.error(new NotFoundException("Ident " + ident + " ikke funnet")))
+                        .doOnNext(dbPerson -> dbPerson.getPerson().setStandalone(standalone))
+                        .flatMap(personRepository::save)
+                        .flatMapMany(this::setStandaloneRelasjoner)
+                        .then())
+                .as(TransactionalOperator.create(transactionManager)::transactional)
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
                         .filter(this::isDeadlock)
                         .onRetryExhaustedThrow((_, signal) -> signal.failure()));
@@ -97,9 +100,13 @@ public class IdentitetService {
 
     private boolean isDeadlock(Throwable throwable) {
 
-        return nonNull(throwable) &&
-               throwable instanceof R2dbcException r2dbcException &&
-                "40P01".equals(r2dbcException.getSqlState());
+        for (Throwable cause = throwable; nonNull(cause); cause = cause.getCause()) {
+            if (cause instanceof R2dbcException r2dbcException &&
+                "40P01".equals(r2dbcException.getSqlState())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Flux<DbPerson> setStandaloneRelasjoner(DbPerson person) {
