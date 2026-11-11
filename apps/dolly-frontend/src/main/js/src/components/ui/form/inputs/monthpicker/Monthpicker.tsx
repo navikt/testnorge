@@ -12,6 +12,7 @@ interface MonthpickerProps {
 	onChange?: (date: Date) => void
 	minDate?: Date
 	maxDate?: Date
+	error?: boolean
 }
 
 export const Monthpicker = ({
@@ -22,6 +23,7 @@ export const Monthpicker = ({
 	onChange,
 	minDate = null,
 	maxDate = null,
+	error = false,
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
 	const eksisterendeVerdi = formMethods.watch(name)
@@ -50,9 +52,13 @@ export const Monthpicker = ({
 
 	return (
 		<Label name={name} label={label}>
-			<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate ?? undefined}>
+			<MonthPicker
+				{...monthpickerProps}
+				dropdownCaption={true}
+				selected={formattedDate ?? undefined}
+			>
 				<MonthPicker.Input
-					error={!!errorOutput}
+					error={!!errorOutput || error}
 					label={null}
 					size={'small'}
 					placeholder={'MM.YYYY'}

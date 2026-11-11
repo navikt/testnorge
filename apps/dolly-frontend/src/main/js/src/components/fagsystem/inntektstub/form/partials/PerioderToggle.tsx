@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { ToggleGroup, Tooltip } from '@navikt/ds-react'
 import { LinkBrokenIcon } from '@navikt/aksel-icons'
@@ -7,6 +7,7 @@ import { eachMonthOfInterval, format, isAfter, parse } from 'date-fns'
 import { MonthCombobox } from '@/components/ui/form/inputs/monthsCombobox/MonthCombobox'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { Label } from '@/components/ui/form/inputs/label/Label'
+import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 
 const VALUE_FORMAT = 'yyyy-MM'
 
@@ -66,6 +67,7 @@ const harManglendeMaaneder = (perioder: string[]) => {
 
 export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 	const formMethods = useFormContext()
+	const errorContext = useContext(ShowErrorContext)
 	const perioderPath = `${path}.perioder`
 	const perioder = getSorterteMaaneder(formMethods.watch(perioderPath))
 
@@ -105,6 +107,13 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 
 	const ugyldigPeriode = fraMaaned && tilMaaned && isAfter(fraMaaned, tilMaaned)
 
+	const perioderFieldState = formMethods.getFieldState(perioderPath, formMethods.formState)
+	const visPerioderFeil =
+		!!perioderFieldState.error &&
+		(errorContext?.showError || perioderFieldState.isTouched || formMethods.formState.isSubmitted)
+	const fraMaanedFeil = !!ugyldigPeriode || (visPerioderFeil && !fraMaaned)
+	const tilMaanedFeil = !!ugyldigPeriode || (visPerioderFeil && !tilMaaned)
+
 	return (
 		<div className="toggle--wrapper">
 			<StyledToggleGroup
@@ -131,6 +140,7 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 								label="F.o.m. måned"
 								date={fraMaaned}
 								onChange={handleFraChange}
+								error={fraMaanedFeil}
 							/>
 							{harManglendeMaaneder(perioder) && (
 								<Tooltip
@@ -147,6 +157,7 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 								label="T.o.m. måned"
 								date={tilMaaned}
 								onChange={handleTilChange}
+								error={tilMaanedFeil}
 							/>
 						</div>
 					</Label>
