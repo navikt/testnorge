@@ -67,7 +67,6 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 				onChange={(value) => setPeriodeValg(value as PeriodeValg)}
 				value={periodeValg}
 				size="small"
-				fill
 			>
 				<ToggleGroup.Item value={PeriodeValg.ENKELTMAANEDER}>Velg enkeltmåneder</ToggleGroup.Item>
 				<ToggleGroup.Item value={PeriodeValg.PERIODE}>Velg periode</ToggleGroup.Item>
@@ -84,13 +83,13 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 					<div className="flexbox--flex-wrap">
 						<Monthpicker
 							name={`${path}.periodeFra`}
-							label="Fra måned"
+							label="F.o.m. måned"
 							date={fraMaaned}
 							onChange={handleFraChange}
 						/>
 						<Monthpicker
 							name={`${path}.periodeTil`}
-							label="Til måned"
+							label="T.o.m. måned"
 							date={tilMaaned}
 							onChange={handleTilChange}
 						/>
