@@ -50,7 +50,7 @@ export const ArbeidsgiverIdent = ({
 			<DollyTextInput
 				name={path}
 				// @ts-ignore
-				value={personnummer}
+				value={formMethods.watch(path) ?? ''}
 				label={'Arbeidsgiver ident'}
 				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}

@@ -6,6 +6,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
 import { Button } from '@navikt/ds-react'
+import { useFormContext } from 'react-hook-form'
 
 type Props = {
 	onSubmit: (search: {
@@ -27,9 +28,10 @@ const HeaderGroup = styled.div`
 `
 
 export default ({ onSubmit, loading = false }: Props) => {
-	const [adressenavn, setAdressenavn] = useState<string>('')
-	const [husnummer, setHusnummer] = useState<string>(null)
-	const [husbokstav, setHusbokstav] = useState<string>(null)
+	const { getValues } = useFormContext() || {}
+	const [adressenavn, setAdressenavn] = useState<string>(getValues?.('adressenavn') ?? '')
+	const [husnummer, setHusnummer] = useState<string>(getValues?.('husnummer') ?? null)
+	const [husbokstav, setHusbokstav] = useState<string>(getValues?.('husbokstav') ?? null)
 	const [postnummer, setPostnummer] = useState<string>(null)
 	const [kommunenummer, setKommunenummer] = useState<string>(null)
 
