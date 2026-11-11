@@ -20,6 +20,9 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,6 +39,8 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -170,6 +175,91 @@ class BestillingServiceTest {
 
         verify(bestillingRepository, never()).save(any());
         verifyNoInteractions(bestillingKontrollRepository, bestillingProgressRepository, brukerService);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"INFO: Oppretter", "info=Venter", "q2:INFO=Venter", "q2:info:Oppretter"})
+    void shouldClearInfoStatusesAndSaveOnlyChangedProgressOnce(String status) {
+
+        var bestilling = Bestilling.builder().id(BEST_ID).build();
+        var progress = BestillingProgress.builder()
+                .id(1L)
+                .bestillingId(BEST_ID)
+                .aaregStatus(status)
+                .pdlForvalterStatus("INFO=Oppretter person")
+                .krrstubStatus("OK")
+                .build();
+        var unchangedProgress = BestillingProgress.builder()
+                .id(2L)
+                .bestillingId(BEST_ID)
+                .aaregStatus("OK")
+                .build();
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID))
+                .thenReturn(Flux.just(progress, unchangedProgress));
+        when(bestillingProgressRepository.save(progress)).thenReturn(Mono.just(progress));
+
+        StepVerifier.create(bestillingService.cleanBestilling(bestilling))
+                .assertNext(result -> assertThat(result, sameInstance(bestilling)))
+                .verifyComplete();
+
+        assertThat(progress.getAaregStatus(), nullValue());
+        assertThat(progress.getPdlForvalterStatus(), nullValue());
+        assertThat(progress.getKrrstubStatus(), is("OK"));
+        assertThat(unchangedProgress.getAaregStatus(), is("OK"));
+        verify(bestillingProgressRepository).save(progress);
+        verify(bestillingProgressRepository, times(1)).save(any(BestillingProgress.class));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "OK", "Feil: info: mangler", "q2:OK,info=Venter"})
+    void shouldNotSaveProgressWithoutMatchingInfoStatus(String status) {
+
+        var bestilling = Bestilling.builder().id(BEST_ID).build();
+        var progress = BestillingProgress.builder()
+                .id(1L)
+                .bestillingId(BEST_ID)
+                .aaregStatus(status)
+                .build();
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.just(progress));
+
+        StepVerifier.create(bestillingService.cleanBestilling(bestilling))
+                .assertNext(result -> assertThat(result, sameInstance(bestilling)))
+                .verifyComplete();
+
+        assertThat(progress.getAaregStatus(), is(status));
+        verify(bestillingProgressRepository, never()).save(any(BestillingProgress.class));
+    }
+
+    @Test
+    void shouldCompleteCleanupWithoutProgress() {
+
+        var bestilling = Bestilling.builder().id(BEST_ID).build();
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.empty());
+
+        StepVerifier.create(bestillingService.cleanBestilling(bestilling))
+                .assertNext(result -> assertThat(result, sameInstance(bestilling)))
+                .verifyComplete();
+
+        verify(bestillingProgressRepository, never()).save(any(BestillingProgress.class));
+    }
+
+    @Test
+    void shouldPropagateCleanupSaveFailure() {
+
+        var bestilling = Bestilling.builder().id(BEST_ID).build();
+        var progress = BestillingProgress.builder()
+                .id(1L)
+                .bestillingId(BEST_ID)
+                .aaregStatus("INFO: Oppretter")
+                .build();
+        var failure = new IllegalStateException("Could not save progress");
+        when(bestillingProgressRepository.findAllByBestillingId(BEST_ID)).thenReturn(Flux.just(progress));
+        when(bestillingProgressRepository.save(progress)).thenReturn(Mono.error(failure));
+
+        StepVerifier.create(bestillingService.cleanBestilling(bestilling))
+                .expectErrorSatisfies(error -> assertThat(error, sameInstance(failure)))
+                .verify();
     }
 
     @Test

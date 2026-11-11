@@ -10,8 +10,8 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Dokument;
 import no.nav.dolly.domain.jpa.Dokument.DokumentType;
-import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.projection.BestillingFragment;
+import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
@@ -39,11 +39,13 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -63,9 +66,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class BestillingService {
 
     private static final String FINNES_IKKE = "Finner ikke gruppe med id %d";
-    private static final String SEARCH_STRING = "info:";
-    private static final String DEFAULT_VALUE = "";
     private static final String EMPTY_JSON = "{}";
+    private static final List<Method> CLEANUP_GETTERS =
+            Arrays.stream(BestillingProgress.class.getMethods())
+                    .filter(method -> method.getName().startsWith("get"))
+                    .filter(method -> method.getReturnType() == String.class)
+                    .toList();
 
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -216,29 +222,42 @@ public class BestillingService {
 
     public Mono<Bestilling> cleanBestilling(Bestilling bestilling) {
 
+        var time = System.currentTimeMillis();
         return bestillingProgressRepository.findAllByBestillingId(bestilling.getId())
-                .flatMap(progress -> Flux.fromArray(progress.getClass().getMethods())
-                        .filter(method -> method.getName().contains("get"))
-                        .flatMap(metode -> {
-                            try {
-                                var verdi = metode.invoke(progress, (Object[]) null);
-                                if (verdi instanceof String verdiString &&
-                                        isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
-                                    var oppdaterMetode = progress.getClass()
-                                            .getMethod("set" + metode.getName().substring(3), String.class);
-                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
-                                }
-                                return Mono.just(progress);
-                            } catch (NoSuchMethodException |
-                                     IllegalAccessException |
-                                     InvocationTargetException e) {
-                                log.error("Oppdatering av bestilling {} feilet ved cleanBestilling {}",
-                                        bestilling.getId(), e.getMessage(), e);
-                                return Mono.empty();
+                .flatMap(progress -> {
+                    boolean changed = false;
+
+                    for (var getter : CLEANUP_GETTERS) {
+
+                        try {
+                            var value = (String) getter.invoke(progress);
+
+                            if (nonNull(value) &&
+                                value.toLowerCase(Locale.ROOT).matches("[a-z0-9:]*info[:=].*")) {
+                                log.warn("Bestilling {} progress {} er nullstilt", bestilling.getId(), getter.getName());
+
+                                var setter = BestillingProgress.class.getMethod(
+                                        "set" + getter.getName().substring(3),
+                                        String.class);
+
+                                setter.invoke(progress, (Object) null);
+                                changed = true;
                             }
-                        }))
-                .flatMap(bestillingProgressRepository::save)
-                .collectList()
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            log.error("Feilet å rense bestilling progress for bestillingId: {}, progressId: {}, getter: {}",
+                                    bestilling.getId(), progress.getId(), getter.getName(), e);
+                        }
+                    }
+                    return Mono.just(changed)
+                            .zipWith(Mono.just(progress));
+                })
+                .flatMap(tuple -> isTrue(tuple.getT1()) ?
+                        bestillingProgressRepository.save(tuple.getT2()) :
+                        Mono.<BestillingProgress>empty())
+                .then(Mono.defer(() -> {
+                    log.info("Bestilling {} ble renset på {} ms", bestilling.getId(), System.currentTimeMillis() - time);
+                    return Mono.empty();
+                }))
                 .thenReturn(bestilling);
     }
 

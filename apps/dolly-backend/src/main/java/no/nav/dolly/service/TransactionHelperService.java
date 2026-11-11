@@ -63,8 +63,7 @@ public class TransactionHelperService {
                                     return bestillingProgressRepository.save(progress);
                                 })
                                 .doFinally(_ -> new ClearCacheUtil(cacheManager).run()))
-                .collectList()
-                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
+                .singleOrEmpty()
                 .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()));
     }
 
@@ -91,8 +90,7 @@ public class TransactionHelperService {
                                 })
                                 .flatMap(bestillingProgressRepository::save)
                                 .doFinally(_ -> new ClearCacheUtil(cacheManager).run()))
-                .collectList()
-                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()))
+                .singleOrEmpty()
                 .doOnNext(progress -> bestillingEventPublisher.publish(progress.getBestillingId()));
     }
 
@@ -134,8 +132,7 @@ public class TransactionHelperService {
                                                     best.setFeil(best.getFeil());
                                                 })
                                                 .flatMap(bestillingRepository::save)))
-                .collectList()
-                .flatMap(list -> list.isEmpty() ? Mono.empty() : Mono.just(list.getFirst()));
+                .singleOrEmpty();
     }
 
     @Retryable
@@ -154,6 +151,6 @@ public class TransactionHelperService {
                                 }))
                 .switchIfEmpty(Mono.error(new DollyFunctionalException("Bestilling med id " + id + " finnes ikke.")))
                 .singleOrEmpty()
-                .doOnNext(saved -> bestillingEventPublisher.publish(saved.getId()));
+                .doOnNext(bestilling -> bestillingEventPublisher.publish(bestilling.getId()));
     }
 }
