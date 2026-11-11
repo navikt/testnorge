@@ -63,7 +63,7 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 				{erOrganisasjon ? (
 					<BestillingsdataOrganisasjon bestilling={bestilling.organisasjon} />
 				) : (
-					<Bestillingsdata bestilling={bestilling} />
+					<Bestillingsdata bestilling={bestilling} visKdiMeldingTittel />
 				)}
 			</div>
 			{showVisMerButton &&
