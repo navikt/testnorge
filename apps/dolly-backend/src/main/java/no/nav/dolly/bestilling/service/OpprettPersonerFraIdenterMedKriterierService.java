@@ -85,14 +85,15 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
 
         var request = new AtomicReference<RsDollyBestillingRequest>();
+
         getDollyBestillingRequest(bestilling)
                 .doOnNext(request::set)
                 .filter(bestKriterier -> isBlank(bestKriterier.getFeil()))
                 .flatMapMany(_ ->
                         availCheckService.checkAvailable(bestilling.getOpprettFraIdenter()))
                 .filter(AvailCheckService.AvailStatus::isAvailable)
-                .flatMap(avalStatus ->
-                        opprettPerson(bestilling.getId(), request.get(), avalStatus.getIdent()), 3)
+                .flatMap(availStatus ->
+                        opprettPerson(bestilling.getId(), request.get(), availStatus.getIdent()), 3)
                 .subscribe(null,
                         e -> {
                             var melding = getIfNull(e.getMessage(), e.getClass().getSimpleName());
@@ -131,7 +132,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         return opprettProgress(bestillingId, ident)
                 .doOnNext(progress::set)
-                .flatMap(bestillingProgress -> opprettPerson(bestKriterier, bestillingProgress))
+                .flatMap(bestillingProgress -> opprettPersonFraIdent(bestKriterier, bestillingProgress))
                 .flatMap(progress1 -> leggIdentTilGruppe(progress1, bestKriterier.getBeskrivelse()))
                 .flatMap(this::sendOrdrePerson)
                 .doOnNext(progress::set)

@@ -420,7 +420,7 @@ class OpprettPersonerFraIdenterMedKriterierServiceTest {
             doReturn(Mono.just(progress)).when(service).opprettProgress(BESTILLING_ID, progress.getIdent());
         }
         doAnswer(invocation -> Mono.just(invocation.getArgument(1)))
-                .when(service).opprettPerson(any(RsDollyUtvidetBestilling.class), any(BestillingProgress.class));
+                .when(service).opprettPersonFraIdent(any(RsDollyUtvidetBestilling.class), any(BestillingProgress.class));
         doAnswer(invocation -> Mono.just(invocation.getArgument(0)))
                 .when(service).leggIdentTilGruppe(any(), any());
         doAnswer(invocation -> Mono.just(invocation.getArgument(0))).when(service).sendOrdrePerson(any());

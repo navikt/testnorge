@@ -83,6 +83,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         log.info("Bestilling med id=#{} og type={} er startet i miljøer {} ...", bestilling.getId(), getBestillingType(bestilling), bestilling.getMiljoer());
 
         var bestRequest = new AtomicReference<RsDollyBestillingRequest>();
+
         getDollyBestillingRequest(bestilling)
                 .doOnNext(bestRequest::set)
                 .filter(bestKriterier-> isBlank(bestKriterier.getFeil()))

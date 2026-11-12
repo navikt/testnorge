@@ -31,6 +31,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.dolly.util.ClearCacheUtil;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
@@ -260,14 +261,16 @@ public class DollyBestillingService {
                         .toList() : emptyList();
 
         return Mono.defer(() -> {
-                    if (!eksisterendeIdenter.isEmpty()) {
+                    if ("OK".equals(progress.getPdlForvalterStatus()) && !eksisterendeIdenter.isEmpty()) {
                         return Flux.fromIterable(eksisterendeIdenter)
                                 .concatMap(nyIdent -> bestillingProgressRepository.swapIdent(oppdatertIdent, nyIdent)
                                         .then(bestillingService.swapIdent(oppdatertIdent, nyIdent))
                                         .then(identService.deleteIdent(oppdatertIdent)))
                                 .then();
 
-                    } else if (isNotBlank(oppdatertIdent) && !oppdatertIdent.equals(progress.getIdent())) {
+                    } else if ("OK".equals(progress.getPdlForvalterStatus()) &&
+                               isNotBlank(oppdatertIdent) &&
+                               !oppdatertIdent.equals(progress.getIdent())) {
                         return identService.swapIdent(oppdatertIdent, progress.getIdent())
                                 .then(bestillingProgressRepository.swapIdent(oppdatertIdent, progress.getIdent()))
                                 .then(bestillingService.swapIdent(oppdatertIdent, progress.getIdent()));
@@ -346,24 +349,34 @@ public class DollyBestillingService {
                 .build());
     }
 
-    protected Mono<BestillingProgress> opprettPerson(RsDollyUtvidetBestilling request, BestillingProgress
-            bestillingProgress) {
+    protected Mono<BestillingProgress> opprettPersonFraIdent(RsDollyUtvidetBestilling request, BestillingProgress progress) {
 
-        return Mono.just(OriginatorUtility.prepOriginator(request, mapperFacade))
-                .flatMap(originator -> endrePerson(() -> pdlDataConsumer.opprettPdl(originator.getPdlBestilling()), bestillingProgress))
+        return Mono.just(PdlRequestBuilderUtility.prepRequest(request, progress.getIdent(), mapperFacade))
+                .flatMap(pdlRequest -> opprettPerson(pdlRequest, progress));
+    }
+
+    protected Mono<BestillingProgress> opprettPerson(RsDollyUtvidetBestilling request, BestillingProgress progress) {
+
+        return Mono.just(PdlRequestBuilderUtility.prepRequest(request, mapperFacade))
+                .flatMap(pdlRequest -> opprettPerson(pdlRequest, progress));
+    }
+
+    private Mono<BestillingProgress> opprettPerson(BestillingRequestDTO pdlRequest, BestillingProgress progress) {
+
+           return endrePerson(() -> pdlDataConsumer.opprettPdl(pdlRequest), progress)
                 .doOnNext(response -> log.info("Opprettet person med ident ... {}", response.getIdent()));
     }
 
     protected Mono<BestillingProgress> oppdaterPerson(RsDollyUtvidetBestilling request, BestillingProgress
             progress, String ident) {
 
-        return Mono.just(OriginatorUtility.prepOriginator(request, mapperFacade))
-                .flatMap(originator -> {
-                    if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
+        return Mono.just(PdlRequestBuilderUtility.prepRequest(request, ident, mapperFacade))
+                .flatMap(pdlRequest -> {
+                    if (nonNull(pdlRequest.getPerson())) {
 
                         return endrePerson(() -> pdlDataConsumer.oppdaterPdl(ident,
                                 PersonUpdateRequestDTO.builder()
-                                        .person(originator.getPdlBestilling().getPerson())
+                                        .person(pdlRequest.getPerson())
                                         .build()), progress)
                                 .doOnNext(response -> response.setOppdatertIdent(ident))
                                 .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
