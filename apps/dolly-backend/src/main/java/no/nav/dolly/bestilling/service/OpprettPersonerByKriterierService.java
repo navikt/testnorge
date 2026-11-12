@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -125,7 +124,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private Mono<BestillingProgress> prosesserPerson(Long bestillingId, RsDollyBestillingRequest bestKriterier,
                                                      AtomicReference<BestillingProgress> bestProgress) {
 
-        return opprettProgress(bestillingId, PDLF)
+        return opprettProgress(bestillingId)
                 .flatMap(progress -> opprettPerson(bestKriterier, progress))
                 .flatMap(progress -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse()))
                 .flatMap(this::sendOrdrePerson)

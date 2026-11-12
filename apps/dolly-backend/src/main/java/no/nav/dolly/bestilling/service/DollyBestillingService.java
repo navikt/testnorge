@@ -13,7 +13,6 @@ import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.projection.GruppeBestillingIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -323,29 +322,18 @@ public class DollyBestillingService {
         }
     }
 
-    protected Mono<BestillingProgress> opprettProgress(Long bestillingId, Testident.Master master) {
+    protected Mono<BestillingProgress> opprettProgress(Long bestillingId) {
 
-        return bestillingProgressRepository.save(BestillingProgress.builder()
-                .bestillingId(bestillingId)
-                .master(master)
-                .pdlImportStatus(PDL.equals(master) ? "OK" : null)
-                .build());
+        return opprettProgress(bestillingId, null);
     }
 
     protected Mono<BestillingProgress> opprettProgress(Long bestillingId, String ident) {
 
-        Testident.Master master;
-        if (isBlank(ident)) {
-            master = null;
-        } else {
-            master = isTestnorgeIdent(ident) ? PDL : PDLF;
-        }
-
         return bestillingProgressRepository.save(BestillingProgress.builder()
                 .bestillingId(bestillingId)
                 .ident(ident)
-                .master(master)
-                .pdlImportStatus(isNotBlank(ident) && isTestnorgeIdent(ident) ? "OK" : null)
+                .master(isTestnorgeIdent(ident) ? PDL : PDLF)
+                .pdlImportStatus(isTestnorgeIdent(ident) ? "OK" : null)
                 .build());
     }
 

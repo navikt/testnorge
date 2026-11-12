@@ -151,7 +151,7 @@ class OpprettPersonerByKriterierServiceTest {
             assertThat(person.isOpprett()).isTrue();
             assertThat(person.isLeggTil()).isFalse();
         });
-        verify(service, times(2)).opprettProgress(BESTILLING_ID, PDLF);
+        verify(service, times(2)).opprettProgress(BESTILLING_ID);
         verify(service).leggIdentTilGruppe(firstProgress, "Test group");
         verify(service).leggIdentTilGruppe(secondProgress, "Test group");
         verify(counterCustomRegistry, times(2)).invoke(any());
@@ -188,7 +188,7 @@ class OpprettPersonerByKriterierServiceTest {
         secondSynchronization.assertSubscribers();
         thirdSynchronization.assertSubscribers();
         fourthSynchronization.assertNoSubscribers();
-        verify(service, times(3)).opprettProgress(BESTILLING_ID, PDLF);
+        verify(service, times(3)).opprettProgress(BESTILLING_ID);
         verify(service, never()).saveBestillingToOpenSearchServer(any(), any());
 
         firstSynchronization.emit(firstProgress);
@@ -233,7 +233,7 @@ class OpprettPersonerByKriterierServiceTest {
 
         service.executeAsync(bestilling);
 
-        verify(service, never()).opprettProgress(BESTILLING_ID, PDLF);
+        verify(service, never()).opprettProgress(BESTILLING_ID);
         verifyNoInteractions(personServiceClient, clientRegister);
         verify(transactionHelperService).oppdaterBestillingFerdig(BESTILLING_ID, null);
         assertThat(bestilling.isFerdig()).isTrue();
@@ -246,7 +246,7 @@ class OpprettPersonerByKriterierServiceTest {
 
         service.executeAsync(bestilling);
 
-        verify(service, never()).opprettProgress(BESTILLING_ID, PDLF);
+        verify(service, never()).opprettProgress(BESTILLING_ID);
         verifyNoInteractions(personServiceClient, clientRegister, counterCustomRegistry);
         assertThat(bestilling.isFerdig()).isTrue();
     }
@@ -258,7 +258,7 @@ class OpprettPersonerByKriterierServiceTest {
 
         service.executeAsync(bestilling);
 
-        verify(service, never()).opprettProgress(BESTILLING_ID, PDLF);
+        verify(service, never()).opprettProgress(BESTILLING_ID);
         verifyNoInteractions(bestillingService, personServiceClient, clientRegister);
         assertThat(bestilling.isFerdig()).isTrue();
         assertThat(bestilling.getFeil()).contains("Kunne ikke mappe bestillingskriterier");
@@ -330,7 +330,7 @@ class OpprettPersonerByKriterierServiceTest {
         var nextProgress = new AtomicInteger();
         when(bestillingService.isStoppet(BESTILLING_ID)).thenReturn(Mono.just(false));
         doAnswer(_ -> Mono.just(progresses[nextProgress.getAndIncrement()]))
-                .when(service).opprettProgress(BESTILLING_ID, PDLF);
+                .when(service).opprettProgress(BESTILLING_ID);
         doAnswer(invocation -> Mono.just(invocation.getArgument(1)))
                 .when(service).opprettPerson(any(RsDollyUtvidetBestilling.class), any(BestillingProgress.class));
         doAnswer(invocation -> Mono.just(invocation.getArgument(0)))
