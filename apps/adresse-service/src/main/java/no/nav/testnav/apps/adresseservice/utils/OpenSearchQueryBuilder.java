@@ -41,13 +41,13 @@ public class OpenSearchQueryBuilder {
 
     private static final Random SEED = new SecureRandom();
 
-    public static FunctionScoreQuery.Builder buildSearchQuery(VegadresseRequest request) {
+    public static FunctionScoreQuery.Builder buildSearchQuery(VegadresseRequest request, boolean isFuzzy) {
 
         return new FunctionScoreQuery.Builder()
                 .functions(getRandomScoreQuery())
                 .boostMode(FunctionBoostMode.Replace)
                 .query(Query.builder()
-                        .bool(getVegadresseQuery(request))
+                        .bool(getVegadresseQuery(request, isFuzzy))
                         .build());
     }
 
@@ -61,12 +61,12 @@ public class OpenSearchQueryBuilder {
                         .build());
     }
 
-    private static BoolQuery getVegadresseQuery(VegadresseRequest request) {
+    private static BoolQuery getVegadresseQuery(VegadresseRequest request, boolean isFuzzy) {
 
         var queryBuilder = QueryBuilders.bool();
 
         addMatrikkelIdQuery(queryBuilder, request);
-        addAdressenavnQuery(queryBuilder, request);
+        addAdressenavnQuery(queryBuilder, request, isFuzzy);
         addHusnummerQuery(queryBuilder, request);
         addHusbokstavQuery(queryBuilder, request);
         addPostnummerQuery(queryBuilder, request);

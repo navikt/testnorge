@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -67,7 +64,7 @@ public class AdresseController {
         log.info("Adressesøk startet med parametre: {}", Json.pretty(request));
 
         return openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1)
-                .doOnNext(resultat -> log(resultat, millis))
+                .doOnNext(_ -> log(millis))
                 .flatMapMany(Flux::fromIterable);
     }
 
@@ -96,15 +93,12 @@ public class AdresseController {
         log.info("Adressesøk startet med parametre: {}", Json.pretty(request));
 
         return openSearchQueryService.execQuery(request, nonNull(antall) ? antall : 1)
-                .doOnNext(resultat -> log(resultat, millis))
+                .doOnNext(_ -> log(millis))
                 .flatMapMany(Flux::fromIterable);
     }
 
-    private static <T> void log(List<T> resultat, long millis) {
+    private static void log(long millis) {
 
-        log.info("Adressesøk ferdig tok: {} ms, resultat {}", System.currentTimeMillis() - millis,
-                resultat.stream()
-                        .map(Json::pretty)
-                        .collect(Collectors.joining(", ")));
+        log.info("Adressesøk ferdig tok: {} ms", System.currentTimeMillis() - millis);
     }
 }

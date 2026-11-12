@@ -5,6 +5,7 @@ import no.nav.testnav.apps.adresseservice.dto.VegadresseRequest;
 import org.opensearch.client.opensearch._types.query_dsl.BoolQuery;
 
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.matchPhraseQuery;
 import static no.nav.testnav.apps.adresseservice.utils.OpenSearchQueryUtils.matchQuery;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -19,11 +20,14 @@ public class OpenSearchVegadresseQueryUtils {
         }
     }
 
-    public static void addAdressenavnQuery(BoolQuery.Builder queryBuilder, VegadresseRequest request) {
+    public static void addAdressenavnQuery(BoolQuery.Builder queryBuilder, VegadresseRequest request, boolean isFuzzy) {
 
         if (isNotBlank(request.getAdressenavn())) {
 
-            queryBuilder.must(q -> q.match(matchQuery("vegadresse.veg.adressenavn", request.getAdressenavn())));
+            queryBuilder.must(q -> isFuzzy ?
+                    q.match(matchQuery("vegadresse.veg.adressenavn", request.getAdressenavn())) :
+                    q.matchPhrase(matchPhraseQuery("vegadresse.veg.adressenavn", request.getAdressenavn()))
+            );
         }
     }
 
