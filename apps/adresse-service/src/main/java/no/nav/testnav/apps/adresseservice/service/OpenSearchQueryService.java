@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -49,7 +50,7 @@ public class OpenSearchQueryService {
 
         return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.VegadresseDTO(), new VegadresseDTO(), antall)
                 .flatMap(result -> {
-                    if (result.isEmpty()) {
+                    if (result.isEmpty() && isNotBlank(request.getAdressenavn())) {
                         log.info("Ingen treff på vegadresse med eksakt søk, forsøker med fuzzy-søk");
                         var fuzzyQueryBuilder = OpenSearchQueryBuilder.buildSearchQuery(request, true);
                         return execQuery(fuzzyQueryBuilder, new no.nav.testnav.apps.adresseservice.dto.VegadresseDTO(), new VegadresseDTO(), antall);
