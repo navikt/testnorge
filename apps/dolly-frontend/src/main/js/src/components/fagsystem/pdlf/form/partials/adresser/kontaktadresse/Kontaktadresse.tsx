@@ -27,6 +27,11 @@ import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import {
+	getHistorikkRegeltekst,
+	historikkRegler,
+	useHistorikkTag,
+} from '@/components/fagsystem/pdlf/form/partials/historikk/HistorikkRekkefoelge'
+import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -174,14 +179,19 @@ export const KontaktadresseForm = ({
 export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
+	const historikkTag = useHistorikkTag(formMethods, historikkRegler.kontaktadresse)
 
 	return (
-		<Kategori title="Kontaktadresse">
+		<Kategori
+			title="Kontaktadresse"
+			hjelpetekst={getHistorikkRegeltekst(historikkRegler.kontaktadresse)}
+		>
 			<FormDollyFieldArray
 				name="pdldata.person.kontaktadresse"
 				header="Kontaktadresse"
 				newEntry={getInitialKontaktadresse(initialMaster)}
 				canBeEmpty={false}
+				entryTag={historikkTag}
 			>
 				{(path: string, idx: number) => (
 					<KontaktadresseForm

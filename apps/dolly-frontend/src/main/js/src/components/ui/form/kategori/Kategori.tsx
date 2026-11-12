@@ -8,7 +8,7 @@ export const Kategori = ({
 	title = 'Kategori',
 	flex = true,
 	vis = null,
-	hjelpetekst = null,
+	hjelpetekst = null as string | null,
 	flexRow = null,
 	children,
 }) => {
