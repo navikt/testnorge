@@ -117,7 +117,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 .flatMap(_ -> prosesserPerson(bestillingId, bestKriterier, progress, ident)
                         .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
                         .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", progress.get().getIdent()))
-                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, progress.get(), progress.get().getIdent(), e)));
+                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, progress.get(), ident, e)));
     }
 
     private Mono<BestillingProgress> prosesserPerson(Long bestillingId, RsDollyUtvidetBestilling bestKriterier,

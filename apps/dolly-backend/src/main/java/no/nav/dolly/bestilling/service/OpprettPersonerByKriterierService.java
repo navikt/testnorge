@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -86,7 +87,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         getDollyBestillingRequest(bestilling)
                 .doOnNext(bestRequest::set)
-                .filter(bestKriterier-> isBlank(bestKriterier.getFeil()))
+                .filter(bestKriterier -> isBlank(bestKriterier.getFeil()))
                 .flatMapMany(request -> Flux.range(0, bestilling.getAntallIdenter())
                         .flatMap(_ -> opprettPerson(bestilling.getId(), request), 3))
                 .subscribe(null,
@@ -117,7 +118,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 .flatMap(_ -> prosesserPerson(bestillingId, bestKriterier, progress)
                         .switchIfEmpty(Mono.error(new DollyFunctionalException("Oppretting ikke fullført; annen feil")))
                         .doOnNext(_ -> log.info("Fullført oppretting av ident: {}", progress.get().getIdent()))
-                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, progress.get(), progress.get().getIdent(), e)));
+                        .onErrorResume(e -> setOpprettIdentFeilet(bestillingId, progress.get(),
+                                nonNull(progress.get()) ? progress.get().getIdent() : null, e)));
     }
 
     private Mono<BestillingProgress> prosesserPerson(Long bestillingId, RsDollyBestillingRequest bestKriterier,
