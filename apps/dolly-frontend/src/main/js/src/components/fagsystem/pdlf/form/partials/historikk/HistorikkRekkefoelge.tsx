@@ -1,7 +1,17 @@
 import { ReactNode } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { Tag } from '@navikt/ds-react'
-import { addDays, addYears, isAfter, isBefore, isValid, startOfDay, subDays } from 'date-fns'
+import {
+	addDays,
+	addYears,
+	differenceInDays,
+	isAfter,
+	isBefore,
+	isValid,
+	startOfDay,
+	subDays,
+	subYears,
+} from 'date-fns'
 import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
@@ -18,6 +28,7 @@ export type HistorikkRegel = {
 	pdlMasterVarerEttAar?: boolean
 	arverDatoFraEksisterende?: boolean
 	paavirkesAvFlytting?: boolean
+	genereresVedUtflytting?: boolean
 	tilleggstekst?: string
 }
 
@@ -29,22 +40,50 @@ export type HistorikkOpplysning = PdlOpplysning & {
 	matrikkeladresse?: object | null
 	ukjentBosted?: object | null
 	utenlandskAdresse?: object | null
+	postboksadresse?: object | null
+	postadresseIFrittFormat?: object | null
+	utenlandskAdresseIFrittFormat?: object | null
 }
 
 export type HistorikkKontekst = {
 	identtype?: string
 	tvungenMaster?: string
+	foedselsdato?: string | Date | null
 	pdlEksisterende?: Array<PdlOpplysning>
-	utflytting?: { utflyttingsdato?: string | Date | null }
+	utflytting?: {
+		utflyttingsdato?: string | Date | null
+		tilflyttingsland?: string | null
+	}
 	innflytting?: { innflyttingsdato?: string | Date | null }
+	bostedsadresse?: {
+		nye: Array<HistorikkOpplysning>
+		eksisterende: Array<HistorikkOpplysning>
+	}
 }
 
-export type HistorikkStatus = 'GJELDENDE' | 'ERSTATTET' | 'UTLOEPT'
+export type HistorikkStatus = 'GJELDENDE' | 'ERSTATTET' | 'UTLOEPT' | 'FJERNET'
 
 interface HistorikkTagProps {
 	status: HistorikkStatus
 	master?: string
 }
+
+type SimulertOpplysning = {
+	opplysning: HistorikkOpplysning
+	nyIdx?: number
+	erNy: boolean
+	master: string
+	fraOgMed: Date | null
+	tilOgMed: Date | null
+}
+
+type SimuleringResultat = {
+	opplysninger: Array<SimulertOpplysning>
+	fjernet: Array<SimulertOpplysning>
+}
+
+const LANDKODE_UKJENT = 'XUK'
+const ANTATT_ALDER_UTEN_FOEDSELSDATO = 30
 
 export const historikkRegler: Record<string, HistorikkRegel> = {
 	bostedsadresse: {
@@ -54,7 +93,7 @@ export const historikkRegler: Record<string, HistorikkRegel> = {
 		arverDatoFraEksisterende: true,
 		paavirkesAvFlytting: true,
 		tilleggstekst:
-			'Utflytting avslutter den nyeste norske bostedsadressen dagen før utflyttingsdatoen. Innflytting gir en ny norsk bostedsadresse hvis personen ikke har en gyldig norsk bostedsadresse på innflyttingsdatoen.',
+			'Utflytting avslutter den nyeste norske bostedsadressen dagen før utflyttingsdatoen, og norske bostedsadresser med f.o.m. etter utflyttingsdatoen blir fjernet. Innflytting gir en ny norsk bostedsadresse hvis personen ikke har en gyldig norsk bostedsadresse på innflyttingsdatoen.',
 	},
 	oppholdsadresse: {
 		opplysning: 'oppholdsadresse',
@@ -67,6 +106,9 @@ export const historikkRegler: Record<string, HistorikkRegel> = {
 		harGyldighetsperiode: true,
 		pdlMasterVarerEttAar: true,
 		arverDatoFraEksisterende: true,
+		genereresVedUtflytting: true,
+		tilleggstekst:
+			'Utflytting til et kjent land gir en ny utenlandsk kontaktadresse hvis personen ikke har en gyldig utenlandsk bostedsadresse eller kontaktadresse på utflyttingsdatoen.',
 	},
 	adressebeskyttelse: {
 		opplysning: 'adressebeskyttelse',
@@ -90,8 +132,19 @@ const tilDato = (dato?: string | Date | null) => {
 
 const erPassert = (dato: Date | null) => !!dato && isBefore(dato, startOfDay(new Date()))
 
-const erPdlMasterSomVarerEttAar = (opplysning: HistorikkOpplysning, regel: HistorikkRegel) =>
-	!!regel.pdlMasterVarerEttAar && opplysning?.master === 'PDL'
+const erGyldigEtter = (simulert: SimulertOpplysning, dato: Date) =>
+	!simulert.tilOgMed || isAfter(simulert.tilOgMed, dato)
+
+const harAdressetype = (opplysning: HistorikkOpplysning) =>
+	!!(
+		opplysning?.vegadresse ||
+		opplysning?.matrikkeladresse ||
+		opplysning?.ukjentBosted ||
+		opplysning?.utenlandskAdresse ||
+		opplysning?.postboksadresse ||
+		opplysning?.postadresseIFrittFormat ||
+		opplysning?.utenlandskAdresseIFrittFormat
+	)
 
 const erNorskAdresse = (opplysning: HistorikkOpplysning, kontekst: HistorikkKontekst) => {
 	if (opplysning?.vegadresse || opplysning?.matrikkeladresse || opplysning?.ukjentBosted) {
@@ -107,86 +160,203 @@ const erNorskAdresse = (opplysning: HistorikkOpplysning, kontekst: HistorikkKont
 	)
 }
 
-const getGenerertTilOgMed = (opplysning: HistorikkOpplysning, regel: HistorikkRegel) => {
-	const tilOgMed = tilDato(opplysning?.gyldigTilOgMed)
-	if (tilOgMed || !erPdlMasterSomVarerEttAar(opplysning, regel)) {
-		return tilOgMed
+const erUtenlandskBostedsadresse = (opplysning: HistorikkOpplysning, kontekst: HistorikkKontekst) =>
+	!!opplysning?.utenlandskAdresse ||
+	(!harAdressetype(opplysning) && !erNorskAdresse(opplysning, kontekst))
+
+const getFoedselsdato = (kontekst: HistorikkKontekst) =>
+	tilDato(kontekst.foedselsdato) ?? subYears(new Date(), ANTATT_ALDER_UTEN_FOEDSELSDATO)
+
+const tilSimulert = (
+	opplysning: HistorikkOpplysning,
+	kontekst: HistorikkKontekst,
+	erNy: boolean,
+	nyIdx?: number,
+): SimulertOpplysning => ({
+	opplysning,
+	nyIdx,
+	erNy,
+	master: getMaster(opplysning, kontekst),
+	fraOgMed: tilDato(opplysning?.gyldigFraOgMed),
+	tilOgMed: tilDato(opplysning?.gyldigTilOgMed),
+})
+
+const tilSimulertListe = (
+	nye: Array<HistorikkOpplysning>,
+	eksisterende: Array<HistorikkOpplysning>,
+	kontekst: HistorikkKontekst,
+) => [
+	...nye.map((opplysning, idx) => tilSimulert(opplysning, kontekst, true, idx)).reverse(),
+	...eksisterende.map((opplysning) => tilSimulert(opplysning, kontekst, false)),
+]
+
+const settPdlMasterGyldighet = (simulert: SimulertOpplysning) => {
+	if (simulert.opplysning?.master !== 'PDL') {
+		return
 	}
-	return addYears(tilDato(opplysning?.gyldigFraOgMed) ?? new Date(), 1)
+	simulert.fraOgMed = simulert.fraOgMed ?? new Date()
+	simulert.tilOgMed = simulert.tilOgMed ?? addYears(simulert.fraOgMed, 1)
 }
 
-const getEffektivFraOgMed = (
-	opplysning: HistorikkOpplysning,
-	eldreTilOgMed: Date | null,
-	regel: HistorikkRegel,
-) => {
-	const fraOgMed = tilDato(opplysning?.gyldigFraOgMed)
-	if (fraOgMed) {
-		return fraOgMed
+const finnNesteMedFraOgMed = (adresser: Array<SimulertOpplysning>, index: number) => {
+	for (let i = index - 1; i >= 0; i--) {
+		if (adresser[i].fraOgMed) {
+			return i
+		}
 	}
-	if (erPdlMasterSomVarerEttAar(opplysning, regel)) {
-		return new Date()
-	}
-	return eldreTilOgMed ? addDays(eldreTilOgMed, 1) : null
+	return -1
 }
 
-const getGyldigTilOgMed = (fraOgMed: Date | null, tilOgMed: Date | null) =>
-	tilOgMed && fraOgMed && !isBefore(fraOgMed, tilOgMed) ? null : tilOgMed
-
-const getEffektivTilOgMed = (
-	opplysning: HistorikkOpplysning,
-	eldreTilOgMed: Date | null,
-	regel: HistorikkRegel,
-) => {
-	if (!regel.harGyldighetsperiode) {
-		return null
+const interpolerFraOgMed = (adresser: Array<SimulertOpplysning>) => {
+	let startIndex = adresser.length - 1
+	while (startIndex !== -1) {
+		const nesteIndex = finnNesteMedFraOgMed(adresser, startIndex)
+		const startDato = adresser[startIndex].fraOgMed as Date
+		const sluttDato = nesteIndex === -1 ? new Date() : (adresser[nesteIndex].fraOgMed as Date)
+		const intervall = differenceInDays(sluttDato, startDato)
+		const antall = startIndex - nesteIndex
+		const dagerMellom = Math.trunc((intervall - Math.trunc(intervall / antall)) / antall)
+		for (let i = startIndex - 1; i > nesteIndex; i--) {
+			adresser[i].fraOgMed = addDays(adresser[i + 1].fraOgMed as Date, dagerMellom)
+		}
+		startIndex = nesteIndex
 	}
-	return getGyldigTilOgMed(
-		getEffektivFraOgMed(opplysning, eldreTilOgMed, regel),
-		getGenerertTilOgMed(opplysning, regel),
-	)
 }
 
-const getUtflyttingTilOgMed = (
-	opplysning: HistorikkOpplysning,
-	eldreTilOgMed: Date | null,
-	regel: HistorikkRegel,
+const oppdaterAdressedatoer = (
+	adresser: Array<SimulertOpplysning>,
 	kontekst: HistorikkKontekst,
 ) => {
-	if (!kontekst.utflytting || !erNorskAdresse(opplysning, kontekst)) {
-		return undefined
+	if (adresser.length === 0) {
+		return
 	}
-	const utflyttingsdato = tilDato(kontekst.utflytting.utflyttingsdato) ?? new Date()
-	return getGyldigTilOgMed(
-		getEffektivFraOgMed(opplysning, eldreTilOgMed, regel),
-		subDays(utflyttingsdato, 1),
-	)
+	const eldste = adresser[adresser.length - 1]
+	eldste.fraOgMed = eldste.fraOgMed ?? getFoedselsdato(kontekst)
+	for (let i = adresser.length - 1; i > 0; i--) {
+		const tilOgMed = adresser[i].tilOgMed
+		if (!adresser[i - 1].fraOgMed && tilOgMed) {
+			adresser[i - 1].fraOgMed = addDays(tilOgMed, 1)
+		}
+	}
+	interpolerFraOgMed(adresser)
 }
 
-const leggerInnflyttingTilAdresse = (
-	alleAdresser: Array<HistorikkOpplysning>,
+const fjernUgyldigTilOgMed = (adresser: Array<SimulertOpplysning>) =>
+	adresser.forEach((adresse) => {
+		if (!adresse.fraOgMed || !adresse.tilOgMed || !isBefore(adresse.fraOgMed, adresse.tilOgMed)) {
+			adresse.tilOgMed = null
+		}
+	})
+
+const simulerBostedsadresser = (
+	nye: Array<HistorikkOpplysning>,
+	eksisterende: Array<HistorikkOpplysning>,
+	kontekst: HistorikkKontekst,
+): SimuleringResultat => {
+	let adresser = tilSimulertListe(nye, eksisterende, kontekst)
+	oppdaterAdressedatoer(adresser, kontekst)
+	const erNorsk = (adresse: SimulertOpplysning) => erNorskAdresse(adresse.opplysning, kontekst)
+
+	if (kontekst.innflytting) {
+		const innflyttingsdato = tilDato(kontekst.innflytting.innflyttingsdato) ?? new Date()
+		if (!adresser.some((adresse) => erNorsk(adresse) && erGyldigEtter(adresse, innflyttingsdato))) {
+			adresser = [
+				tilSimulert({ vegadresse: {}, gyldigFraOgMed: innflyttingsdato }, kontekst, true),
+				...adresser,
+			]
+		}
+	}
+
+	let fjernet: Array<SimulertOpplysning> = []
+	if (kontekst.utflytting) {
+		const utflyttingsdato = tilDato(kontekst.utflytting.utflyttingsdato) ?? new Date()
+		fjernet = adresser.filter(
+			(adresse) =>
+				erNorsk(adresse) && !!adresse.fraOgMed && isAfter(adresse.fraOgMed, utflyttingsdato),
+		)
+		adresser = adresser.filter((adresse) => !fjernet.includes(adresse))
+		if (adresser.length > 0 && erNorsk(adresser[0])) {
+			adresser[0].tilOgMed = subDays(utflyttingsdato, 1)
+		}
+	}
+	return { opplysninger: adresser, fjernet }
+}
+
+const skalGenerereKontaktadresseVedUtflytting = (
+	kontaktadresser: Array<SimulertOpplysning>,
+	utflyttingsdato: Date,
 	kontekst: HistorikkKontekst,
 ) => {
-	if (!kontekst.innflytting) {
+	if (kontekst.utflytting?.tilflyttingsland === LANDKODE_UKJENT) {
 		return false
 	}
-	const innflyttingsdato = tilDato(kontekst.innflytting.innflyttingsdato) ?? new Date()
-	return !alleAdresser.some((adresse) => {
-		const tilOgMed = tilDato(adresse?.gyldigTilOgMed)
-		return erNorskAdresse(adresse, kontekst) && (!tilOgMed || isAfter(tilOgMed, innflyttingsdato))
-	})
+	const bostedsadresser = simulerBostedsadresser(
+		kontekst.bostedsadresse?.nye ?? [],
+		kontekst.bostedsadresse?.eksisterende ?? [],
+		kontekst,
+	).opplysninger
+	const harGyldigUtenlandskBostedsadresse = bostedsadresser.some(
+		(adresse) =>
+			erUtenlandskBostedsadresse(adresse.opplysning, kontekst) &&
+			erGyldigEtter(adresse, utflyttingsdato),
+	)
+	const harGyldigUtenlandskKontaktadresse = kontaktadresser.some(
+		(adresse) => !!adresse.opplysning?.utenlandskAdresse && erGyldigEtter(adresse, utflyttingsdato),
+	)
+	return !harGyldigUtenlandskBostedsadresse && !harGyldigUtenlandskKontaktadresse
 }
 
-const getEldreTilOgMed = (
+const simulerKontaktadresser = (
 	nye: Array<HistorikkOpplysning>,
-	idx: number,
 	eksisterende: Array<HistorikkOpplysning>,
-	regel: HistorikkRegel,
-) => {
-	if (idx > 0) {
-		return getGenerertTilOgMed(nye[idx - 1], regel)
+	kontekst: HistorikkKontekst,
+): SimuleringResultat => {
+	let adresser = tilSimulertListe(nye, eksisterende, kontekst)
+
+	if (kontekst.utflytting) {
+		const utflyttingsdato = tilDato(kontekst.utflytting.utflyttingsdato) ?? new Date()
+		if (skalGenerereKontaktadresseVedUtflytting(adresser, utflyttingsdato, kontekst)) {
+			adresser = [
+				tilSimulert({ utenlandskAdresse: {}, gyldigFraOgMed: utflyttingsdato }, kontekst, true),
+				...adresser,
+			]
+		}
 	}
-	return regel.arverDatoFraEksisterende ? tilDato(eksisterende[0]?.gyldigTilOgMed) : null
+
+	adresser.filter((adresse) => adresse.erNy).forEach(settPdlMasterGyldighet)
+	oppdaterAdressedatoer(adresser, kontekst)
+	return { opplysninger: adresser, fjernet: [] }
+}
+
+const simulerOppholdsadresser = (
+	nye: Array<HistorikkOpplysning>,
+	eksisterende: Array<HistorikkOpplysning>,
+	kontekst: HistorikkKontekst,
+): SimuleringResultat => {
+	const nyeAdresser = tilSimulertListe(nye, [], kontekst)
+	oppdaterAdressedatoer(nyeAdresser, kontekst)
+	return {
+		opplysninger: [...nyeAdresser, ...tilSimulertListe([], eksisterende, kontekst)],
+		fjernet: [],
+	}
+}
+
+const simuler = (
+	nye: Array<HistorikkOpplysning>,
+	regel: HistorikkRegel,
+	eksisterende: Array<HistorikkOpplysning>,
+	kontekst: HistorikkKontekst,
+): SimuleringResultat => {
+	if (!regel.harGyldighetsperiode) {
+		return { opplysninger: tilSimulertListe(nye, eksisterende, kontekst), fjernet: [] }
+	}
+	const resultat = regel.paavirkesAvFlytting
+		? simulerBostedsadresser(nye, eksisterende, kontekst)
+		: regel.genereresVedUtflytting
+			? simulerKontaktadresser(nye, eksisterende, kontekst)
+			: simulerOppholdsadresser(nye, eksisterende, kontekst)
+	fjernUgyldigTilOgMed(resultat.opplysninger)
+	return resultat
 }
 
 const harSammeGjeldendeGruppe = (
@@ -202,28 +372,31 @@ export const beregnHistorikkStatus = (
 	eksisterende: Array<HistorikkOpplysning> = [],
 	kontekst: HistorikkKontekst = {},
 ): Array<HistorikkStatus> => {
-	const erstattesAvInnflytting =
-		!!regel.paavirkesAvFlytting && leggerInnflyttingTilAdresse([...nye, ...eksisterende], kontekst)
+	const { opplysninger, fjernet } = simuler(nye, regel, eksisterende, kontekst)
+	const status: Array<HistorikkStatus> = nye.map(() => 'GJELDENDE')
 
-	return nye.map((opplysning, idx) => {
-		const harNyere = nye
-			.slice(idx + 1)
-			.some((nyere) => harSammeGjeldendeGruppe(opplysning, nyere, regel, kontekst))
-		if (harNyere || erstattesAvInnflytting) {
-			return 'ERSTATTET'
+	fjernet
+		.filter((simulert) => simulert.nyIdx !== undefined)
+		.forEach((simulert) => {
+			status[simulert.nyIdx as number] = 'FJERNET'
+		})
+
+	opplysninger.forEach((simulert, posisjon) => {
+		if (simulert.nyIdx === undefined) {
+			return
 		}
-		const eldreTilOgMed = getEldreTilOgMed(nye, idx, eksisterende, regel)
-		const erNyeste = idx === nye.length - 1
-		const utflyttingTilOgMed =
-			erNyeste && regel.paavirkesAvFlytting
-				? getUtflyttingTilOgMed(opplysning, eldreTilOgMed, regel, kontekst)
-				: undefined
-		const tilOgMed =
-			utflyttingTilOgMed !== undefined
-				? utflyttingTilOgMed
-				: getEffektivTilOgMed(opplysning, eldreTilOgMed, regel)
-		return erPassert(tilOgMed) ? 'UTLOEPT' : 'GJELDENDE'
+		const harNyere = opplysninger
+			.slice(0, posisjon)
+			.some((nyere) =>
+				harSammeGjeldendeGruppe(simulert.opplysning, nyere.opplysning, regel, kontekst),
+			)
+		if (harNyere) {
+			status[simulert.nyIdx] = 'ERSTATTET'
+		} else if (erPassert(simulert.tilOgMed)) {
+			status[simulert.nyIdx] = 'UTLOEPT'
+		}
 	})
+	return status
 }
 
 const erGjeldendeFraFoer = (
@@ -285,6 +458,9 @@ export const getHistorikkRegeltekst = (regel: HistorikkRegel) => {
 }
 
 const getTagTekst = (status: HistorikkStatus, master?: string) => {
+	if (status === 'FJERNET') {
+		return 'Blir fjernet (utflytting)'
+	}
 	if (status === 'UTLOEPT') {
 		return 'Blir historisk (t.o.m. passert)'
 	}
@@ -320,20 +496,52 @@ export const getHistorikkTag =
 		return <HistorikkTag status={status} master={master} />
 	}
 
+type FoedselOpplysning = {
+	foedselsdato?: string | null
+	foedselsaar?: number | null
+}
+
+const finnFoedselsdato = (personer: Array<Record<string, any> | undefined>) => {
+	for (const person of personer) {
+		const foedsel: FoedselOpplysning | undefined = person?.foedselsdato?.[0] ?? person?.foedsel?.[0]
+		if (foedsel?.foedselsdato) {
+			return foedsel.foedselsdato
+		}
+		if (foedsel?.foedselsaar) {
+			return new Date(foedsel.foedselsaar, 0, 1)
+		}
+	}
+	return null
+}
+
 export const useHistorikkTag = (formMethods: UseFormReturn, regel: HistorikkRegel) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const identtype = opts?.identtype || formMethods.watch('pdldata.opprettNyPerson.identtype')
-	const utflytting = formMethods.watch('pdldata.person.utflytting')?.[0]
-	const innflytting = formMethods.watch('pdldata.person.innflytting')?.[0]
+	const [utflytting, innflytting, foedselsdato, foedsel, bostedsadresse] = formMethods.watch([
+		'pdldata.person.utflytting',
+		'pdldata.person.innflytting',
+		'pdldata.person.foedselsdato',
+		'pdldata.person.foedsel',
+		'pdldata.person.bostedsadresse',
+	])
+	const eksisterendePerson = opts?.personFoerLeggTil?.pdlforvalter?.person
+	const paavirkesAvFlytting = regel.paavirkesAvFlytting || regel.genereresVedUtflytting
 
 	const kontekst: HistorikkKontekst = {
 		identtype,
 		tvungenMaster: identtype === 'NPID' || opts?.identMaster === 'PDL' ? 'PDL' : undefined,
+		foedselsdato: finnFoedselsdato([{ foedselsdato, foedsel }, eksisterendePerson]),
 		pdlEksisterende: opts?.personFoerLeggTil?.pdl?.hentPerson?.[regel.opplysning],
-		utflytting: regel.paavirkesAvFlytting ? utflytting : undefined,
-		innflytting: regel.paavirkesAvFlytting ? innflytting : undefined,
+		utflytting: paavirkesAvFlytting ? utflytting?.[0] : undefined,
+		innflytting: paavirkesAvFlytting ? innflytting?.[0] : undefined,
+		bostedsadresse: regel.genereresVedUtflytting
+			? {
+					nye: bostedsadresse ?? [],
+					eksisterende: eksisterendePerson?.bostedsadresse ?? [],
+				}
+			: undefined,
 	}
-	const eksisterende = opts?.personFoerLeggTil?.pdlforvalter?.person?.[regel.opplysning] || []
+	const eksisterende = eksisterendePerson?.[regel.opplysning] || []
 
 	return getHistorikkTag(regel, eksisterende, kontekst)
 }

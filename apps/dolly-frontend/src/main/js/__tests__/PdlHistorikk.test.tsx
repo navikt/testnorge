@@ -66,6 +66,32 @@ describe('PdlHistorikkFieldArray', () => {
 		expect(screen.getByText('FORTROLIG-1')).toBeInTheDocument()
 	})
 
+	it('should remount a row when another record moves into its position', () => {
+		const montert: Array<string> = []
+		const Rad = ({ element }: { element: TestOpplysning }) => {
+			const [foersteHendelseId] = React.useState(element.hendelseId as string)
+			React.useEffect(() => {
+				montert.push(foersteHendelseId)
+			}, [foersteHendelseId])
+			return <span>{element.gradering}</span>
+		}
+		const renderRad = (element: TestOpplysning) => <Rad element={element} />
+		const data = [{ hendelseId: 'h-3', gradering: 'FORTROLIG' }, ...pdlfData]
+		const historisk = (opplysningsId: string) => ({ metadata: { opplysningsId, historisk: true } })
+		const { rerender } = render(
+			<PdlHistorikkFieldArray data={data} pdlData={[historisk('h-1')]}>
+				{renderRad}
+			</PdlHistorikkFieldArray>,
+		)
+		rerender(
+			<PdlHistorikkFieldArray data={data} pdlData={[historisk('h-3'), historisk('h-1')]}>
+				{renderRad}
+			</PdlHistorikkFieldArray>,
+		)
+
+		expect(montert).toEqual(['h-3', 'h-2', 'h-2'])
+	})
+
 	it('should not render a historikk panel when nothing is historisk', () => {
 		render(<PdlHistorikkFieldArray data={pdlfData}>{renderOpplysning}</PdlHistorikkFieldArray>)
 
@@ -253,6 +279,87 @@ describe('beregnHistorikkStatus with backend adjustments', () => {
 		expect(beregnHistorikkStatus([{}], historikkRegler.bostedsadresse, [], kontekst)).toEqual([
 			'GJELDENDE',
 		])
+	})
+})
+
+describe('beregnHistorikkStatus with backend date normalization and flytting', () => {
+	const dagerSiden = (dager: number) =>
+		new Date(Date.now() - dager * 24 * 60 * 60 * 1000).toISOString()
+
+	it('should interpolate f.o.m. from an older address before checking t.o.m.', () => {
+		expect(
+			beregnHistorikkStatus(
+				[{ master: 'FREG', vegadresse: {}, gyldigTilOgMed: iFjor }],
+				historikkRegler.bostedsadresse,
+				[{ master: 'FREG', vegadresse: {}, gyldigFraOgMed: dagerSiden(2) }],
+			),
+		).toEqual(['GJELDENDE'])
+	})
+
+	it('should remove norsk bostedsadresse with f.o.m. after the utflyttingsdato', () => {
+		expect(
+			beregnHistorikkStatus(
+				[
+					{ vegadresse: {}, gyldigFraOgMed: toAarSiden },
+					{ vegadresse: {}, gyldigFraOgMed: nesteAar },
+				],
+				historikkRegler.bostedsadresse,
+				[],
+				{ utflytting: { utflyttingsdato: iFjor } },
+			),
+		).toEqual(['UTLOEPT', 'FJERNET'])
+	})
+
+	it('should replace FREG kontaktadresse with the one generated on utflytting', () => {
+		const kontekst = {
+			identtype: 'FNR',
+			utflytting: { utflyttingsdato: null, tilflyttingsland: 'SWE' },
+		}
+		expect(
+			beregnHistorikkStatus(
+				[
+					{ master: 'FREG', vegadresse: {} },
+					{ master: 'FREG', vegadresse: {} },
+				],
+				historikkRegler.kontaktadresse,
+				[],
+				kontekst,
+			),
+		).toEqual(['ERSTATTET', 'ERSTATTET'])
+		expect(
+			beregnHistorikkStatus([{ master: 'FREG' }], historikkRegler.kontaktadresse, [], {
+				...kontekst,
+				identtype: 'DNR',
+			}),
+		).toEqual(['ERSTATTET'])
+		expect(
+			beregnHistorikkStatus(
+				[{ master: 'FREG', vegadresse: {} }],
+				historikkRegler.kontaktadresse,
+				[],
+				{ ...kontekst, utflytting: { utflyttingsdato: null, tilflyttingsland: 'XUK' } },
+			),
+		).toEqual(['GJELDENDE'])
+		expect(
+			beregnHistorikkStatus(
+				[{ master: 'FREG', vegadresse: {} }],
+				historikkRegler.kontaktadresse,
+				[],
+				{
+					...kontekst,
+					bostedsadresse: { nye: [{ utenlandskAdresse: {} }], eksisterende: [] },
+				},
+			),
+		).toEqual(['GJELDENDE'])
+	})
+
+	it('should show a removed tag for entries removed on utflytting', () => {
+		const tag = getHistorikkTag(historikkRegler.bostedsadresse, [], {
+			utflytting: { utflyttingsdato: iFjor },
+		})
+		render(<>{tag(0, [{ vegadresse: {}, gyldigFraOgMed: nesteAar }])}</>)
+
+		expect(screen.getByText('Blir fjernet (utflytting)')).toBeInTheDocument()
 	})
 })
 
