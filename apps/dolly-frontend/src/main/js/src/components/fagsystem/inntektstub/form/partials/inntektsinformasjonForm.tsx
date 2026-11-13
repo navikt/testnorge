@@ -3,7 +3,7 @@ import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinfor
 import { useFormContext } from 'react-hook-form'
 import { VirksomhetToggle } from '@/components/fagsystem/inntektstub/form/partials/virksomhetToggle'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { MonthCombobox } from '@/components/ui/form/inputs/monthsCombobox/MonthCombobox'
+import { PerioderToggle } from '@/components/fagsystem/inntektstub/form/partials/PerioderToggle'
 
 interface InntektsinformasjonForm {
 	path: string
@@ -19,7 +19,7 @@ export default ({ path }: InntektsinformasjonForm) => {
 
 	return (
 		<React.Fragment key={path}>
-			<MonthCombobox name={`${path}.perioder`} label="Perioder" />
+			<PerioderToggle path={path} />
 			<FormDatepicker
 				name={`${path}.rapporteringsdato`}
 				label="Rapporteringstidspunkt"
