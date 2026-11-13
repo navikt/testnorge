@@ -24,7 +24,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@grafana/faro-web-sdk": "^2.14.0",
-		"@hookform/resolvers": "^5.9.2",
+		"@hookform/resolvers": "^7.0.5",
 		"@nais/apm": "^0.7.3",
 		"@navikt/aksel-icons": "^8.22.1",
 		"@popperjs/core": "^2.11.8",
@@ -93,7 +93,7 @@
 		"dot-prop": "^10.2.0",
 		"eslint": "^10.14.0",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-react-compiler": "19.1.0-rc.2",
+		"eslint-plugin-react-hooks": "^7.1.1",
 		"fetch-retry": "^6.0.0",
 		"jsdom": "^30.1.3",
 		"less": "^4.9.1",
