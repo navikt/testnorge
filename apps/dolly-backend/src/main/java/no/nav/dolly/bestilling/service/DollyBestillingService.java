@@ -386,7 +386,7 @@ public class DollyBestillingService {
 
                         return transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
                                         "Info: Ordre til PDL startet ...")
-                                .flatMap(progress2 -> pdlDataConsumer.sendOrdre(progress.getIdent(), false)
+                                .flatMap(progress2 -> pdlDataConsumer.sendOrdre(progress.getIdent(), true)
                                         .flatMap(resultat -> {
                                             if (resultat.getStatus().is2xxSuccessful()) {
                                                 return transactionHelperService.persister(progress2, BestillingProgress::setPdlOrdreStatus,

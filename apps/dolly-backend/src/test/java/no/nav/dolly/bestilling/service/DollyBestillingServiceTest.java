@@ -303,7 +303,7 @@ class DollyBestillingServiceTest {
                 .oppdatertIdent("98765432109")
                 .pdlForvalterStatus(status)
                 .build();
-        given(pdlDataConsumer.sendOrdre(IDENT, false))
+        given(pdlDataConsumer.sendOrdre(IDENT, true))
                 .willReturn(Mono.just(PdlResponse.builder()
                         .status(HttpStatus.OK).jsonNode("{\"status\":\"OK\"}").build()));
         stubPersister();
@@ -315,7 +315,7 @@ class DollyBestillingServiceTest {
                 })
                 .verifyComplete();
 
-        verify(pdlDataConsumer).sendOrdre(IDENT, false);
+        verify(pdlDataConsumer).sendOrdre(IDENT, true);
     }
 
     @Test
@@ -326,7 +326,7 @@ class DollyBestillingServiceTest {
                 .oppdatertIdent("98765432109")
                 .pdlForvalterStatus("OK")
                 .build();
-        given(pdlDataConsumer.sendOrdre(IDENT, false))
+        given(pdlDataConsumer.sendOrdre(IDENT, true))
                 .willReturn(Mono.just(PdlResponse.builder()
                         .status(HttpStatus.BAD_REQUEST).feilmelding("Invalid identity").build()));
         given(errorStatusDecoder.getErrorText(HttpStatus.BAD_REQUEST, "Invalid identity"))
