@@ -81,7 +81,7 @@ export const DollyFaBlokk = ({
 	idx,
 	handleRemove,
 	hjelpetekst,
-	tag = null,
+	tag = null as React.ReactNode,
 	children,
 	showDeleteButton,
 	number,
@@ -240,6 +240,7 @@ export const FormDollyFieldArray = ({
 	errorText = null,
 	lockedEntriesLength = 0 as unknown as number,
 	leafOnlyDelete = false,
+	entryTag = null as unknown as (idx: number, values: Array<any>) => React.ReactNode,
 	...props
 }) => {
 	const formMethods = useFormContext()
@@ -323,6 +324,7 @@ export const FormDollyFieldArray = ({
 							handleRemove={showDeleteButton ? handleRemove : null}
 							showDeleteButton={showDeleteButton}
 							whiteBackground={whiteBackground}
+							tag={entryTag ? entryTag(idx, values) : null}
 						>
 							{children(path, idx, curr, number, field.key)}
 						</DollyFaBlokk>

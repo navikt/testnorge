@@ -2,7 +2,10 @@ import React from 'react'
 import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import {
+	PdlHistorikkFieldArray,
+	PdlOpplysning,
+} from '@/components/ui/historikk/PdlHistorikkFieldArray'
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
@@ -14,6 +17,7 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 
 type BoadresseTypes = {
 	data: Array<any>
+	pdlData?: Array<PdlOpplysning>
 	tmpPersoner?: Array<BostedData>
 	ident?: string
 	identtype?: string
@@ -110,6 +114,7 @@ export const BoadresseVisning = ({
 
 export const Boadresse = ({
 	data,
+	pdlData,
 	tmpPersoner,
 	ident,
 	identtype,
@@ -125,7 +130,7 @@ export const Boadresse = ({
 			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
+					<PdlHistorikkFieldArray data={data} pdlData={pdlData}>
 						{(adresse: any, idx: number) =>
 							erRedigerbar ? (
 								<BoadresseVisning
@@ -141,7 +146,7 @@ export const Boadresse = ({
 								<Adresse boadresseData={adresse} idx={idx} />
 							)
 						}
-					</DollyFieldArray>
+					</PdlHistorikkFieldArray>
 				</ErrorBoundary>
 			</div>
 		</>

@@ -83,6 +83,8 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 
 	const erDoed = data?.person?.doedsfall?.find((d) => d.doedsdato)
 
+	const pdlPerson = fagsystemData?.pdl?.hentPerson
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -135,6 +137,7 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 				/>
 				<Boadresse
 					data={data?.person?.bostedsadresse}
+					pdlData={pdlPerson?.bostedsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
@@ -142,6 +145,7 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 				/>
 				<DeltBosted
 					data={data?.person?.deltBosted}
+					pdlData={pdlPerson?.deltBosted}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					personValues={data?.person}
@@ -150,6 +154,7 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 				/>
 				<Oppholdsadresse
 					data={data?.person?.oppholdsadresse}
+					pdlData={pdlPerson?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
@@ -157,6 +162,7 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
+					pdlData={pdlPerson?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
@@ -164,6 +170,7 @@ export const PdlfVisning = ({ fagsystemData, loading, erRedigerbar = true }) => 
 				/>
 				<Adressebeskyttelse
 					data={data?.person?.adressebeskyttelse}
+					pdlData={pdlPerson?.adressebeskyttelse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
