@@ -222,6 +222,7 @@ public class ArtifactUpdateService {
                         .filter(relasjon -> relasjon.getId().equals(id))
                         .flatMap(relasjon -> {
                             if (isEndretRolle(relasjon, oppdatertRelasjon) ||
+                                isNotBlank(relasjon.getRelatertPerson()) &&
                                 !Objects.equals(relasjon.getRelatertPerson(), oppdatertRelasjon.getRelatertPerson())) {
                                 return getPerson(relasjon.getIdentForRelasjon())
                                         .flatMap(slettePerson ->
