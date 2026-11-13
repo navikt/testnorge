@@ -94,6 +94,7 @@ class InntektsmeldingClientTest {
 
         var person = DollyPerson
                 .builder()
+                .isOpprett(true)
                 .ident("12345678901")
                 .build();
         var progress = BestillingProgress.builder().build();
@@ -101,8 +102,8 @@ class InntektsmeldingClientTest {
         ArgumentCaptor<List<TransaksjonMapping>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
         StepVerifier
-                .create(inntektsmeldingClient.gjenopprett(bestilling, person, progress, true))
-                .assertNext(status -> {
+                .create(inntektsmeldingClient.gjenopprett(bestilling, person, progress))
+                .assertNext(_ -> {
                     verify(transaksjonMappingService, times(2))
                             .saveAll(argumentCaptor.capture());
                     assertThat(argumentCaptor.getAllValues(), hasSize(2));

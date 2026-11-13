@@ -84,7 +84,6 @@ public class TestpersonController {
 
     @Operation(description = "Gjenopprett test ident")
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
-    @Transactional
     @PostMapping("/gjenopprett/{ident}")
     public Mono<RsBestillingStatus> gjenopprettTestident(@PathVariable String ident, @RequestParam(required = false) List<String> miljoer) {
 

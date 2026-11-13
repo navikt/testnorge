@@ -73,14 +73,10 @@ public class TpsMessagingClient implements ClientRegister {
 
     @Override
     @SuppressWarnings("S1144")
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
-
-        if (!isTpsMessage(bestilling)) {
-            return Mono.just(progress);
-        }
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return miljoerConsumer.getMiljoer()
-                .flatMap(miljoer -> !dollyPerson.isOrdre() ?
+                .flatMap(miljoer -> !dollyPerson.isOrdre() && isTpsMessage(bestilling) ?
                         transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
                                         BestillingProgress::setTpsMessagingStatus,
                                         prepTpsMessagingStatus(miljoer), SEP)
@@ -89,7 +85,7 @@ public class TpsMessagingClient implements ClientRegister {
                 .flatMap(miljoer -> getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
                         .flatMap(this::getPersonData)
                         .collectList()
-                        .flatMapMany(personer -> Flux.concat(
+                        .flatMapMany(_ -> Flux.concat(
                                 sendBankkontonummerNorge(bestilling, dollyPerson.getIdent())
                                         .map(respons -> Map.of("NorskBankkonto", respons)),
                                 sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent())
@@ -123,11 +119,11 @@ public class TpsMessagingClient implements ClientRegister {
 
     private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {
 
-        return (nonNull(bestilling.getBankkonto()) &&
-                (nonNull(bestilling.getBankkonto().getNorskBankkonto()) ||
-                        nonNull(bestilling.getBankkonto().getUtenlandskBankkonto()))) ||
-                nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling)) ||
-                nonNull(SkjermingUtil.getEgenansattDatoTom(bestilling));
+        return nonNull(bestilling.getBankkonto()) ||
+               nonNull(bestilling.getSkjerming()) ||
+
+               (nonNull(bestilling.getPdldata()) &&
+                nonNull(bestilling.getPdldata().getPerson()));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(DollyPerson dollyPerson, BestillingProgress progress, String status) {

@@ -58,7 +58,7 @@ public class SkattekortClient implements ClientRegister {
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                                BestillingProgress progress, boolean isOpprettEndre) {
+                                                BestillingProgress progress) {
 
         if (isNull(bestilling.getSkattekort()) || bestilling.getSkattekort().getArbeidsgiverSkatt().isEmpty()) {
             return Mono.empty();

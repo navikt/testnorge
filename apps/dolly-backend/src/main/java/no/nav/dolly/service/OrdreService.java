@@ -57,8 +57,8 @@ public class OrdreService {
                                                 .map(BestillingProgress::isPdlSync)
                                                 .filter(BooleanUtils::isTrue)
                                                 .flatMapMany(_ -> Flux.merge(
-                                                        pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false),
-                                                        tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false)))
+                                                        pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress),
+                                                        tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress)))
                                                 .collectList()
                                                 .map(_ -> RsOrdreStatus.builder()
                                                         .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), jsonMapper))

@@ -73,8 +73,7 @@ class HenvendelseClientTest {
         StepVerifier.create(henvendelseClient.gjenopprett(
                         new RsDollyUtvidetBestilling(),
                         salesforcePerson(),
-                        new BestillingProgress(),
-                        true))
+                        new BestillingProgress()))
                 .verifyComplete();
 
         verify(personServiceConsumer, never()).getPdlPersoner(anyList());
@@ -145,8 +144,7 @@ class HenvendelseClientTest {
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
                         salesforcePerson(),
-                        progress,
-                        true))
+                        progress))
                 .expectNext(progress)
                 .verifyComplete();
 
@@ -209,8 +207,7 @@ class HenvendelseClientTest {
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
                         salesforcePerson(),
-                        progress,
-                        true))
+                        progress))
                 .expectNext(progress)
                 .verifyComplete();
 
@@ -242,8 +239,7 @@ class HenvendelseClientTest {
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
                         salesforcePerson(),
-                        progress,
-                        true))
+                        progress))
                 .expectNext(progress)
                 .verifyComplete();
 
@@ -266,8 +262,7 @@ class HenvendelseClientTest {
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
                         DollyPerson.builder().ident(IDENT).isLeggTil(true).build(),
-                        progress,
-                        true))
+                        progress))
                 .expectNext(progress)
                 .verifyComplete();
 
@@ -295,8 +290,7 @@ class HenvendelseClientTest {
         StepVerifier.create(henvendelseClient.gjenopprett(
                         bestilling,
                         salesforcePerson(),
-                        progress,
-                        true))
+                        progress))
                 .expectNext(progress)
                 .verifyComplete();
 
@@ -314,10 +308,11 @@ class HenvendelseClientTest {
                 .meldinger(List.of(melding())).build());
         var person = salesforcePerson();
         person.setLeggTil(false);
+        person.setOpprett(true);
         when(transactionHelperService.persister(eq(progress), any(), anyString()))
                 .thenReturn(Mono.just(progress));
 
-        StepVerifier.create(henvendelseClient.gjenopprett(bestilling, person, progress, true))
+        StepVerifier.create(henvendelseClient.gjenopprett(bestilling, person, progress))
                 .expectNext(progress)
                 .verifyComplete();
 
@@ -354,7 +349,7 @@ class HenvendelseClientTest {
         var person = salesforcePerson();
         person.setLeggTil(false);
 
-        StepVerifier.create(henvendelseClient.gjenopprett(bestilling, person, progress, false))
+        StepVerifier.create(henvendelseClient.gjenopprett(bestilling, person, progress))
                 .expectNext(progress)
                 .verifyComplete();
 

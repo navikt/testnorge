@@ -33,12 +33,12 @@ public class KontoregisterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return Mono.just(bestilling)
-                .filter(ordre -> nonNull(bestilling.getBankkonto()))
-                .flatMap(ordre -> {
-                    if (isOpprettEndre) {
+                .filter(_ -> nonNull(bestilling.getBankkonto()))
+                .flatMap(_ -> {
+                    if (dollyPerson.isOpprettEndre()) {
                         return Mono.just(true);
                     } else {
                         return kontoregisterConsumer.getKontonummer(dollyPerson.getIdent())
@@ -101,6 +101,6 @@ public class KontoregisterClient implements ClientRegister {
 
         kontoregisterConsumer.deleteKontonumre(identer)
                 .collectList()
-                .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
+                .subscribe(_ -> log.info("Slettet kontoer fra Kontoregister"));
     }
 }

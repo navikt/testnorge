@@ -9,6 +9,9 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Component
 public class InstdataMappingStrategy implements MappingStrategy {
 
@@ -22,13 +25,17 @@ public class InstdataMappingStrategy implements MappingStrategy {
                         instdata.setNorskident((String) context.getProperty("ident"));
                         instdata.setRegistrertAv("Dolly");
 
-                        instdata.setOppholdstype(mapKategori(rsInstdata.getInstitusjonstype()).name());
+                        var institusjonstype = mapKategori(rsInstdata.getInstitusjonstype());
+                        instdata.setOppholdstype(nonNull(institusjonstype) ? institusjonstype.name() : null);
                         instdata.setInstitusjonsnummer(mapInstitusjonsnummer(rsInstdata.getInstitusjonstype()));
                         instdata.setTssEksternId(mapTssEksternId(rsInstdata.getInstitusjonstype()));
                     }
 
                     private static InstdataOppholdstype mapKategori(RsInstdata.InstdataInstitusjonstype type) {
 
+                        if (isNull(type)) {
+                            return null;
+                        }
                         return switch (type) {
                             case AS -> InstdataOppholdstype.A;
                             case FO -> InstdataOppholdstype.S;
@@ -38,6 +45,9 @@ public class InstdataMappingStrategy implements MappingStrategy {
 
                     private static String mapInstitusjonsnummer(RsInstdata.InstdataInstitusjonstype type) {
 
+                        if (isNull(type)) {
+                            return null;
+                        }
                         return switch (type) {
                             case AS -> Institusjonsnummer.ADAMSTUEN_SYKEHJEM.getId();
                             case FO -> Institusjonsnummer.INDRE_OSTFOLD_FENGSEL.getId();
@@ -47,6 +57,9 @@ public class InstdataMappingStrategy implements MappingStrategy {
 
                     private static String mapTssEksternId(RsInstdata.InstdataInstitusjonstype type) {
 
+                        if (isNull(type)) {
+                            return null;
+                        }
                         return switch (type) {
                             case AS -> TssEksternId.ADAMSTUEN_SYKEHJEM.getId();
                             case FO -> TssEksternId.INDRE_OSTFOLD_FENGSEL.getId();

@@ -40,7 +40,7 @@ public class HendelseslagerPublishCommand implements Callable<Mono<Hendelselager
                         .body(resultat.getBody())
                         .build())
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(throwable -> HendelselagerResponse.of(WebClientError.describe(throwable)))
-                .doOnError(WebClientError.logTo(log));
+                .doOnError(WebClientError.logTo(log))
+                .onErrorResume(throwable -> HendelselagerResponse.of(WebClientError.describe(throwable)));
     }
 }
