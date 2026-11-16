@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -45,12 +45,6 @@ export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path:
 
 	const harOppfoelgingsvedtak14a =
 		opts?.personFoerLeggTil?.oppfoelgingsvedtak14a || oppfoelgingsvedtak14a
-
-	useEffect(() => {
-		if (harOppfoelgingsvedtak14a) {
-			formMethods.setValue(`${path}.kvalifiseringsgruppe`, null)
-		}
-	})
 
 	return (
 		<React.Fragment>
