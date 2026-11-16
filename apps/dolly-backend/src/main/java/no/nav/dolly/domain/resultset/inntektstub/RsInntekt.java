@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Inntekt {
+public class RsInntekt {
 
     private InntektType inntektstype;
     private Double beloep;

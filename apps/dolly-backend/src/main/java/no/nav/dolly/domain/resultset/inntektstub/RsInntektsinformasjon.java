@@ -39,7 +39,7 @@ public class RsInntektsinformasjon {
             requiredMode = Schema.RequiredMode.REQUIRED)
     private String virksomhet;
 
-    private List<Inntekt> inntektsliste;
+    private List<RsInntekt> inntektsliste;
 
     private List<Fradrag> fradragsliste;
 
@@ -49,7 +49,7 @@ public class RsInntektsinformasjon {
 
     private Integer versjon;
 
-    public List<Inntekt> getInntektsliste() {
+    public List<RsInntekt> getInntektsliste() {
         if (isNull(inntektsliste)) {
             inntektsliste = new ArrayList<>();
         }
