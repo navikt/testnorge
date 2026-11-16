@@ -69,6 +69,7 @@ public class SwopIdentsService {
         person1.getPerson().getFalskIdentitet().addAll(person2.getPerson().getFalskIdentitet());
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
+        person1.getPerson().getUtflytting().addAll(person2.getPerson().getUtflytting());
 
         person2.getPerson().getAdressebeskyttelse().stream()
                 .filter(status -> person1.getPerson().getAdressebeskyttelse().stream()

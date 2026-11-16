@@ -158,25 +158,25 @@ public class IdenttypeService implements BiValidation<IdentRequestDTO, PersonDTO
                     }
                 })
                 .flatMap(nyPerson -> {
+                    var personIdForHistorikk = nyPerson.getId();
 
-                    if (IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <=
-                        IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())) {
+                    var personer = IDENT_PRIORITET.get(person.getPerson().getIdenttype()) <=
+                                   IDENT_PRIORITET.get(nyPerson.getPerson().getIdenttype())
+                            ? swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
+                            .zipWith(Mono.just(person))
+                            : Mono.zip(Mono.just(person), Mono.just(nyPerson));
 
-                        return swopIdentsService.execute(person.getIdent(), nyPerson.getIdent())
-                                .zipWith(Mono.just(person));
-
-                    } else {
-
-                        return Mono.just(person)
-                                .zipWith(Mono.just(nyPerson));
-                    }
+                    return personer.flatMap(tuple ->
+                            aliasRepository.updatePersonId(
+                                            personIdForHistorikk, tuple.getT1().getId())
+                                    .then(Mono.defer(() ->
+                                            aliasRepository.save(DbAlias.builder()
+                                                    .tidligereIdent(tuple.getT2().getIdent())
+                                                    .personId(tuple.getT1().getId())
+                                                    .sistOppdatert(LocalDateTime.now())
+                                                    .build())))
+                                    .thenReturn(tuple));
                 })
-                .flatMap(personer -> aliasRepository.save(DbAlias.builder()
-                                .tidligereIdent(personer.getT2().getIdent())
-                                .personId(personer.getT1().getId())
-                                .sistOppdatert(LocalDateTime.now())
-                                .build())
-                        .thenReturn(personer))
                 .flatMap(personer ->
                         relasjonService.setRelasjoner(personer.getT1().getIdent(), GAMMEL_IDENTITET,
                                         personer.getT2().getIdent(), NY_IDENTITET)
