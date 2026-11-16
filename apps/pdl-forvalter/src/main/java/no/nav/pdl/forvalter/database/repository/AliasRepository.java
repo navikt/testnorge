@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.database.repository;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -28,4 +29,12 @@ public interface AliasRepository extends ReactiveCrudRepository<DbAlias, Long> {
            where a.person_id in (select id from person p where p.ident in (:ident))
            """)
     Mono<Void> deleteByIdentIn(Collection<String> ident);
+
+    @Modifying
+    @Query("""
+           update alias
+           set person_id = :nyPersonId
+           where person_id = :gmlPersonId
+           """)
+    Mono<Void> updatePersonId(@Param("gmlPersonId") Long gmlPersonId, @Param("nyPersonId") Long nyPersonId);
 }

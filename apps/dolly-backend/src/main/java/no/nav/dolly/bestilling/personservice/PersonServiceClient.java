@@ -71,14 +71,14 @@ public class PersonServiceClient {
                 .flatMap(ignore -> {
                     var startTime = System.currentTimeMillis();
 
-                    return Mono.from(getIdentWithRelasjoner(dollyPerson, progress)
+                    return getIdentWithRelasjoner(dollyPerson, progress)
                             .flatMap(personer -> getPersonService(now().plusSeconds(applicationConfig.getClientTimeout()), now(),
                                     new PersonServiceResponse(), personer), 10)
                             .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                             .onErrorResume(error -> doError(error, dollyPerson))
                             .doOnNext(status -> logStatus(status, startTime))
                             .collectList()
-                            .flatMap(status -> oppdaterStatus(dollyPerson, progress, status))
+                            .flatMap(status -> oppdaterStatus(dollyPerson, progress, status)
                     );
                 });
     }
