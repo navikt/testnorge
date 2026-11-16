@@ -393,6 +393,9 @@ export const validation = Yup.object({
 		.test('har-verdi', messages.required, (gruppe, testContext) => {
 			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 			const context = testContext.options?.context
+			const harOppfoelgingsvedtak14a =
+				fullForm?.oppfoelgingsvedtak14a || context?.personFoerLeggTil?.oppfoelgingsvedtak14a
+			if (harOppfoelgingsvedtak14a) return true
 			if (fullForm.arenaforvalter.arenaBrukertype === 'UTEN_SERVICEBEHOV') return true
 			if (
 				context?.personFoerLeggTil?.arenaforvalteren ||
