@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntekt;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekt;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -51,10 +52,10 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(no.nav.dolly.domain.resultset.inntektstub.Inntekt.class, Inntekt.class)
+        factory.classMap(RsInntekt.class, Inntekt.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(no.nav.dolly.domain.resultset.inntektstub.Inntekt kilde, Inntekt destinasjon, MappingContext context) {
+                    public void mapAtoB(RsInntekt kilde, Inntekt destinasjon, MappingContext context) {
                         var periode = (YearMonth) context.getProperty(PERIODE);
                         if (nonNull(periode)) {
                             if (isNull(kilde.getStartOpptjeningsperiode())) {

@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.inntektstub.mapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekt;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inntektstub.Tilleggsinformasjon;
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class InntektsinformasjonMappingStrategyTest {
@@ -101,6 +103,66 @@ class InntektsinformasjonMappingStrategyTest {
         assertThat(result.getSluttOpptjeningsperiode(), is(equalTo(expectedEnd)));
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldConvertAdditionalInformationPeriodTimestampsToDates(boolean legacyFormat) {
+        var additionalInformation = Tilleggsinformasjon.builder()
+                .etterbetalingsperiode(Tilleggsinformasjon.Periode.builder()
+                        .startdato(LocalDateTime.of(2015, 12, 31, 23, 45))
+                        .sluttdato(LocalDateTime.of(2016, 2, 29, 12, 30))
+                        .build())
+                .pensjon(Tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
+                        .tidsrom(Tilleggsinformasjon.Periode.builder()
+                                .startdato(LocalDateTime.of(2014, 3, 15, 8, 15))
+                                .sluttdato(LocalDateTime.of(2015, 11, 30, 18, 45))
+                                .build())
+                        .build())
+                .build();
+
+        var result = mapAdditionalInformation(additionalInformation, legacyFormat)
+                .getInntektsliste().getFirst().getTilleggsinformasjon();
+
+        assertThat(result.getEtterbetalingsperiode().getStartdato(), is(equalTo(LocalDate.of(2015, 12, 31))));
+        assertThat(result.getEtterbetalingsperiode().getSluttdato(), is(equalTo(LocalDate.of(2016, 2, 29))));
+        assertThat(result.getPensjon().getTidsrom().getStartdato(), is(equalTo(LocalDate.of(2014, 3, 15))));
+        assertThat(result.getPensjon().getTidsrom().getSluttdato(), is(equalTo(LocalDate.of(2015, 11, 30))));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldPreserveMissingDatesInAdditionalInformationPeriods(boolean legacyFormat) {
+        var additionalInformation = Tilleggsinformasjon.builder()
+                .etterbetalingsperiode(Tilleggsinformasjon.Periode.builder()
+                        .sluttdato(LocalDateTime.of(2016, 2, 29, 12, 30))
+                        .build())
+                .pensjon(Tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
+                        .tidsrom(Tilleggsinformasjon.Periode.builder()
+                                .startdato(LocalDateTime.of(2015, 12, 31, 23, 45))
+                                .build())
+                        .build())
+                .build();
+
+        var result = mapAdditionalInformation(additionalInformation, legacyFormat)
+                .getInntektsliste().getFirst().getTilleggsinformasjon();
+
+        assertThat(result.getEtterbetalingsperiode().getStartdato(), is(nullValue()));
+        assertThat(result.getEtterbetalingsperiode().getSluttdato(), is(equalTo(LocalDate.of(2016, 2, 29))));
+        assertThat(result.getPensjon().getTidsrom().getStartdato(), is(equalTo(LocalDate.of(2015, 12, 31))));
+        assertThat(result.getPensjon().getTidsrom().getSluttdato(), is(nullValue()));
+    }
+
+    private Inntektsinformasjon mapAdditionalInformation(Tilleggsinformasjon additionalInformation, boolean legacyFormat) {
+        var context = mappingContext(YearMonth.of(2016, 2), IDENT);
+        if (legacyFormat) {
+            var source = prepInntektsinformasjon();
+            source.getInntektsliste().getFirst().setTilleggsinformasjon(additionalInformation);
+            return mapperFacade.map(source, Inntektsinformasjon.class, context);
+        }
+        var source = prepRsInntekter();
+        source.getInntektsliste().getFirst().setTilleggsinformasjon(additionalInformation);
+        return mapperFacade.map(source, Inntektsinformasjon.class, context);
+    }
+
     private static MappingContext mappingContext(YearMonth period, String ident) {
 
         var context = MappingContextUtils.getMappingContext();
@@ -139,9 +201,9 @@ class InntektsinformasjonMappingStrategyTest {
                 .build();
     }
 
-    private static Inntekt prepInntekt(LocalDateTime start, LocalDateTime slutt) {
+    private static RsInntekt prepInntekt(LocalDateTime start, LocalDateTime slutt) {
 
-        return Inntekt.builder()
+        return RsInntekt.builder()
                 .beloep(BELOEP)
                 .startOpptjeningsperiode(start)
                 .sluttOpptjeningsperiode(slutt)
