@@ -50,6 +50,7 @@ type SelectProps = {
 	visHvisAvhuket?: any
 	afterChange?: any
 	isInDialog?: boolean
+	title?: string | null
 }
 
 export const Select = ({
@@ -71,6 +72,7 @@ export const Select = ({
 	isInDialog = false,
 	normalFontPlaceholder = false,
 	autoFocus = false,
+	title = null,
 	...rest
 }: SelectProps) => {
 	const formMethods = useFormContext()
@@ -155,7 +157,7 @@ export const Select = ({
 	const placeholderText = getPlaceholder()
 
 	return (
-		<span data-testid={rest['data-testid']}>
+		<span data-testid={rest['data-testid']} title={title ?? undefined}>
 			<ReactSelect
 				value={!_.isEmpty(formValue) ? formValue : propValue}
 				defaultValue={propValue}
@@ -181,7 +183,7 @@ export const Select = ({
 					...theme,
 					colors: {
 						...theme.colors,
-						neutral50: normalFontPlaceholder ? 'unset' : '',
+						neutral50: isDisabled ? theme.colors.neutral40 : normalFontPlaceholder ? 'unset' : '',
 					},
 				})}
 				onChange={onChange}

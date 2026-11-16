@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -40,8 +40,17 @@ const getFeilmelding = (formMethods: any) => {
 
 export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path: string }) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
-	const { arenaforvalter } = formMethods.getValues()
+	const { arenaforvalter, oppfoelgingsvedtak14a } = formMethods.getValues()
 	const feilmelding = getFeilmelding(formMethods)
+
+	const harOppfoelgingsvedtak14a =
+		opts?.personFoerLeggTil?.oppfoelgingsvedtak14a || oppfoelgingsvedtak14a
+
+	useEffect(() => {
+		if (harOppfoelgingsvedtak14a) {
+			formMethods.setValue(`${path}.kvalifiseringsgruppe`, null)
+		}
+	})
 
 	return (
 		<React.Fragment>
@@ -56,6 +65,12 @@ export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path:
 					label="Servicebehov"
 					options={Options('kvalifiseringsgruppe')}
 					size="xlarge"
+					isDisabled={!!harOppfoelgingsvedtak14a}
+					title={
+						harOppfoelgingsvedtak14a
+							? 'Servicebehov kan ikke settes på personer som har oppfølgingsvedtak § 14 a'
+							: null
+					}
 				/>
 				{!opts.personFoerLeggTil?.arenaforvalter && (
 					<FormDatepicker

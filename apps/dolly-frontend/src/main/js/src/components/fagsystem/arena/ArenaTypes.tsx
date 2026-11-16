@@ -1,7 +1,7 @@
 export type ArenaTypes = {
 	arenaBrukertype: string
 	automatiskInnsendingAvMeldekort: boolean
-	kvalifiseringsgruppe: string
+	kvalifiseringsgruppe?: string
 	aktiveringDato: string
 	inaktiveringDato: string
 	aap115: Array<AAP115>
