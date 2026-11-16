@@ -8,4 +8,4 @@ Søk kan gjøres på postnummer, kommunenummer, fritekstsøk, mm
 
 For å nå Aiven OpenSearch-instansen lokalt, kan alternativt følgende kommandoer benyttes for å hente påloggingsinformasjon:
 
-> nais opensearch credentials bestillinger --team dolly --environment dev --permission READ --ttl 14d 
+> nais opensearch credentials bestillinger --team dolly --environment dev-gcp --permission READ --ttl 14d 

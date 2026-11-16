@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -45,9 +46,17 @@ public class OpenSearchQueryService {
 
     public Mono<List<VegadresseDTO>> execQuery(VegadresseRequest request, Long antall) {
 
-        var queryBuilder = OpenSearchQueryBuilder.buildSearchQuery(request);
+        var queryBuilder = OpenSearchQueryBuilder.buildSearchQuery(request, false);
 
-        return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.VegadresseDTO(), new VegadresseDTO(), antall);
+        return execQuery(queryBuilder, new no.nav.testnav.apps.adresseservice.dto.VegadresseDTO(), new VegadresseDTO(), antall)
+                .flatMap(result -> {
+                    if (result.isEmpty() && isNotBlank(request.getAdressenavn())) {
+                        log.info("Ingen treff på vegadresse med eksakt søk, forsøker med fuzzy-søk");
+                        var fuzzyQueryBuilder = OpenSearchQueryBuilder.buildSearchQuery(request, true);
+                        return execQuery(fuzzyQueryBuilder, new no.nav.testnav.apps.adresseservice.dto.VegadresseDTO(), new VegadresseDTO(), antall);
+                    }
+                    return Mono.just(result);
+                });
     }
 
     public Mono<List<MatrikkeladresseDTO>> execQuery(MatrikkeladresseRequest request, Long antall) {

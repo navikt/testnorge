@@ -39,7 +39,7 @@ public class SigrunstubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return Flux.merge(
                         doPensjonsgivendeInntekt(bestilling, dollyPerson),

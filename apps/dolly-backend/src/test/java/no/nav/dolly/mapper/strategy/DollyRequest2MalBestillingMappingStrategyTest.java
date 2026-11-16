@@ -34,8 +34,8 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.Inntektsmelding;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.RsArbeidsgiver;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding.RsKontaktinformasjon;
-import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
-import no.nav.dolly.domain.resultset.inntektstub.Inntekt.InntektType;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekt;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekt.InntektType;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -885,14 +885,14 @@ class DollyRequest2MalBestillingMappingStrategyTest {
 
         assertThat(target.getInntektstub().getInntektsinformasjon(), hasItems(
                 RsInntektsinformasjon.builder()
-                        .inntektsliste(List.of(Inntekt.builder()
+                        .inntektsliste(List.of(RsInntekt.builder()
                                 .beloep(31321.0)
                                 .inntektstype(InntektType.LOENNSINNTEKT)
                                 .beskrivelse("Lønn for oktober")
                                 .build()))
                         .build(),
                 RsInntektsinformasjon.builder()
-                        .inntektsliste(List.of(Inntekt.builder()
+                        .inntektsliste(List.of(RsInntekt.builder()
                                 .beloep(2131322.0)
                                 .inntektstype(InntektType.NAERINGSINNTEKT)
                                 .beskrivelse("Inntekt fra næring")
@@ -1120,7 +1120,7 @@ class DollyRequest2MalBestillingMappingStrategyTest {
         return RsDollyUtvidetBestilling.builder()
                 .inntektstub(InntektMultiplierWrapper.builder()
                         .inntektsinformasjon(List.of(RsInntektsinformasjon.builder()
-                                .inntektsliste(List.of(Inntekt.builder()
+                                .inntektsliste(List.of(RsInntekt.builder()
                                         .beloep(beloep)
                                         .inntektstype(inntektstype)
                                         .beskrivelse(beskrivelse)

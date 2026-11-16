@@ -102,8 +102,8 @@ class ArenaForvalterClientTest {
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .build(), progress, false))
-                .assertNext(status -> {
+                        .build(), progress))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$BRUKER= Info= Oppretting startet mot Arena ...")));
@@ -137,8 +137,8 @@ class ArenaForvalterClientTest {
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .build(), progress, false))
-                .assertNext(status -> {
+                        .build(), progress))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$BRUKER= Info= Oppretting startet mot Arena ...")));
@@ -161,7 +161,7 @@ class ArenaForvalterClientTest {
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                                .build(), progress, false))
+                        .build(), progress))
                 .assertNext(status -> assertThat(status.getArenaforvalterStatus(), is(nullValue())))
                 .verifyComplete();
     }
@@ -178,8 +178,8 @@ class ArenaForvalterClientTest {
         when(transactionHelperService.persister(any(), any(), any(), any())).thenReturn(Mono.just(progress));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                progress, false))
-                .assertNext(status -> {
+                        progress))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("")));
@@ -196,7 +196,7 @@ class ArenaForvalterClientTest {
         var request = new RsDollyBestillingRequest();
         request.setEnvironments(singleton(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                        .build(), progress, false)
+                        .build(), progress)
                 .subscribe();
 
         verifyNoInteractions(arenaForvalterConsumer);

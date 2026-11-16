@@ -63,7 +63,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return Mono.just(bestilling)
                 .filter(RsDollyBestilling::isExistInntekstsmelding)
@@ -73,7 +73,7 @@ public class InntektsmeldingClient implements ClientRegister {
                         .thenReturn(bestilling1))
                 .map(RsDollyBestilling::getInntektsmelding)
                 .flatMap(_ -> Flux.fromIterable(bestilling.getEnvironments())
-                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), isOpprettEndre)
+                        .flatMap(miljoe -> isOpprettDokument(miljoe, dollyPerson.getIdent(), bestilling.getId(), dollyPerson.isOpprettEndre())
                                 .flatMapMany(isOpprett -> isTrue(isOpprett) ?
                                         postInntektsmelding(bestilling.getInntektsmelding(), dollyPerson.getIdent(), miljoe, bestilling.getId()) :
                                         Mono.just(miljoe + ":OK")))

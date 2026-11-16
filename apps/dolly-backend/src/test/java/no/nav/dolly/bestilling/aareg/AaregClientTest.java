@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
@@ -55,9 +54,6 @@ class AaregClientTest {
 
     @Mock
     private MapperFacade mapperFacade;
-
-    @Mock
-    private Bruker bruker;
 
     @Mock
     private TransactionHelperService transactionHelperService;
@@ -115,9 +111,8 @@ class AaregClientTest {
                 .build();
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                                .bruker(bruker)
-                                .build(), bestillingProgress, false)
-                .subscribe(resultat ->
+                                .build(), bestillingProgress)
+                .subscribe(_ ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV)));
     }
 
@@ -142,9 +137,8 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                                .bruker(bruker)
-                                .build(), bestillingProgress, false))
-                .assertNext(status -> {
+                                .build(), bestillingProgress))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), is(equalTo("q2:Info= Oppretting startet mot AAREG ...")));
@@ -177,9 +171,8 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                                .bruker(bruker)
-                                .build(), bestillingProgress, false))
-                .assertNext(status -> {
+                                .build(), bestillingProgress))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), is(equalTo("q2:Info= Oppretting startet mot AAREG ...")));
@@ -212,9 +205,8 @@ class AaregClientTest {
 
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
-                        .bruker(bruker)
-                        .build(), bestillingProgress, false))
-                .assertNext(status -> {
+                        .build(), bestillingProgress))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), is(equalTo("q2:Info= Oppretting startet mot AAREG ...")));

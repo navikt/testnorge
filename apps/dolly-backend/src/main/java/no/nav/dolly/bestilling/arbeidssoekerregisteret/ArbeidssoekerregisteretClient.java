@@ -30,7 +30,7 @@ public class ArbeidssoekerregisteretClient implements ClientRegister {
 
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return Mono.just(bestilling)
                 .filter(bestilling1 -> nonNull(bestilling1.getArbeidssoekerregisteret()))

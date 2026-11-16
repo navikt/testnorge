@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -300,7 +301,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                     .toList();
         }
 
-        if (foreldre.size() != 2) {
+        if (foreldre.size() != 2 || foreldre.stream().anyMatch(StringUtils::isBlank)){
             return Mono.error(new InvalidRequestException(VALIDATION_TO_FORELDRE_ERROR));
         }
 

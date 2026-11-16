@@ -5,12 +5,12 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntekt;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntekt;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
@@ -52,26 +52,22 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(no.nav.dolly.domain.resultset.inntektstub.Inntekt.class, Inntekt.class)
+        factory.classMap(RsInntekt.class, Inntekt.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(no.nav.dolly.domain.resultset.inntektstub.Inntekt kilde, Inntekt destinasjon, MappingContext context) {
+                    public void mapAtoB(RsInntekt kilde, Inntekt destinasjon, MappingContext context) {
                         var periode = (YearMonth) context.getProperty(PERIODE);
                         if (nonNull(periode)) {
-                            destinasjon.setStartOpptjeningsperiode(
-                                    periode.atDay(isNull(kilde.getStartOpptjeningsperiode()) ? 1 :
-                                            getGyldigDagIMaaned(periode, kilde.getStartOpptjeningsperiode())));
-                            destinasjon.setSluttOpptjeningsperiode(periode.atDay(isNull(kilde.getSluttOpptjeningsperiode()) ? periode.atEndOfMonth().getDayOfMonth() :
-                                    getGyldigDagIMaaned(periode, kilde.getSluttOpptjeningsperiode())));
+                            if (isNull(kilde.getStartOpptjeningsperiode())) {
+                                destinasjon.setStartOpptjeningsperiode(periode.atDay(1));
+                            }
+                            if (isNull(kilde.getSluttOpptjeningsperiode())) {
+                                destinasjon.setSluttOpptjeningsperiode(periode.atEndOfMonth());
+                            }
                         }
                     }
                 })
                 .byDefault()
                 .register();
-    }
-
-    private static int getGyldigDagIMaaned(YearMonth periode, LocalDateTime opptjeningDato) {
-
-        return Math.min(opptjeningDato.getDayOfMonth(), periode.atEndOfMonth().getDayOfMonth());
     }
 }

@@ -31,7 +31,7 @@ public class KrrstubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getKrrstub())) {
 
@@ -43,8 +43,8 @@ public class KrrstubClient implements ClientRegister {
                     nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
                     DigitalKontaktdata.class, context);
 
-            return deleteKontaktdataPerson(dollyPerson.getIdent(), isOpprettEndre)
-                    .flatMap(slettetStatus -> krrstubConsumer.createDigitalKontaktdata(digitalKontaktdataRequest))
+            return deleteKontaktdataPerson(dollyPerson.getIdent(), dollyPerson.isOpprettEndre())
+                    .flatMap(_ -> krrstubConsumer.createDigitalKontaktdata(digitalKontaktdataRequest))
                     .map(this::getStatus)
                     .flatMap(status -> oppdaterStatus(progress, status));
         }

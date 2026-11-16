@@ -58,7 +58,7 @@ class SigrunstubClientTest {
         when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.empty());
 
         StepVerifier.create(sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().ident(IDENT).build(),
-                new BestillingProgress(), false))
+                new BestillingProgress()))
                 .expectNextCount(0)
                 .verifyComplete();
     }
@@ -84,7 +84,7 @@ class SigrunstubClientTest {
         request.setSigrunstubPensjonsgivende(List.of(new RsPensjonsgivendeForFolketrygden()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
-                                DollyPerson.builder().ident(IDENT).build(), progress, false))
+                                DollyPerson.builder().ident(IDENT).build(), progress))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
@@ -111,8 +111,8 @@ class SigrunstubClientTest {
                 .build()));
         when(transactionHelperService.persister(any(), any(), any())).thenReturn(Mono.just(progress));
 
-        StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                                new BestillingProgress(), true))
+        StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).isOpprett(true).build(),
+                                new BestillingProgress()))
                 .assertNext(_ -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());

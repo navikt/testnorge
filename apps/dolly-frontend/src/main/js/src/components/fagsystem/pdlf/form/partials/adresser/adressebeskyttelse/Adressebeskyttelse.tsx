@@ -11,6 +11,11 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import {
+	getHistorikkRegeltekst,
+	historikkRegler,
+	useHistorikkTag,
+} from '@/components/fagsystem/pdlf/form/partials/historikk/HistorikkRekkefoelge'
 
 interface AdressebeskyttelseValues {
 	formMethods: UseFormReturn
@@ -97,14 +102,19 @@ export const AdressebeskyttelseForm = ({
 export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialPdlMaster = opts.identMaster !== 'PDLF' && opts?.identtype === 'NPID'
+	const historikkTag = useHistorikkTag(formMethods, historikkRegler.adressebeskyttelse)
 
 	return (
-		<Kategori title="Adressebeskyttelse">
+		<Kategori
+			title="Adressebeskyttelse"
+			hjelpetekst={getHistorikkRegeltekst(historikkRegler.adressebeskyttelse)}
+		>
 			<FormDollyFieldArray
 				name="pdldata.person.adressebeskyttelse"
 				header="Adressebeskyttelse"
 				newEntry={getInitialAdressebeskyttelse(initialPdlMaster ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
+				entryTag={historikkTag}
 			>
 				{(path: string, idx: number) => (
 					<AdressebeskyttelseForm

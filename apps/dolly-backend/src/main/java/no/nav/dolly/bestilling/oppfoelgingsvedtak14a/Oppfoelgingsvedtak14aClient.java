@@ -41,7 +41,7 @@ public class Oppfoelgingsvedtak14aClient implements ClientRegister {
 
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                                BestillingProgress progress, boolean isOpprettEndre) {
+                                                BestillingProgress progress) {
 
         if (isNull(bestilling.getOppfoelgingsvedtak14a())) {
             return Mono.empty();

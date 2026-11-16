@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ClientRegister {
 
-    Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
+    Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress);
 
     void release(List<String> identer);
 }

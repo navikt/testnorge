@@ -70,14 +70,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Arbeidsoppfølging" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.oppfoelgingsvedtak14a}
-					disabled={
-						harArenaFoerLeggTil ||
-						sm.attrs.ingenYtelser.checked ||
-						sm.attrs.aap115.checked ||
-						sm.attrs.aap.checked ||
-						sm.attrs.dagpenger.checked ||
-						sm.attrs.ikkeServicebehov.checked
-					}
+					disabled={sm.attrs.ingenYtelser.checked || sm.attrs.ikkeServicebehov.checked}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title={'Aktiv bruker (Arena)'} attr={sm.attrs}>
@@ -96,7 +89,6 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						harKelvinAap ||
-						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -106,7 +98,6 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						harKelvinAap ||
-						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk
@@ -116,7 +107,6 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 				<Attributt
 					disabled={
 						harKelvinAap ||
-						harOppfoelgingsvedtak14a ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.ingenYtelser.checked ||
 						!syntetisk

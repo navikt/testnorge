@@ -44,7 +44,7 @@ public class EtterlatteClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (bestilling.getEtterlatteYtelser().isEmpty()) {
             return Mono.empty();

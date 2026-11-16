@@ -140,9 +140,11 @@ public class BestillingProgress implements Serializable {
     private Master master;
 
     @Transient
+    @JsonIgnore
     private boolean pdlSync;
 
     @Transient
+    @JsonIgnore
     private String oppdatertIdent;
 
     private String feil;

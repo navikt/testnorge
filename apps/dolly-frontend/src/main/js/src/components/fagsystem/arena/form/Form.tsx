@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as _ from 'lodash-es'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -31,6 +31,16 @@ export const ArenaForm = () => {
 	const registrertDato = opts?.personFoerLeggTil?.arenaforvalteren
 		?.map((miljo) => miljo?.data?.registrertDato)
 		?.find((dato) => dato)
+
+	const harOppfoelgingsvedtak14a = !!(
+		opts?.personFoerLeggTil?.oppfoelgingsvedtak14a || formMethods.watch('oppfoelgingsvedtak14a')
+	)
+
+	useEffect(() => {
+		if (harOppfoelgingsvedtak14a && formMethods.getValues(`${arenaPath}.kvalifiseringsgruppe`)) {
+			formMethods.setValue(`${arenaPath}.kvalifiseringsgruppe`, null)
+		}
+	}, [harOppfoelgingsvedtak14a, formMethods])
 
 	return (
 		<Vis attributt={arenaPath}>

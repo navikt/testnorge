@@ -119,6 +119,11 @@ public class IdentService {
         return identRepository.swapIdent(oldIdent, newIdent);
     }
 
+    public Mono<Void> deleteIdent(String ident) {
+
+        return identRepository.deleteTestidentByIdent(ident);
+    }
+
     public Flux<Testident> getTestidenterByGruppeId(Long gruppeId) {
 
         return identRepository.findByGruppeId(gruppeId, Pageable.unpaged());

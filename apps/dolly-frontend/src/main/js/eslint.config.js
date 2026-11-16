@@ -1,7 +1,7 @@
 import js from '@eslint/js'
 import eslintReact from '@eslint-react/eslint-plugin'
 import prettier from 'eslint-config-prettier'
-import reactCompiler from 'eslint-plugin-react-compiler'
+import reactHooks from 'eslint-plugin-react-hooks'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 
 export default [
@@ -30,7 +30,7 @@ export default [
 			},
 		},
 		plugins: {
-			'react-compiler': reactCompiler,
+			'react-hooks': reactHooks,
 		},
 		rules: {
 			'prefer-const': 'off',
@@ -47,7 +47,20 @@ export default [
 			'@typescript-eslint/no-use-before-define': 'off',
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'@typescript-eslint/explicit-function-return-type': 'off',
-			'react-compiler/react-compiler': 'warn',
+			'react-hooks/config': 'warn',
+			'react-hooks/error-boundaries': 'warn',
+			'react-hooks/gating': 'warn',
+			'react-hooks/globals': 'warn',
+			'react-hooks/immutability': 'warn',
+			'react-hooks/preserve-manual-memoization': 'warn',
+			'react-hooks/purity': 'warn',
+			'react-hooks/refs': 'warn',
+			'react-hooks/set-state-in-effect': 'warn',
+			'react-hooks/set-state-in-render': 'warn',
+			'react-hooks/static-components': 'warn',
+			'react-hooks/unsupported-syntax': 'warn',
+			'react-hooks/use-memo': 'warn',
+			'react-hooks/incompatible-library': 'warn',
 		},
 	},
 	prettier,

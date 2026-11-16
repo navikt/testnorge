@@ -1,7 +1,10 @@
 import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import {
+	PdlHistorikkFieldArray,
+	PdlOpplysning,
+} from '@/components/ui/historikk/PdlHistorikkFieldArray'
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -20,6 +23,7 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 
 type KontaktadresseTypes = {
 	data: Array<any>
+	pdlData?: Array<PdlOpplysning>
 	tmpPersoner?: Array<KontaktadresseData>
 	ident?: number
 	erPdlVisning?: boolean
@@ -224,6 +228,7 @@ export const KontaktadresseVisning = ({
 
 export const Kontaktadresse = ({
 	data,
+	pdlData,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -244,7 +249,7 @@ export const Kontaktadresse = ({
 			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data || tmpData} header="" nested>
+					<PdlHistorikkFieldArray data={data || tmpData} pdlData={pdlData}>
 						{(adresse: any, idx: number) =>
 							erRedigerbar ? (
 								<KontaktadresseVisning
@@ -261,7 +266,7 @@ export const Kontaktadresse = ({
 								<Adresse kontaktadresseData={adresse} idx={idx} />
 							)
 						}
-					</DollyFieldArray>
+					</PdlHistorikkFieldArray>
 				</ErrorBoundary>
 			</div>
 		</>

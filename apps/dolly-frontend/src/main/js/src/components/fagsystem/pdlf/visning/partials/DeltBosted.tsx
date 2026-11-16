@@ -1,6 +1,9 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import {
+	PdlHistorikkFieldArray,
+	PdlOpplysning,
+} from '@/components/ui/historikk/PdlHistorikkFieldArray'
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
@@ -12,8 +15,11 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 
 type Data = {
 	data: Array<any>
+	pdlData?: Array<PdlOpplysning>
 	tmpPersoner?: Array<PersonData>
 	ident?: string
+	personValues?: PersonData
+	relasjoner?: Array<any>
 	erRedigerbar?: boolean
 }
 
@@ -96,6 +102,7 @@ export const DeltBostedVisning = ({
 
 export const DeltBosted = ({
 	data,
+	pdlData,
 	tmpPersoner,
 	ident,
 	personValues,
@@ -111,7 +118,7 @@ export const DeltBosted = ({
 			<SubOverskrift label="Delt bosted" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
+					<PdlHistorikkFieldArray data={data} pdlData={pdlData}>
 						{(adresse: any, idx: number) =>
 							erRedigerbar ? (
 								<DeltBostedVisning
@@ -127,7 +134,7 @@ export const DeltBosted = ({
 								<Adresse adresse={adresse} idx={idx} />
 							)
 						}
-					</DollyFieldArray>
+					</PdlHistorikkFieldArray>
 				</ErrorBoundary>
 			</div>
 		</>

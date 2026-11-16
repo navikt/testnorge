@@ -36,20 +36,19 @@ public class UdiStubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getUdistub())) {
 
-            transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, getInfoVenter("UdiStub"));
-
-            return getPersonData(List.of(dollyPerson.getIdent()))
-                    .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getIdent())
-                            .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
-                                    eksisterende, persondata))
-                            .flatMap(this::sendUdiPerson)
-                            .map(this::getStatus))
-                    .collect(Collectors.joining())
-                    .flatMap(status -> oppdaterStatus(progress, status));
+            return transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, getInfoVenter("UdiStub"))
+                    .flatMap(_ -> getPersonData(List.of(dollyPerson.getIdent()))
+                            .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getIdent())
+                                    .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
+                                            eksisterende, persondata))
+                                    .flatMap(this::sendUdiPerson)
+                                    .map(this::getStatus))
+                            .collect(Collectors.joining())
+                            .flatMap(status -> oppdaterStatus(progress, status)));
         }
         return Mono.empty();
     }
@@ -59,7 +58,7 @@ public class UdiStubClient implements ClientRegister {
 
         udiStubConsumer.deleteUdiPerson(identer)
                 .collectList()
-                .subscribe(response -> log.info("Slettet identer fra Udistub"));
+                .subscribe(_ -> log.info("Slettet identer fra Udistub"));
     }
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {

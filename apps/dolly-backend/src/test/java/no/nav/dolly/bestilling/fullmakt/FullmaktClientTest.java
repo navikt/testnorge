@@ -64,7 +64,7 @@ class FullmaktClientTest {
                 .gyldigTilOgMed(LocalDateTime.of(2022, 1, 1, 0, 0))
                 .build()));
 
-        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        var dollyPerson = DollyPerson.builder().isOpprett(true).ident(IDENT).build();
         var progress = new BestillingProgress();
 
         var fullPersonDTO = FullPersonDTO.builder()
@@ -91,12 +91,12 @@ class FullmaktClientTest {
 
         ArgumentCaptor<List<RsFullmakt>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
-        StepVerifier.create(fullmaktClient.gjenopprett(bestilling, dollyPerson, progress, true))
-                .assertNext(status -> {
+        StepVerifier.create(fullmaktClient.gjenopprett(bestilling, dollyPerson, progress))
+                .assertNext(_ -> {
                     verify(fullmaktConsumer).createFullmaktData(argumentCaptor.capture(), any());
                     assertEquals(RELASJON_IDENT, argumentCaptor.getValue().getFirst().getFullmektig());
-                    assertEquals(NAVN,  argumentCaptor.getValue().getFirst().getFullmektigsNavn());
+                    assertEquals(NAVN, argumentCaptor.getValue().getFirst().getFullmektigsNavn());
                 })
                 .verifyComplete();
-        }
+    }
 }

@@ -1,7 +1,10 @@
 import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import {
+	PdlHistorikkFieldArray,
+	PdlOpplysning,
+} from '@/components/ui/historikk/PdlHistorikkFieldArray'
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
@@ -13,6 +16,7 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 
 type OppholdsadresseTypes = {
 	data: Array<any>
+	pdlData?: Array<PdlOpplysning>
 	tmpPersoner?: Array<OppholdsadresseData>
 	ident?: string
 	erPdlVisning?: boolean
@@ -108,6 +112,7 @@ export const OppholdsadresseVisning = ({
 
 export const Oppholdsadresse = ({
 	data,
+	pdlData,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -128,7 +133,7 @@ export const Oppholdsadresse = ({
 			<SubOverskrift label="Oppholdsadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data || tmpData} header="" nested>
+					<PdlHistorikkFieldArray data={data || tmpData} pdlData={pdlData}>
 						{(adresse: any, idx: number) =>
 							erRedigerbar ? (
 								<OppholdsadresseVisning
@@ -145,7 +150,7 @@ export const Oppholdsadresse = ({
 								<Adresse oppholdsadresseData={adresse} idx={idx} />
 							)
 						}
-					</DollyFieldArray>
+					</PdlHistorikkFieldArray>
 				</ErrorBoundary>
 			</div>
 		</>

@@ -50,7 +50,7 @@ public class AaregClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (bestilling.getAareg().isEmpty() ||
                 bestilling.getAareg().stream().noneMatch(aareg -> nonNull(aareg.getArbeidsgiver()))) {
@@ -65,7 +65,7 @@ public class AaregClient implements ClientRegister {
         return oppdaterStatus(progress, miljoer.stream()
                 .map(miljo -> "%s:%s".formatted(miljo, getInfoVenter(SYSTEM)))
                 .collect(Collectors.joining(",")))
-                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre)
+                .then(sendArbeidsforhold(bestilling, dollyPerson, miljoer)
                         .timeout(Duration.ofSeconds(applicationConfig.getClientTimeout()))
                         .onErrorResume(error -> getErrors(error, miljoer))
                         .flatMap(status -> oppdaterStatus(progress, status)));
@@ -93,12 +93,12 @@ public class AaregClient implements ClientRegister {
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                            Set<String> miljoer, boolean isOpprettEndre) {
+                                            Set<String> miljoer) {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getIdent(), miljoe))
                 .flatMap(eksisterende -> doInsertOrUpdate(dollyPerson.getIdent(),
-                        bestilling.getAareg(), eksisterende, isOpprettEndre))
+                        bestilling.getAareg(), eksisterende, dollyPerson.isOpprettEndre()))
                 .doOnNext(status ->
                         log.info("AAREG respons: {}", status))
                 .map(reply -> decodeStatus(reply.getMiljoe(), reply))

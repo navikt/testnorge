@@ -6,6 +6,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
 import { Button } from '@navikt/ds-react'
+import { useFormContext } from 'react-hook-form'
 
 type Props = {
 	onSubmit: (search: {
@@ -24,9 +25,10 @@ const HeaderGroup = styled.div`
 `
 
 export default ({ onSubmit, loading = false }: Props) => {
+	const { getValues } = useFormContext() || {}
 	const [kommunenummer, setKommunenummer] = useState<string>('')
-	const [gaardsnummer, setGaardsnummer] = useState<string>('')
-	const [bruksnummer, setBruksnummer] = useState<string>('')
+	const [gaardsnummer, setGaardsnummer] = useState<string>(getValues?.('gaardsnummer') ?? '')
+	const [bruksnummer, setBruksnummer] = useState<string>(getValues?.('bruksnummer') ?? '')
 
 	const informasjonstekst =
 		'Bruk ingen, ett eller flere av søkefeltene for å få en liste med tilfeldige matrikkeladresser.'

@@ -8,29 +8,22 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
-
 @Configuration
 public class MapperFacadeConfig {
 
     @Bean
     MapperFacade mapperFacade(List<MappingStrategy> mappingStrategies, List<CustomConverter> customConverters) {
-        DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
-        if (nonNull(mappingStrategies)) {
-            for (MappingStrategy mapper : mappingStrategies) {
-                mapper.register(mapperFactory);
-            }
+        var mapperFactory = new DefaultMapperFactory.Builder().build();
+
+        for (var converter : customConverters) {
+            mapperFactory.getConverterFactory().registerConverter(converter);
         }
 
-        if (nonNull(customConverters)) {
-            for (CustomConverter converter : customConverters) {
-                mapperFactory.getConverterFactory().registerConverter(converter);
-            }
+        for (var strategy : mappingStrategies) {
+            strategy.register(mapperFactory);
         }
 
         return mapperFactory.getMapperFacade();
-
     }
-
 }

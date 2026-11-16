@@ -17,7 +17,6 @@ import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.dto.yrkesskade.v1.YrkesskadeRequest;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static java.lang.Boolean.TRUE;
 import static no.nav.dolly.domain.resultset.SystemTyper.YRKESSKADE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -47,7 +45,7 @@ public class YrkesskadeClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (!bestilling.getYrkesskader().isEmpty()) {
 
@@ -55,7 +53,7 @@ public class YrkesskadeClient implements ClientRegister {
             return oppdaterStatus(progress, "Yrkesskade#1:%s".formatted(ErrorStatusDecoder.getInfoVenter(YRKESSKADE.getBeskrivelse())))
                     .flatMap(_ -> yrkesskadeConsumer.hentSaksoversikt(dollyPerson.getIdent())
                             .map(resultat -> !resultat.getSaker().isEmpty())
-                            .map(eksisterendeSak -> !eksisterendeSak || isOpprettEndre)
+                            .map(eksisterendeSak -> !eksisterendeSak || dollyPerson.isOpprettEndre())
                             .flatMap(nysak -> isTrue(nysak) ?
                                     personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
                                             .doOnNext(_ -> log.info("Hentet pdlPersonBolk"))

@@ -60,8 +60,8 @@ class KrrstubClientTest {
     void gjenopprett_ingendata() {
 
         krrstubClient.gjenopprett(new RsDollyBestillingRequest(),
-                        DollyPerson.builder().ident(IDENT).build(), new BestillingProgress(), false)
-                .subscribe(resultat ->
+                        DollyPerson.builder().ident(IDENT).build(), new BestillingProgress())
+                .subscribe(_ ->
                         verify(krrstubConsumer,
                                 times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class)));
     }
@@ -81,8 +81,8 @@ class KrrstubClientTest {
                         DollyPerson.builder().ident(IDENT).build(),
                         BestillingProgress.builder()
                                 .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
-                                .build(), false)
-                .subscribe(resultat ->
+                                .build())
+                .subscribe(_ ->
                         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class)));
     }
 
@@ -104,8 +104,8 @@ class KrrstubClientTest {
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
 
         StepVerifier.create(krrstubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
-                        new BestillingProgress(), false))
-                .assertNext(status -> {
+                        new BestillingProgress()))
+                .assertNext(_ -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getValue(), Matchers.is(equalTo("Feil:")));

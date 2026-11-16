@@ -134,6 +134,7 @@ export type AdressebeskyttelseData = {
 	gradering: string
 	id?: number
 	master?: string
+	hendelseId?: string
 	metadata?: any
 }
 
@@ -163,6 +164,7 @@ export type Endring = {
 export type Metadata = {
 	historisk: boolean
 	master?: string
+	opplysningsId?: string
 	endringer?: Endring[]
 }
 

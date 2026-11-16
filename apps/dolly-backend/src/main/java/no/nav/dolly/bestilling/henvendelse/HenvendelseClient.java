@@ -48,7 +48,7 @@ public class HenvendelseClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (isNull(bestilling.getHenvendelse()) ||
             bestilling.getHenvendelse().getMeldinger().isEmpty() &&
@@ -56,7 +56,7 @@ public class HenvendelseClient implements ClientRegister {
 
             return Mono.empty();
 
-        } else if (isOpprettEndre && !dollyPerson.isLeggTil()) {
+        } else if (dollyPerson.isOpprett() && !dollyPerson.isLeggTil()) {
             return oppdaterStatus(progress, ErrorStatusDecoder.encodeStatus("Feil: Henvendelse er kun støttet ved legg-til/endre"));
 
         } else if (!dollyPerson.isSalesForce()) {

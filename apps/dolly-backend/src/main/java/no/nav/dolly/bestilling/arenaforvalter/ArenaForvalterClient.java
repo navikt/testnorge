@@ -45,7 +45,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return Mono.just(bestilling)
                 .filter(best -> nonNull(best.getArenaforvalter()))
@@ -107,6 +107,6 @@ public class ArenaForvalterClient implements ClientRegister {
 
         arenaForvalterConsumer.deleteIdenter(identer)
                 .collectList()
-                .subscribe(response -> log.info("Sletting utført mot Arena-forvalteren"));
+                .subscribe(_ -> log.info("Sletting utført mot Arena-forvalteren"));
     }
 }

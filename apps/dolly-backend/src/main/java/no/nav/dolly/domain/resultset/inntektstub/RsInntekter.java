@@ -34,7 +34,7 @@ public class RsInntekter {
             requiredMode = Schema.RequiredMode.REQUIRED)
     private String virksomhet;
 
-    private List<Inntekt> inntektsliste;
+    private List<RsInntekt> inntektsliste;
 
     private List<Fradrag> fradragsliste;
 
@@ -51,7 +51,7 @@ public class RsInntekter {
         return perioder;
     }
 
-    public List<Inntekt> getInntektsliste() {
+    public List<RsInntekt> getInntektsliste() {
         if (isNull(inntektsliste)) {
             inntektsliste = new ArrayList<>();
         }

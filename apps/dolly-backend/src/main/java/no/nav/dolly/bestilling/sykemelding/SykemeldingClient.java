@@ -39,8 +39,7 @@ public class SykemeldingClient implements ClientRegister {
     @Override
     public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling,
                                                 DollyPerson dollyPerson,
-                                                BestillingProgress progress,
-                                                boolean isOpprettEndre) {
+                                                BestillingProgress progress) {
 
         RsSykemelding sykemelding = bestilling.getSykemelding();
 

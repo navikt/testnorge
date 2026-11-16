@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.test.publisher.TestPublisher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -209,10 +211,10 @@ class IdenttypeServiceTest {
         prepareMapping(person, request);
         when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.just(newPerson));
         preparePersistence();
+        var expectedPerson = swap ? buildPerson(person.getId(), newType) : person;
         if (swap) {
-            when(swopIdentsService.execute(person.getIdent(), newPerson.getIdent())).thenReturn(Mono.just(newPerson));
+            when(swopIdentsService.execute(person.getIdent(), newPerson.getIdent())).thenReturn(Mono.just(expectedPerson));
         }
-        var expectedPerson = swap ? newPerson : person;
         var previousPerson = swap ? person : newPerson;
 
         StepVerifier.create(identtypeService.convert(person))
@@ -220,11 +222,13 @@ class IdenttypeServiceTest {
                 .verifyComplete();
 
         var aliasCaptor = ArgumentCaptor.forClass(DbAlias.class);
-        verify(aliasRepository).save(aliasCaptor.capture());
+        var order = inOrder(aliasRepository, relasjonService);
+        order.verify(aliasRepository).updatePersonId(newPerson.getId(), expectedPerson.getId());
+        order.verify(aliasRepository).save(aliasCaptor.capture());
         assertThat(aliasCaptor.getValue().getTidligereIdent()).isEqualTo(previousPerson.getIdent());
         assertThat(aliasCaptor.getValue().getPersonId()).isEqualTo(expectedPerson.getId());
         assertThat(aliasCaptor.getValue().getSistOppdatert()).isNotNull();
-        verify(relasjonService).setRelasjoner(expectedPerson.getIdent(), GAMMEL_IDENTITET,
+        order.verify(relasjonService).setRelasjoner(expectedPerson.getIdent(), GAMMEL_IDENTITET,
                 previousPerson.getIdent(), NY_IDENTITET);
         if (swap) {
             verify(swopIdentsService).execute(person.getIdent(), newPerson.getIdent());
@@ -305,6 +309,7 @@ class IdenttypeServiceTest {
                 .verifyComplete();
 
         verify(personRepository).findByIdent(existingPerson.getIdent());
+        verify(aliasRepository).updatePersonId(existingPerson.getId(), person.getId());
         verifyNoInteractions(createPersonService, swopIdentsService);
         verify(relasjonService).setRelasjoner(person.getIdent(), GAMMEL_IDENTITET,
                 existingPerson.getIdent(), NY_IDENTITET);
@@ -477,6 +482,54 @@ class IdenttypeServiceTest {
     }
 
     @Test
+    void shouldWaitForHistoryMigrationBeforeSavingAliasAndRelations() {
+        var person = buildPerson(1L, Identtype.FNR);
+        var request = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(true).build();
+        prepareCreation(person, request);
+        var migration = TestPublisher.<Void>create();
+        when(aliasRepository.updatePersonId(2L, 1L)).thenReturn(migration.mono());
+
+        StepVerifier.create(identtypeService.convert(person))
+                .then(() -> {
+                    migration.assertSubscribers(1);
+                    verify(aliasRepository, never()).save(any(DbAlias.class));
+                    verifyNoInteractions(relasjonService);
+                })
+                .then(migration::complete)
+                .assertNext(result -> assertThat(result).isSameAs(person))
+                .verifyComplete();
+
+        var order = inOrder(aliasRepository, relasjonService);
+        order.verify(aliasRepository).updatePersonId(2L, 1L);
+        order.verify(aliasRepository).save(any(DbAlias.class));
+        order.verify(relasjonService).setRelasjoner(FNR_IDENT, GAMMEL_IDENTITET, DNR_IDENT, NY_IDENTITET);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldPropagateHistoryMigrationFailureWithoutSavingAliasOrRelations(boolean swap) {
+        var person = buildPerson(1L, swap ? Identtype.DNR : Identtype.FNR);
+        var newPerson = buildPerson(2L, swap ? Identtype.FNR : Identtype.DNR);
+        var request = IdentRequestDTO.builder().identtype(newPerson.getPerson().getIdenttype())
+                .isNew(true).build();
+        prepareMapping(person, request);
+        when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.just(newPerson));
+        if (swap) {
+            when(swopIdentsService.execute(DNR_IDENT, FNR_IDENT))
+                    .thenReturn(Mono.just(buildPerson(person.getId(), Identtype.FNR)));
+        }
+        var error = new IllegalStateException("History migration failed");
+        when(aliasRepository.updatePersonId(2L, 1L)).thenReturn(Mono.error(error));
+
+        StepVerifier.create(identtypeService.convert(person))
+                .verifyErrorSatisfies(actual -> assertThat(actual).isSameAs(error));
+
+        verify(aliasRepository).updatePersonId(2L, 1L);
+        verify(aliasRepository, never()).save(any(DbAlias.class));
+        verifyNoInteractions(relasjonService);
+    }
+
+    @Test
     void shouldPropagateAliasFailureWithoutCreatingRelations() {
         var person = buildPerson(1L, Identtype.FNR);
         var request = IdentRequestDTO.builder().identtype(Identtype.DNR).isNew(true).build();
@@ -484,6 +537,7 @@ class IdenttypeServiceTest {
         when(createPersonService.execute(any(PersonRequestDTO.class)))
                 .thenReturn(Mono.just(buildPerson(2L, Identtype.DNR)));
         var error = new IllegalStateException("Alias failed");
+        when(aliasRepository.updatePersonId(2L, 1L)).thenReturn(Mono.empty());
         when(aliasRepository.save(any(DbAlias.class))).thenReturn(Mono.error(error));
 
         StepVerifier.create(identtypeService.convert(person)).verifyErrorSatisfies(actual ->
@@ -516,6 +570,7 @@ class IdenttypeServiceTest {
         prepareMapping(person, dnrRequest, fnrRequest);
         when(createPersonService.execute(any(PersonRequestDTO.class)))
                 .thenReturn(Mono.just(buildPerson(2L, Identtype.DNR)));
+        when(aliasRepository.updatePersonId(2L, 1L)).thenReturn(Mono.empty());
         when(aliasRepository.save(any(DbAlias.class))).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
         var error = new IllegalStateException("Relation failed");
         when(relasjonService.setRelasjoner(FNR_IDENT, GAMMEL_IDENTITET, DNR_IDENT, NY_IDENTITET))
@@ -543,6 +598,7 @@ class IdenttypeServiceTest {
     }
 
     private void preparePersistence() {
+        when(aliasRepository.updatePersonId(any(Long.class), any(Long.class))).thenReturn(Mono.empty());
         when(aliasRepository.save(any(DbAlias.class))).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
         when(relasjonService.setRelasjoner(any(String.class), eq(GAMMEL_IDENTITET),
                 any(String.class), eq(NY_IDENTITET))).thenReturn(Mono.empty());

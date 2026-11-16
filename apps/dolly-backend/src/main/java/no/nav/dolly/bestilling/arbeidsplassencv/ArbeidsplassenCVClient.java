@@ -42,7 +42,7 @@ public class ArbeidsplassenCVClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (isNull(bestilling.getArbeidsplassenCV())) {
             return Mono.empty();

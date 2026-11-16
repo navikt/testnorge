@@ -63,7 +63,7 @@ class SkjermingsRegisterClientTest {
 
         try (MockedStatic<SkjermingUtil> skjermingUtilMockedStatic = mockStatic(SkjermingUtil.class)) {
             RsDollyUtvidetBestilling bestilling = mock(RsDollyUtvidetBestilling.class);
-            DollyPerson dollyPerson = DollyPerson.builder().ident("12345678901").build();
+            DollyPerson dollyPerson = DollyPerson.builder().isOpprett(true).ident("12345678901").build();
             BestillingProgress progress = new BestillingProgress();
 
             skjermingUtilMockedStatic.when(() -> isSkjerming(bestilling)).thenReturn(true);
@@ -83,7 +83,7 @@ class SkjermingsRegisterClientTest {
                     .build());
             when(skjermingsRegisterConsumer.oppdaterPerson(any())).thenReturn(Mono.just(new SkjermingDataResponse()));
 
-            StepVerifier.create(skjermingsRegisterClient.gjenopprett(bestilling, dollyPerson, progress, true))
+            StepVerifier.create(skjermingsRegisterClient.gjenopprett(bestilling, dollyPerson, progress))
                     .expectNextCount(1)
                     .verifyComplete();
         }
@@ -95,13 +95,13 @@ class SkjermingsRegisterClientTest {
         try (MockedStatic<SkjermingUtil> skjermingUtilMockedStatic = mockStatic(SkjermingUtil.class)) {
 
             var bestilling = new RsDollyUtvidetBestilling();
-            var dollyPerson = DollyPerson.builder().ident("12345678901").build();
+            var dollyPerson = DollyPerson.builder().isOpprett(true).ident("12345678901").build();
             var progress = new BestillingProgress();
 
             skjermingUtilMockedStatic.when(() -> isSkjerming(bestilling)).thenReturn(false);
             skjermingUtilMockedStatic.when(() -> isTpsMessagingEgenansatt(bestilling)).thenReturn(false);
 
-            StepVerifier.create(skjermingsRegisterClient.gjenopprett(bestilling, dollyPerson, progress, true))
+            StepVerifier.create(skjermingsRegisterClient.gjenopprett(bestilling, dollyPerson, progress))
                     .expectNextCount(0)
                     .verifyComplete();
         }
@@ -116,7 +116,7 @@ class SkjermingsRegisterClientTest {
                 .egenAnsattDatoTom(LocalDate.of(2020, 1, 1))
                 .build());
 
-        DollyPerson dollyPerson = DollyPerson.builder().ident("12345678901").build();
+        DollyPerson dollyPerson = DollyPerson.builder().isOpprett(true).ident("12345678901").build();
         BestillingProgress progress = new BestillingProgress();
 
         PdlPersonBolk.PersonBolk personBolk = PdlPersonBolk.PersonBolk.builder()
@@ -143,7 +143,7 @@ class SkjermingsRegisterClientTest {
             skjermingUtilMockedStatic.when(() -> isSkjerming(bestilling)).thenReturn(false);
             skjermingUtilMockedStatic.when(() -> isTpsMessagingEgenansatt(bestilling)).thenReturn(true);
 
-            StepVerifier.create(skjermingsRegisterClient.gjenopprett(bestilling, dollyPerson, progress, true))
+            StepVerifier.create(skjermingsRegisterClient.gjenopprett(bestilling, dollyPerson, progress))
                     .expectNextCount(1)
                     .verifyComplete();
 

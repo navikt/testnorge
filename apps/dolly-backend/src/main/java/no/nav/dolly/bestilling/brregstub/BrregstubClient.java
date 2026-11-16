@@ -40,7 +40,7 @@ public class BrregstubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (isNull(bestilling.getBrregstub())) {
             return Mono.empty();
@@ -60,7 +60,7 @@ public class BrregstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         brregstubConsumer.deleteRolleoversikt(identer)
-                .subscribe(resp -> log.info("Sletting utført i Brregstub"));
+                .subscribe(_ -> log.info("Sletting utført i Brregstub"));
     }
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {

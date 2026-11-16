@@ -2,7 +2,10 @@ import React from 'react'
 import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import {
+	PdlHistorikkFieldArray,
+	PdlOpplysning,
+} from '@/components/ui/historikk/PdlHistorikkFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
 import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -12,6 +15,8 @@ import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRe
 
 type AdressebeskyttelseTypes = {
 	data: Array<AdressebeskyttelseData>
+	pdlfData?: Array<AdressebeskyttelseData>
+	pdlData?: Array<PdlOpplysning>
 	tmpPersoner?: Array<AdressebeskyttelseData>
 	ident?: string
 	identtype?: string
@@ -106,6 +111,7 @@ const AdressebeskyttelseVisning = ({
 export const Adressebeskyttelse = ({
 	data,
 	pdlfData,
+	pdlData,
 	tmpPersoner,
 	ident,
 	identtype,
@@ -121,7 +127,7 @@ export const Adressebeskyttelse = ({
 			<SubOverskrift label="Adressebeskyttelse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
+					<PdlHistorikkFieldArray data={data} pdlData={pdlData}>
 						{(adressebeskyttelse: AdressebeskyttelseData, idx: number) => {
 							const master = adressebeskyttelse?.metadata?.master
 							const pdlfElement = pdlfData?.find(
@@ -145,7 +151,7 @@ export const Adressebeskyttelse = ({
 							}
 							return <AdressebeskyttelseLes adressebeskyttelse={adressebeskyttelse} idx={idx} />
 						}}
-					</DollyFieldArray>
+					</PdlHistorikkFieldArray>
 				</ErrorBoundary>
 			</div>
 		</>

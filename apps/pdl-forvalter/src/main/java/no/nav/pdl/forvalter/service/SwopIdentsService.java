@@ -61,14 +61,25 @@ public class SwopIdentsService {
                     .toList());
         }
         person1.getPerson().getForelderBarnRelasjon().addAll(person2.getPerson().getForelderBarnRelasjon());
+        ArtifactUtils.renumberId(person.getForelderBarnRelasjon());
         person1.getPerson().getVergemaal().addAll(person2.getPerson().getVergemaal());
+        ArtifactUtils.renumberId(person.getVergemaal());
         person1.getPerson().getSikkerhetstiltak().addAll(person2.getPerson().getSikkerhetstiltak());
+        ArtifactUtils.renumberId(person.getSikkerhetstiltak());
         person1.getPerson().getTelefonnummer().addAll(person2.getPerson().getTelefonnummer());
+        ArtifactUtils.renumberId(person.getTelefonnummer());
         person1.getPerson().getTilrettelagtKommunikasjon().addAll(person2.getPerson().getTilrettelagtKommunikasjon());
+        ArtifactUtils.renumberId(person.getTilrettelagtKommunikasjon());
         person1.getPerson().getUtenlandskIdentifikasjonsnummer().addAll(person2.getPerson().getUtenlandskIdentifikasjonsnummer());
+        ArtifactUtils.renumberId(person.getUtenlandskIdentifikasjonsnummer());
         person1.getPerson().getFalskIdentitet().addAll(person2.getPerson().getFalskIdentitet());
+        ArtifactUtils.renumberId(person.getFalskIdentitet());
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
+        ArtifactUtils.renumberId(person.getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
+        ArtifactUtils.renumberId(person.getInnflytting());
+        person1.getPerson().getUtflytting().addAll(person2.getPerson().getUtflytting());
+        ArtifactUtils.renumberId(person.getUtflytting());
 
         person2.getPerson().getAdressebeskyttelse().stream()
                 .filter(status -> person1.getPerson().getAdressebeskyttelse().stream()

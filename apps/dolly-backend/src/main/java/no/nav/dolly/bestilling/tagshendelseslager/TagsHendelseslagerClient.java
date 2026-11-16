@@ -40,7 +40,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         return getPdlIdenter(List.of(dollyPerson.getIdent()))
                 .collectList()
@@ -50,7 +50,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                         .flatMap(tags -> tagsHendelseslagerConsumer.createTags(identer, tags)
                                                 .map(resultat -> getTagStatus(identer, tags, resultat))),
                                 Flux.just(identer)
-                                        .filter(identer1 -> dollyPerson.getMaster() == Testident.Master.PDL)
+                                        .filter(_ -> dollyPerson.getMaster() == Testident.Master.PDL)
                                         .flatMap(tagsHendelseslagerConsumer::publish)
                                         .map(status -> getPublishStatus(identer, status)))
                         .collect(Collectors.joining(", og ")))
@@ -59,10 +59,10 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {
 
-            if (isNotBlank(status)) {
-                log.info(status);
-            }
-            return Mono.just(progress);
+        if (isNotBlank(status)) {
+            log.info(status);
+        }
+        return Mono.just(progress);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
         getPdlIdenter(identer)
                 .collectList()
                 .flatMapMany(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
-                .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
+                .subscribe(_ -> log.info("Slettet fra TagsHendelselager"));
     }
 
     private String getTagStatus(List<String> identer, List<Tags> tags, TagsOpprettingResponse resultat) {

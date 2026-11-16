@@ -6,11 +6,11 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
-import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.opensearch.service.OpenSearchService;
@@ -21,6 +21,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,9 +111,9 @@ class DollyBestillingServiceTest {
                 counterCustomRegistry,
                 errorStatusDecoder,
                 identService,
+                jsonMapper,
                 List.<ClientRegister>of(),
                 mapperFacade,
-                jsonMapper,
                 openSearchService,
                 pdlDataConsumer,
                 testgruppeRepository,
@@ -125,19 +126,18 @@ class DollyBestillingServiceTest {
 
         var progress = BestillingProgress.builder()
                 .bestillingId(BESTILLING_ID).ident(IDENT).master(PDL).build();
-        var bruker = Bruker.builder().brukerId("bruker-id").build();
         given(bestillingRepository.findById(BESTILLING_ID))
                 .willReturn(Mono.just(Bestilling.builder().gruppeId(GRUPPE_ID).build()));
         given(testgruppeRepository.findById(GRUPPE_ID))
                 .willReturn(Mono.just(Testgruppe.builder().tags("SALESFORCE").build()));
 
-        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, bruker))
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, new RsDollyUtvidetBestilling()))
                 .assertNext(person -> {
                     assertThat(person.isLeggTil()).isTrue();
+                    assertThat(person.isOpprett()).isFalse();
                     assertThat(person.getIdent()).isEqualTo(IDENT);
                     assertThat(person.getMaster()).isEqualTo(PDL);
-                    assertThat(person.getBruker()).isSameAs(bruker);
-                    assertThat(person.getTags()).contains(Tags.SALESFORCE);
+                    assertThat(person.getTags()).contains(Tags.SALESFORCE, Tags.DOLLY);
                 })
                 .verifyComplete();
     }
@@ -238,16 +238,15 @@ class DollyBestillingServiceTest {
     void shouldRememberIdentityBeforeUpdatingPersonInPdlForvalter() {
 
         var person = PersonDTO.builder().ident(IDENT).build();
-        var originator = OriginatorUtility.Originator.builder()
-                .ident(IDENT)
-                .pdlBestilling(BestillingRequestDTO.builder().person(person).build())
-                .build();
+        var request = new RsDollyUtvidetBestilling();
+        given(mapperFacade.map(any(), eq(BestillingRequestDTO.class), any()))
+                .willReturn(BestillingRequestDTO.builder().person(person).build());
         var progress = BestillingProgress.builder().ident(IDENT).build();
         given(pdlDataConsumer.oppdaterPdl(eq(IDENT), any(PersonUpdateRequestDTO.class)))
                 .willReturn(Mono.just(PdlResponse.builder().ident(IDENT).status(HttpStatus.OK).build()));
         stubPersister();
 
-        StepVerifier.create(dollyBestillingService.oppdaterPerson(originator, progress))
+        StepVerifier.create(dollyBestillingService.oppdaterPerson(request, progress, IDENT))
                 .assertNext(updatedProgress -> {
                     assertThat(updatedProgress).isSameAs(progress);
                     assertThat(updatedProgress.getOppdatertIdent()).isEqualTo(IDENT);
@@ -264,12 +263,11 @@ class DollyBestillingServiceTest {
     void shouldLeaveProgressUnchangedWhenPdlUpdateHasNoPerson() {
 
         var progress = BestillingProgress.builder().ident(IDENT).build();
-        var originator = OriginatorUtility.Originator.builder()
-                .ident(IDENT)
-                .pdlBestilling(BestillingRequestDTO.builder().build())
-                .build();
+        var request = new RsDollyUtvidetBestilling();
+        given(mapperFacade.map(any(), eq(BestillingRequestDTO.class), any()))
+                .willReturn(BestillingRequestDTO.builder().build());
 
-        StepVerifier.create(dollyBestillingService.oppdaterPerson(originator, progress))
+        StepVerifier.create(dollyBestillingService.oppdaterPerson(request, progress, IDENT))
                 .assertNext(updatedProgress -> assertThat(updatedProgress).isSameAs(progress))
                 .verifyComplete();
 
@@ -278,16 +276,20 @@ class DollyBestillingServiceTest {
     }
 
     @Test
-    void shouldLeaveProgressUnchangedWhenPdlUpdateRequestIsMissing() {
+    void shouldPrepareMissingPdlDataWithoutRequestingNewPersonForExistingIdent() {
 
         var progress = BestillingProgress.builder().ident(IDENT).build();
-        var originator = OriginatorUtility.Originator.builder().ident(IDENT).build();
+        var request = new RsDollyUtvidetBestilling();
+        given(mapperFacade.map(any(), eq(BestillingRequestDTO.class), any()))
+                .willReturn(BestillingRequestDTO.builder().build());
 
-        StepVerifier.create(dollyBestillingService.oppdaterPerson(originator, progress))
+        StepVerifier.create(dollyBestillingService.oppdaterPerson(request, progress, IDENT))
                 .assertNext(updatedProgress -> assertThat(updatedProgress).isSameAs(progress))
                 .verifyComplete();
 
         assertThat(progress.getOppdatertIdent()).isNull();
+        assertThat(request.getPdldata()).isNotNull();
+        assertThat(request.getPdldata().getOpprettNyPerson()).isNull();
         verifyNoInteractions(pdlDataConsumer, transactionHelperService);
     }
 
@@ -301,7 +303,7 @@ class DollyBestillingServiceTest {
                 .oppdatertIdent("98765432109")
                 .pdlForvalterStatus(status)
                 .build();
-        given(pdlDataConsumer.sendOrdre(IDENT, false))
+        given(pdlDataConsumer.sendOrdre(IDENT, true))
                 .willReturn(Mono.just(PdlResponse.builder()
                         .status(HttpStatus.OK).jsonNode("{\"status\":\"OK\"}").build()));
         stubPersister();
@@ -313,7 +315,7 @@ class DollyBestillingServiceTest {
                 })
                 .verifyComplete();
 
-        verify(pdlDataConsumer).sendOrdre(IDENT, false);
+        verify(pdlDataConsumer).sendOrdre(IDENT, true);
     }
 
     @Test
@@ -324,7 +326,7 @@ class DollyBestillingServiceTest {
                 .oppdatertIdent("98765432109")
                 .pdlForvalterStatus("OK")
                 .build();
-        given(pdlDataConsumer.sendOrdre(IDENT, false))
+        given(pdlDataConsumer.sendOrdre(IDENT, true))
                 .willReturn(Mono.just(PdlResponse.builder()
                         .status(HttpStatus.BAD_REQUEST).feilmelding("Invalid identity").build()));
         given(errorStatusDecoder.getErrorText(HttpStatus.BAD_REQUEST, "Invalid identity"))
@@ -358,27 +360,28 @@ class DollyBestillingServiceTest {
     void shouldPersistUpdatedIdentityAndSwapRelatedRecords() {
 
         var previousIdent = "98765432109";
-        var newIdent = "12345098765";
+        var newIdent = IDENT;
         var progress = BestillingProgress.builder()
                 .id(3L)
                 .bestillingId(BESTILLING_ID)
                 .ident(IDENT)
                 .oppdatertIdent(previousIdent)
+                .pdlForvalterStatus("OK")
                 .build();
-        var dollyPerson = DollyPerson.builder().ident(newIdent).build();
+        stubPersonGroup();
         given(identService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         given(bestillingProgressRepository.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
         given(bestillingService.swapIdent(previousIdent, newIdent)).willReturn(Mono.empty());
 
-        StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
-                .expectNext(dollyPerson)
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, new RsDollyUtvidetBestilling()))
+                .assertNext(person -> assertThat(person.getIdent()).isEqualTo(newIdent))
                 .verifyComplete();
 
         var order = inOrder(identService, bestillingProgressRepository, bestillingService);
         order.verify(identService).swapIdent(previousIdent, newIdent);
         order.verify(bestillingProgressRepository).swapIdent(previousIdent, newIdent);
         order.verify(bestillingService).swapIdent(previousIdent, newIdent);
-        verifyNoInteractions(transactionHelperService, bestillingRepository);
+        verifyNoInteractions(transactionHelperService);
     }
 
     @ParameterizedTest
@@ -392,11 +395,10 @@ class DollyBestillingServiceTest {
                 .ident(IDENT)
                 .oppdatertIdent(previousIdent)
                 .build();
-        var newIdent = "12345098765";
-        var dollyPerson = DollyPerson.builder().ident(newIdent).build();
+        stubPersonGroup();
 
-        StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
-                .expectNext(dollyPerson)
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, new RsDollyUtvidetBestilling()))
+                .assertNext(person -> assertThat(person.getIdent()).isEqualTo(IDENT))
                 .verifyComplete();
 
         verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
@@ -406,16 +408,118 @@ class DollyBestillingServiceTest {
     void shouldSkipIdentitySwapWhenPreviousAndNewIdentityMatch() {
 
         var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID)
                 .ident(IDENT)
                 .oppdatertIdent(IDENT)
                 .build();
-        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
+        stubPersonGroup();
 
-        StepVerifier.create(dollyBestillingService.updateIdent(dollyPerson, progress))
-                .expectNext(dollyPerson)
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, new RsDollyUtvidetBestilling()))
+                .assertNext(person -> assertThat(person.getIdent()).isEqualTo(IDENT))
                 .verifyComplete();
 
         verifyNoInteractions(transactionHelperService, identService, bestillingProgressRepository, bestillingService);
+    }
+
+    @Test
+    void shouldMoveHistoryBeforeDeletingTemporaryIdentWhenUsingExistingIdent() {
+
+        var previousIdent = "98765432109";
+        var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID).ident(IDENT).oppdatertIdent(previousIdent)
+                .pdlForvalterStatus("OK").build();
+        var request = RsDollyUtvidetBestilling.builder()
+                .pdldata(PdlPersondata.builder()
+                        .person(PersonDTO.builder().nyident(List.of(
+                                IdentRequestDTO.builder().eksisterendeIdent(IDENT).build())).build())
+                        .build())
+                .build();
+        stubPersonGroup();
+        given(bestillingProgressRepository.swapIdent(previousIdent, IDENT)).willReturn(Mono.empty());
+        given(bestillingService.swapIdent(previousIdent, IDENT)).willReturn(Mono.empty());
+        given(identService.deleteIdent(previousIdent)).willReturn(Mono.empty());
+
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, request))
+                .assertNext(person -> assertThat(person.getIdent()).isEqualTo(IDENT))
+                .verifyComplete();
+
+        var order = inOrder(bestillingProgressRepository, bestillingService, identService);
+        order.verify(bestillingProgressRepository).swapIdent(previousIdent, IDENT);
+        order.verify(bestillingService).swapIdent(previousIdent, IDENT);
+        order.verify(identService).deleteIdent(previousIdent);
+        order.verifyNoMoreInteractions();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "Feil= Update failed"})
+    void shouldNotSwapIdentityWhenPdlUpdateIsNotSuccessful(String status) {
+
+        var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID).ident(IDENT).oppdatertIdent("98765432109")
+                .pdlForvalterStatus(status).build();
+        var request = RsDollyUtvidetBestilling.builder()
+                .pdldata(PdlPersondata.builder()
+                        .person(PersonDTO.builder().nyident(List.of(
+                                IdentRequestDTO.builder().eksisterendeIdent(IDENT).build())).build())
+                        .build())
+                .build();
+        stubPersonGroup();
+
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, request))
+                .assertNext(person -> assertThat(person.getIdent()).isEqualTo(IDENT))
+                .verifyComplete();
+
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonLeggTil(progress, new RsDollyUtvidetBestilling()))
+                .assertNext(person -> assertThat(person.getIdent()).isEqualTo(IDENT))
+                .verifyComplete();
+
+        verifyNoInteractions(identService, bestillingProgressRepository, bestillingService);
+    }
+
+    @Test
+    void shouldCreatePersonForGjenopprettingWithoutSettingCreationFlags() {
+
+        var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID).ident(IDENT).master(PDL).build();
+        stubPersonGroup();
+
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonForGjenopprett(progress))
+                .assertNext(person -> {
+                    assertThat(person.getIdent()).isEqualTo(IDENT);
+                    assertThat(person.getMaster()).isEqualTo(PDL);
+                    assertThat(person.isLeggTil()).isFalse();
+                    assertThat(person.isOpprett()).isFalse();
+                    assertThat(person.getTags()).contains(Tags.DOLLY);
+                })
+                .verifyComplete();
+
+        verifyNoInteractions(identService, bestillingProgressRepository, bestillingService);
+    }
+
+    @Test
+    void shouldMarkNewDollyPersonAsOpprettWithoutMarkingLeggTil() {
+
+        var progress = BestillingProgress.builder()
+                .bestillingId(BESTILLING_ID).ident(IDENT).master(PDL).build();
+        stubPersonGroup();
+
+        StepVerifier.create(dollyBestillingService.opprettDollyPersonNyoppretting(progress, new RsDollyUtvidetBestilling()))
+                .assertNext(person -> {
+                    assertThat(person.getIdent()).isEqualTo(IDENT);
+                    assertThat(person.getMaster()).isEqualTo(PDL);
+                    assertThat(person.isOpprett()).isTrue();
+                    assertThat(person.isLeggTil()).isFalse();
+                })
+                .verifyComplete();
+    }
+
+    private void stubPersonGroup() {
+
+        given(bestillingRepository.findById(BESTILLING_ID))
+                .willReturn(Mono.just(Bestilling.builder().gruppeId(GRUPPE_ID).build()));
+        given(testgruppeRepository.findById(GRUPPE_ID))
+                .willReturn(Mono.just(Testgruppe.builder().build()));
     }
 
     private void stubPersister() {

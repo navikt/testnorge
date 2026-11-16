@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.util.TestnorgeIdentUtility;
@@ -26,9 +25,12 @@ public class DollyPerson {
     private Testident.Master master;
     private boolean isOrdre;
 
+    private boolean isOpprett;
     private boolean isLeggTil;
 
-    private Bruker bruker;
+    public boolean isOpprettEndre() {
+        return isOpprett || isLeggTil;
+    }
 
     public List<Tags> getTags() {
         if (isNull(tags)) {

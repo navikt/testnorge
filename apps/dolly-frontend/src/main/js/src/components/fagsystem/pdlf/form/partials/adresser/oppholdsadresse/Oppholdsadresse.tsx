@@ -27,6 +27,11 @@ import {
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import {
+	getHistorikkRegeltekst,
+	historikkRegler,
+	useHistorikkTag,
+} from '@/components/fagsystem/pdlf/form/partials/historikk/HistorikkRekkefoelge'
 
 interface OppholdsadresseValues {
 	formMethods: UseFormReturn
@@ -171,14 +176,19 @@ export const OppholdsadresseForm = ({
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	const opts = useBestillingsveileder() as BestillingsveilederContextType
 	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
+	const historikkTag = useHistorikkTag(formMethods, historikkRegler.oppholdsadresse)
 
 	return (
-		<Kategori title="Oppholdsadresse">
+		<Kategori
+			title="Oppholdsadresse"
+			hjelpetekst={getHistorikkRegeltekst(historikkRegler.oppholdsadresse)}
+		>
 			<FormDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
 				newEntry={getInitialOppholdsadresse(initialMaster)}
 				canBeEmpty={false}
+				entryTag={historikkTag}
 			>
 				{(path: string, idx: number) => (
 					<OppholdsadresseForm

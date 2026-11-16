@@ -34,7 +34,7 @@ public class MedlClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Mono<BestillingProgress> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getMedl())) {
 
@@ -69,7 +69,7 @@ public class MedlClient implements ClientRegister {
                 })
                 .flatMap(medlConsumer::deleteMedlemskapsperioder)
                 .collectList()
-                .subscribe(response -> log.info("Sletting utført mot Medl"));
+                .subscribe(_ -> log.info("Sletting utført mot Medl"));
     }
 
     private Mono<BestillingProgress> oppdaterStatus(BestillingProgress progress, String status) {

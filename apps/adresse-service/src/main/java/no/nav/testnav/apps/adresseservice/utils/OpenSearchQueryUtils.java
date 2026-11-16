@@ -3,6 +3,7 @@ package no.nav.testnav.apps.adresseservice.utils;
 import lombok.experimental.UtilityClass;
 import org.opensearch.client.opensearch._types.FieldValue;
 import org.opensearch.client.opensearch._types.query_dsl.ExistsQuery;
+import org.opensearch.client.opensearch._types.query_dsl.MatchPhraseQuery;
 import org.opensearch.client.opensearch._types.query_dsl.MatchQuery;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 
@@ -17,6 +18,14 @@ public class OpenSearchQueryUtils {
                 .field(field)
                 .query(FieldValue.of(value))
                 .fuzziness(isNumeric(value) ? "0" : "AUTO")
+                .build();
+    }
+
+    public static MatchPhraseQuery matchPhraseQuery(String field, String value) {
+
+        return QueryBuilders.matchPhrase()
+                .field(field)
+                .query(value)
                 .build();
     }
 
