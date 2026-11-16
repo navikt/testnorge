@@ -12,6 +12,8 @@ import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,7 +67,7 @@ class InntektsinformasjonMappingStrategyTest {
     }
 
     @Test
-    void shouldMapRsInntekterForRequestedPeriod() {
+    void shouldMapRsInntekterAndPreserveExplicitEarningPeriodDates() {
 
         var context = mappingContext(YearMonth.of(2016, 2), IDENT);
         var result = mapperFacade.map(prepRsInntekter(), Inntektsinformasjon.class, context);
@@ -75,11 +77,28 @@ class InntektsinformasjonMappingStrategyTest {
         assertThat(result.getVirksomhet(), is(equalTo(ORG_NR)));
         assertThat(result.getOpplysningspliktig(), is(equalTo(ORG_NR)));
         assertThat(result.getInntektsliste().getFirst().getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsliste().getFirst().getStartOpptjeningsperiode(), is(equalTo(LocalDate.of(2016, 2, 1))));
-        assertThat(result.getInntektsliste().getFirst().getSluttOpptjeningsperiode(), is(equalTo(LocalDate.of(2016, 2, 29))));
+        assertThat(result.getInntektsliste().getFirst().getStartOpptjeningsperiode(), is(equalTo(AAR_MAANED)));
+        assertThat(result.getInntektsliste().getFirst().getSluttOpptjeningsperiode(), is(equalTo(LocalDate.of(2016, 1, 31))));
         assertThat(result.getInntektsliste().getFirst().getBeskrivelse(), is(equalTo(BESKRIVELSE)));
         assertThat(result.getInntektsliste().getFirst().getTilleggsinformasjon().getBonusFraForsvaret().getAaretUtbetalingenGjelderFor(),
                 is(equalTo(AARET_BETALINGEN_GJELDER_FOR)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "2016-02, , , 2016-02-01, 2016-02-29",
+            "2017-02, , , 2017-02-01, 2017-02-28",
+            "2016-02, , 2016-03-31T12:30:00, 2016-02-01, 2016-03-31",
+            "2016-02, 2016-01-31T12:30:00, , 2016-01-31, 2016-02-29"
+    })
+    void shouldDefaultOnlyMissingEarningPeriodDates(YearMonth period, LocalDateTime start, LocalDateTime end,
+                                                   LocalDate expectedStart, LocalDate expectedEnd) {
+
+        var result = mapperFacade.map(prepInntekt(start, end),
+                no.nav.dolly.bestilling.inntektstub.domain.Inntekt.class, mappingContext(period, IDENT));
+
+        assertThat(result.getStartOpptjeningsperiode(), is(equalTo(expectedStart)));
+        assertThat(result.getSluttOpptjeningsperiode(), is(equalTo(expectedEnd)));
     }
 
     private static MappingContext mappingContext(YearMonth period, String ident) {
