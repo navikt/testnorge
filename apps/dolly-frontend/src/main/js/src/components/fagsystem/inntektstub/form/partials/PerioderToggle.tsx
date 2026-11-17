@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ToggleGroup, Tooltip } from '@navikt/ds-react'
 import { LinkBrokenIcon } from '@navikt/aksel-icons'
 import { useFormContext } from 'react-hook-form'
-import { eachMonthOfInterval, format, isAfter, parse } from 'date-fns'
+import { eachMonthOfInterval, format, isAfter, parse, startOfMonth } from 'date-fns'
 import { MonthCombobox } from '@/components/ui/form/inputs/monthsCombobox/MonthCombobox'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { Label } from '@/components/ui/form/inputs/label/Label'
@@ -96,13 +96,15 @@ export const PerioderToggle = ({ path }: PerioderToggleProps) => {
 	}
 
 	const handleFraChange = (dato?: Date) => {
-		setFraMaaned(dato ?? null)
-		oppdaterPerioder(dato ?? null, tilMaaned)
+		const maaned = dato ? startOfMonth(dato) : null
+		setFraMaaned(maaned)
+		oppdaterPerioder(maaned, tilMaaned)
 	}
 
 	const handleTilChange = (dato?: Date) => {
-		setTilMaaned(dato ?? null)
-		oppdaterPerioder(fraMaaned, dato ?? null)
+		const maaned = dato ? startOfMonth(dato) : null
+		setTilMaaned(maaned)
+		oppdaterPerioder(fraMaaned, maaned)
 	}
 
 	const ugyldigPeriode = fraMaaned && tilMaaned && isAfter(fraMaaned, tilMaaned)
