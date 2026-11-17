@@ -41,7 +41,7 @@ public class JwtService {
             GetUserInfo getUserInfo,
             CryptographyService cryptographyService,
             @Value("${JWT_SECRET}") String secretKey,
-            @Value("${spring.security.oauth2.resourceserver.tokenx.accepted-audience}") String issuer) {
+            @Value("${TOKEN_X_CLIENT_ID}") String issuer) {
         this.getAuthenticatedUserId = getAuthenticatedUserId;
         this.getAuthenticatedToken = getAuthenticatedToken;
         this.getUserInfo = getUserInfo;

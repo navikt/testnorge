@@ -2,14 +2,13 @@ package no.nav.testnav.libs.reactivesessionsecurity.exchange.user;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,28 +26,21 @@ public class UserJwtExchange {
 
     private final WebClient webClient;
     private final TestnavBrukerServiceProperties serviceProperties;
-    private final TokenXExchange tokenExchange;
+    private final TokenExchange tokenExchange;
     private final ConcurrentMap<String, String> tokenCache;
     private final ConcurrentMap<String, Mono<String>> tokenRequests;
 
     @Autowired
     public UserJwtExchange(TestnavBrukerServiceProperties serviceProperties,
-                           TokenXExchange tokenExchange) {
+                           TokenExchange tokenExchange) {
         this(serviceProperties, tokenExchange, WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
                 .build());
     }
 
-    @Deprecated(forRemoval = false)
-    public UserJwtExchange(TestnavBrukerServiceProperties serviceProperties,
-                           TokenXExchange tokenExchange,
-                           ObjectMapper objectMapper) {
-        this(serviceProperties, tokenExchange);
-    }
-
     UserJwtExchange(TestnavBrukerServiceProperties serviceProperties,
-                    TokenXExchange tokenExchange,
+                    TokenExchange tokenExchange,
                     WebClient webClient) {
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;

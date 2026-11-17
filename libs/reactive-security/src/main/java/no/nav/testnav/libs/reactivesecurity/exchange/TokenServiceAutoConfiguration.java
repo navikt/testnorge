@@ -7,7 +7,12 @@ import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
-import no.nav.testnav.libs.securitycore.domain.azuread.*;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureTrygdeetatenClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredentialAutoConfiguration;
+import no.nav.testnav.libs.securitycore.domain.azuread.ConditionalOnDollyApplicationConfiguredForNav;
+import no.nav.testnav.libs.securitycore.domain.azuread.ConditionalOnDollyApplicationConfiguredForTrygdeetaten;
+import no.nav.testnav.libs.securitycore.texas.TexasClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,15 +36,14 @@ public class TokenServiceAutoConfiguration {
     @Primary
     @Bean
     @Profile("test")
-    AzureTokenService azureAdTokenServiceTest(AzureClientCredential clientCredential) {
-        return new AzureTokenService.Test(webClient, null, clientCredential, getAuthenticatedToken);
+    AzureTokenService azureAdTokenServiceTest() {
+        return new AzureTokenService.Test();
     }
 
     @Bean
-    @ConditionalOnDollyApplicationConfiguredForAzure
     @ConditionalOnMissingBean(AzureTokenService.class)
-    AzureTokenService azureAdTokenService(AzureClientCredential clientCredential) {
-        return new AzureTokenService(webClient, httpProxy, clientCredential, getAuthenticatedToken);
+    AzureTokenService azureAdTokenService(TexasClient texasClient) {
+        return new AzureTokenService(getAuthenticatedToken, texasClient);
     }
 
     @Primary

@@ -6,6 +6,8 @@ import no.nav.dolly.web.config.csrf.CsrfProtection;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DollySpringBootTest
 class ApplicationContextTest extends DollyApplicationContextTest {
 
@@ -27,5 +29,16 @@ class ApplicationContextTest extends DollyApplicationContextTest {
                 .uri("/session/csrf")
                 .exchange()
                 .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void shouldRejectMalformedBearerTokenWithUnauthorized() {
+        webTestClient
+                .get()
+                .uri("/session/csrf")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer not-a-jwt")
+                .exchange()
+                .expectStatus().isUnauthorized()
+                .expectHeader().value(HttpHeaders.WWW_AUTHENTICATE, header -> assertThat(header).contains("invalid_token"));
     }
 }

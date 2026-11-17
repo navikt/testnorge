@@ -16,9 +16,11 @@ services:
       - MASKINPORTEN_CLIENT_JWK=${JWK}
       - MASKINPORTEN_SCOPES=altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
       - MASKINPORTEN_WELL_KNOWN_URL=http://maskinporten:8080
+      - NAIS_TOKEN_ENDPOINT=http://dummy
+      - NAIS_TOKEN_EXCHANGE_ENDPOINT=http://dummy
+      - NAIS_TOKEN_INTROSPECTION_ENDPOINT=http://tokendings:8080/api/v1/introspect
       - SPRING_PROFILES_ACTIVE=virtual
       - TOKEN_X_ISSUER=http://tokendings:8080
-      - TOKEN_X_PRIVATE_JWK=${JWK}
     ports:
       - "8001:8080"
       - "5001:5005"
@@ -69,10 +71,11 @@ services:
       - CRYPTOGRAPHY_SECRET=dummy
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - JWT_SECRET=dummy
+      - NAIS_TOKEN_ENDPOINT=http://dummy
+      - NAIS_TOKEN_EXCHANGE_ENDPOINT=http://dummy
+      - NAIS_TOKEN_INTROSPECTION_ENDPOINT=http://tokendings:8080/api/v1/introspect
       - SPRING_PROFILES_ACTIVE=virtual
       - TOKEN_X_CLIENT_ID=dev-gcp:dolly:testnav-bruker-service
-      - TOKEN_X_PRIVATE_JWK=${JWK}
-      - TOKEN_X_WELL_KNOWN_URL=http://tokendings:8080/.well-known/oauth-authorization-server
     ports:
       - "8002:8080"
       - "5002:5005"

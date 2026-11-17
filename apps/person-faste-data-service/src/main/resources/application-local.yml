@@ -1,3 +1,5 @@
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-person-faste-data-service
+
 spring:
   config:
     import: "sm@"

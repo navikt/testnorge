@@ -2,7 +2,7 @@ package no.nav.testnav.libs.reactivesessionsecurity.exchange.user;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -28,7 +28,7 @@ class UserJwtExchangeTest {
     private static final String ACCESS_TOKEN = "fake-access-token";
 
     @Mock
-    private TokenXExchange tokenExchange;
+    private TokenExchange tokenExchange;
 
     @Test
     void shouldRequestFreshAzureUserJwt() {

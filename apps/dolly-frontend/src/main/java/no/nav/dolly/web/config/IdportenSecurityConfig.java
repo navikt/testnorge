@@ -113,11 +113,8 @@ class IdportenSecurityConfig {
                         })
                         .authenticationManager(authenticationManager)
                         .authorizationRequestResolver(requestResolver)
-                        .authenticationSuccessHandler(authenticationSuccessHandler))
-                .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN).authenticationFailureHandler((webFilterExchange, exception) -> {
-                    log.error("Failed to authenticate user", exception);
-                    return Mono.error(exception);
-                }))
+                        .authenticationSuccessHandler(authenticationSuccessHandler)
+                        .loginPage(LOGIN))
                 .logout(logoutSpec -> logoutSpec
                         .logoutUrl(LOGOUT)
                         .logoutSuccessHandler(logoutSuccessHandler))

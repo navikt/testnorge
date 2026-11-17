@@ -6,6 +6,8 @@ on:
       - apps/bruker-service/**
       - mocks/maskinporten-mock/**
       - mocks/tokendings-mock/**
+      - libs/reactive-security/**
+      - libs/security-core/**
       - libs/testing/**
       - Dockerfile
       - Dockerfile.dockerignore
