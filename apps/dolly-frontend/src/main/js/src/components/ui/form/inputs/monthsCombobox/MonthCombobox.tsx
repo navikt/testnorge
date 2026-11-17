@@ -9,7 +9,7 @@ import {
 	UNSAFE_Combobox as Combobox,
 	VStack,
 } from '@navikt/ds-react'
-import { CalendarIcon } from '@navikt/aksel-icons'
+import { CalendarIcon, XMarkIcon } from '@navikt/aksel-icons'
 import { addYears, format, isValid, parse, subYears } from 'date-fns'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { formatMonth } from '@/utils/DataFormatter'
@@ -55,7 +55,7 @@ const ComboboxWrapper = styled.div`
 	position: relative;
 
 	.aksel-combobox__wrapper-inner.aksel-text-field__input {
-		padding-inline-end: 2.75rem;
+		padding-inline-end: 4.75rem;
 		cursor: pointer;
 	}
 
@@ -65,7 +65,7 @@ const ComboboxWrapper = styled.div`
 	}
 `
 
-const CalendarButton = styled(Button)`
+const FieldButtons = styled(HStack)`
 	position: absolute;
 	top: 0.5rem;
 	right: 0.5rem;
@@ -158,14 +158,25 @@ export const MonthCombobox = ({ name, label, minDate, maxDate }: MonthsComboboxP
 					onBeforeInput={(event) => event.preventDefault()}
 					onKeyDownCapture={handleInputKeyDown}
 				/>
-				<CalendarButton
-					type="button"
-					size="small"
-					variant="tertiary-neutral"
-					icon={<CalendarIcon title={isOpen ? 'Lukk månedsvelger' : 'Åpne månedsvelger'} />}
-					onClick={togglePopover}
-					aria-expanded={isOpen}
-				/>
+				<FieldButtons gap="space-4" wrap={false}>
+					{selectedMonths.length > 0 && (
+						<Button
+							type="button"
+							size="small"
+							variant="tertiary-neutral"
+							icon={<XMarkIcon title="Tøm valgte måneder" />}
+							onClick={() => updateMonths([])}
+						/>
+					)}
+					<Button
+						type="button"
+						size="small"
+						variant="tertiary-neutral"
+						icon={<CalendarIcon title={isOpen ? 'Lukk månedsvelger' : 'Åpne månedsvelger'} />}
+						onClick={togglePopover}
+						aria-expanded={isOpen}
+					/>
+				</FieldButtons>
 			</ComboboxWrapper>
 			<Popover
 				open={isOpen}

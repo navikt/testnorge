@@ -29,6 +29,10 @@ public final class MappingContextUtils {
         return MAPPING_CONTEXT_FACTORY.getContext();
     }
 
+    public static MappingContextFactory getMappingContextFactory() {
+        return MAPPING_CONTEXT_FACTORY;
+    }
+
     /**
      * The custom {@link DefaultMapperFactory} to expose getter
      * for {@link MappingContextFactory} so {@link MappingContext} with prefilled globalProperties can be created.
