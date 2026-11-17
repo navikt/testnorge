@@ -14,7 +14,9 @@ public class MapperFacadeConfig {
     @Bean
     MapperFacade mapperFacade(List<MappingStrategy> mappingStrategies, List<CustomConverter> customConverters) {
 
-        var mapperFactory = new DefaultMapperFactory.Builder().build();
+        var mapperFactory = new DefaultMapperFactory.Builder()
+                .mappingContextFactory(MappingContextUtils.getMappingContextFactory())
+                .build();
 
         for (var converter : customConverters) {
             mapperFactory.getConverterFactory().registerConverter(converter);
