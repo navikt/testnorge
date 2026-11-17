@@ -17,8 +17,8 @@ services:
       - MASKINPORTEN_SCOPES=altinn:resourceregistry/accesslist.read altinn:resourceregistry/accesslist.write altinn:accessmanagement/authorizedparties.resourceowner
       - MASKINPORTEN_WELL_KNOWN_URL=http://maskinporten:8080
       - NAIS_TOKEN_ENDPOINT=http://dummy
-      - NAIS_TOKEN_EXCHANGE_ENDPOINT=http://dummy
-      - NAIS_TOKEN_INTROSPECTION_ENDPOINT=http://tokendings:8080/api/v1/introspect
+      - NAIS_TOKEN_EXCHANGE_ENDPOINT=http://tokendings:8080/api/v1/token/exchange
+      - NAIS_TOKEN_INTROSPECTION_ENDPOINT=http://tokendings:8080/api/v1/introspect?audience=dev-gcp:dolly:testnav-altinn3-tilgang-service
       - SPRING_PROFILES_ACTIVE=virtual
       - TOKEN_X_ISSUER=http://tokendings:8080
     ports:
@@ -72,8 +72,8 @@ services:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - JWT_SECRET=dummy
       - NAIS_TOKEN_ENDPOINT=http://dummy
-      - NAIS_TOKEN_EXCHANGE_ENDPOINT=http://dummy
-      - NAIS_TOKEN_INTROSPECTION_ENDPOINT=http://tokendings:8080/api/v1/introspect
+      - NAIS_TOKEN_EXCHANGE_ENDPOINT=http://tokendings:8080/api/v1/token/exchange
+      - NAIS_TOKEN_INTROSPECTION_ENDPOINT=http://tokendings:8080/api/v1/introspect?audience=dev-gcp:dolly:testnav-bruker-service
       - SPRING_PROFILES_ACTIVE=virtual
       - TOKEN_X_CLIENT_ID=dev-gcp:dolly:testnav-bruker-service
     ports:
