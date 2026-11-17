@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.dto.OrganisasjonAdresseDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -18,9 +19,13 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.O
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
@@ -51,6 +57,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -607,6 +614,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
     @Test
     void shouldSetAttestutstedelsesdatoWhenNull() {
+        prepareExistingContact();
 
         var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -637,6 +645,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
     @Test
     void shouldKeepExistingAttestutstedelsesdato() {
+        prepareExistingContact();
 
         var dato = LocalDateTime.of(2020, 3, 15, 0, 0);
 
@@ -670,6 +679,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
     @Test
     void shouldSetEksisterendePersonTrueWhenIdentIsPresent() {
+        prepareExistingContact();
 
         var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -699,7 +709,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     }
 
     @Test
-    void shouldFetchPersonAdresseForPersonSomKontaktWithIdent() {
+    void shouldCreateContactPersonAndCopyTheirAddress() {
 
         var bostedadresse = BostedadresseDTO.builder()
                 .vegadresse(VegadresseDTO.builder().kommunenummer("0301").build())
@@ -739,7 +749,6 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(kodeverkConsumer.getPoststedNavn()).thenReturn(Mono.just(new HashMap<>()));
         when(mapperFacade.map(any(KontaktinformasjonForDoedsboDTO.class), eq(KontaktinformasjonForDoedsboDTO.class)))
                 .thenReturn(KontaktinformasjonForDoedsboDTO.builder().build());
-        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(kontaktPerson));
         when(mapperFacade.map(any(BostedadresseDTO.class), eq(KontaktinformasjonForDoedsboAdresse.class), any(MappingContext.class)))
                 .thenReturn(mappedAdresse);
         when(createPersonService.execute(any(PersonRequestDTO.class))).thenReturn(Mono.just(kontaktPerson));
@@ -748,8 +757,11 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
                 .assertNext(result -> {
-                    verify(personRepository).findByIdent(IDENT);
-                    assertThat(result.getPerson().getKontaktinformasjonForDoedsbo().getFirst().getAdresse(), is(notNullValue()));
+                    verify(createPersonService).execute(any(PersonRequestDTO.class));
+                    verifyNoInteractions(personRepository);
+                    assertThat(result.getPerson().getKontaktinformasjonForDoedsbo().getFirst().getAdresse(), is(mappedAdresse));
+                    assertThat(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer(), is(IDENT));
+                    assertThat(kontaktinfo.getPersonSomKontakt().isEksisterendePerson(), is(false));
                 })
                 .verifyComplete();
     }
@@ -921,6 +933,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
     @Test
     void shouldReturnSameDbPersonInstance() {
+        prepareExistingContact();
 
         var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
                 .skifteform(OFFENTLIG)
@@ -960,7 +973,8 @@ class KontaktinformasjonForDoedsboServiceTest {
                 .skifteform(OFFENTLIG)
                 .adresse(providedAdresse)
                 .personSomKontakt(KontaktpersonDTO.builder()
-                        .identifikasjonsnummer(IDENT)
+                        .foedselsdato(LocalDateTime.of(1980, 1, 1, 0, 0))
+                        .navn(PersonNavnDTO.builder().fornavn("Ola").etternavn("Nordmann").build())
                         .build())
                 .isNew(true)
                 .build();
@@ -986,5 +1000,146 @@ class KontaktinformasjonForDoedsboServiceTest {
                     verify(adresseServiceConsumer, never()).getVegadresse(any(), any());
                 })
                 .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldPreserveExistingContactAddressInsteadOfGeneratingAnother(boolean suppliedAddress) {
+        var bostedsadresse = BostedadresseDTO.builder()
+                .vegadresse(VegadresseDTO.builder().postnummer("0484").build())
+                .build();
+        var contactPerson = DbPerson.builder()
+                .ident(IDENT)
+                .person(PersonDTO.builder().bostedsadresse(List.of(bostedsadresse)).build())
+                .build();
+        var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
+                .isNew(true)
+                .skifteform(ANNET)
+                .adresse(suppliedAddress ? KontaktinformasjonForDoedsboAdresse.builder()
+                        .adresselinje1("Annen adresse 1").postnummer("0101").landkode("NOR").build() : null)
+                .personSomKontakt(KontaktpersonDTO.builder()
+                        .identifikasjonsnummer(IDENT)
+                        .navn(PersonNavnDTO.builder().fornavn("Ola").etternavn("Nordmann").build())
+                        .build())
+                .build();
+        var dbPerson = prepareConversion(kontaktinfo);
+        var poststeder = Map.of("0484", "OSLO");
+        when(kodeverkConsumer.getPoststedNavn()).thenReturn(Mono.just(poststeder));
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(contactPerson));
+        when(relasjonService.setRelasjoner(HOVEDPERSON_IDENT, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                IDENT, RelasjonType.KONTAKT_FOR_DOEDSBO)).thenReturn(Mono.empty());
+        var expectedAddress = KontaktinformasjonForDoedsboAdresse.builder()
+                .adresselinje1("Kontaktveien 2").postnummer("0484").poststedsnavn("OSLO").build();
+        var contextCaptor = ArgumentCaptor.forClass(MappingContext.class);
+        when(mapperFacade.map(eq(bostedsadresse), eq(KontaktinformasjonForDoedsboAdresse.class),
+                any(MappingContext.class))).thenReturn(expectedAddress);
+
+        StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
+                .assertNext(result -> {
+                    assertThat(result, is(dbPerson));
+                    assertThat(kontaktinfo.getAdresse(), is(expectedAddress));
+                    assertThat(kontaktinfo.getPersonSomKontakt().getNavn(), is(nullValue()));
+                    assertThat(kontaktinfo.getPersonSomKontakt().isEksisterendePerson(), is(true));
+                })
+                .verifyComplete();
+
+        verify(mapperFacade).map(eq(bostedsadresse), eq(KontaktinformasjonForDoedsboAdresse.class),
+                contextCaptor.capture());
+        assertThat(contextCaptor.getValue().getProperty("poststedsnavn"), is(poststeder));
+        verify(relasjonService).setRelasjoner(HOVEDPERSON_IDENT, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                IDENT, RelasjonType.KONTAKT_FOR_DOEDSBO);
+        verifyNoInteractions(createPersonService, adresseServiceConsumer, enkelAdresseService, genererNavnServiceConsumer);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldReadOrganisationAddressAfterLookupCompletes(boolean lawyer) {
+        var organisation = OrganisasjonDTO.builder()
+                .organisasjonsnummer("123456789")
+                .kontaktperson(PersonNavnDTO.builder().fornavn("Ola").etternavn("Nordmann").build())
+                .build();
+        var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
+                .isNew(true)
+                .skifteform(OFFENTLIG)
+                .advokatSomKontakt(lawyer ? organisation : null)
+                .organisasjonSomKontakt(lawyer ? null : organisation)
+                .build();
+        var dbPerson = prepareConversion(kontaktinfo);
+        var organisationJson = toJson("""
+                {"q1": {"organisasjonsnavn": "Firma AS", "adresser": [{"postnummer": "0484"}]}}
+                """);
+        var organisationAddress = new OrganisasjonAdresseDTO();
+        var expectedAddress = KontaktinformasjonForDoedsboAdresse.builder().postnummer("0484").build();
+        when(organisasjonForvalterConsumer.getOrganisasjoner("123456789")).thenReturn(Mono.just(organisationJson));
+        when(jsonMapper.treeToValue(organisationJson.findValue("adresser").get(0), OrganisasjonAdresseDTO.class))
+                .thenReturn(organisationAddress);
+        when(mapperFacade.map(organisationAddress, KontaktinformasjonForDoedsboAdresse.class)).thenReturn(expectedAddress);
+
+        StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
+                .assertNext(_ -> {
+                    assertThat(kontaktinfo.getAdresse(), is(expectedAddress));
+                    assertThat(organisation.getOrganisasjonsnavn(), is("Firma AS"));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldGenerateForeignAddressForContactWithoutIdent() {
+        var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
+                .isNew(true)
+                .skifteform(ANNET)
+                .adresse(KontaktinformasjonForDoedsboAdresse.builder().landkode("SWE").build())
+                .personSomKontakt(KontaktpersonDTO.builder()
+                        .foedselsdato(LocalDateTime.of(1980, 1, 1, 0, 0))
+                        .navn(PersonNavnDTO.builder().fornavn("Ola").etternavn("Nordmann").build())
+                        .build())
+                .build();
+        var dbPerson = prepareConversion(kontaktinfo);
+        var foreignAddress = new UtenlandskAdresseDTO();
+        var expectedAddress = KontaktinformasjonForDoedsboAdresse.builder().landkode("SWE").adresselinje1("Gatan 1").build();
+        when(enkelAdresseService.getUtenlandskAdresse(any(UtenlandskAdresseDTO.class), eq("SWE"), any()))
+                .thenReturn(Mono.just(foreignAddress));
+        when(mapperFacade.map(foreignAddress, KontaktinformasjonForDoedsboAdresse.class)).thenReturn(expectedAddress);
+
+        StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
+                .assertNext(_ -> assertThat(kontaktinfo.getAdresse(), is(expectedAddress)))
+                .verifyComplete();
+
+        verifyNoInteractions(personRepository, createPersonService, relasjonService, adresseServiceConsumer);
+    }
+
+    @Test
+    void shouldPropagateRelationFailureWithoutReplacingAddress() {
+        var kontaktinfo = KontaktinformasjonForDoedsboDTO.builder()
+                .isNew(true)
+                .personSomKontakt(KontaktpersonDTO.builder().identifikasjonsnummer(IDENT).build())
+                .build();
+        var dbPerson = prepareConversion(kontaktinfo);
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(DbPerson.builder().ident(IDENT).build()));
+        var error = new IllegalStateException("Relation failed");
+        when(relasjonService.setRelasjoner(HOVEDPERSON_IDENT, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                IDENT, RelasjonType.KONTAKT_FOR_DOEDSBO)).thenReturn(Mono.error(error));
+
+        StepVerifier.create(kontaktinformasjonForDoedsboService.convert(dbPerson))
+                .verifyErrorSatisfies(actual -> assertThat(actual, is(error)));
+
+        verifyNoInteractions(createPersonService, adresseServiceConsumer, enkelAdresseService);
+    }
+
+    private DbPerson prepareConversion(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+        when(kodeverkConsumer.getPoststedNavn()).thenReturn(Mono.just(new HashMap<>()));
+        when(mapperFacade.map(kontaktinfo, KontaktinformasjonForDoedsboDTO.class)).thenReturn(kontaktinfo);
+        return DbPerson.builder()
+                .ident(HOVEDPERSON_IDENT)
+                .person(PersonDTO.builder().ident(HOVEDPERSON_IDENT)
+                        .kontaktinformasjonForDoedsbo(List.of(kontaktinfo)).build())
+                .build();
+    }
+
+    private void prepareExistingContact() {
+        when(personRepository.findByIdent(IDENT)).thenReturn(Mono.just(DbPerson.builder()
+                .ident(IDENT).person(PersonDTO.builder().build()).build()));
+        when(relasjonService.setRelasjoner(HOVEDPERSON_IDENT, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                IDENT, RelasjonType.KONTAKT_FOR_DOEDSBO)).thenReturn(Mono.empty());
     }
 }

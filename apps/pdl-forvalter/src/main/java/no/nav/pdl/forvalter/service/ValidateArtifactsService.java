@@ -73,17 +73,14 @@ public class ValidateArtifactsService {
                         validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),
                         validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
                         validate(identtypeService, person.getNyident(), person)
-                )
-                .then();
+                ).then();
     }
 
     private <T extends DbVersjonDTO> Flux<Void> validate(Validation<T> validation, List<T> artifact) {
 
-        artifact.stream()
+        return Flux.fromIterable(artifact)
                 .filter(type -> isTrue(type.getIsNew()))
-                .forEach(validation::validate);
-
-        return Flux.empty();
+                .flatMap(validation::validate);
     }
 
     private <T extends DbVersjonDTO, R> Flux<Void> validate(BiValidation<T, R> validation, List<T> artifact, R person) {
