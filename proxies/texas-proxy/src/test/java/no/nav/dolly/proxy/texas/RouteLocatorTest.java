@@ -45,12 +45,6 @@ class RouteLocatorTest extends DollyApplicationContextTest {
                 "user_token": "TOKENVALUE"
             }
             """;
-    private static final String INTROSPECT_TOKEN_BODY = """
-            {
-                "identity_provider": "azuread",
-                "token": "TOKENVALUE"
-            }
-            """;
     private static WireMockServer wiremock;
     @Autowired
     private WebTestClient client;
@@ -94,16 +88,12 @@ class RouteLocatorTest extends DollyApplicationContextTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_JSON_VALUE))
                 .withRequestBody(equalToJson(EXCHANGE_TOKEN_BODY))
                 .willReturn(aResponse().withStatus(200)));
-        wiremock.stubFor(post(urlEqualTo("/api/v1/introspect"))
-                .withHeader(HttpHeaders.CONTENT_TYPE, equalTo(MediaType.APPLICATION_JSON_VALUE))
-                .withRequestBody(equalToJson(INTROSPECT_TOKEN_BODY))
-                .willReturn(aResponse().withStatus(200)));
     }
 
     @Test
     void testRoutes() {
         assertThat(routeLocator.getRoutes().count().block())
-                .isEqualTo(3);
+                .isEqualTo(2);
 
         client
                 .post()
@@ -140,10 +130,10 @@ class RouteLocatorTest extends DollyApplicationContextTest {
                 .uri("/api/v1/introspect")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Dolly TEST")
-                .bodyValue(INTROSPECT_TOKEN_BODY)
+                .bodyValue(GET_TOKEN_BODY)
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isNotFound();
     }
 
 }

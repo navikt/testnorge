@@ -23,11 +23,6 @@ class TexasTokenController {
         return texas.get(audience);
     }
 
-    @PostMapping("introspect")
-    Mono<String> introspect(String token) {
-        return texas.introspect(token);
-    }
-
     @PostMapping("token")
     Mono<TexasToken> exchange(String audience, String token) {
         return texas.exchange(audience, token);
