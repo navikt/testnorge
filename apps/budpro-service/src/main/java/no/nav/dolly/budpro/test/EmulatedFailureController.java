@@ -37,13 +37,6 @@ class EmulatedFailureController {
         return texas.get(audience);
     }
 
-    @PostMapping("/token/introspect")
-    Mono<String> introspectToken(
-            @RequestBody String token
-    ) {
-        return texas.introspect(token);
-    }
-
     @PostMapping("/token/exchange")
     Mono<TexasToken> exchangeToken(
             @RequestParam String audience,
