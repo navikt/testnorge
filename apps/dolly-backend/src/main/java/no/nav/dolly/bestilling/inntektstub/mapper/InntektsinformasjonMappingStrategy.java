@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntekt;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.Tilleggsinformasjon;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekt;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
@@ -65,8 +66,12 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                 destinasjon.setSluttOpptjeningsperiode(periode.atEndOfMonth());
                             }
                         }
+                        if (nonNull(kilde.getTilleggsinformasjon())) {
+                            destinasjon.setTilleggsinformasjon(mapperFacade.map(kilde.getTilleggsinformasjon(), Tilleggsinformasjon.class));
+                        }
                     }
                 })
+                .exclude("tilleggsinformasjon")
                 .byDefault()
                 .register();
     }
