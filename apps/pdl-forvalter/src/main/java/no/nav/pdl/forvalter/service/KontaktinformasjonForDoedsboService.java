@@ -128,18 +128,6 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     return Mono.empty();
                 })
                 .then(Mono.defer(() -> {
-                    if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
-                        isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
-
-                        return personRepository.existsByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())
-                                .flatMap(exists -> isFalse(exists) ?
-                                        Mono.error(new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
-                                                kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()))) :
-                                        Mono.empty());
-                    }
-                    return Mono.empty();
-                }))
-                .then(Mono.defer(() -> {
                     if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
                         return isValidOrganisasjonIMiljoe(kontaktinfo.getOrganisasjonSomKontakt())
                                 .flatMap(valid -> isFalse(valid) ?
@@ -178,76 +166,70 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
                         kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
                     }
-                    return Mono.just(kontaktinfoOriginal)
-                            .zipWith(Mono.just(poststedsnavn));
-                })
-                .flatMap(kontaktinfoOriginal -> {
 
-                    Mono<Void> processing = Mono.empty();
+                    return Mono.defer(() -> {
+                                if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                                    nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato())) {
 
-                    if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
-                        nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato())) {
+                                    return getAndCheckNavn(kontaktinfo.getPersonSomKontakt().getNavn())
+                                            .doOnNext(kontaktinfo.getPersonSomKontakt()::setNavn)
+                                            .then(getAdresse(kontaktinfo)
+                                                    .doOnNext(kontaktinfo::setAdresse));
 
-                        processing = leggTilPersonnavn(kontaktinfo.getPersonSomKontakt())
-                                .then(getAdresse(kontaktinfo)
-                                        .doOnNext(kontaktinfo::setAdresse))
-                                .then();
+                                } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
 
-                    } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
+                                    return getAndCheckNavn(kontaktinfo.getAdvokatSomKontakt().getKontaktperson())
+                                            .doOnNext(kontaktinfo.getAdvokatSomKontakt()::setKontaktperson)
+                                            .then(setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt()));
 
-                        processing = setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt())
-                                .then(leggTilPersonnavn(kontaktinfo.getAdvokatSomKontakt()));
+                                } else if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
 
-                    } else if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
+                                    return getAndCheckNavn(kontaktinfo.getOrganisasjonSomKontakt().getKontaktperson())
+                                            .doOnNext(kontaktinfo.getOrganisasjonSomKontakt()::setKontaktperson)
+                                            .then(setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt()));
 
-                        processing = setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt())
-                                .then(leggTilPersonnavn(kontaktinfo.getOrganisasjonSomKontakt()));
+                                } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
 
-                    } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
+                                    kontaktinfo.getPersonSomKontakt().setEksisterendePerson(
+                                            isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
 
-                        kontaktinfo.getPersonSomKontakt().setEksisterendePerson(
-                                isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
+                                    return Mono.defer(() -> {
+                                                if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+                                                    return leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
+                                                } else {
+                                                    return personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer());
+                                                }
+                                            })
+                                            .flatMap(kontaktperson ->
+                                                    relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                                                                    kontaktperson.getIdent(), RelasjonType.KONTAKT_FOR_DOEDSBO)
+                                                            .then(Mono.just(kontaktperson)))
+                                            .flatMap(dbPerson -> getPersonadresse(dbPerson, poststedsnavn))
+                                            .doOnNext(kontaktinfo::setAdresse)
+                                            .doOnNext(_ -> kontaktinfo.getPersonSomKontakt().setNavn(null));
+                                } else {
 
-                        if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+                                    return getAdresse(kontaktinfoOriginal)
+                                            .doOnNext(kontaktinfo::setAdresse);
 
-                            processing = leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson)
-                                    .then(Mono.defer(() -> leggTilPersonadresse(kontaktinfo, kontaktinfoOriginal.getT2())))
-                                    .then(Mono.fromRunnable(() -> kontaktinfo.getPersonSomKontakt().setNavn(null)));
-                        }
-                    }
-
-                    if (nonNull(kontaktinfoOriginal.getT1().getAdresse()) &&
-                        (isNotBlank(kontaktinfoOriginal.getT1().getAdresse().getLandkode()) ||
-                         isNotBlank(kontaktinfoOriginal.getT1().getAdresse().getAdresselinje1()))) {
-
-                        processing = processing
-                                .then(getAdresse(kontaktinfoOriginal.getT1())
-                                        .doOnNext(kontaktinfo::setAdresse)
-                                        .then());
-                    }
-
-                    return processing.thenReturn(kontaktinfo);
+                                }
+                            })
+                            .thenReturn(kontaktinfo);
                 });
     }
 
-    private Mono<Void> leggTilPersonadresse(KontaktinformasjonForDoedsboDTO kontaktinfo, Map<String, String> poststedsnavn) {
+    private Mono<KontaktinformasjonForDoedsboAdresse> getPersonadresse(DbPerson person, Map<String, String> poststedsnavn) {
 
-        if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
-
-            return personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())
-                    .map(DbPerson::getPerson)
-                    .map(PersonDTO::getBostedsadresse)
-                    .flatMapMany(Flux::fromIterable)
-                    .next()
-                    .map(bostedsadresse -> {
-                        val context = MappingContextUtils.getMappingContext();
-                        context.setProperty("poststedsnavn", poststedsnavn);
-                        return mapperFacade.map(bostedsadresse, KontaktinformasjonForDoedsboAdresse.class, context);
-                    })
-                    .doOnNext(kontaktinfo::setAdresse)
-                    .then();
-        }
-        return Mono.empty();
+        return Mono.just(person)
+                .map(DbPerson::getPerson)
+                .map(PersonDTO::getBostedsadresse)
+                .flatMapMany(Flux::fromIterable)
+                .next()
+                .map(bostedsadresse -> {
+                    val context = MappingContextUtils.getMappingContext();
+                    context.setProperty("poststedsnavn", poststedsnavn);
+                    return mapperFacade.map(bostedsadresse, KontaktinformasjonForDoedsboAdresse.class, context);
+                });
     }
 
     private Mono<KontaktinformasjonForDoedsboAdresse> getAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
@@ -272,8 +254,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         }
     }
 
-    private Mono<Void> setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
-            organisasjonDto) {
+    private Mono<KontaktinformasjonForDoedsboAdresse> setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo,
+                                                                                    OrganisasjonDTO organisasjonDto) {
 
         return organisasjonForvalterConsumer.getOrganisasjoner(organisasjonDto.getOrganisasjonsnummer())
                 .doOnNext(organisasjoner -> {
@@ -284,24 +266,10 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                         kontaktinfo.setAdresse(mapperFacade.map(adresse, KontaktinformasjonForDoedsboAdresse.class));
                     }
                 })
-                .then();
+                .then(Mono.defer(() -> Mono.justOrEmpty(kontaktinfo.getAdresse())));
     }
 
-    private Mono<Void> leggTilPersonnavn(KontaktpersonDTO kontaktpersonDTO) {
-
-        return hentPersonnavn(kontaktpersonDTO.getNavn())
-                .doOnNext(kontaktpersonDTO::setNavn)
-                .then();
-    }
-
-    private Mono<Void> leggTilPersonnavn(OrganisasjonDTO organisasjon) {
-
-        return hentPersonnavn(organisasjon.getKontaktperson())
-                .doOnNext(organisasjon::setKontaktperson)
-                .then();
-    }
-
-    private Mono<PersonNavnDTO> hentPersonnavn(PersonNavnDTO personnavn) {
+    private Mono<PersonNavnDTO> getAndCheckNavn(PersonNavnDTO personnavn) {
 
         val navn = isNull(personnavn) ? new PersonNavnDTO() : personnavn;
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
@@ -379,11 +347,11 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         return organisasjonForvalterConsumer.getOrganisasjoner(pdlOrganisasjon.getOrganisasjonsnummer())
                 .filter(organisasjoner -> nonNull(organisasjoner.findValue("q1")) ||
-                                                  nonNull(organisasjoner.findValue("q2")))
+                                          nonNull(organisasjoner.findValue("q2")))
                 .hasElement();
     }
 
-    private Mono<Void> leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
+    private Mono<DbPerson> leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
         if (isNull(kontakt.getNyKontaktperson())) {
             kontakt.setNyKontaktperson(new PersonRequestDTO());
@@ -401,9 +369,6 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         return createPersonService.execute(kontakt.getNyKontaktperson())
                 .doOnNext(createdPerson ->
-                        kontakt.setIdentifikasjonsnummer(createdPerson.getIdent()))
-                .flatMap(createdPerson ->
-                        relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
-                                createdPerson.getIdent(), RelasjonType.KONTAKT_FOR_DOEDSBO));
+                        kontakt.setIdentifikasjonsnummer(createdPerson.getIdent()));
     }
 }
