@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekt;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntekter;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
-import no.nav.dolly.domain.resultset.inntektstub.Tilleggsinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.RsTilleggsinformasjon;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
@@ -106,13 +106,13 @@ class InntektsinformasjonMappingStrategyTest {
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     void shouldConvertAdditionalInformationPeriodTimestampsToDates(boolean legacyFormat) {
-        var additionalInformation = Tilleggsinformasjon.builder()
-                .etterbetalingsperiode(Tilleggsinformasjon.Periode.builder()
+        var additionalInformation = RsTilleggsinformasjon.builder()
+                .etterbetalingsperiode(RsTilleggsinformasjon.Periode.builder()
                         .startdato(LocalDateTime.of(2015, 12, 31, 23, 45))
                         .sluttdato(LocalDateTime.of(2016, 2, 29, 12, 30))
                         .build())
-                .pensjon(Tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
-                        .tidsrom(Tilleggsinformasjon.Periode.builder()
+                .pensjon(RsTilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
+                        .tidsrom(RsTilleggsinformasjon.Periode.builder()
                                 .startdato(LocalDateTime.of(2014, 3, 15, 8, 15))
                                 .sluttdato(LocalDateTime.of(2015, 11, 30, 18, 45))
                                 .build())
@@ -131,12 +131,12 @@ class InntektsinformasjonMappingStrategyTest {
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     void shouldPreserveMissingDatesInAdditionalInformationPeriods(boolean legacyFormat) {
-        var additionalInformation = Tilleggsinformasjon.builder()
-                .etterbetalingsperiode(Tilleggsinformasjon.Periode.builder()
+        var additionalInformation = RsTilleggsinformasjon.builder()
+                .etterbetalingsperiode(RsTilleggsinformasjon.Periode.builder()
                         .sluttdato(LocalDateTime.of(2016, 2, 29, 12, 30))
                         .build())
-                .pensjon(Tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
-                        .tidsrom(Tilleggsinformasjon.Periode.builder()
+                .pensjon(RsTilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
+                        .tidsrom(RsTilleggsinformasjon.Periode.builder()
                                 .startdato(LocalDateTime.of(2015, 12, 31, 23, 45))
                                 .build())
                         .build())
@@ -151,7 +151,15 @@ class InntektsinformasjonMappingStrategyTest {
         assertThat(result.getPensjon().getTidsrom().getSluttdato(), is(nullValue()));
     }
 
-    private Inntektsinformasjon mapAdditionalInformation(Tilleggsinformasjon additionalInformation, boolean legacyFormat) {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void shouldPreserveMissingAdditionalInformation(boolean legacyFormat) {
+        var result = mapAdditionalInformation(null, legacyFormat);
+
+        assertThat(result.getInntektsliste().getFirst().getTilleggsinformasjon(), is(nullValue()));
+    }
+
+    private Inntektsinformasjon mapAdditionalInformation(RsTilleggsinformasjon additionalInformation, boolean legacyFormat) {
         var context = mappingContext(YearMonth.of(2016, 2), IDENT);
         if (legacyFormat) {
             var source = prepInntektsinformasjon();
@@ -208,8 +216,8 @@ class InntektsinformasjonMappingStrategyTest {
                 .startOpptjeningsperiode(start)
                 .sluttOpptjeningsperiode(slutt)
                 .beskrivelse(BESKRIVELSE)
-                .tilleggsinformasjon(Tilleggsinformasjon.builder()
-                        .bonusFraForsvaret(Tilleggsinformasjon.BonusFraForsvaret.builder()
+                .tilleggsinformasjon(RsTilleggsinformasjon.builder()
+                        .bonusFraForsvaret(RsTilleggsinformasjon.BonusFraForsvaret.builder()
                                 .aaretUtbetalingenGjelderFor(AARET_BETALINGEN_GJELDER_FOR)
                                 .build())
                         .build())

@@ -41,7 +41,7 @@ public class RsInntekt {
             + "'PensjonEllerTrygdeBeskrivelse', 'Naeringsinntektsbeskrivelse'")
     private String beskrivelse;
     @Schema(description = "OBS! kun ett av feltene i tilleggsinformasjon skal være satt")
-    private Tilleggsinformasjon tilleggsinformasjon;
+    private RsTilleggsinformasjon tilleggsinformasjon;
     @Schema(description = "F.eks. antall kilometer i kilometergodtgjørelsen")
     private Double antall;
 
