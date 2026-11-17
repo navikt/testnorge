@@ -1,14 +1,26 @@
 package no.nav.dolly.web.config;
 
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.core.endpoint.PkceParameterNames;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.WebFilterChainProxy;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.List;
@@ -92,5 +104,40 @@ class IdportenSecurityConfigTest {
             builder.claim("acr", acr);
         }
         return IdportenSecurityConfig.idTokenValidator(registration).validate(builder.build());
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldBuildSecurityChainAndRedirectUnauthenticatedNavigationToLoginPage() {
+        var repository = new InMemoryReactiveClientRegistrationRepository(registration);
+        var config = new IdportenSecurityConfig("well-known", "post-logout", new RSAKeyGenerator(2048).generate().toJSONString());
+
+        var chain = config.configure(WebClient.create(), securityWithClientRegistrations(repository), config.pkceResolver(repository));
+
+        assertRedirectsToLoginPage(chain);
+    }
+
+    static ServerHttpSecurity securityWithClientRegistrations(ReactiveClientRegistrationRepository repository) {
+        var context = new GenericApplicationContext();
+        context.registerBean(ReactiveClientRegistrationRepository.class, () -> repository);
+        context.refresh();
+        return new ServerHttpSecurity() {
+            {
+                setApplicationContext(context);
+            }
+        };
+    }
+
+    static void assertRedirectsToLoginPage(SecurityWebFilterChain chain) {
+        WebTestClient
+                .bindToWebHandler(exchange -> Mono.empty())
+                .webFilter(new WebFilterChainProxy(chain))
+                .build()
+                .get()
+                .uri("/gruppe")
+                .accept(MediaType.TEXT_HTML)
+                .exchange()
+                .expectStatus().isFound()
+                .expectHeader().valueEquals(HttpHeaders.LOCATION, "/login");
     }
 }

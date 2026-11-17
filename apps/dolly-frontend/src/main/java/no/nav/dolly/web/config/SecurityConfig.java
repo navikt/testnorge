@@ -1,27 +1,20 @@
 package no.nav.dolly.web.config;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.config.csrf.CsrfProtection;
-import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Configuration
 @Profile({ "prod", "dev", "test" })
 @EnableWebFluxSecurity
-@RequiredArgsConstructor
 class SecurityConfig {
-
-    private final AzureAdResourceServerProperties config;
 
     @Bean
     SecurityWebFilterChain configure(ServerHttpSecurity http) {
@@ -31,20 +24,7 @@ class SecurityConfig {
                         .pathMatchers("/session/**").authenticated()
                         .anyExchange()
                         .permitAll())
-                .oauth2ResourceServer(spec -> spec.jwt(jwtSpec -> jwtDecoder()))
+                .oauth2ResourceServer(spec -> spec.jwt(Customizer.withDefaults()))
                 .build();
     }
-
-    @Bean("jwtDecoder")
-    @Profile("!test")
-    ReactiveJwtDecoder jwtDecoder() {
-        return ReactiveJwtDecoders.fromOidcIssuerLocation(config.getIssuerUri());
-    }
-
-    @Bean("jwtDecoder")
-    @Profile("test")
-    ReactiveJwtDecoder jwtDecoderForTest() {
-        return token -> Mono.empty();
-    }
-
 }

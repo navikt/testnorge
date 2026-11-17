@@ -1,11 +1,8 @@
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnorge-profil-api-dev
+
 spring:
   config:
     import: "sm@"
-  security:
-    oauth2:
-      resourceserver:
-        tokenx:
-          accepted-audience: dev-gcp:dolly:testnorge-profil-api-dev
 
 consumers:
   testnav-altinn3-tilgang-service:

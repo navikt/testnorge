@@ -9,8 +9,6 @@ import lombok.Setter;
 public class Arguments {
     @JsonProperty("audience")
     private String audience;
-    @JsonProperty("subject_token")
-    private String subjectToken;
     @JsonProperty("pid")
     private String pid;
 }

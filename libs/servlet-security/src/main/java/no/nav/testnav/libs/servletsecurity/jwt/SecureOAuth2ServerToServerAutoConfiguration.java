@@ -1,14 +1,14 @@
 package no.nav.testnav.libs.servletsecurity.jwt;
 
-import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
+import no.nav.testnav.libs.securitycore.texas.TexasClient;
+import no.nav.testnav.libs.securitycore.texas.TexasJwtDecoder;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import no.nav.testnav.libs.servletsecurity.action.GetUserJwt;
-import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenXService;
 import no.nav.testnav.libs.servletsecurity.properties.AzureAdResourceServerProperties;
 import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
@@ -16,39 +16,34 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toMap;
 
 @AutoConfiguration
 @Import({
         TokenXResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
-        TokenXService.class,
-        AzureAdTokenService.class,
         TokenExchange.class,
         GetAuthenticatedResourceServerType.class,
         GetAuthenticatedToken.class,
         GetAuthenticatedId.class,
-        TokenXProperties.class,
         GetUserInfo.class,
         GetUserJwt.class,
 })
 public class SecureOAuth2ServerToServerAutoConfiguration {
 
     @Bean
-    @Profile("!test")
     @ConditionalOnMissingBean
-    JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
-        return new MultipleIssuersJwtDecoder(properties);
+    JwtDecoder jwtDecoder(TexasClient texasClient, List<ResourceServerProperties> properties) {
+        var decoder = new TexasJwtDecoder(texasClient, properties
+                .stream()
+                .collect(toMap(
+                        ResourceServerProperties::getIssuerUri,
+                        resourceServer -> resourceServer.getType() == ResourceServerType.TOKEN_X ? TexasClient.TOKENX : TexasClient.ENTRA_ID,
+                        (first, second) -> first)));
+        return token -> decoder.decode(token).block();
     }
-
-    @Bean
-    @Profile("test")
-    @ConditionalOnMissingBean
-    JwtDecoder jwtDecoderForTesting() {
-        return new NoopJwtDecoder();
-    }
-
 }

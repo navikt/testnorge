@@ -4,7 +4,6 @@ spring:
       resourceserver:
         tokenx:
           issuer-uri: http://tokendings:8080
-          accepted-audience: dev-gcp:dolly:testnav-bruker-service
   r2dbc:
     url: r2dbc:postgresql://testnav-bruker-service-db:5432/compose-postgres
     username: compose-postgres

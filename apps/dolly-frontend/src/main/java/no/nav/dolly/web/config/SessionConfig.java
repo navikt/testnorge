@@ -5,15 +5,11 @@ import io.valkey.DefaultJedisClientConfig;
 import io.valkey.Jedis;
 import lombok.SneakyThrows;
 import no.nav.dolly.web.config.session.SingleFlightRefreshAuthorizedClientProvider;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
-import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -40,8 +36,7 @@ import static java.util.Objects.isNull;
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
 @Import({
-        AzureAdTokenExchange.class,
-        TokenXExchange.class,
+        TokenExchange.class,
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
@@ -71,20 +66,6 @@ class SessionConfig {
                 .ssl(true)
                 .build();
         return new Jedis(host, port, config);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    TokenExchange tokenExchange(
-            TokenXExchange tokenXExchange,
-            AzureAdTokenExchange azureAdTokenExchange,
-            ClientRegistrationIdResolver clientRegistrationIdResolver) {
-
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
-
-        tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
-        tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
-        return tokenExchange;
     }
 
     @Bean

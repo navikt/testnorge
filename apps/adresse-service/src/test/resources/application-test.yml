@@ -6,8 +6,6 @@ AZURE_APP_JWK: dummy-jwk
 AZURE_APP_WELL_KNOWN_URL: https://dummy.issuer/.well-known/openid-configuration
 TOKEN_X_ISSUER: https://dummy.tokenx.issuer
 TOKEN_X_CLIENT_ID: dummy-tokenx-client-id
-TOKEN_X_WELL_KNOWN_URL: https://dummy.tokenx.issuer/.well-known/oauth-authorization-server
-TOKEN_X_PRIVATE_JWK: dummy-private-jwk
 
 spring:
   security:

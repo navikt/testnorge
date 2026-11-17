@@ -21,12 +21,9 @@ class RouteLocatorConfig {
     @Value("${NAIS_TOKEN_EXCHANGE_ENDPOINT}")
     private String tokenExchangeEndpoint;
 
-    @Value("${NAIS_TOKEN_INTROSPECTION_ENDPOINT}")
-    private String tokenIntrospectionEndpoint;
-
     @PostConstruct
     void postConstruct() {
-        log.info("Configured using:\n\tNAIS_TOKEN_ENDPOINT = {}\n\tNAIS_TOKEN_EXCHANGE_ENDPOINT = {}\n\tNAIS_TOKEN_INTROSPECTION_ENDPOINT = {}", tokenEndpoint, tokenExchangeEndpoint, tokenIntrospectionEndpoint);
+        log.info("Configured using:\n\tNAIS_TOKEN_ENDPOINT = {}\n\tNAIS_TOKEN_EXCHANGE_ENDPOINT = {}", tokenEndpoint, tokenExchangeEndpoint);
     }
 
     @Bean("texasRouteLocator")
@@ -40,9 +37,6 @@ class RouteLocatorConfig {
                 .route(r -> r
                         .path("/api/v1/token/exchange")
                         .uri(tokenExchangeEndpoint))
-                .route(r -> r
-                        .path("/api/v1/introspect")
-                        .uri(tokenIntrospectionEndpoint))
                 .build();
     }
 

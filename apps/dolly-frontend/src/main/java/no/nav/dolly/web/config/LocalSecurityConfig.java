@@ -45,8 +45,8 @@ class LocalSecurityConfig {
                         ).permitAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
-                        .authenticationSuccessHandler(authenticationSuccessHandler))
-                .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN))
+                        .authenticationSuccessHandler(authenticationSuccessHandler)
+                        .loginPage(LOGIN))
                 .logout(logoutSpec -> logoutSpec
                         .logoutUrl(LOGOUT)
                         .logoutSuccessHandler(logoutSuccessHandler))

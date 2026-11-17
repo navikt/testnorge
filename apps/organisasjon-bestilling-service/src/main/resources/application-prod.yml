@@ -18,7 +18,6 @@ spring:
       resourceserver:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 testnorge:
   analyse:

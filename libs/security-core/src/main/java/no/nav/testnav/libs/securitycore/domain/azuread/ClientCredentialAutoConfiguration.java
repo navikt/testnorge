@@ -14,15 +14,8 @@ public class ClientCredentialAutoConfiguration {
     private static final String TEST_CLIENT_ID = "test-client-id";
     private static final String TEST_CLIENT_SECRET = "test-client-secret";
 
-    @Primary
     @Bean
-    @Profile("test")
-    AzureClientCredential azureClientCredentialTest() {
-        return new AzureClientCredential(TEST_TOKEN_ENDPOINT, TEST_CLIENT_ID, TEST_CLIENT_SECRET);
-    }
-
-    @Bean
-    @ConditionalOnDollyApplicationConfiguredForAzure
+    @Profile({"local", "localdb"})
     @ConditionalOnMissingBean(AzureClientCredential.class)
     AzureClientCredential azureClientCredential(
             @Value("${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}") String azureTokenEndpoint,
