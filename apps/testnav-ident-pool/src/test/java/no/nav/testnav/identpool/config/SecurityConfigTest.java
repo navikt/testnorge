@@ -68,7 +68,7 @@ class SecurityConfigTest {
         when(personnummerValidatorService.validerFoedselsnummer(List.of(ident))).thenReturn(Flux.empty());
 
         webTestClient.post()
-                .uri("/api/v2/ident/validerFlere")
+                .uri("/api/v2/ident/validerflere")
                 .bodyValue(new ValideringFlereRequestDTO(ident))
                 .exchange()
                 .expectStatus().isOk()
@@ -82,8 +82,7 @@ class SecurityConfigTest {
     @CsvSource({
             "POST, /api/v2/ident/rekvirer",
             "DELETE, /api/v2/ident/frigjoer/14505899947",
-            "GET, /api/v2/ident/validerFlere",
-            "POST, /api/v2/ident/validerflere"
+            "GET, /api/v2/ident/validerflere"
     })
     void shouldRequireAuthenticationForOtherRequests(String method, String path) {
         webTestClient.method(HttpMethod.valueOf(method))
