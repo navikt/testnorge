@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 @DollySpringBootTest
 class IdentValidatorControllerTest extends AbstractTestcontainer {
 
-    private static final String VALIDATION_URL = "/api/v2/ident/validerFlere";
+    private static final String VALIDATION_URL = "/api/v2/ident/validerflere";
 
     @Autowired
     private WebTestClient webTestClient;

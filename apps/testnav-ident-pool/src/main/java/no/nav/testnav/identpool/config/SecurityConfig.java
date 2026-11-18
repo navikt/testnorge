@@ -23,7 +23,7 @@ class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> {
                     exchanges.pathMatchers(
-                            HttpMethod.POST, "/api/v2/ident/validerFlere"
+                            HttpMethod.POST, "/api/v2/ident/validerflere"
                     ).permitAll();
                     DollyServerHttpSecurity.withDefaultHttpRequests()
                             .customize(exchanges);
