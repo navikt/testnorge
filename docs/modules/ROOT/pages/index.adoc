@@ -23,7 +23,7 @@ Med Dolly kan utviklingsteam raskt og enkelt opprette realistiske testpersoner m
 
 Dolly er et verktøy som gjør det mulig å:
 
-* *Opprette syntetiske personer* med fødselsnummer, navn, adresse og demografiske data
+* *Opprette syntetiske personer* med fødselsnummer, navn, adresse og demografiske data (alder, kjønn, sivilstatus, etc.)
 * *Definere egenskaper og relasjoner* som arbeidsforhold, inntekt, familiemedlemmer, ytelser og mer
 * *Deploy til testmiljøer* – distribuer testpersonene til valgte testmiljøer (Q1, Q2, etc.)
 * *Gjenbruke testdata* – lagre bestillinger som maler for senere bruk
@@ -62,35 +62,46 @@ Har du spørsmål? Se xref:index.adoc#faq[Ofte stilte spørsmål (FAQ)] eller ko
 Et omfattende eksempel på bestilling av tilgang til Dolly samt bruk av Dolly er tilgjengelig på team helsearbeidsgiver sine docs: https://github.com/navikt/sykepenger-im-lps-api/wiki/Testdata
 
 [[brukerveiledning]]
-=== Brukerveiledning
+== Brukerveiledning
 
 I Dolly kan du opprette syntetiske personer med forskjellige egenskaper og tilgjengeliggjøre dataene i valgte testmiljøer.
 Følg veiledningen under for å komme i gang.
 
 [[palogging]]
-==== Pålogging
+=== Pålogging
+==== Pålogging internt
 
-Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet.
-Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
+Dolly benytter seg av Single Sign On (SSO) som betyr at du automatisk er pålogget når du allerede er innloget hos Nav.
+Motsatt blir du krevd for Nav-pålogging hvis dette mangler.
 
-Det første som møter deg når du har logget inn er en startside med noen menyvalg.
-Siden åpnes automatisk med en oversikt over dine grupper.
+==== Pålogging eksternt
 
-image::dolly/startside.png[Startside]
+Dolly støtter BankID pålogging for eksterne brukere. Betingelsen er at organisasjonen den eksterne brukeren tilhører har
+fått Dolly-tilgang ved forspørsel på dolly@nav.no. I tillegg må den ekstren brukeren være tildelt Altinn-rollen #Navs Dolly
+for samarbeidspartnere#. Rollen kan kun tildeles av Altinn-ansvarlig i den eksterne organisasjonen.
 
+[[Førstegangsbruk]]
+=== Førstegangsbruk
 Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter.
 Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
 
 image::dolly/varslinger.png[Varslinger]
 
+[[startside]]
+=== Startside
+Det første som møter deg når du har logget inn er en startside med noen menyvalg.
+Siden åpnes automatisk med en oversikt over dine grupper.
+
+image::dolly/startside.png[Startside]
+
 [[opprette_gruppe]]
-==== Opprette en ny gruppe
+=== Opprette en ny gruppe
 
 For å opprette nye syntetiske personer i Dolly kan du enten lage en ny gruppe eller legge til personer i en eksisterende gruppe.
 En gruppe inneholder personer du eller teamet har opprettet.
 
-Under Mine vises grupper opprettet av deg selv.
-Under Alle vises dine og andres grupper.
+Under #Mine# vises grupper opprettet av deg selv.
+Under #Alle# vises dine og andres grupper. Her kan du stjernemarkere andre sine grupper og disse vil da vises under #Favoritter#.
 En god regel er at du ikke endrer andres grupper uten avtale med eieren.
 
 Trykk på Ny gruppe og velg navn og beskriv hensikten med gruppen.
@@ -99,17 +110,23 @@ Trykk Opprett og gå til gruppe.
 
 image::dolly/testdatagrupper.png[Testdatagrupper]
 
+[[legge_til_personer_i_en_gruppe]]
+==== Legge til personer i en gruppe
 Inne på gruppen har du en oversikt over alle personene som tilhører gruppen og hvilke egenskaper de har.
-Her kan du også legge til nye personer.
+Her kan du velge #Opprett personer# for å lage nye Nav-syntetiske personer, eller #Importer personer# for å gjøre et Tenor-søk
+og importere Test-Norge-personer fra Skatteetaten. Bemerk at brukere med BankID-pålogging er begrenset til import fra Test-Norge
+kun slik at referanser er gyldig på tvers av organisasjonene.
 
 image::dolly/ny_testdatagruppe.png[Ny testdatagruppe]
 
+==== Opprett personer
 Det kommer opp en boks der du får to valg:
 
-. Opprette helt nye personer (Dolly finner et ubrukt fnr, dnr eller bost)
-. Opprette fra eksisterende fnr, dnr eller bost (identen kan ikke finnes i prod eller i Dolly)
+. Opprette helt nye personer (Dolly finner et ubrukt FNR, DNR eller NPID basert på indikert identtype)
+. Opprette fra eksisterende FNR, DNR eller NPID (identen kan ikke finnes i prod eller i Dolly fra før), dette blir det
+gjort sjekk for før man går videre.
 
-Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
+Vi velger å opprette nye og angir at vi ønsker 5 personer i bestillingen.
 
 Opprettelse av personer følger en prosess med fire steg:
 
@@ -118,7 +135,10 @@ image::dolly/opprettelse_prosess.png[Opprettelse prosess]
 . Angi identtype, antall identer og hvilken gruppe disse skal havne i.
 . Velg hvilke egenskaper du selv ønsker å bestemme.
 De resterende egenskapene vil systemet sette.
-. Angi verdier på egenskapene du valgte i steg 1.
+Det kan være greit å vite at en person med FNR automatisk vil få fødselsnummer, navn, kjønn, fødested, fødselsdato,
+sivilstatus, bostedsadresse, statsborgerskap og folkeregister personstatus=bosatt.
+. Angi verdier på egenskapene du valgte i steg 2.
+Ønskes det spesifikke verdier for overnevnte personegenskaper kan disse angis og erstatter tilfeldige verdier fra systemet.
 . Oppsummering og valg av hvilke testmiljø personene skal sendes til.
 
 
@@ -144,22 +164,26 @@ I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av f
 
 image::dolly/valgt_egenskap.png[Valgt egenskap]
 
-Team Dolly videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende.
+Vi videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende etter ønske og behov.
 Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives/CA3P9NGA2[#dolly].
 
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
 
-For mer informasjon om Navs testmiljøer se: https://confluence.adeo.no/pages/viewpage.action?pageId=305341700
+Ikke alle miljø er tilgjengelig for Dolly; vårt hovedmiljø er det helsyntetiske Q2-miljøet. Vi støtter også Q1 som
+inneholder en blanding av syntetiske og prodlike maskerte data. Det siste er nødvendig fordi Navs Infotrygd på stormaskin
+ikke støtter syntetiske fødselsnumre. Av samme grunn er det verdt å nevne at registre for sykemelding og arbeidssøker
+som også konsumeres av Infotrygd kun finnes i Q1. Q4 støttes og benyttes unntaksvis av AAREG og ARENA; tilgjengelighet
+på miljøet kan være begrenset. For mer informasjon se link:https://confluence.adeo.no/pages/viewpage.action?pageId=305341700[Navs testmiljøer].
 
 image::dolly/miljoe_valg.png[Miljøvalg]
 
-Velg miljø, og opprett en mal dersom denne bestillingen skal gjentas senere.
-Kommentar kan brukes til å gjenkjenne identen senere, da denne vil vises ved hover i personlisten.
+Velg miljø, og opprett en mal dersom denne bestilling ønskes gjentatt ved en annen anledning. Mal kan også opprettes i
+etterkant, fra bestilling eller fra person og da vil malen innholde samtlige oppdateringer på personen.
 
 image::dolly/opprettet_gruppe.png[Opprettet gruppe]
 
 Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer.
-Trykk på pil ned til høyre på raden for detaljinformasjon per person.
+Trykk på personfanen for å ekspandere denne og vise detaljer på personen.
 
 [[leggtil_endre_person]]
 ==== Legg til eller endre person
