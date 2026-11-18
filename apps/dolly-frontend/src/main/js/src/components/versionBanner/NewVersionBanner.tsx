@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, GlobalAlert, HStack, InfoCard } from '@navikt/ds-react'
-import { CheckmarkCircleFillIcon, XMarkIcon } from '@navikt/aksel-icons'
+import { Button, GlobalAlert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
@@ -89,20 +88,12 @@ export const AppBanner = () => {
 				</StyledGlobalAlert>
 			)}
 			{showRestored && (
-				<InfoCard data-color="success">
-					<InfoCard.Message icon={<CheckmarkCircleFillIcon aria-hidden />}>
-						<HStack justify="space-between" align="center" wrap={false} gap="space-8">
-							Endringene dine ble gjenopprettet!
-							<Button
-								variant="tertiary"
-								data-color="neutral"
-								size="small"
-								icon={<XMarkIcon title="Lukk" />}
-								onClick={() => setShowRestored(false)}
-							/>
-						</HStack>
-					</InfoCard.Message>
-				</InfoCard>
+				<StyledGlobalAlert status="success">
+					<GlobalAlert.Header>
+						<GlobalAlert.Title as="h2">Endringene dine ble gjenopprettet!</GlobalAlert.Title>
+						<GlobalAlert.CloseButton onClick={() => setShowRestored(false)} />
+					</GlobalAlert.Header>
+				</StyledGlobalAlert>
 			)}
 		</StickyAlertWrapper>
 	)
@@ -128,7 +119,7 @@ const StyledGlobalAlert = styled(GlobalAlert)`
 
 	.aksel-base-alert__close-button {
 		position: absolute;
-		right: 0;
+		right: 1rem;
 		top: 0;
 	}
 `
