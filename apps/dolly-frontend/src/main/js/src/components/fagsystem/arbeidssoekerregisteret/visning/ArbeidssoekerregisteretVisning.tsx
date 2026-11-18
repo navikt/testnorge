@@ -2,7 +2,6 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import Loading from '@/components/ui/loading/Loading'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { Logger } from '@/logger/Logger'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, formatDateTime, oversettBoolean } from '@/utils/DataFormatter'
@@ -10,6 +9,8 @@ import { useArbeidssoekerTyper } from '@/utils/hooks/useArbeidssoekerregisteret'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import type { ArbeidssoekerregisteretTypes } from '@/components/fagsystem/arbeidssoekerregisteret/arbeidssoekerregisteretTypes'
 import { ArbeidssoekerregisteretStopp } from '@/components/fagsystem/arbeidssoekerregisteret/visning/ArbeidssoekerregisteretStopp'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 type ArbeidssoekerregisteretVisning = {
 	data?: ArbeidssoekerregisteretTypes
@@ -68,9 +69,11 @@ export const ArbeidssoekerregisteretVisning = ({
 		return (
 			<div>
 				<SubOverskrift label="Arbeidssøkerregisteret" iconKind="cv" />
-				<StyledAlert variant={'info'} size={'small'}>
-					Registrering som arbeidssøker er stoppet.
-				</StyledAlert>
+				<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+						Registrering som arbeidssøker er stoppet.
+					</InfoCard.Message>
+				</InfoCard>
 			</div>
 		)
 	}

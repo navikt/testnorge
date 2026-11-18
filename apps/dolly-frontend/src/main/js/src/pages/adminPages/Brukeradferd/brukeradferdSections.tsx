@@ -1,5 +1,4 @@
 import {
-	Alert,
 	BodyShort,
 	Box,
 	Button,
@@ -7,6 +6,7 @@ import {
 	Heading,
 	HGrid,
 	HStack,
+	InlineMessage,
 	ReadMore,
 	Table,
 	VStack,
@@ -47,11 +47,7 @@ const TomPeriode = ({
 	melding = 'Ingen bestillinger med fagsystemvalg i valgt periode.',
 }: {
 	melding?: string
-}) => (
-	<Alert variant="info" inline>
-		{melding}
-	</Alert>
-)
+}) => <InlineMessage status="info">{melding}</InlineMessage>
 
 const LasterStatistikk = () => <DollySpinner size={120} label="Laster statistikk..." />
 
@@ -166,9 +162,7 @@ export const BrukeradferdPanel = ({
 					{isLoading ? (
 						<LasterStatistikk />
 					) : !harPerioder ? (
-						<Alert variant="info" inline>
-							Ingen perioder tilgjengelig.
-						</Alert>
+						<InlineMessage status="info">Ingen perioder tilgjengelig.</InlineMessage>
 					) : (
 						<>
 							<PeriodeVelger
@@ -494,9 +488,9 @@ export const ValgtPunktSection = ({
 					/>
 				)}
 				{valgtPunktTotaler.length === 0 ? (
-					<Alert variant="info" inline>
+					<InlineMessage status="info">
 						Ingen fagsystemvalg registrert for valgt {enhet}.
-					</Alert>
+					</InlineMessage>
 				) : (
 					<FagsystemTabell
 						totaler={valgtPunktTotaler}

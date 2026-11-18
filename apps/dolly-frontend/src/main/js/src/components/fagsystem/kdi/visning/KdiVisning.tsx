@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Loading from '@/components/ui/loading/Loading'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -122,9 +122,9 @@ export const KdiVisning = ({ data, loading, harKdiBestilling }: KdiVisningProps)
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ingen KDI-meldinger på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					<DollyFieldArray

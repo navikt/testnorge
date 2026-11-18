@@ -1,7 +1,7 @@
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
@@ -123,9 +123,9 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisningProps) =>
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke skattekort-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					<MiljoTabs

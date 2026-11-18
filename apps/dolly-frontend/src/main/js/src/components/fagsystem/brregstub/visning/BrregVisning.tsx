@@ -4,7 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { formatStringDates, oversettBoolean } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 
 export const sjekkManglerBrregData = (brregData) => {
 	return (
@@ -31,9 +31,9 @@ export const BrregVisning = ({ data, loading }) => {
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke Brreg-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<div className="person-visning_content">
 					<TitleValue

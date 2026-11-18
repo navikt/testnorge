@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Alert, Box, Button, Textarea } from '@navikt/ds-react'
+import { Box, Button, InfoCard, Textarea } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { InfoStripeType, useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -55,7 +56,13 @@ export const EditInfostripeForm: React.FC<Props> = ({ stripe, onDone }) => {
 				onSubmit={methods.handleSubmit(onSubmit)}
 				style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
 			>
-				{serverError && <Alert variant="error">{serverError}</Alert>}
+				{serverError && (
+					<InfoCard data-color="danger">
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							{serverError}
+						</InfoCard.Message>
+					</InfoCard>
+				)}
 
 				<DollySelect
 					isClearable={false}

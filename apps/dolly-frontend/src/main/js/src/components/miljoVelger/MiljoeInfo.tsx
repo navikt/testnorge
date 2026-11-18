@@ -1,4 +1,3 @@
-import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
 	useDokarkivEnvironments,
@@ -6,8 +5,9 @@ import {
 	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 import { arrayToString } from '@/utils/DataFormatter'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { filterMiljoe } from '@/components/miljoVelger/MiljoVelgerUtils'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 const SKATTEKORT_MILJOER = ['q1', 'q2']
 
@@ -68,82 +68,88 @@ export const MiljoeInfo = ({
 
 	return (
 		<>
-			<StyledAlert variant={'info'} size={'small'}>
-				Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
-				egenskaper må derfor ett eller flere av miljøene under velges:
-				<ul style={{ margin: '7px 0' }}>
-					{arenaforvalter && (
-						<li>
-							Arena:&nbsp;
-							<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
-						</li>
-					)}
-					{dokarkiv && (
-						<li>
-							Dokarkiv:&nbsp;
-							<span>{getMiljoer(dokarkivEnvironments, loadingDokarkiv, errorDokarkiv)}</span>
-						</li>
-					)}
-					{instdata && (
-						<li>
-							Institusjonsopphold:&nbsp;
-							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
-						</li>
-					)}
-					{instdataKdi && (
-						<li>
-							KDI-meldinger:&nbsp;
-							<span>{getMiljoer(kdiEnvironments, loadingInst, errorInst)}</span>
-						</li>
-					)}
-					{(pensjonforvalter?.inntekt ||
-						pensjonforvalter?.tp ||
-						pensjonforvalter?.alderspensjon) && (
-						<li>
-							Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
-							{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
-							{pensjonforvalter?.tp && 'TP'}
-							{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) &&
-								pensjonforvalter?.alderspensjon &&
-								', '}
-							{pensjonforvalter?.alderspensjon && 'PESYS'}
-							):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
-						</li>
-					)}
-					{pensjonforvalter?.uforetrygd && (
-						<li>
-							Uføretrygd:&nbsp;
-							<span>{getMiljoer(pensjonEnvironments)}</span>
-						</li>
-					)}
-					{pensjonforvalter?.pensjonsavtale && (
-						<li>
-							Pensjonsavtale (PEN):&nbsp;
-							<span>{getMiljoer(pensjonEnvironments)}</span>
-						</li>
-					)}
-					{skattekort && (
-						<li>
-							Skattekort:&nbsp;
-							<span>{getMiljoer(SKATTEKORT_MILJOER)}</span>
-						</li>
-					)}
-				</ul>
-			</StyledAlert>
+			<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+				<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+					Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
+					egenskaper må derfor ett eller flere av miljøene under velges:
+					<ul style={{ margin: '7px 0' }}>
+						{arenaforvalter && (
+							<li>
+								Arena:&nbsp;
+								<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
+							</li>
+						)}
+						{dokarkiv && (
+							<li>
+								Dokarkiv:&nbsp;
+								<span>{getMiljoer(dokarkivEnvironments, loadingDokarkiv, errorDokarkiv)}</span>
+							</li>
+						)}
+						{instdata && (
+							<li>
+								Institusjonsopphold:&nbsp;
+								<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
+							</li>
+						)}
+						{instdataKdi && (
+							<li>
+								KDI-meldinger:&nbsp;
+								<span>{getMiljoer(kdiEnvironments, loadingInst, errorInst)}</span>
+							</li>
+						)}
+						{(pensjonforvalter?.inntekt ||
+							pensjonforvalter?.tp ||
+							pensjonforvalter?.alderspensjon) && (
+							<li>
+								Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
+								{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
+								{pensjonforvalter?.tp && 'TP'}
+								{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) &&
+									pensjonforvalter?.alderspensjon &&
+									', '}
+								{pensjonforvalter?.alderspensjon && 'PESYS'}
+								):&nbsp;
+								<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+							</li>
+						)}
+						{pensjonforvalter?.uforetrygd && (
+							<li>
+								Uføretrygd:&nbsp;
+								<span>{getMiljoer(pensjonEnvironments)}</span>
+							</li>
+						)}
+						{pensjonforvalter?.pensjonsavtale && (
+							<li>
+								Pensjonsavtale (PEN):&nbsp;
+								<span>{getMiljoer(pensjonEnvironments)}</span>
+							</li>
+						)}
+						{skattekort && (
+							<li>
+								Skattekort:&nbsp;
+								<span>{getMiljoer(SKATTEKORT_MILJOER)}</span>
+							</li>
+						)}
+					</ul>
+				</InfoCard.Message>
+			</InfoCard>
 			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (
-				<Alert variant={'info'} style={{ marginTop: 20 }}>
-					Innsending av testdata til pensjon er for øyeblikket ikke støttet i Q4, bestillingen vil
-					bli sendt til Q1 <br />
-				</Alert>
+				<InfoCard data-color="info" style={{ marginTop: 20 }}>
+					<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+						Innsending av testdata til pensjon er for øyeblikket ikke støttet i Q4, bestillingen vil
+						bli sendt til Q1 <br />
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			{skattekort &&
 				bestillingsdata?.environments?.length > 0 &&
 				bestillingsdata?.environments?.every((env) => env === 'q4') && (
-					<Alert variant={'info'} style={{ marginTop: 20 }}>
-						Innsending av skattekort er for øyeblikket ikke støttet i Q4, bestillingen vil bli sendt
-						til Q2.
-					</Alert>
+					<InfoCard data-color="info" style={{ marginTop: 20 }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Innsending av skattekort er for øyeblikket ikke støttet i Q4, bestillingen vil bli
+							sendt til Q2.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 		</>
 	)

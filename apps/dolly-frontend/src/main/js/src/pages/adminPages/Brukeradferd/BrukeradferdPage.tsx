@@ -1,4 +1,3 @@
-import { Alert, BodyShort, VStack } from '@navikt/ds-react'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { DashboardHeaderActions } from '@/pages/adminPages/Dashboard/dashboardSharedComponents'
 import '@/pages/adminPages/Dashboard/dashboardHighchartsSetup'
@@ -13,6 +12,8 @@ import {
 	ValgtPunktSection,
 } from './brukeradferdSections'
 import { useBrukeradferdData } from './useBrukeradferdData'
+import { BodyShort, InfoCard, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 const erDevDashboardMode = () =>
 	typeof window !== 'undefined' &&
@@ -41,14 +42,18 @@ const BrukeradferdInnhold = () => {
 				)}
 
 				{data.oversiktError && (
-					<Alert variant="error">
-						Klarte ikke å hente tilgjengelige perioder: {data.oversiktError.message}
-					</Alert>
+					<InfoCard data-color="danger">
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							Klarte ikke å hente tilgjengelige perioder: {data.oversiktError.message}
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{data.brukeradferdError && (
-					<Alert variant="error">
-						Klarte ikke å hente brukeradferd: {data.brukeradferdError.message}
-					</Alert>
+					<InfoCard data-color="danger">
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							Klarte ikke å hente brukeradferd: {data.brukeradferdError.message}
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 
 				<BrukeradferdPanel

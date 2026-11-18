@@ -11,7 +11,8 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import ConfettiExplosion from 'react-confetti-explosion'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 const StyledConfettiExplosion = styled(ConfettiExplosion)`
 	align-items: center;
@@ -118,9 +119,11 @@ export default function BestillingResultat({
 						{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 						{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 						{bestilling.stoppet && (
-							<Alert variant="warning" size="small" style={{ marginBottom: '15px' }}>
-								Bestillingen er stoppet
-							</Alert>
+							<InfoCard data-color="warning" size="small" style={{ marginBottom: '15px' }}>
+								<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+									Bestillingen er stoppet
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						<FeedbackWrapper>
 							<Feedback

@@ -6,7 +6,7 @@ import { harGyldigTransaksjonsid } from '@/components/transaksjonid/GyldigeBesti
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { mergeMiljoData } from '@/components/ui/miljoTabs/utils'
 
@@ -102,9 +102,9 @@ export const InntektsmeldingVisning = ({
 		<>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
 			{manglerFagsystemData ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke inntektsmelding-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer as any}

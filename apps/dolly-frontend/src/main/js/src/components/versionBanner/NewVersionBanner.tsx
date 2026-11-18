@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Alert, Button, GlobalAlert } from '@navikt/ds-react'
+import { Button, GlobalAlert, HStack, InfoCard } from '@navikt/ds-react'
+import { CheckmarkCircleFillIcon, XMarkIcon } from '@navikt/aksel-icons'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
@@ -88,9 +89,20 @@ export const AppBanner = () => {
 				</StyledGlobalAlert>
 			)}
 			{showRestored && (
-				<Alert variant="success" closeButton onClose={() => setShowRestored(false)}>
-					Endringene dine ble gjenopprettet!
-				</Alert>
+				<InfoCard data-color="success">
+					<InfoCard.Message icon={<CheckmarkCircleFillIcon aria-hidden />}>
+						<HStack justify="space-between" align="center" wrap={false} gap="space-8">
+							Endringene dine ble gjenopprettet!
+							<Button
+								variant="tertiary"
+								data-color="neutral"
+								size="small"
+								icon={<XMarkIcon title="Lukk" />}
+								onClick={() => setShowRestored(false)}
+							/>
+						</HStack>
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 		</StickyAlertWrapper>
 	)

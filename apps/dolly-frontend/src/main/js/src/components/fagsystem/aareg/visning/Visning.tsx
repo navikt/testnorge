@@ -14,8 +14,8 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { getFagsystemTimeoutTitle } from '@/components/fagsystem/utils'
+import { InlineMessage } from '@navikt/ds-react'
 
 type AaregVisningProps = {
 	ident?: string
@@ -184,13 +184,13 @@ export const AaregVisning = ({
 				}
 			/>
 			{arbeidsforholdFeil?.feil && manglerArbeidsforholdData ? (
-				<StyledAlert variant={'warning'} size={'small'} inline>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					{arbeidsforholdFeil?.feil?.message}
-				</StyledAlert>
+				</InlineMessage>
 			) : manglerArbeidsforholdData ? (
-				<StyledAlert variant={'warning'} size={'small'} inline>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke arbeidsforhold-data på person
-				</StyledAlert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					<MiljoTabs

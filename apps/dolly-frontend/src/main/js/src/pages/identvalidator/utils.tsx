@@ -1,5 +1,5 @@
 import { isBoolean } from 'lodash-es'
-import { Alert, HStack } from '@navikt/ds-react'
+import { HStack, InlineMessage } from '@navikt/ds-react'
 import { oversettBoolean } from '@/utils/DataFormatter'
 import { IdentDataProps } from '@/pages/identvalidator/IdentvalidatorVisningTable'
 
@@ -16,9 +16,7 @@ export const IconComponent = ({ isValid, iconType }: IconComponentProps) => {
 			{oversettBoolean(isValid)}
 		</HStack>
 	) : (
-		<Alert variant={iconType} inline>
-			{oversettBoolean(isValid)}
-		</Alert>
+		<InlineMessage status={iconType}>{oversettBoolean(isValid)}</InlineMessage>
 	)
 }
 

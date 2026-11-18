@@ -17,13 +17,13 @@ import { TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { Alert, ToggleGroup } from '@navikt/ds-react'
+import { InfoCard, ToggleGroup } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon, InformationSquareFillIcon } from '@navikt/aksel-icons'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface ForelderForm {
 	formMethods: UseFormReturn
@@ -202,10 +202,12 @@ export const ForelderBarnRelasjonForm = ({
 				getForelderBarnType() === 'EKSISTERENDE' &&
 				!ident &&
 				!formMethods.getValues().pdldata?.opprettNyPerson?.alder && (
-					<StyledAlert variant={'warning'} size={'small'}>
-						Ved "Eksisterende person" må alder oppgis på hovedpersonen: Gå tilbake til "Velg
-						egenskaper", huk av for alder og sett en verdi så aldersforskjell blir minst 18 år.
-					</StyledAlert>
+					<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							Ved "Eksisterende person" må alder oppgis på hovedpersonen: Gå tilbake til "Velg
+							egenskaper", huk av for alder og sett en verdi så aldersforskjell blir minst 18 år.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 			{(testnorgePerson || getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE) && (
 				<PdlEksisterendePerson
@@ -231,27 +233,31 @@ export const ForelderBarnRelasjonForm = ({
 
 			{!path?.includes('pdldata') && erBarn && formMethods.watch('harDeltBosted') && (
 				<div className="flexbox--full-width">
-					<Alert
-						variant={'info'}
+					<InfoCard
+						data-color="info"
 						size={'small'}
 						style={{ marginTop: '10px', marginBottom: '15px' }}
 					>
-						Delt bosted kan endres direkte på barnet. For å gjøre dette må barnet importeres til
-						Dolly, via knapp øverst på denne personen.
-					</Alert>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Delt bosted kan endres direkte på barnet. For å gjøre dette må barnet importeres til
+							Dolly, via knapp øverst på denne personen.
+						</InfoCard.Message>
+					</InfoCard>
 				</div>
 			)}
 
 			{!path?.includes('pdldata') && formMethods.watch('harForeldreansvar') && (
 				<div className="flexbox--full-width">
-					<Alert
-						variant={'info'}
+					<InfoCard
+						data-color="info"
 						size={'small'}
 						style={{ marginTop: '10px', marginBottom: '15px' }}
 					>
-						Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importeres til
-						Dolly, via knapp øverst på denne personen.
-					</Alert>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importeres
+							til Dolly, via knapp øverst på denne personen.
+						</InfoCard.Message>
+					</InfoCard>
 				</div>
 			)}
 

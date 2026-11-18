@@ -1,4 +1,3 @@
-import { Alert, BodyShort, Box, Heading, HGrid, VStack } from '@navikt/ds-react'
 import { type ReactNode, useId } from 'react'
 import { type Options } from 'highcharts'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
@@ -20,6 +19,8 @@ import {
 	type PersonFordeling,
 } from './brukerStatistikkUtils'
 import { PeriodeVelger } from './PeriodeVelger'
+import { BodyShort, Box, Heading, HGrid, InfoCard, InlineMessage, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 const PersonKpiRad = ({ fordeling }: { fordeling: PersonFordeling & { nyePersoner: number } }) => (
 	<HGrid columns={{ xs: 1, sm: 3 }} gap="space-12">
@@ -109,10 +110,12 @@ export const PeriodeSection = ({
 						onVisningChange={onVisningChange}
 					/>
 					{detaljerFeil && (
-						<Alert variant="error">
-							Klarte ikke å hente detaljer for {visning === 'aar' ? 'valgt år' : 'valgt måned'}:{' '}
-							{detaljerFeil.message}
-						</Alert>
+						<InfoCard data-color="danger">
+							<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+								Klarte ikke å hente detaljer for {visning === 'aar' ? 'valgt år' : 'valgt måned'}:{' '}
+								{detaljerFeil.message}
+							</InfoCard.Message>
+						</InfoCard>
 					)}
 					{visning === 'aar' && aarSammendrag ? (
 						<VStack gap="space-8">
@@ -183,9 +186,7 @@ export const ChartSection = ({
 			{isLoading ? (
 				<DollySpinner size={120} label="Laster statistikk..." />
 			) : !harData ? (
-				<Alert variant="info" inline>
-					{emptyStateMessage}
-				</Alert>
+				<InlineMessage status="info">{emptyStateMessage}</InlineMessage>
 			) : (
 				<DashboardChartPanel options={chartOptions} ariaLabel={ariaLabel} />
 			)}
@@ -226,9 +227,7 @@ export const FagsystemDetaljerSection = ({
 			{isLoading ? (
 				<DollySpinner size={120} label="Laster statistikk..." />
 			) : fagsystemOptions.length === 0 ? (
-				<Alert variant="info" inline>
-					Ingen detaljer tilgjengelig for valgt måned.
-				</Alert>
+				<InlineMessage status="info">Ingen detaljer tilgjengelig for valgt måned.</InlineMessage>
 			) : (
 				<>
 					<DashboardSelectButtons

@@ -1,6 +1,6 @@
-import { Alert, Tabs } from '@navikt/ds-react'
 import styled from 'styled-components'
 import React, { useState } from 'react'
+import { InlineMessage, Tabs } from '@navikt/ds-react'
 
 const StyledTabs = styled(Tabs)`
 	margin-top: -10px;
@@ -68,9 +68,9 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					{!miljoData?.data ||
 					miljoData?.data?.length < 1 ||
 					miljoData?.data?.inntekter?.length === 0 ? (
-						<Alert variant="info" size="small" inline>
+						<InlineMessage status="info" size="small">
 							{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
-						</Alert>
+						</InlineMessage>
 					) : (
 						React.cloneElement(children, {
 							data: miljoData?.data,

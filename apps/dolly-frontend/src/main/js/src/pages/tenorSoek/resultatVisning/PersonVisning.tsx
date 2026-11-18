@@ -1,4 +1,3 @@
-import { Alert, Box } from '@navikt/ds-react'
 import React from 'react'
 import * as _ from 'lodash-es'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
@@ -13,6 +12,8 @@ import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/Skatteme
 import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
 import { BeregnetSkattVisning } from '@/pages/tenorSoek/resultatVisning/BeregnetSkattVisning'
 import { SummertSkattegrunnlagVisning } from '@/pages/tenorSoek/resultatVisning/SummertSkattegrunnlagVisning'
+import { Box, InfoCard } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 type PersonVisningProps = {
 	person: any
@@ -42,7 +43,13 @@ export const PersonVisning = ({ person, ident, iBruk, loading, error }: PersonVi
 	}
 
 	if (error) {
-		return <Alert variant="error">{`Feil ved henting av person: ${error}`}</Alert>
+		return (
+			<InfoCard data-color="danger">
+				<InfoCard.Message
+					icon={<XMarkOctagonFillIcon aria-hidden />}
+				>{`Feil ved henting av person: ${error}`}</InfoCard.Message>
+			</InfoCard>
+		)
 	}
 
 	if (!person) {

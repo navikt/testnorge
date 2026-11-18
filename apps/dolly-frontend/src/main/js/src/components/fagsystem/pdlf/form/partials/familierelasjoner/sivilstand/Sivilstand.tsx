@@ -18,9 +18,10 @@ import {
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { isAfter } from 'date-fns'
 import { formatDate } from '@/utils/DataFormatter'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 interface SivilstandFormTypes {
 	formMethods: UseFormReturn
@@ -165,9 +166,11 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	return (
 		<>
 			{alderspensjonAlert && (
-				<StyledAlert variant={'info'} size={'small'}>
-					{alderspensjonAlert}
-				</StyledAlert>
+				<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+						{alderspensjonAlert}
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			<FormDollyFieldArray
 				name="pdldata.person.sivilstand"

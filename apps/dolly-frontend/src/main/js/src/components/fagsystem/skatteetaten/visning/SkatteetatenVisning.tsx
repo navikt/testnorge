@@ -5,7 +5,7 @@ import * as _ from 'lodash-es'
 import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/BrregErFrVisning'
 import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/components/fagsystem/skatteetaten/visning/SkattemeldingVisning'
-import { Alert, Link } from '@navikt/ds-react'
+import { InlineMessage, Link } from '@navikt/ds-react'
 import { BeregnetSkattVisning } from '@/components/fagsystem/skatteetaten/visning/BeregnetSkattVisning'
 
 type SkatteetatenVisningProps = {
@@ -60,12 +60,12 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 				<Icon fontSize={'1.5rem'} kind="tenor" />
 				<h3>Data fra Tenor</h3>
 			</div>
-			<Alert inline variant="info" size="small" style={{ marginBottom: '15px' }}>
+			<InlineMessage status="info" size="small" style={{ marginBottom: '15px' }}>
 				Du kan hente utfyllende persondata for personen via Skatteetatens API-er, se mer informasjon{' '}
 				<Link href={getApiLink()} target="_blank">
 					her
 				</Link>
-			</Alert>
+			</InlineMessage>
 			<TjenestepensjonsavtaleVisning tpListe={tjenestepensjonavtaleListe} />
 			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
 			<SkattemeldingVisning skattemeldingListe={skattemeldingListe} />

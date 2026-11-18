@@ -1,4 +1,3 @@
-import { Alert, Box } from '@navikt/ds-react'
 import React from 'react'
 import styled from 'styled-components'
 import Loading from '@/components/ui/loading/Loading'
@@ -7,6 +6,8 @@ import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/Organi
 import { OrganisasjonTestinnsendingSkattVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTestinnsendingSkattVisning'
 import { OrganisasjonSamletReskontroinnsynVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonSamletReskontroinnsynVisning'
 import { OrganisasjonTjenestepensjonsavtaleVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTjenestepensjonsavtaleVisning'
+import { Box, InfoCard } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 type OrganisasjonVisningProps = {
 	organisasjon: any
@@ -48,7 +49,13 @@ export const OrganisasjonTenorVisning = ({
 	}
 
 	if (error) {
-		return <Alert variant="error">{`Feil ved henting av organisasjon: ${error}`}</Alert>
+		return (
+			<InfoCard data-color="danger">
+				<InfoCard.Message
+					icon={<XMarkOctagonFillIcon aria-hidden />}
+				>{`Feil ved henting av organisasjon: ${error}`}</InfoCard.Message>
+			</InfoCard>
+		)
 	}
 
 	if (!organisasjon) {

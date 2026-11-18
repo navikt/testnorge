@@ -1,7 +1,8 @@
 import React from 'react'
 import { useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { CreateInfostripeForm } from '@/pages/adminPages/dollyInfostriper/CreateInfostripeForm'
-import { ActionMenu, Alert, Box } from '@navikt/ds-react'
+import { ActionMenu, Box, InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 import Loading from '@/components/ui/loading/Loading'
 import { InfostripeListItem } from '@/pages/adminPages/dollyInfostriper/InfostripeListItem'
 import { TestComponentSelectors } from '#/mocks/Selectors'
@@ -20,7 +21,13 @@ export default function DollyInfostripePage() {
 					<Loading label="Laster infostriper ..." />
 				</div>
 			)}
-			{error && <Alert variant="warning">{`Feil ved henting av data: ${error.message}`}</Alert>}
+			{error && (
+				<InfoCard data-color="warning">
+					<InfoCard.Message
+						icon={<ExclamationmarkTriangleFillIcon aria-hidden />}
+					>{`Feil ved henting av data: ${error.message}`}</InfoCard.Message>
+				</InfoCard>
+			)}
 			{infostriper?.length > 0 && (
 				<>
 					<ActionMenu.Divider style={{ marginTop: '20px' }} />

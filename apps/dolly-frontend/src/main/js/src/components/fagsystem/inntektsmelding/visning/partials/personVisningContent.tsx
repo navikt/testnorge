@@ -4,7 +4,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { Journalpost } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import styled from 'styled-components'
 import { useDokument } from '@/utils/hooks/useJoarkDokument'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { lazy, Suspense } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 
@@ -65,9 +65,9 @@ export const PersonVisningContent = ({ miljoe, dokumentInfo }: PersonVisningCont
 						<PrettyCode language={'xml'} codeString={dokument} />
 					</Suspense>
 				) : (
-					<Alert variant="error" size="small" inline>
+					<InlineMessage status="error" size="small">
 						Kunne ikke hente skjemainnhold
-					</Alert>
+					</InlineMessage>
 				))}
 		</StyledJournalpost>
 	)

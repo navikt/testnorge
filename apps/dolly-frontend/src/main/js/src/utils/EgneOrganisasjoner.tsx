@@ -5,9 +5,10 @@ import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
 import { useDollyOrganisasjoner } from '@/utils/hooks/useDollyOrganisasjoner'
 import { OrgforvalterApi } from '@/service/Api'
 import { useFormContext } from 'react-hook-form'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import Loading from '@/components/ui/loading/Loading'
 import Icon from '@/components/ui/icon/Icon'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 interface OrgProps {
 	path: string
@@ -181,10 +182,12 @@ export const EgneOrganisasjoner = ({
 	return (
 		<>
 			{error && (
-				<StyledAlert variant={'warning'} size={'small'} style={{ margin: '10px 0' }}>
-					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
-					eller kontakt Team Dolly ved vedvarende feil.
-				</StyledAlert>
+				<InfoCard data-color="warning" size={'small'} style={{ margin: '10px 0' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
+						eller kontakt Team Dolly ved vedvarende feil.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			{!harEgneOrganisasjoner &&
 				!loading &&
@@ -192,10 +195,12 @@ export const EgneOrganisasjoner = ({
 				(warningMessage ? (
 					warningMessage
 				) : (
-					<StyledAlert variant={'warning'} size={'small'} style={{ margin: '10px 0' }}>
-						Du har ingen egne organisasjoner. For å lage dine egne organisasjoner trykk{' '}
-						<a href="/organisasjoner">her</a>.
-					</StyledAlert>
+					<InfoCard data-color="warning" size={'small'} style={{ margin: '10px 0' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							Du har ingen egne organisasjoner. For å lage dine egne organisasjoner trykk{' '}
+							<a href="/organisasjoner">her</a>.
+						</InfoCard.Message>
+					</InfoCard>
 				))}
 			{!error && (
 				<EgneOrgSelect

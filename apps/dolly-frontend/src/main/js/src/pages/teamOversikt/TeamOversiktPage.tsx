@@ -1,6 +1,11 @@
-import { Alert, Box, Button, Table } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { LeaveIcon, PencilWritingIcon, TrashIcon } from '@navikt/aksel-icons'
+import {
+	InformationSquareFillIcon,
+	LeaveIcon,
+	PencilWritingIcon,
+	TrashIcon,
+	XMarkOctagonFillIcon,
+} from '@navikt/aksel-icons'
 import { TeamVisning } from '@/pages/teamOversikt/TeamVisning'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
@@ -15,6 +20,7 @@ import { BliMedITeam } from '@/pages/teamOversikt/BliMedITeam'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { runningE2ETest } from '@/service/services/Request'
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
+import { Box, Button, InfoCard, Table } from '@navikt/ds-react'
 
 const Knappegruppe = styled.div`
 	margin-top: 20px;
@@ -58,14 +64,18 @@ export default () => {
 					{loading ? (
 						<Loading label="Laster team ..." />
 					) : error ? (
-						<Alert variant="error" size="small">
-							Feil ved henting av team: {error?.message}
-						</Alert>
+						<InfoCard data-color="danger" size="small">
+							<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+								Feil ved henting av team: {error?.message}
+							</InfoCard.Message>
+						</InfoCard>
 					) : brukerTeams?.length < 1 ? (
-						<Alert variant="info" size="small">
-							Du er ikke medlem av noen team. Bli med i et eksisterende team eller opprett ditt
-							eget.
-						</Alert>
+						<InfoCard data-color="info" size="small">
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Du er ikke medlem av noen team. Bli med i et eksisterende team eller opprett ditt
+								eget.
+							</InfoCard.Message>
+						</InfoCard>
 					) : (
 						<Table>
 							<Table.Header>

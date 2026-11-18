@@ -1,11 +1,14 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Box, Button, Table } from '@navikt/ds-react'
+import { Box, Button, InfoCard, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
-import { PencilWritingIcon } from '@navikt/aksel-icons'
+import {
+	ExclamationmarkTriangleFillIcon,
+	InformationSquareFillIcon,
+	PencilWritingIcon,
+} from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
@@ -162,22 +165,28 @@ export const MalPanel = ({
 											content={
 												<>
 													{alert && (
-														<StyledAlert
-															variant={'warning'}
+														<InfoCard
+															data-color="warning"
 															size={'small'}
 															style={{ marginBottom: '20px' }}
 														>
-															{alert}
-														</StyledAlert>
+															<InfoCard.Message
+																icon={<ExclamationmarkTriangleFillIcon aria-hidden />}
+															>
+																{alert}
+															</InfoCard.Message>
+														</InfoCard>
 													)}
 													{erTomBestilling && (
-														<StyledAlert
-															variant={'info'}
+														<InfoCard
+															data-color="info"
 															size={'small'}
 															style={{ marginBottom: '20px' }}
 														>
-															Denne malen inneholder ingen bestillingsdata.
-														</StyledAlert>
+															<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+																Denne malen inneholder ingen bestillingsdata.
+															</InfoCard.Message>
+														</InfoCard>
 													)}
 													<div className="bestilling-data">
 														<MalVisning
@@ -197,15 +206,21 @@ export const MalPanel = ({
 						</Table>
 					</ErrorBoundary>
 				) : (
-					<StyledAlert variant={'info'}>Ingen maler samsvarte med søket ditt</StyledAlert>
+					<InfoCard data-color="info" style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Ingen maler samsvarte med søket ditt
+						</InfoCard.Message>
+					</InfoCard>
 				)
 			) : (
-				<StyledAlert variant={'info'}>
-					{type === MalType.TENORSOEK
-						? 'Du har ingen maler for Tenor-søk enda. Neste gang du gjør et nytt Tenor-søk kan du lagre søket som en mal.'
-						: `Du har ingen maler for ${type} enda. Neste gang du oppretter en ny ${type} kan du lagre bestillingen
+				<InfoCard data-color="info" style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+						{type === MalType.TENORSOEK
+							? 'Du har ingen maler for Tenor-søk enda. Neste gang du gjør et nytt Tenor-søk kan du lagre søket som en mal.'
+							: `Du har ingen maler for ${type} enda. Neste gang du oppretter en ny ${type} kan du lagre bestillingen
 						som en mal på siste side av bestillingsveilederen.`}
-				</StyledAlert>
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 		</Box>
 	)

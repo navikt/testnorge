@@ -6,7 +6,7 @@ import { Arbeidsadgang } from './partials/Arbeidsadgang'
 import { Annet } from './partials/Annet'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { hasProperty } from 'dot-prop'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { getFagsystemTimeoutTitle } from '@/components/fagsystem/utils'
 
@@ -55,9 +55,9 @@ export const UdiVisning = ({ data, loading, timedOutFagsystemer = [] }: UdiVisni
 					title={timedOutFagsystemer?.includes('UDI') ? getFagsystemTimeoutTitle('UDI') : undefined}
 				/>
 				{manglerFagsystemdata ? (
-					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+					<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 						Fant ikke UDI-data på person
-					</Alert>
+					</InlineMessage>
 				) : (
 					<div className="person-visning">
 						<Oppholdsstatus

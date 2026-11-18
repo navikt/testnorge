@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { Alert, Button, Textarea } from '@navikt/ds-react'
+import { Button, HStack, InfoCard, Textarea } from '@navikt/ds-react'
+import { CheckmarkCircleFillIcon, XMarkIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -113,24 +114,36 @@ export const CreateInfostripeForm: React.FC = () => {
 					</Button>
 				</div>
 				{serverError && (
-					<Alert
-						variant="error"
-						closeButton
-						onClose={() => setServerError(null)}
-						style={{ marginTop: '1rem' }}
-					>
-						{serverError.replace(/\?\S*/, '')}
-					</Alert>
+					<InfoCard data-color="danger" style={{ marginTop: '1rem' }}>
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							<HStack justify="space-between" align="center" wrap={false} gap="space-8">
+								{serverError.replace(/\?\S*/, '')}
+								<Button
+									variant="tertiary"
+									data-color="neutral"
+									size="small"
+									icon={<XMarkIcon title="Lukk" />}
+									onClick={() => setServerError(null)}
+								/>
+							</HStack>
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{success && (
-					<Alert
-						variant="success"
-						closeButton
-						onClose={() => setSuccess(false)}
-						style={{ marginTop: '1rem' }}
-					>
-						Infostripe opprettet
-					</Alert>
+					<InfoCard data-color="success" style={{ marginTop: '1rem' }}>
+						<InfoCard.Message icon={<CheckmarkCircleFillIcon aria-hidden />}>
+							<HStack justify="space-between" align="center" wrap={false} gap="space-8">
+								Infostripe opprettet
+								<Button
+									variant="tertiary"
+									data-color="neutral"
+									size="small"
+									icon={<XMarkIcon title="Lukk" />}
+									onClick={() => setSuccess(false)}
+								/>
+							</HStack>
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 			</form>
 		</FormProvider>

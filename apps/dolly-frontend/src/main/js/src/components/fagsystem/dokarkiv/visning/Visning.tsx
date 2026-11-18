@@ -5,8 +5,8 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Journalpost } from '@/utils/hooks/useDokumenter'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import React from 'react'
+import { InlineMessage } from '@navikt/ds-react'
 
 interface Form {
 	data?: Array<MiljoDataListe>
@@ -89,11 +89,11 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 		<>
 			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" isWarning={manglerDokarkivData} />
 			{manglerDokarkivData ? (
-				<StyledAlert variant={'warning'} size={'small'} inline>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Kunne ikke hente dokumenter fra Dokarkiv. Dette kan medføre problemer med å legge til nye
 					dokumenter på denne personen. Forsøk å laste inn siden på nytt, eller gjenopprett
 					personen.
-				</StyledAlert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}
