@@ -18,7 +18,7 @@ import reactor.core.publisher.Flux;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/ident/validerFlere")
+@RequestMapping({"/api/v2/ident/validerFlere", "/api/v2/ident/validerflere"})
 public class IdentValidatorController {
 
     private final PersonnummerValidatorService personnummerValidatorService;
