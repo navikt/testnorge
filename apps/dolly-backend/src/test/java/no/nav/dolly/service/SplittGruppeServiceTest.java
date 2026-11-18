@@ -99,6 +99,26 @@ class SplittGruppeServiceTest {
     }
 
     @Test
+    void shouldProcessSourceOnceWhenTwoMovedIdentsMatchTheSameOrder() {
+
+        var identer = Set.of("A", "B");
+        mockFlytting(identer, 3, List.of("A", "B", "C"), Mono.just(lagKildeBestilling(3)));
+        when(bestillingRepository.findBestillingerByIdentIn(identer))
+                .thenReturn(Flux.just(lagKildeBestilling(3), lagKildeBestilling(3)));
+
+        StepVerifier.create(splittGruppeService.flyttIdenterTilDenneGruppe(NY_GRUPPE_ID, identer))
+                .verifyComplete();
+
+        var lagredeBestillinger = getLagredeBestillinger();
+        assertThat(lagredeBestillinger).filteredOn(bestilling -> isNull(bestilling.getId())).hasSize(1);
+        assertThat(getKopi(lagredeBestillinger).getAntallIdenter()).isEqualTo(2);
+        assertThat(getLagredeKildeBestillinger(lagredeBestillinger))
+                .singleElement()
+                .extracting(Bestilling::getAntallIdenter)
+                .isEqualTo(1);
+    }
+
+    @Test
     void shouldFloorSourceAtZero() {
 
         var identer = Set.of("A", "B");

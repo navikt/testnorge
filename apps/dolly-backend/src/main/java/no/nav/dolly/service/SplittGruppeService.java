@@ -44,6 +44,7 @@ public class SplittGruppeService {
                                 isNull(bestilling.getOpprettetFraGruppeId()) &&
                                         isNull(bestilling.getOpprettetFraId()) &&
                                         isNull(bestilling.getGjenopprettetFraIdent()))
+                        .distinct(Bestilling::getId)
                         .flatMap(bestilling -> moveBestilling(bestilling, identer, testgruppe))
                         .collectList()
                         .thenReturn(testgruppe))
