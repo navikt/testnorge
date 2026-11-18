@@ -119,46 +119,41 @@ kun slik at referanser er gyldig på tvers av organisasjonene.
 
 image::dolly/ny_testdatagruppe.png[Ny testdatagruppe]
 
-==== Opprett personer
-Det kommer opp en boks der du får to valg:
+==== Opprett/import av personer
 
-. Opprette helt nye personer (Dolly finner et ubrukt FNR, DNR eller NPID basert på indikert identtype)
-. Opprette fra eksisterende FNR, DNR eller NPID (identen kan ikke finnes i prod eller i Dolly fra før), dette blir det
-gjort sjekk for før man går videre.
+Ved #Importer personer# er det først et eget skjermbilde for valg av kandidater som oppfyller de ønskede personkriterier, og
+eventuelt krav til opplysninger i andre fagsystem (hos Skatteetaten):
 
-Vi velger å opprette nye og angir at vi ønsker 5 personer i bestillingen.
+image::dolly/tenor_soek.png[Tenor soek]
 
-Opprettelse av personer følger en prosess med fire steg:
+Opprett personer og Importer personer følger så en fire stegs vegviser som i store trekk er identisk:
 
 image::dolly/opprettelse_prosess.png[Opprettelse prosess]
 
-. Angi identtype, antall identer og hvilken gruppe disse skal havne i.
-. Velg hvilke egenskaper du selv ønsker å bestemme.
-De resterende egenskapene vil systemet sette.
-Det kan være greit å vite at en person med FNR automatisk vil få fødselsnummer, navn, kjønn, fødested, fødselsdato,
-sivilstatus, bostedsadresse, statsborgerskap og folkeregister personstatus=bosatt.
-. Angi verdier på egenskapene du valgte i steg 2.
-Ønskes det spesifikke verdier for overnevnte personegenskaper kan disse angis og erstatter tilfeldige verdier fra systemet.
-. Oppsummering og valg av hvilke testmiljø personene skal sendes til.
+Ved #Opprett personer# får du valg mellom ny person eller eksisterende person:
 
+image::dolly/opprett_personer.png[opprett personer]
 
-[[velg_identtype]]
-===== Velg identtype, antall og gruppe
+- Opprette helt nye personer: Dolly finner nye FNR, DNR eller NPID basert på antall, identtype, og eventuelt id2032 format.
+- Opprette fra eksisterende FNR, DNR eller NPID (identene kan ikke finnes i prod eller i Dolly fra før), dette blir det
+gjort sjekk for før man går videre.
 
-image::dolly/velg_ny_person.png[Velg ny person]
+Både ved oppretting og import er dialogen videre identisk i steg 1:
 
-I dette vinduet velger du om du ønsker å opprette personer med nye identer eller om du ønsker å opprette personer med eksisterende identer.
-Man kan også velge antall personer som skal opprettes og hvilken gruppe de skal legges til i, samt eventuell mal for bestillingen.
+image::dolly/gruppe_og_mal.png[Gruppe og mal]
+
+Her identifiserer du hvilken gruppe personene skal legges til i, og eventuelt hvilken mal som skal brukes for bestillingen.
+Mal her betyr bare at visse egenskaper og verdier er pre-utfylt, men kan likevel endres før innsending.
 
 [[velg_egenskaper]]
 ===== Velg egenskaper
 
 image::dolly/velg_egenskaper.png[Velg egenskaper]
 
-Det finnes en lang rekke områder med egenskaper du kan velge.
-Trykk på pil ned til høyre i boksen for å ekspandere hvert område.
-I de fleste tilfeller er det kun et utvalg egenskaper som er nødvendig å definere for testscenariene dine.
-Dolly tildeler verdier til egenskaper du ikke krysser av for.
+I steg 2 bestemmes egenskaper; dette omfatter personopplysninger og data som skal legges til i interne registre hos Nav.
+Trykk på ønsket fane og velg de egenskapene som er relevante for testscenariet ditt.
+Du kan kan gå frem og tilbake mellom stegene for å endre valg, og du kan også senere supplere testpersoner eller hel gruppe med
+flere egenskaper.
 
 I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper:
 
@@ -181,6 +176,16 @@ Velg miljø, og opprett en mal dersom denne bestilling ønskes gjentatt ved en a
 etterkant, fra bestilling eller fra person og da vil malen innholde samtlige oppdateringer på personen.
 
 image::dolly/opprettet_gruppe.png[Opprettet gruppe]
+
+Vi velger å opprette nye og angir at vi ønsker 5 personer i bestillingen.angis identtype, antall identer og hvilkenAngi gruppe disse skal havne i, og eventuelt mal for bestillingen.
+. Velg hvilke egenskaper du selv ønsker å bestemme.
+De resterende egenskapene vil systemet sette.
+Det kan være greit å vite at en person med FNR automatisk vil få fødselsnummer, navn, kjønn, fødested, fødselsdato,
+sivilstatus, bostedsadresse, statsborgerskap og folkeregister personstatus=bosatt.
+. Angi verdier på egenskapene du valgte i steg 2.
+Ønskes det spesifikke verdier for overnevnte personegenskaper kan disse angis og erstatter tilfeldige verdier fra systemet.
+. Oppsummering og valg av hvilke testmiljø personene skal sendes til.
+
 
 Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer.
 Trykk på personfanen for å ekspandere denne og vise detaljer på personen.
