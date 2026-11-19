@@ -7,7 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @SpringBootApplication
 public class StatusFrontendApplicationStarter {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         new SpringApplicationBuilder(StatusFrontendApplicationStarter.class)
                 .initializers(new NaisEnvironmentApplicationContextInitializer())
                 .run(args);
