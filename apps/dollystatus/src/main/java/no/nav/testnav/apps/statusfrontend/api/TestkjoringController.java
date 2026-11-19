@@ -29,8 +29,12 @@ public class TestkjoringController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Mono<RunAcceptedResponse> startExpiredTests(@AuthenticationPrincipal Jwt jwt) {
         return coordinator.startAllExpired()
-                .map(RunAcceptedResponse::from)
-                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("automatisk", jwt));
+                .doOnNext(reference -> {
+                    if (reference.nyKjoring()) {
+                        testkjoringMetrikker.registrerStart("automatisk", jwt);
+                    }
+                })
+                .map(RunAcceptedResponse::from);
     }
 
     @PostMapping("/testkjoringer/feilede")

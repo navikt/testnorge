@@ -42,7 +42,8 @@ public class PoppFunctionalTest extends AbstractPensjonFunctionalTest {
 
     @Override
     protected Mono<Void> createResource(FunctionalTestContext context) {
-        return client.createPopp(context.environment(), context.runId());
+        return client.createPerson(context.environment(), context.runId())
+                .then(Mono.defer(() -> client.createPopp(context.environment(), context.runId())));
     }
 
     @Override

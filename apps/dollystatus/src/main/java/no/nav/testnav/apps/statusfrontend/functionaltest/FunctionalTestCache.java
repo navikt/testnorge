@@ -35,6 +35,7 @@ public class FunctionalTestCache {
     private final Duration okTtl;
     private final Duration failureTtl;
     private final Map<FunctionalTestKey, FunctionalTestStatus> statuses = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<FunctionalTestKey, FunctionalTestStatus> lastCompleted = new ConcurrentHashMap<>();
 
     @Autowired
     public FunctionalTestCache(
@@ -53,6 +54,10 @@ public class FunctionalTestCache {
 
     public Optional<FunctionalTestStatus> get(FunctionalTestKey key) {
         return Optional.ofNullable(statuses.get(key));
+    }
+
+    public Optional<FunctionalTestStatus> lastCompleted(FunctionalTestKey key) {
+        return Optional.ofNullable(lastCompleted.get(key));
     }
 
     public FunctionalTestStatus statusFor(FunctionalTestRegistry.RegisteredFunctionalTest registration) {
@@ -176,6 +181,7 @@ public class FunctionalTestCache {
                 error,
                 existingStatus.technicalStatus());
         statuses.put(key, completedStatus);
+        lastCompleted.put(key, completedStatus);
         return Optional.of(completedStatus);
     }
 
@@ -203,6 +209,7 @@ public class FunctionalTestCache {
                 null,
                 new TechnicalStatus(technicalStatusState, completedAt));
         statuses.put(key, completedStatus);
+        lastCompleted.put(key, completedStatus);
         return Optional.of(completedStatus);
     }
 

@@ -30,6 +30,33 @@ class PensjonTestData {
         return new TpForholdRequest(Set.of(environmentName(environment)), ident, TP_ORDNING);
     }
 
+    static PensjonPersonRequest personRequest(String ident, FunctionalTestEnvironment environment) {
+        return new PensjonPersonRequest(
+                Set.of(environmentName(environment)),
+                ident,
+                foedselsdato(ident).toString(),
+                "NOR");
+    }
+
+    static LocalDate foedselsdato(String ident) {
+        var year = Integer.parseInt(ident.substring(4, 6));
+        var individ = Integer.parseInt(ident.substring(6, 9));
+        int century;
+        if (individ < 500 || (individ >= 900 && year > 39)) {
+            century = 1900;
+        } else if (year < 40) {
+            century = 2000;
+        } else if (individ < 750 && year > 54) {
+            century = 1800;
+        } else {
+            century = 2000;
+        }
+        return LocalDate.of(
+                century + year,
+                Integer.parseInt(ident.substring(2, 4)) % 20,
+                Integer.parseInt(ident.substring(0, 2)) % 40);
+    }
+
     static PoppInntektRequest poppRequest(String ident, FunctionalTestEnvironment environment) {
         return new PoppInntektRequest(
                 ident,
