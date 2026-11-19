@@ -54,6 +54,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -464,22 +465,20 @@ public class ArtifactUpdateService {
                 .then(getPerson(ident))
                 .flatMapMany(person -> Flux.fromIterable(person.getPerson().getVergemaal())
                         .filter(vergemaal -> vergemaal.getId().equals(id))
-                        .filter(vergemaal -> nonNull(vergemaal.getVergeIdent()) &&
-                                             (isNotBlank(oppdatertVergemaal.getVergeIdent()) ||
-                                              !Objects.equals(vergemaal.getVergeIdent(), oppdatertVergemaal.getVergeIdent())))
+                        .filter(vergemaal -> nonNull(oppdatertVergemaal.getNyVergeIdent()) &&
+                                             (isBlank(oppdatertVergemaal.getNyVergeIdent().getEksisterendeIdent()) ||
+                                              !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getNyVergeIdent().getEksisterendeIdent())))
                         .flatMap(vergemaal -> getPerson(vergemaal.getVergeIdent())
                                 .flatMap(slettePerson -> deleteRelasjonerService.deleteRelasjoner(person, slettePerson, VERGE)
                                         .then(Mono.just((slettePerson))))
                                 .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
-                                        .then(Mono.just(vergemaal)))
-                                .flatMapMany(_ -> updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"))
-                                .doOnNext(_ -> {
-                                    person.getPerson().getVergemaal().add(oppdatertVergemaal);
-                                    person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
-                                }))
-                        .switchIfEmpty(updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal")
-                                .doOnNext(_ ->
-                                        person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed())))
+                                        .then(Mono.just(vergemaal))))
+                        .then(Mono.defer(() ->
+                                updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal")))
+                        .doOnNext(vergemaal -> {
+                            vergemaal.sort(Comparator.comparing(VergemaalDTO::getId).reversed());
+                            person.getPerson().setVergemaal(vergemaal);
+                        })
                         .flatMap(_ -> vergemaalService.convert(person)))
                 .flatMap(this::savePerson)
                 .then();
