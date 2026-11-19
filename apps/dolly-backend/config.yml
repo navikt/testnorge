@@ -19,6 +19,9 @@ spec:
       rules:
         - application: dolly-auth-local
         - application: dolly-frontend
+        - application: mcp-dolly
+          namespace: copilot
+          cluster: prod-gcp
         - application: dolly-idporten
         - application: testnav-template-search-service
         - application: histark-proxy-dolly
