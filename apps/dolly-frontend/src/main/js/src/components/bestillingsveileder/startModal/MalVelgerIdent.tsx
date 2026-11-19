@@ -15,7 +15,7 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { henvendelseAttributt } from '@/components/fagsystem/henvendelse/initialValues'
 
@@ -219,7 +219,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 					size="small"
 					style={{ marginRight: '20px', marginBottom: '20px' }}
 				>
-					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
 						Denne malen er utdatert, og vil muligens ikke fungere som den skal.
 					</InfoCard.Message>
 				</InfoCard>
@@ -230,7 +230,7 @@ export const MalVelgerIdent = ({ brukerId: _brukerId, gruppeId }: MalVelgerProps
 					size="small"
 					style={{ marginRight: '20px', marginBottom: '20px' }}
 				>
-					<InfoCard.Message icon={<ExclamationmarkTriangleIcon aria-hidden />}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
 						Denne malen inneholder henvendelser fra Salesforce, og kan kun brukes ved legg til /
 						endre på en person som ligger i en gruppe med tag "SALESFORCE".
 					</InfoCard.Message>

@@ -8,6 +8,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 interface Props {
 	stripe: InfoStripeType
 }
+
 export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 	const { deleteInfostripe } = useDollyInfostriper()
 	const [editing, setEditing] = useState(false)
