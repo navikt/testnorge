@@ -160,6 +160,47 @@ public class FunctionalTestCoordinator {
                 keysOf(registrations, technicalRegistrations));
     }
 
+    public Mono<RunReference> startFailed() {
+        return getSystemStatuses().flatMap(statuses -> {
+            var problemSystemIds = statuses.stream()
+                    .filter(FunctionalTestStatus::hasProblem)
+                    .map(FunctionalTestStatus::systemId)
+                    .distinct()
+                    .toList();
+            if (problemSystemIds.isEmpty()) {
+                return Mono.error(new FunctionalTestNotFoundException());
+            }
+
+            var selectedPdlLifecycle = pdlLifecycles.stream()
+                    .filter(lifecycle -> problemSystemIds.contains(lifecycle.descriptor().systemId()))
+                    .findFirst();
+            var selectedSystemIds = problemSystemIds.stream()
+                    .filter(systemId -> selectedPdlLifecycle
+                            .filter(lifecycle -> lifecycle.descriptor().systemId().equals(systemId))
+                            .isEmpty())
+                    .toList();
+            var registrations = selectedSystemIds.stream()
+                    .flatMap(systemId -> registry.registrationsFor(systemId).stream())
+                    .distinct()
+                    .toList();
+            var technicalRegistrations = selectedSystemIds.stream()
+                    .flatMap(systemId -> registry.technicalRegistrationsFor(systemId).stream())
+                    .distinct()
+                    .toList();
+            var pdlLifecycle = selectedPdlLifecycle;
+            if (pdlLifecycle.isEmpty()) {
+                pdlLifecycle = requiredPdlLifecycle(registrations, technicalRegistrations);
+            }
+
+            var cooldownKeys = Stream.concat(
+                            keysOf(registrations, technicalRegistrations).stream(),
+                            pdlLifecycle.map(this::pdlKeys).stream().flatMap(List::stream))
+                    .distinct()
+                    .toList();
+            return startManual(registrations, technicalRegistrations, pdlLifecycle, cooldownKeys);
+        });
+    }
+
     public Mono<RunReference> startFunctionalTests() {
         var registrations = registry.registrations();
         var pdlLifecycle = pdlLifecycles.stream().findFirst();
@@ -239,6 +280,12 @@ public class FunctionalTestCoordinator {
                     .map(ActiveRun::snapshot)
                     .orElseThrow(FunctionalTestRunNotFoundException::new);
         });
+    }
+
+    public boolean isRunActive() {
+        synchronized (runMonitor) {
+            return nonNull(activeRun);
+        }
     }
 
     private void evictExpiredRuns() {

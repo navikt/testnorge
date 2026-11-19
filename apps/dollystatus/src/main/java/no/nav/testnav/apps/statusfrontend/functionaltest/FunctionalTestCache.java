@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.statusfrontend.functionaltest;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.DisplayName;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestDescriptor;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestEnvironment;
@@ -11,6 +10,8 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestSta
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatusState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -24,14 +25,31 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Component
-@RequiredArgsConstructor
 public class FunctionalTestCache {
 
-    static final Duration CACHE_TTL = Duration.ofHours(1);
+    private static final Duration DEFAULT_OK_TTL = Duration.ofHours(6);
+    private static final Duration DEFAULT_FAILURE_TTL = Duration.ofHours(1);
     static final Duration MANUAL_COOLDOWN = Duration.ofMinutes(5);
 
     private final Clock clock;
+    private final Duration okTtl;
+    private final Duration failureTtl;
     private final Map<FunctionalTestKey, FunctionalTestStatus> statuses = new ConcurrentHashMap<>();
+
+    @Autowired
+    public FunctionalTestCache(
+            Clock clock,
+            @Value("${dollystatus.ttl.ok:PT6H}") Duration okTtl,
+            @Value("${dollystatus.ttl.feil:PT1H}") Duration failureTtl
+    ) {
+        this.clock = clock;
+        this.okTtl = okTtl;
+        this.failureTtl = failureTtl;
+    }
+
+    public FunctionalTestCache(Clock clock) {
+        this(clock, DEFAULT_OK_TTL, DEFAULT_FAILURE_TTL);
+    }
 
     public Optional<FunctionalTestStatus> get(FunctionalTestKey key) {
         return Optional.ofNullable(statuses.get(key));
@@ -153,7 +171,7 @@ public class FunctionalTestCache {
                 state,
                 existingStatus.startedAt(),
                 completedAt,
-                completedAt.plus(CACHE_TTL),
+                completedAt.plus(state == FunctionalTestState.OK ? okTtl : failureTtl),
                 cleanupAttempts,
                 error,
                 existingStatus.technicalStatus());
@@ -180,7 +198,7 @@ public class FunctionalTestCache {
                 FunctionalTestState.TECHNICAL_ONLY,
                 existingStatus.startedAt(),
                 completedAt,
-                completedAt.plus(CACHE_TTL),
+                completedAt.plus(technicalStatusState == TechnicalStatusState.UP ? okTtl : failureTtl),
                 0,
                 null,
                 new TechnicalStatus(technicalStatusState, completedAt));

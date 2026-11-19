@@ -40,6 +40,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
+import reactor.test.StepVerifier;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -53,6 +54,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
@@ -344,7 +346,7 @@ class FunctionalTestCoordinatorTest {
                     assertThat(status.state()).isEqualTo(FunctionalTestState.OK);
                     assertThat(status.cleanupAttempts()).isEqualTo(1);
                     assertThat(status.completedAt()).isNotNull();
-                    assertThat(status.cachedUntil()).isEqualTo(status.completedAt().plus(Duration.ofHours(1)));
+                    assertThat(status.cachedUntil()).isEqualTo(status.completedAt().plus(Duration.ofHours(6)));
                 });
     }
 
@@ -389,6 +391,80 @@ class FunctionalTestCoordinatorTest {
         assertThat(manualRun).isNotNull();
         awaitCompleted(coordinator, manualRun);
         assertThat(definition.createAttempts).hasValue(2);
+    }
+
+    @Test
+    void shouldStartOnlyFailedSystems() {
+        var failed = new VerifyFailureDefinition() {
+            @Override
+            public FunctionalTestDescriptor descriptor() {
+                return FunctionalTestCoordinatorTest.descriptor("failed");
+            }
+        };
+        var healthy = new CountingDefinition() {
+            @Override
+            public FunctionalTestDescriptor descriptor() {
+                return FunctionalTestCoordinatorTest.descriptor("healthy");
+            }
+        };
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(failed, healthy)),
+                new FunctionalTestCache(clock),
+                clock);
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+        var rerunReference = new AtomicReference<RunReference>();
+
+        StepVerifier.create(coordinator.startFailed())
+                .assertNext(reference -> {
+                    assertThat(reference).isNotNull();
+                    rerunReference.set(reference);
+                })
+                .expectComplete()
+                .verify(Duration.ofSeconds(1));
+
+        var rerun = awaitCompleted(coordinator, rerunReference.get());
+        assertThat(rerun.results()).singleElement()
+                .satisfies(status -> {
+                    assertThat(status.systemId()).isEqualTo(new SystemId("failed"));
+                    assertThat(status.state()).isEqualTo(FunctionalTestState.VERIFY_FAILED);
+                });
+        assertThat(((VerifyFailureDefinition) failed).cleanupAttempts).hasValue(2);
+        assertThat(((CountingDefinition) healthy).createAttempts).hasValue(1);
+    }
+
+    @Test
+    void shouldRejectFailedRerunDuringCooldown() {
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(new VerifyFailureDefinition())),
+                new FunctionalTestCache(clock),
+                clock);
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+
+        StepVerifier.create(coordinator.startFailed())
+                .expectError(FunctionalTestCooldownException.class)
+                .verify(Duration.ofSeconds(1));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenNoSystemsHaveFailed() {
+        var coordinator = coordinator(new CountingDefinition());
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+
+        StepVerifier.create(coordinator.startFailed())
+                .expectError(FunctionalTestNotFoundException.class)
+                .verify(Duration.ofSeconds(1));
     }
 
     @Test
@@ -939,6 +1015,14 @@ class FunctionalTestCoordinatorTest {
                 CleanupExpectation.DELETED);
     }
 
+    private static FunctionalTestDescriptor descriptor(String systemId) {
+        return new FunctionalTestDescriptor(
+                new SystemId(systemId),
+                new DisplayName(systemId),
+                Set.of(FunctionalTestEnvironment.Q1),
+                CleanupExpectation.DELETED);
+    }
+
     private record TestValue() {
     }
 
@@ -1058,7 +1142,7 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class VerifyFailureDefinition extends GatedPreflightDefinition {
+    private static class VerifyFailureDefinition extends GatedPreflightDefinition {
 
         private final CountDownLatch cleanupInvoked = new CountDownLatch(1);
         private final AtomicInteger cleanupAttempts = new AtomicInteger();
@@ -1091,7 +1175,7 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class CountingDefinition extends GatedPreflightDefinition {
+    private static class CountingDefinition extends GatedPreflightDefinition {
 
         private final AtomicInteger createAttempts = new AtomicInteger();
 

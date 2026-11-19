@@ -3,6 +3,8 @@ package no.nav.testnav.apps.statusfrontend.functionaltest.model;
 import java.time.Instant;
 import java.util.Objects;
 
+import static java.util.Objects.nonNull;
+
 public record FunctionalTestStatus(
         SystemId systemId,
         DisplayName displayName,
@@ -26,6 +28,22 @@ public record FunctionalTestStatus(
         if (cleanupAttempts < 0) {
             throw new IllegalArgumentException("Cleanup attempts cannot be negative.");
         }
+    }
+
+    public boolean hasProblem() {
+        return switch (state) {
+            case PREFLIGHT_FAILED, CREATE_FAILED, VERIFY_FAILED, VERIFY_TIMEOUT, CLEANUP_FAILED, BLOCKED -> true;
+            case TECHNICAL_ONLY -> nonNull(technicalStatus)
+                    && technicalStatus.state() == TechnicalStatusState.DOWN;
+            default -> false;
+        };
+    }
+
+    public boolean isFailure() {
+        return switch (state) {
+            case PREFLIGHT_FAILED, CREATE_FAILED, VERIFY_FAILED, VERIFY_TIMEOUT -> true;
+            default -> false;
+        };
     }
 
     public static FunctionalTestStatus notRun(

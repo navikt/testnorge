@@ -7,6 +7,8 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.FunctionalTestCoordinat
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +23,22 @@ import reactor.core.publisher.Mono;
 public class TestkjoringController {
 
     private final FunctionalTestCoordinator coordinator;
+    private final TestkjoringMetrikker testkjoringMetrikker;
 
     @PostMapping("/testkjoringer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Mono<RunAcceptedResponse> startExpiredTests() {
+    public Mono<RunAcceptedResponse> startExpiredTests(@AuthenticationPrincipal Jwt jwt) {
         return coordinator.startAllExpired()
-                .map(RunAcceptedResponse::from);
+                .map(RunAcceptedResponse::from)
+                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("automatisk", jwt));
+    }
+
+    @PostMapping("/testkjoringer/feilede")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Mono<RunAcceptedResponse> startFailedTests(@AuthenticationPrincipal Jwt jwt) {
+        return coordinator.startFailed()
+                .map(RunAcceptedResponse::from)
+                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("feilede", jwt));
     }
 
     @GetMapping("/testkjoringer/{runId}")
@@ -37,22 +49,28 @@ public class TestkjoringController {
 
     @PostMapping("/fagsystemer/{systemId}/testkjoringer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Mono<RunAcceptedResponse> startSystemTest(@PathVariable String systemId) {
+    public Mono<RunAcceptedResponse> startSystemTest(
+            @PathVariable String systemId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
         return coordinator.startSystem(SystemId.from(systemId))
-                .map(RunAcceptedResponse::from);
+                .map(RunAcceptedResponse::from)
+                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("system", jwt));
     }
 
     @PostMapping("/funksjonstester/testkjoringer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Mono<RunAcceptedResponse> startFunctionalTests() {
+    public Mono<RunAcceptedResponse> startFunctionalTests(@AuthenticationPrincipal Jwt jwt) {
         return coordinator.startFunctionalTests()
-                .map(RunAcceptedResponse::from);
+                .map(RunAcceptedResponse::from)
+                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("alle", jwt));
     }
 
     @PostMapping("/interne-sjekker/testkjoringer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Mono<RunAcceptedResponse> startTechnicalStatuses() {
+    public Mono<RunAcceptedResponse> startTechnicalStatuses(@AuthenticationPrincipal Jwt jwt) {
         return coordinator.startTechnicalStatuses()
-                .map(RunAcceptedResponse::from);
+                .map(RunAcceptedResponse::from)
+                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("interne-sjekker", jwt));
     }
 }
