@@ -54,7 +54,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -465,9 +464,7 @@ public class ArtifactUpdateService {
                 .then(getPerson(ident))
                 .flatMapMany(person -> Flux.fromIterable(person.getPerson().getVergemaal())
                         .filter(vergemaal -> vergemaal.getId().equals(id))
-                        .filter(vergemaal -> nonNull(oppdatertVergemaal.getNyVergeIdent()) &&
-                                             (isBlank(oppdatertVergemaal.getNyVergeIdent().getEksisterendeIdent()) ||
-                                              !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getNyVergeIdent().getEksisterendeIdent())))
+                        .filter(vergemaal -> !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getVergeIdent()))
                         .flatMap(vergemaal -> getPerson(vergemaal.getVergeIdent())
                                 .flatMap(slettePerson -> deleteRelasjonerService.deleteRelasjoner(person, slettePerson, VERGE)
                                         .then(Mono.just((slettePerson))))
