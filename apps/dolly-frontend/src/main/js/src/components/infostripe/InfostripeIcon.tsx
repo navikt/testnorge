@@ -20,6 +20,11 @@ export const getInfostripeColor = (type?: string) => {
 	return variant === 'error' ? 'danger' : variant
 }
 
+export const getInfostripeStatus = (type?: string) => {
+	const variant = toInfostripeVariant(type)
+	return variant === 'info' ? 'announcement' : variant
+}
+
 interface InfostripeIconProps {
 	type?: string
 }
