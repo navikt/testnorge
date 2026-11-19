@@ -471,8 +471,7 @@ public class ArtifactUpdateService {
                         .flatMap(vergemaal -> getPerson(vergemaal.getVergeIdent())
                                 .flatMap(slettePerson -> deleteRelasjonerService.deleteRelasjoner(person, slettePerson, VERGE)
                                         .then(Mono.just((slettePerson))))
-                                .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())
-                                        .then(Mono.just(vergemaal))))
+                                .flatMap(slettePerson -> deletePerson(slettePerson, vergemaal.isEksisterendePerson())))
                         .then(Mono.defer(() ->
                                 updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal")))
                         .doOnNext(vergemaal -> {
