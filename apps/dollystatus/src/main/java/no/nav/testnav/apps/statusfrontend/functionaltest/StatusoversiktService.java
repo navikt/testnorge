@@ -137,14 +137,21 @@ public class StatusoversiktService {
             boolean kjoringPagaar,
             Instant now
     ) {
-        if (kjoringPagaar || problemer.isEmpty()) {
+        if (kjoringPagaar) {
             return Mono.just(Optional.empty());
+        }
+        if (problemer.isEmpty()) {
+            return Mono.just(Optional.of(notBefore(coordinator.nesteManuelleKjoringForAlle(), now)));
         }
 
         return coordinator.nesteManuelleKjoringForFeilede()
-                .map(cooldown -> Optional.of(cooldown
-                        .filter(value -> value.isAfter(now))
-                        .orElse(now)));
+                .map(cooldown -> Optional.of(notBefore(cooldown, now)));
+    }
+
+    private static Instant notBefore(Optional<Instant> cooldown, Instant now) {
+        return cooldown
+                .filter(value -> value.isAfter(now))
+                .orElse(now);
     }
 
     private Problem toProblem(FunctionalTestStatus status) {

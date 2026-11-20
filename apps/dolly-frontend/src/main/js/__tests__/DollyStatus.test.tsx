@@ -493,3 +493,55 @@ dollyTest('keeps the known status and shows a running test run', async () => {
 	expect(await screen.findByText('Alle fagsystem OK.')).toBeInTheDocument()
 	expect(screen.getByText('Ny testkjøring pågår.')).toBeInTheDocument()
 })
+
+dollyTest(
+	'starts all tests again from an OK status when the full-run cooldown has passed',
+	async () => {
+		mockStatusoversikt(
+			createStatusoversikt({ nesteManuelleKjoringTidligst: new Date().toISOString() }),
+		)
+		mockBruker(gjeldendeAzureBrukerMock)
+		const postSpy = vi.fn()
+		worker.use(
+			http.post(`${testkjoringerUrl}/alle`, ({ request }) => {
+				postSpy(request.url)
+				return HttpResponse.json({ runId: 'test-run' }, { status: 202 })
+			}),
+		)
+		renderDollyStatus()
+
+		await userEvent.click(await screen.findByRole('button', { name: 'Systemstatus: Alt fungerer' }))
+		await userEvent.click(await screen.findByRole('button', { name: 'Kjør alle tester på nytt' }))
+
+		await waitFor(() => expect(postSpy).toHaveBeenCalledOnce())
+		expect(
+			screen.queryByRole('button', { name: 'Kjør feilende tester på nytt' }),
+		).not.toBeInTheDocument()
+	},
+)
+
+dollyTest('locks the run-all action until the full-run cooldown has passed', async () => {
+	const deadline = new Date(Date.now() + 10 * 60_000).toISOString()
+	mockStatusoversikt(createStatusoversikt({ nesteManuelleKjoringTidligst: deadline }))
+	mockBruker(gjeldendeAzureBrukerMock)
+	renderDollyStatus()
+
+	await userEvent.click(await screen.findByRole('button', { name: 'Systemstatus: Alt fungerer' }))
+
+	expect(
+		await screen.findByRole('button', { name: /^Kan kjøres igjen kl\. \d{2}:\d{2}$/ }),
+	).toBeDisabled()
+})
+
+dollyTest('hides the run-all action for BANKID users', async () => {
+	mockStatusoversikt(
+		createStatusoversikt({ nesteManuelleKjoringTidligst: new Date().toISOString() }),
+	)
+	mockBruker(gjeldendeBankidBrukerMock)
+	renderDollyStatus()
+
+	await userEvent.click(await screen.findByRole('button', { name: 'Systemstatus: Alt fungerer' }))
+	await screen.findByText('Alle fagsystem OK.')
+
+	expect(screen.queryByRole('button', { name: 'Kjør alle tester på nytt' })).not.toBeInTheDocument()
+})

@@ -183,6 +183,38 @@ public class FunctionalTestCoordinator {
                 .max(Instant::compareTo));
     }
 
+    public Mono<RunReference> startAll() {
+        var registrations = registry.registrations();
+        var technicalRegistrations = registry.technicalRegistrations();
+        var pdlLifecycle = pdlLifecycles.stream().findFirst();
+        return startManual(
+                registrations,
+                technicalRegistrations,
+                pdlLifecycle,
+                allKeys(registrations, technicalRegistrations, pdlLifecycle),
+                cache::fullRunCooldownUntil);
+    }
+
+    public Optional<Instant> nesteManuelleKjoringForAlle() {
+        var registrations = registry.registrations();
+        var technicalRegistrations = registry.technicalRegistrations();
+        return allKeys(registrations, technicalRegistrations, pdlLifecycles.stream().findFirst()).stream()
+                .map(cache::fullRunCooldownUntil)
+                .flatMap(Optional::stream)
+                .max(Instant::compareTo);
+    }
+
+    private List<FunctionalTestKey> allKeys(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
+            Optional<PdlTestLifecycle<?, ?>> pdlLifecycle
+    ) {
+        return Stream.concat(
+                        pdlLifecycle.map(this::pdlKeys).stream().flatMap(List::stream),
+                        keysOf(registrations, technicalRegistrations).stream())
+                .toList();
+    }
+
     public Mono<RunReference> startFunctionalTests() {
         var registrations = registry.registrations();
         var pdlLifecycle = pdlLifecycles.stream().findFirst();
@@ -208,6 +240,16 @@ public class FunctionalTestCoordinator {
             Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
             List<FunctionalTestKey> cooldownKeys
     ) {
+        return startManual(registrations, technicalRegistrations, pdlLifecycle, cooldownKeys, cache::cooldownUntil);
+    }
+
+    private Mono<RunReference> startManual(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
+            Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
+            List<FunctionalTestKey> cooldownKeys,
+            Function<FunctionalTestKey, Optional<Instant>> cooldownUntil
+    ) {
         return Mono.deferContextual(contextView -> Mono.fromSupplier(() -> {
             synchronized (runMonitor) {
                 if (nonNull(activeRun)) {
@@ -216,7 +258,7 @@ public class FunctionalTestCoordinator {
                 if (registrations.isEmpty() && technicalRegistrations.isEmpty() && pdlLifecycle.isEmpty()) {
                     throw new FunctionalTestNotFoundException();
                 }
-                verifyCooldown(cooldownKeys);
+                verifyCooldown(cooldownKeys, cooldownUntil);
                 return launch(registrations, technicalRegistrations, pdlLifecycle, contextView, false);
             }
         }));
@@ -292,9 +334,12 @@ public class FunctionalTestCoordinator {
     ) {
     }
 
-    private void verifyCooldown(List<FunctionalTestKey> keys) {
+    private void verifyCooldown(
+            List<FunctionalTestKey> keys,
+            Function<FunctionalTestKey, Optional<Instant>> cooldownUntil
+    ) {
         var retryAfter = keys.stream()
-                        .map(cache::cooldownUntil)
+                        .map(cooldownUntil)
                         .flatMap(Optional::stream)
                         .max(Instant::compareTo);
         if (retryAfter.isPresent()) {

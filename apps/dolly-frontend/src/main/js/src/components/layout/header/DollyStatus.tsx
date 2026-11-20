@@ -147,7 +147,7 @@ const isValidTimestamp = (time: string | null | undefined): time is string =>
 	typeof time === 'string' && !Number.isNaN(Date.parse(time))
 
 export const DollyStatus = () => {
-	const { statusoversikt, error, kjorFeilede, kjorUtlopte } = useDollyStatus()
+	const { statusoversikt, error, kjorFeilede, kjorUtlopte, kjorAlle } = useDollyStatus()
 	const { currentBruker } = useCurrentBruker()
 	const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null)
 	const [open, setOpen] = useState(false)
@@ -169,6 +169,15 @@ export const DollyStatus = () => {
 			? parsedManualDeadline
 			: undefined
 	const canRunManually = manualDeadlineTime !== undefined && manualDeadlineTime <= now
+	const rerunLabel = (readyLabel: string) => {
+		if (statusoversikt?.kjoringPagaar) {
+			return 'Kjøring pågår'
+		}
+		if (manualDeadlineTime !== undefined && manualDeadlineTime > now) {
+			return `Kan kjøres igjen kl. ${formatClockTime(manualDeadline!)}`
+		}
+		return readyLabel
+	}
 
 	useEffect(() => {
 		if (!manualDeadline || manualDeadlineTime === undefined || manualDeadlineTime <= now) {
@@ -324,11 +333,21 @@ export const DollyStatus = () => {
 									disabled={posting || !!statusoversikt?.kjoringPagaar || !canRunManually}
 									onClick={() => void handleManualKjoring(kjorFeilede)}
 								>
-									{statusoversikt?.kjoringPagaar
-										? 'Kjøring pågår'
-										: manualDeadlineTime !== undefined && manualDeadlineTime > now
-											? `Kan kjøres igjen kl. ${formatClockTime(manualDeadline!)}`
-											: 'Kjør feilende tester på nytt'}
+									{rerunLabel('Kjør feilende tester på nytt')}
+								</Button>
+							</div>
+						)}
+						{canRunTests && !error && statusoversikt?.status === 'OK' && !hasProblems && (
+							<div>
+								<Button
+									size="small"
+									variant="secondary"
+									icon={<ArrowsCirclepathIcon aria-hidden />}
+									loading={posting}
+									disabled={posting || !!statusoversikt.kjoringPagaar || !canRunManually}
+									onClick={() => void handleManualKjoring(kjorAlle)}
+								>
+									{rerunLabel('Kjør alle tester på nytt')}
 								</Button>
 							</div>
 						)}

@@ -8,6 +8,7 @@ import { NotFoundError } from '@/error'
 const dollyStatusUrl = '/testnav-dollystatus/api/v1/statusoversikt'
 const testkjoringerUrl = '/testnav-dollystatus/api/v1/testkjoringer'
 const feiledeTestkjoringerUrl = `${testkjoringerUrl}/feilede`
+const alleTestkjoringerUrl = `${testkjoringerUrl}/alle`
 const maxTimerDelay = 2_147_483_647
 const retryDelay = 60_000
 const automaticRetryCooldown = 15 * 60_000
@@ -167,6 +168,7 @@ export interface UseDollyStatusResult {
 	error: Error | undefined
 	kjorFeilede: () => Promise<DollyStatusKjoringResult>
 	kjorUtlopte: () => Promise<DollyStatusKjoringResult>
+	kjorAlle: () => Promise<DollyStatusKjoringResult>
 	mutate: KeyedMutator<DollyStatusOversikt>
 }
 
@@ -196,6 +198,7 @@ export const useDollyStatus = (): UseDollyStatusResult => {
 		error,
 		kjorFeilede: () => startManualKjoring(feiledeTestkjoringerUrl),
 		kjorUtlopte: () => startManualKjoring(testkjoringerUrl),
+		kjorAlle: () => startManualKjoring(alleTestkjoringerUrl),
 		mutate,
 	}
 }

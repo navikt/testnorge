@@ -214,4 +214,20 @@ class FunctionalTestCacheTest {
 
         assertThat(cache.cooldownUntil(KEY)).isEmpty();
     }
+
+    @Test
+    void shouldApplyFullRunCooldownForFifteenMinutesFromStart() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var clock = new MutableClock(startedAt.plus(Duration.ofMinutes(14)));
+        var cache = new FunctionalTestCache(clock);
+
+        cache.start(KEY, DISPLAY_NAME, RunId.random(), startedAt);
+
+        assertThat(cache.fullRunCooldownUntil(KEY))
+                .contains(startedAt.plus(Duration.ofMinutes(15)));
+
+        clock.setInstant(startedAt.plus(Duration.ofMinutes(15)));
+
+        assertThat(cache.fullRunCooldownUntil(KEY)).isEmpty();
+    }
 }

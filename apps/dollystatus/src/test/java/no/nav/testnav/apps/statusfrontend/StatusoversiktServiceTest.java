@@ -334,22 +334,33 @@ class StatusoversiktServiceTest {
     }
 
     @Test
-    void shouldReturnNullAsNextManualRunWithoutProblemsOrWhileRunning() {
+    void shouldUseFullRunCooldownAsNextManualRunWithoutProblems() {
+        var nextFullRun = NOW.plus(Duration.ofMinutes(14));
         givenStatuses(List.of(status(
                 "arena",
                 "Arena",
                 FunctionalTestEnvironment.Q1,
                 FunctionalTestState.OK,
-                NOW.minusSeconds(30),
+                NOW.minusSeconds(60),
                 COMPLETED_AT,
                 CACHED_UNTIL,
                 null,
                 TechnicalStatus.unknown())), false);
+        when(coordinator.nesteManuelleKjoringForAlle()).thenReturn(Optional.of(nextFullRun));
 
         StepVerifier.create(service.getStatusoversikt())
-                .assertNext(response -> assertThat(response.nesteManuelleKjoringTidligst()).isNull())
+                .assertNext(response -> assertThat(response.nesteManuelleKjoringTidligst()).isEqualTo(nextFullRun))
                 .verifyComplete();
 
+        when(coordinator.nesteManuelleKjoringForAlle()).thenReturn(Optional.empty());
+
+        StepVerifier.create(service.getStatusoversikt())
+                .assertNext(response -> assertThat(response.nesteManuelleKjoringTidligst()).isEqualTo(NOW))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnNullAsNextManualRunWhileRunning() {
         givenStatuses(List.of(status(
                 "pdl",
                 "PDL",

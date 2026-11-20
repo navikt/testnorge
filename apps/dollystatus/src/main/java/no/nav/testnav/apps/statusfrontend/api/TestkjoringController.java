@@ -45,6 +45,14 @@ public class TestkjoringController {
                 .doOnNext(accepted -> testkjoringMetrikker.registrerStart("feilede", jwt));
     }
 
+    @PostMapping("/testkjoringer/alle")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Mono<RunAcceptedResponse> startAllTests(@AuthenticationPrincipal Jwt jwt) {
+        return coordinator.startAll()
+                .map(RunAcceptedResponse::from)
+                .doOnNext(accepted -> testkjoringMetrikker.registrerStart("alle-systemer", jwt));
+    }
+
     @GetMapping("/testkjoringer/{runId}")
     public Mono<TestRunResponse> getRun(@PathVariable String runId) {
         return coordinator.getRun(RunId.from(runId))

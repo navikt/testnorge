@@ -395,6 +395,33 @@ class FunctionalTestCoordinatorTest {
     }
 
     @Test
+    void shouldRejectFullManualRunForFifteenMinutesAfterStart() {
+        var definition = new CountingDefinition();
+        var clock = new MutableClock(STARTED_AT);
+        var registry = new FunctionalTestRegistry(List.of(definition));
+        var cache = new FunctionalTestCache(clock);
+        var coordinator = new FunctionalTestCoordinator(registry, cache, clock);
+        var firstRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(firstRun).isNotNull();
+        awaitCompleted(coordinator, firstRun);
+
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+        assertThatThrownBy(() -> coordinator.startAll().block(Duration.ofSeconds(1)))
+                .isInstanceOf(FunctionalTestCooldownException.class);
+        assertThat(coordinator.nesteManuelleKjoringForAlle())
+                .contains(STARTED_AT.plus(Duration.ofMinutes(15)));
+
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(15)));
+        assertThat(coordinator.nesteManuelleKjoringForAlle()).isEmpty();
+        var manualRun = coordinator.startAll().block(Duration.ofSeconds(1));
+
+        assertThat(manualRun).isNotNull();
+        awaitCompleted(coordinator, manualRun);
+        assertThat(definition.createAttempts).hasValue(2);
+    }
+
+    @Test
     void shouldStartOnlyFailedSystems() {
         var failed = new VerifyFailureDefinition() {
             @Override

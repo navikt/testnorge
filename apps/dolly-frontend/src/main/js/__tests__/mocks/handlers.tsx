@@ -36,4 +36,7 @@ export const handlers = [
 	http.post('/testnav-dollystatus/api/v1/testkjoringer/feilede', () => {
 		return HttpResponse.json({ runId: 'test-run' }, { status: 202 })
 	}),
+	http.post('/testnav-dollystatus/api/v1/testkjoringer/alle', () => {
+		return HttpResponse.json({ runId: 'test-run' }, { status: 202 })
+	}),
 ]

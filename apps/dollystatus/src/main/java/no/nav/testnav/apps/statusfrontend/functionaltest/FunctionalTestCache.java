@@ -30,6 +30,7 @@ public class FunctionalTestCache {
     private static final Duration DEFAULT_OK_TTL = Duration.ofHours(6);
     private static final Duration DEFAULT_FAILURE_TTL = Duration.ofHours(1);
     static final Duration MANUAL_COOLDOWN = Duration.ofMinutes(5);
+    static final Duration FULL_RUN_COOLDOWN = Duration.ofMinutes(15);
 
     private final Clock clock;
     private final Duration okTtl;
@@ -90,9 +91,17 @@ public class FunctionalTestCache {
     }
 
     public Optional<Instant> cooldownUntil(FunctionalTestKey key) {
+        return cooldownUntil(key, MANUAL_COOLDOWN);
+    }
+
+    public Optional<Instant> fullRunCooldownUntil(FunctionalTestKey key) {
+        return cooldownUntil(key, FULL_RUN_COOLDOWN);
+    }
+
+    private Optional<Instant> cooldownUntil(FunctionalTestKey key, Duration cooldown) {
         return get(key)
                 .map(FunctionalTestStatus::startedAt)
-                .map(startedAt -> startedAt.plus(MANUAL_COOLDOWN))
+                .map(startedAt -> startedAt.plus(cooldown))
                 .filter(cooldownUntil -> clock.instant().isBefore(cooldownUntil));
     }
 

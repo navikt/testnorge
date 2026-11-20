@@ -8,6 +8,7 @@
 - Frontend starter automatisk sjekker når `nesteAutomatiskeKjoring` har passert. Dette skjer bare for Azure-brukere mens en Dolly-fane er åpen og synlig.
 - Dersom to eller flere besøkende går inn samtidig, vil de dele pågående kjøring i samme appinstans istedenfor å starte en hver. 
 - `POST /api/v1/testkjoringer/feilede` starter sjekker for systemer med problemer. Svaret er 202 med `runId`. Endepunktet svarer 404 når ingen systemer har problemer, 409 når en kjøring pågår og 429 når det er under fem minutter siden forrige manuelle start.
+- `POST /api/v1/testkjoringer/alle` starter alle sjekkene på nytt, også når alt er OK. Svaret er 202 med `runId`. Endepunktet svarer 409 når en kjøring pågår og 429 når det er under 15 minutter siden en av sjekkene sist ble startet.
 - Panelene «Funksjonstester» og «Interne sjekker» har hver sin «Kjør alle på nytt». Knappen kjører alle sjekkene i panelet og er sperret i fem minutter etter at en av dem sist ble startet. PDL hører til funksjonstestene, men kjøres også med de interne sjekkene når MEDL krever det. Sperren ligger i minnet og nullstilles ved ny deploy eller restart.
 - Frontend poller hvert andre sekund og viser fremdrift og resultat per fagsystem og miljø, med Q1/Q2 der systemet støtter det. SSE er et mulig forbedringspunkt her, men ble sløyfet for enklere oppsett i første omgang.
 - PDL klargjøres først. Deretter kjøres Tags, Kontoregister, Pensjon, AAREG og Inntektstub før øvrige systemer. PDL-opprydding kjøres sist.
@@ -25,6 +26,8 @@
 - `ADVARSEL` betyr at en test er `BLOCKED` eller `CLEANUP_FAILED`, eller at en teknisk sjekk har status `DOWN`.
 - `UKJENT` vises når ingen sjekk er fullført, eller når det nyeste resultatet er eldre enn `dollystatus.utdatert-etter` (standard `PT6H`).
 - `OK` vises når ingen av de andre reglene gjelder.
+
+`nesteManuelleKjoringTidligst` gjelder «Kjør feilende tester på nytt» (fem minutters sperre) når det finnes problemer, og «Kjør alle tester på nytt» (15 minutters sperre) når det ikke finnes problemer. Feltet er `null` mens en kjøring pågår.
 
 API-et krever et Azure-token for en bruker. Tokenet må ha `scp` og en `oid` som er ulik `sub`, og det kan ikke ha `idtyp=app`. TokenX-brukere, inkludert BankID-brukere via dolly-frontend, kan bare lese `GET /api/v1/statusoversikt`. App-tokens med `idtyp=app` og tokens fra ukjente issuere avvises. Wonderwall hopper over innlogging for `/api/**`, slik at Spring kan validere tokenet.
 
