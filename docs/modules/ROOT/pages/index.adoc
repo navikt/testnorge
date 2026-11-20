@@ -23,7 +23,7 @@ Med Dolly kan utviklingsteam raskt og enkelt opprette realistiske testpersoner m
 
 Dolly er et verktøy som gjør det mulig å:
 
-* *Opprette syntetiske personer* med fødselsnummer, navn, adresse og demografiske data
+* *Opprette syntetiske personer* med fødselsnummer, navn, adresse og demografiske data (alder, kjønn, sivilstatus, etc.)
 * *Definere egenskaper og relasjoner* som arbeidsforhold, inntekt, familiemedlemmer, ytelser og mer
 * *Deploy til testmiljøer* – distribuer testpersonene til valgte testmiljøer (Q1, Q2, etc.)
 * *Gjenbruke testdata* – lagre bestillinger som maler for senere bruk
@@ -62,104 +62,158 @@ Har du spørsmål? Se xref:index.adoc#faq[Ofte stilte spørsmål (FAQ)] eller ko
 Et omfattende eksempel på bestilling av tilgang til Dolly samt bruk av Dolly er tilgjengelig på team helsearbeidsgiver sine docs: https://github.com/navikt/sykepenger-im-lps-api/wiki/Testdata
 
 [[brukerveiledning]]
-=== Brukerveiledning
+== Brukerveiledning
 
 I Dolly kan du opprette syntetiske personer med forskjellige egenskaper og tilgjengeliggjøre dataene i valgte testmiljøer.
 Følg veiledningen under for å komme i gang.
 
 [[palogging]]
-==== Pålogging
+=== Pålogging
+==== Pålogging internt
 
-Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet.
-Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
+Dolly benytter seg av Single Sign On (SSO) som betyr at du automatisk er pålogget når du allerede er innloget hos Nav.
+Motsatt blir du krevd for Nav-pålogging hvis dette mangler.
 
-Det første som møter deg når du har logget inn er en startside med noen menyvalg.
-Siden åpnes automatisk med en oversikt over dine grupper.
+==== Pålogging eksternt
 
-image::dolly/startside.png[Startside]
+Dolly støtter BankID pålogging for eksterne brukere. Betingelsen er at organisasjonen den eksterne brukeren tilhører har
+fått Dolly-tilgang ved forspørsel på dolly@nav.no. I tillegg må den ekstren brukeren være tildelt Altinn-rollen #Navs Dolly
+for samarbeidspartnere#. Rollen kan kun tildeles av Altinn-ansvarlig i den eksterne organisasjonen.
 
+[[Førstegangsbruk]]
+=== Førstegangsbruk
 Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter.
 Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
 
 image::dolly/varslinger.png[Varslinger]
 
+[[startside]]
+=== Startside
+Det første som møter deg når du har logget inn er en startside med noen menyvalg.
+Siden åpnes automatisk med en oversikt over dine grupper.
+
+Under #Mine# vises grupper opprettet av deg selv.
+Under #Alle# vises dine og andres grupper. Her kan du stjernemarkere andre sine grupper og disse vil da vises under #Favoritter#.
+En god regel er at du ikke endrer andres grupper uten avtale med eieren.
+
+image::dolly/startside.png[Startside]
+
 [[opprette_gruppe]]
-==== Opprette en ny gruppe
+=== Opprette en ny gruppe
 
 For å opprette nye syntetiske personer i Dolly kan du enten lage en ny gruppe eller legge til personer i en eksisterende gruppe.
 En gruppe inneholder personer du eller teamet har opprettet.
-
-Under Mine vises grupper opprettet av deg selv.
-Under Alle vises dine og andres grupper.
-En god regel er at du ikke endrer andres grupper uten avtale med eieren.
 
 Trykk på Ny gruppe og velg navn og beskriv hensikten med gruppen.
 Når hensikten er beskrevet er det enklere for både deg selv og eventuelt andre du samarbeider med å forstå hva denne gruppen brukes til.
 Trykk Opprett og gå til gruppe.
 
-image::dolly/testdatagrupper.png[Testdatagrupper]
+image::dolly/opprett_gruppe.png[Testdatagrupper]
 
+[[legge_til_personer_i_en_gruppe]]
+==== Legge til personer i en gruppe
 Inne på gruppen har du en oversikt over alle personene som tilhører gruppen og hvilke egenskaper de har.
-Her kan du også legge til nye personer.
+Her kan du velge #Opprett personer# for å lage nye Nav-syntetiske personer, eller #Importer personer# for å gjøre et Tenor-søk
+og importere Test-Norge-personer fra Skatteetaten. Bemerk at brukere med BankID-pålogging er begrenset til import fra Test-Norge
+kun slik at referanser er gyldig på tvers av organisasjonene.
 
 image::dolly/ny_testdatagruppe.png[Ny testdatagruppe]
 
-Det kommer opp en boks der du får to valg:
+==== Opprett/import av personer
 
-. Opprette helt nye personer (Dolly finner et ubrukt fnr, dnr eller bost)
-. Opprette fra eksisterende fnr, dnr eller bost (identen kan ikke finnes i prod eller i Dolly)
+Ved #Importer personer# er det først et eget skjermbilde for valg av kandidater som oppfyller de ønskede personkriterier, og
+eventuelt krav til opplysninger i andre fagsystem (hos Skatteetaten):
 
-Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
+image::dolly/tenor_soek.png[Tenor soek]
 
-Opprettelse av personer følger en prosess med fire steg:
+Opprett personer og Importer personer følger så en fire stegs vegviser som i store trekk er identisk:
 
 image::dolly/opprettelse_prosess.png[Opprettelse prosess]
 
-. Angi identtype, antall identer og hvilken gruppe disse skal havne i.
-. Velg hvilke egenskaper du selv ønsker å bestemme.
-De resterende egenskapene vil systemet sette.
-. Angi verdier på egenskapene du valgte i steg 1.
-. Oppsummering og valg av hvilke testmiljø personene skal sendes til.
+Ved #Opprett personer# får du valg mellom ny person eller eksisterende person:
 
+image::dolly/opprett_personer.png[opprett personer]
 
-[[velg_identtype]]
-===== Velg identtype, antall og gruppe
+- Opprette helt nye personer: Dolly finner nye FNR, DNR eller NPID basert på antall, identtype, og eventuelt id2032 format.
+- Opprette fra eksisterende FNR, DNR eller NPID (identene kan ikke finnes i prod eller i Dolly fra før), dette blir det
+gjort sjekk for før man går videre.
 
-image::dolly/velg_ny_person.png[Velg ny person]
+Både ved oppretting og import er dialogen videre identisk i steg 1:
 
-I dette vinduet velger du om du ønsker å opprette personer med nye identer eller om du ønsker å opprette personer med eksisterende identer.
-Man kan også velge antall personer som skal opprettes og hvilken gruppe de skal legges til i, samt eventuell mal for bestillingen.
+image::dolly/gruppe_og_mal.png[Gruppe og mal]
+
+Her identifiserer du hvilken gruppe personene skal legges til i, og eventuelt hvilken mal som skal brukes for bestillingen.
+Mal her betyr bare at visse egenskaper og verdier er pre-utfylt, men kan likevel endres før innsending.
 
 [[velg_egenskaper]]
 ===== Velg egenskaper
 
 image::dolly/velg_egenskaper.png[Velg egenskaper]
 
-Det finnes en lang rekke områder med egenskaper du kan velge.
-Trykk på pil ned til høyre i boksen for å ekspandere hvert område.
-I de fleste tilfeller er det kun et utvalg egenskaper som er nødvendig å definere for testscenariene dine.
-Dolly tildeler verdier til egenskaper du ikke krysser av for.
+I steg 2 bestemmes egenskaper; dette omfatter personopplysninger og data som skal legges til i interne registre hos Nav.
+Trykk på ønsket fane og velg de systemene som er relevante for dine tester.
+Du kan kan gå frem og tilbake mellom stegene for å endre valg, og du kan også senere supplere tidligere opprettede personer
+eller hel gruppe med flere opplysninger.
 
 I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper:
 
 image::dolly/valgt_egenskap.png[Valgt egenskap]
 
-Team Dolly videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende.
+Vi videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende etter ønske og behov.
 Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives/CA3P9NGA2[#dolly].
+
+[[velg_verdier]]
+===== Velg verdier
+
+I steg 3 spesifiserer du verdiene på de egenskapene du valgte i steg 2.
+
+For arbeidsforhold kan du velge organisasjon fra et av våre fellesorganisasjoner, fra egen organisasjon, eventuelt et av
+to valg til. Uansett må organisasjonen finnes i Enhetsregisteret og organisasjonsform være av type BEDR eller AAFY;
+det er kun disse som kan ha ansatte med arbeidsforhold. Dolly sjekker dette for deg når organisasjon har blitt valgt.
+
+Velg også stillingstype, ansettelsedato og yrke.
+Arbeidsforhold har flere attributter som kan settes, men disse er de viktigste.
+
+image::dolly/velg_verdier.png[Velg verdier]
+
+[[velg_personverdier]]
+====== Personverdier
+Det kan være greit å vite at ved opprett person med FNR, vil disse automatisk få fødselsnummer, navn, kjønn, fødested,
+fødselsdato, sivilstatus ugift, bostedsadresse, norsk statsborgerskap og folkeregister-personstatus bosatt. For alle personer,
+hvis ikke annet er valgt vil aldersdistribusjon være 30-60 år og kjønnnsfordeling være lik mellom mann og kvinne.
+Barn vil automatisk få aldersdistribusjon 0-17 år, og foreldre 60-80 år.
+Ektefelle/partner vil aldersmessig samsvare hovedperson med +- 3 år. Hvert 20. par (5%) vil være likekjønnet.
+Alt Dette kan endres ved å velge egenskapene i steg 2 og angi verdier i steg 3.
 
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
 
-For mer informasjon om Navs testmiljøer se: https://confluence.adeo.no/pages/viewpage.action?pageId=305341700
+[[velg_miljø]]
+===== Oppsummering/Velg miljø
+
+Ikke alle miljø er tilgjengelig for Dolly; vårt hovedmiljø er det helsyntetiske Q2-miljøet. Vi støtter også Q1 som
+inneholder en blanding av syntetiske og prodlike maskerte data. Det siste er nødvendig fordi Navs Infotrygd på stormaskin
+ikke støtter syntetiske fødselsnumre. Av samme grunn er det verdt å nevne at registre for sykemelding og arbeidssøker
+som også konsumeres av Infotrygd kun finnes i Q1. Så derfor, inkluder Q1 som miljøvalg hvis dette skal kombineres med
+sykemelding/registrering av arbeidssøker. Q4 støttes og benyttes unntaksvis av AAREG og ARENA; tilgjengelighet
+på miljøet kan være begrenset. For mer informasjon se
+link:https://confluence.adeo.no/pages/viewpage.action?pageId=305341700[Navs testmiljøer].
 
 image::dolly/miljoe_valg.png[Miljøvalg]
 
-Velg miljø, og opprett en mal dersom denne bestillingen skal gjentas senere.
-Kommentar kan brukes til å gjenkjenne identen senere, da denne vil vises ved hover i personlisten.
+Kontroller at oppsummering viser de egenskaper og verdier du ønsker; velg så miljø, og velge opprett en mal dersom denne
+bestilling ønskes gjentatt ved en annen anledning. Mal kan også opprettes i etterkant, fra bestilling eller fra person og
+da vil malen innholde samtlige oppdateringer på personen.
 
-image::dolly/opprettet_gruppe.png[Opprettet gruppe]
+Trykk opprett og bestillingen starter. Du vil få en oppdatert statusmelding når bestillingen er ferdig, og du kan da gå til
+personfanen for å se detaljer på personen(e). Merk at persondata til PDL er uavhengig av miljø; det havner i alle miljøer,
+med unntak av Q0, og pensjon persondata (unntatt for NPID) distribueres alltid til Q1 og Q2.
 
-Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer.
-Trykk på pil ned til høyre på raden for detaljinformasjon per person.
+image::dolly/bestilling_status.png[bestilling status]
+
+[[bestilling_status]]
+
+Opprettet testpersonen har blitt lagt til i gruppe og testdata kan hentes fra PDL og fagsystem, her AAREG.
+Trykk på personfanen for å ekspandere denne og vise detaljene.
 
 [[leggtil_endre_person]]
 ==== Legg til eller endre person
@@ -203,7 +257,7 @@ image::dolly/flytte_identer.png[Flytte identer]
 ==== Opprette og bruke maler
 
 Når du oppretter en ny person i Dolly kan du velge å lagre bestillingen som en mal.
-Malen kan senere hentes av deg selv eller andre og gir en ferdigutfylt bestilling.
+Malen kan senere gjenbrukes av deg og andre og gir en ferdigutfylt bestilling som også kan endres før innsending.
 
 For å lage en mal huk av for Lagre som mal på siste steg i prosessen.
 Gi malen et beskrivende navn.
@@ -301,13 +355,19 @@ Etter innmelding kan du på samme måte som over bytte representasjon til teamet
 
 Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister.
 Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
-Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned.
-Hele Test-Norge populasjonen er tilgjengelig i PDL.
+Populasjonen har syntetiske FNR/DNR hvor det er lagt til +80 på måned. Hele Test-Norge populasjonen er tilgjengelig for
+bruk i Dolly.
 
 [[dolly_testnorge_sok_import]]
 ===== Søk og import
 
-Under Test-Norge fanen i Dolly er det mulig å søke opp Test-Norge identiteter i Dolly, velge identiteter man ønsker å ta i bruk, velge ekstra informasjon som skal legges til og importere dem inn i en ønsket gruppe i Dolly.
+image::dolly/soek_i_tenor.png[Min side]
+
+Ved dette valget kommer man direkte inn i samme bestillingsveilleder som i 3.4.2 over. For øvrig er det verdt å merke seg at
+verdier for inntekt (A-ordningen) og summert skattegrunnlag automatisk overføres til våre respektive interne registre,
+Inntektstub og Sigrunstub ved import. Også arbeidsforhold kan eksistere fra før på enkelte Test-Norge-personer og
+innholdet der motsvarer det som allerede finnes i vårt AAREG. Alt dette er søkbart fra Tenor-søkeside hos oss og hos Skatteetaten.
+
 Videoen under viser en demo.
 
 ++++
@@ -319,25 +379,18 @@ Videoen under viser en demo.
 </figure>
 ++++
 
-For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor brukes: https://www.skatteetaten.no/skjema/testdata
-Tenor er ikke koblet opp mot Dolly, men identiteter funnet i Tenor kan søkes opp i Dolly og importeres til en ønsket gruppe.
-
-[[dolly_testnorge_import_partner]]
-===== Import av partner
-
-Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd.
-Hvis valgt person har en partner som ikke allerede er valgt kan man huke av for IMPORT MED PARTNER for å inkludere den.
-Bildet under viser et tilfelle hvor import av partner er valgt.
-
-image::dolly/import_partner.png[Import med partner]
-
-Det er også mulig å importere partner etter opprinnelig import.
-Dette kan gjøres direkte i personvisning.
+For å finne mer spesifikke identiteter kan Skatteetatens testdataskjermsøsning Tenor benyttes:
+https://www.skatteetaten.no/skjema/testdata.
+Dolly er koblet mot Tenor og skal gi samme svarresultat, dog hos Skatt er det noen flere valg, spesielt for avanserte søk.
+For å identifisere personen i vår søkeløsning er det enkleste å klippe å lime fødselsnummeret mellom skjermbildene.
+Av-og-til vil man da oppleve at personen enten ikke finnes (for BankID-brukere betyr det at person har blitt allokert av en
+annen) eller allerede er i bruk. Hvis man gjør søket i Dolly, som bør være førstevalget, minimerer man dette problemet.
 
 [[demo_finnperson_tenor]]
 ===== Demo: Søk i Tenor og import til Dolly
 
-NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuell importert partner bli frigjort eller slettet.
+NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuelle personopplysninger som har blitt
+lagt til slettet, sammen med øvrige registre og systemer som støtter sletting.
 
 [[dolly_testnorge_idporten]]
 ===== ID-Porten
