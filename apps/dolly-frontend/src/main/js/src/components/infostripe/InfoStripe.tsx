@@ -64,7 +64,7 @@ export const InfoStripe: React.FC = () => {
 				{alertsToShow.map((alert) => (
 					<GlobalAlert key={alert.id} status={getInfostripeStatus(alert.type)} size="small">
 						<GlobalAlert.Header>
-							<GlobalAlert.Title>{INFOSTRIPE_TITLE}</GlobalAlert.Title>
+							<GlobalAlert.Title>{alert.title?.trim() || INFOSTRIPE_TITLE}</GlobalAlert.Title>
 							<GlobalAlert.CloseButton onClick={() => hideAlert(alert.id)} />
 						</GlobalAlert.Header>
 						<GlobalAlert.Content>{alert.message}</GlobalAlert.Content>

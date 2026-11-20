@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
-import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { Button, InlineMessage, Textarea } from '@navikt/ds-react'
+import { Controller, useForm } from 'react-hook-form'
+import {
+	Button,
+	HStack,
+	InlineMessage,
+	Select,
+	Textarea,
+	TextField,
+	VStack,
+} from '@navikt/ds-react'
 import { useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
-import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { addDays } from 'date-fns'
+import { InfostripeDatepicker } from '@/pages/adminPages/dollyInfostriper/InfostripeDatepicker'
+import { addDays, format } from 'date-fns'
 
-const infostripeTypeOptions = [
+export const infostripeTypeOptions = [
 	{ label: 'Info', value: 'INFO' },
 	{ label: 'Advarsel', value: 'WARNING' },
 	{ label: 'Feil', value: 'ERROR' },
@@ -15,13 +22,20 @@ const infostripeTypeOptions = [
 
 export type InfostripeFormValues = {
 	type: 'INFO' | 'WARNING' | 'ERROR' | 'SUCCESS'
+	title: string
 	message: string
-	start: Date
-	expires: Date
+	start?: Date
+	expires?: Date
 }
+
+export const INFOSTRIPE_TITLE_MAX_LENGTH = 100
+
+export const toLocalDateTime = (date?: Date) =>
+	date ? format(date, "yyyy-MM-dd'T'HH:mm:ss") : null
 
 const createDefaultValues = (): InfostripeFormValues => ({
 	type: 'INFO',
+	title: '',
 	message: '',
 	start: new Date(),
 	expires: addDays(new Date(), 7),
@@ -33,14 +47,19 @@ export const CreateInfostripeForm: React.FC = () => {
 	const [success, setSuccess] = useState<boolean>(false)
 	const [formVersion, setFormVersion] = useState(0)
 
-	const formMethods = useForm<InfostripeFormValues>({ defaultValues: createDefaultValues() })
-	const { handleSubmit, reset, control, formState } = formMethods
+	const { handleSubmit, reset, control, formState } = useForm<InfostripeFormValues>({
+		defaultValues: createDefaultValues(),
+	})
 
 	const onSubmit = async (data: InfostripeFormValues) => {
 		setServerError(null)
 		setSuccess(false)
 		try {
-			await createInfostripe(data)
+			await createInfostripe({
+				...data,
+				start: toLocalDateTime(data.start),
+				expires: toLocalDateTime(data.expires),
+			})
 			setSuccess(true)
 			reset(createDefaultValues())
 			setFormVersion((v) => v + 1)
@@ -50,24 +69,44 @@ export const CreateInfostripeForm: React.FC = () => {
 	}
 
 	return (
-		<FormProvider {...formMethods}>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<h2>Opprett ny infostripe</h2>
-
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<h2>Opprett ny infostripe</h2>
+			<VStack gap="space-16">
 				<Controller
 					name="type"
 					control={control}
 					rules={{ required: 'Påkrevd' }}
-					render={({ field }) => (
-						<DollySelect
+					render={({ field, fieldState }) => (
+						<Select
+							{...field}
 							label="Type"
-							size="medium"
-							isClearable={false}
-							options={infostripeTypeOptions}
-							value={infostripeTypeOptions.find((o) => o.value === field.value) || null}
-							onChange={(option: any) => field.onChange(option ? option.value : null)}
-							onBlur={field.onBlur}
-							name={field.name}
+							error={fieldState.error?.message}
+							style={{ maxWidth: '200px' }}
+						>
+							{infostripeTypeOptions.map((option) => (
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							))}
+						</Select>
+					)}
+				/>
+
+				<Controller
+					name="title"
+					control={control}
+					rules={{
+						maxLength: {
+							value: INFOSTRIPE_TITLE_MAX_LENGTH,
+							message: `Maks ${INFOSTRIPE_TITLE_MAX_LENGTH} tegn`,
+						},
+					}}
+					render={({ field, fieldState }) => (
+						<TextField
+							{...field}
+							label="Tittel"
+							maxLength={INFOSTRIPE_TITLE_MAX_LENGTH}
+							error={fieldState.error?.message}
 						/>
 					)}
 				/>
@@ -89,12 +128,22 @@ export const CreateInfostripeForm: React.FC = () => {
 					)}
 				/>
 
-				<div style={{ display: 'flex', marginTop: '10px' }}>
-					<DollyDatepicker key={`start-${formVersion}`} label="Start" name="start" />
-					<DollyDatepicker key={`expires-${formVersion}`} label="Slutt" name="expires" />
-				</div>
+				<HStack gap="space-16">
+					<InfostripeDatepicker
+						key={`start-${formVersion}`}
+						name="start"
+						label="Start"
+						control={control}
+					/>
+					<InfostripeDatepicker
+						key={`expires-${formVersion}`}
+						name="expires"
+						label="Slutt"
+						control={control}
+					/>
+				</HStack>
 
-				<div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '1rem' }}>
+				<HStack gap="space-12" align="center" marginBlock="space-8 space-0">
 					<Button type="submit" loading={formState.isSubmitting}>
 						Opprett
 					</Button>
@@ -115,8 +164,8 @@ export const CreateInfostripeForm: React.FC = () => {
 						<InlineMessage status="error">{serverError.replace(/\?\S*/, '')}</InlineMessage>
 					)}
 					{success && <InlineMessage status="success">Infostripe opprettet</InlineMessage>}
-				</div>
-			</form>
-		</FormProvider>
+				</HStack>
+			</VStack>
+		</form>
 	)
 }

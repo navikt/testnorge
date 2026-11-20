@@ -4,6 +4,14 @@ import { getInfostripeColor, InfostripeIcon } from '@/components/infostripe/Info
 import { InfoStripeType, useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
 import { EditInfostripeForm } from './EditInfostripeForm'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import styled from 'styled-components'
+
+const FullWidthMessage = styled(InfoCard.Message)`
+	& > :last-child {
+		flex: 1;
+		min-width: 0;
+	}
+`
 
 interface Props {
 	stripe: InfoStripeType
@@ -27,7 +35,7 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 	return (
 		<li style={{ marginBottom: '1rem' }} data-testid={TestComponentSelectors.INFOSTRIPE_ITEM}>
 			<InfoCard data-color={getInfostripeColor(stripe.type)} style={{ position: 'relative' }}>
-				<InfoCard.Message icon={<InfostripeIcon type={stripe.type} />}>
+				<FullWidthMessage icon={<InfostripeIcon type={stripe.type} />}>
 					<div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
 						<Tag data-color="neutral" size="small" variant="strong">
 							{stripe.id}
@@ -40,6 +48,11 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 							{stripe.expires ? new Date(stripe.expires).toLocaleString() : 'Ingen sluttdato'}
 						</BodyShort>
 					</div>
+					{stripe.title && (
+						<BodyShort weight="semibold" style={{ marginTop: '.5rem' }}>
+							{stripe.title}
+						</BodyShort>
+					)}
 					<div style={{ marginTop: '.5rem', whiteSpace: 'pre-wrap' }}>{stripe.message}</div>
 					<div style={{ display: 'flex', gap: '.5rem', marginTop: '.75rem' }}>
 						{!editing && (
@@ -85,7 +98,7 @@ export const InfostripeListItem: React.FC<Props> = ({ stripe }) => {
 							<EditInfostripeForm stripe={stripe} onDone={() => setEditing(false)} />
 						</div>
 					)}
-				</InfoCard.Message>
+				</FullWidthMessage>
 			</InfoCard>
 		</li>
 	)
