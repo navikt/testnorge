@@ -11,6 +11,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTes
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestResponseException.Reason;
+import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunInProgressException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestRunNotFoundException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.exception.FunctionalTestVerificationTimeoutException;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.CleanupExpectation;
@@ -40,6 +41,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
+import reactor.test.StepVerifier;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -53,6 +55,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
@@ -344,7 +347,7 @@ class FunctionalTestCoordinatorTest {
                     assertThat(status.state()).isEqualTo(FunctionalTestState.OK);
                     assertThat(status.cleanupAttempts()).isEqualTo(1);
                     assertThat(status.completedAt()).isNotNull();
-                    assertThat(status.cachedUntil()).isEqualTo(status.completedAt().plus(Duration.ofHours(1)));
+                    assertThat(status.cachedUntil()).isEqualTo(status.completedAt().plus(Duration.ofHours(6)));
                 });
     }
 
@@ -389,6 +392,233 @@ class FunctionalTestCoordinatorTest {
         assertThat(manualRun).isNotNull();
         awaitCompleted(coordinator, manualRun);
         assertThat(definition.createAttempts).hasValue(2);
+    }
+
+    @Test
+    void shouldRejectFullManualRunForFifteenMinutesAfterStart() {
+        var definition = new CountingDefinition();
+        var clock = new MutableClock(STARTED_AT);
+        var registry = new FunctionalTestRegistry(List.of(definition));
+        var cache = new FunctionalTestCache(clock);
+        var coordinator = new FunctionalTestCoordinator(registry, cache, clock);
+        var firstRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(firstRun).isNotNull();
+        awaitCompleted(coordinator, firstRun);
+
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+        assertThatThrownBy(() -> coordinator.startAll().block(Duration.ofSeconds(1)))
+                .isInstanceOf(FunctionalTestCooldownException.class);
+        assertThat(coordinator.nesteManuelleKjoringForAlle())
+                .contains(STARTED_AT.plus(Duration.ofMinutes(15)));
+
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(15)));
+        assertThat(coordinator.nesteManuelleKjoringForAlle()).isEmpty();
+        var manualRun = coordinator.startAll().block(Duration.ofSeconds(1));
+
+        assertThat(manualRun).isNotNull();
+        awaitCompleted(coordinator, manualRun);
+        assertThat(definition.createAttempts).hasValue(2);
+    }
+
+    @Test
+    void shouldStartOnlyFailedSystems() {
+        var failed = new VerifyFailureDefinition() {
+            @Override
+            public FunctionalTestDescriptor descriptor() {
+                return FunctionalTestCoordinatorTest.descriptor("failed");
+            }
+        };
+        var healthy = new CountingDefinition() {
+            @Override
+            public FunctionalTestDescriptor descriptor() {
+                return FunctionalTestCoordinatorTest.descriptor("healthy");
+            }
+        };
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(failed, healthy)),
+                new FunctionalTestCache(clock),
+                clock);
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+        var rerunReference = new AtomicReference<RunReference>();
+
+        StepVerifier.create(coordinator.startFailed())
+                .assertNext(reference -> {
+                    assertThat(reference).isNotNull();
+                    rerunReference.set(reference);
+                })
+                .expectComplete()
+                .verify(Duration.ofSeconds(1));
+
+        var rerun = awaitCompleted(coordinator, rerunReference.get());
+        assertThat(rerun.results()).singleElement()
+                .satisfies(status -> {
+                    assertThat(status.systemId()).isEqualTo(new SystemId("failed"));
+                    assertThat(status.state()).isEqualTo(FunctionalTestState.VERIFY_FAILED);
+                });
+        assertThat(((VerifyFailureDefinition) failed).cleanupAttempts).hasValue(2);
+        assertThat(((CountingDefinition) healthy).createAttempts).hasValue(1);
+    }
+
+    @Test
+    void shouldRejectFailedRerunDuringCooldown() {
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(new VerifyFailureDefinition())),
+                new FunctionalTestCache(clock),
+                clock);
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+
+        StepVerifier.create(coordinator.startFailed())
+                .expectError(FunctionalTestCooldownException.class)
+                .verify(Duration.ofSeconds(1));
+    }
+
+    @Test
+    void shouldRejectFailedRerunWhileAnotherRunIsActive() throws InterruptedException {
+        var rerunVerifyInvoked = new CountDownLatch(1);
+        var rerunVerifyResult = Sinks.<TestValue>one();
+        var verificationAttempts = new AtomicInteger();
+        var definition = new GatedPreflightDefinition() {
+            @Override
+            public Mono<TestValue> preflight(FunctionalTestContext context) {
+                return Mono.just(new TestValue());
+            }
+
+            @Override
+            public Mono<TestValue> verify(
+                    FunctionalTestContext context,
+                    TestValue preflightResult,
+                    TestValue createResult
+            ) {
+                if (verificationAttempts.getAndIncrement() == 0) {
+                    return Mono.error(new IllegalStateException("Initial verification failure."));
+                }
+                rerunVerifyInvoked.countDown();
+                return rerunVerifyResult.asMono();
+            }
+        };
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(definition)),
+                new FunctionalTestCache(clock),
+                clock);
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(5)));
+        var rerun = coordinator.startFailed().block(Duration.ofSeconds(1));
+
+        assertThat(rerun).isNotNull();
+        assertThat(rerunVerifyInvoked.await(1, TimeUnit.SECONDS)).isTrue();
+        try {
+            StepVerifier.create(coordinator.startFailed())
+                    .expectError(FunctionalTestRunInProgressException.class)
+                    .verify(Duration.ofSeconds(1));
+        } finally {
+            rerunVerifyResult.tryEmitValue(new TestValue());
+        }
+        awaitCompleted(coordinator, rerun);
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenNoSystemsHaveFailed() {
+        var coordinator = coordinator(new CountingDefinition());
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+
+        StepVerifier.create(coordinator.startFailed())
+                .expectError(FunctionalTestNotFoundException.class)
+                .verify(Duration.ofSeconds(1));
+
+        StepVerifier.create(coordinator.nesteManuelleKjoringForFeilede())
+                .expectNext(Optional.empty())
+                .expectComplete()
+                .verify(Duration.ofSeconds(1));
+    }
+
+    @Test
+    void shouldIncludePdlCooldownWhenPredictingFailedRerun() {
+        var events = new CopyOnWriteArrayList<String>();
+        var arenaVerificationAttempts = new AtomicInteger();
+        var arena = new GatedPreflightDefinition() {
+            @Override
+            public FunctionalTestDescriptor descriptor() {
+                return FunctionalTestCoordinatorTest.descriptor("arena");
+            }
+
+            @Override
+            public boolean requiresPdl() {
+                return true;
+            }
+
+            @Override
+            public Mono<TestValue> preflight(FunctionalTestContext context) {
+                return Mono.just(new TestValue());
+            }
+
+            @Override
+            public Mono<TestValue> verify(
+                    FunctionalTestContext context,
+                    TestValue preflightResult,
+                    TestValue createResult
+            ) {
+                return arenaVerificationAttempts.getAndIncrement() == 0
+                        ? Mono.error(new IllegalStateException("Initial verification failure."))
+                        : Mono.just(new TestValue());
+            }
+        };
+        var krr = new VerifyFailureDefinition() {
+            @Override
+            public FunctionalTestDescriptor descriptor() {
+                return FunctionalTestCoordinatorTest.descriptor("krr");
+            }
+
+            @Override
+            public boolean requiresPdl() {
+                return true;
+            }
+        };
+        var pdlLifecycle = new RecordingPdlLifecycle(events, false);
+        var clock = new MutableClock(STARTED_AT);
+        var coordinator = new FunctionalTestCoordinator(
+                new FunctionalTestRegistry(List.of(arena, krr)),
+                new FunctionalTestCache(clock),
+                clock,
+                List.of(pdlLifecycle));
+        var initialRun = coordinator.startAllExpired().block(Duration.ofSeconds(1));
+
+        assertThat(initialRun).isNotNull();
+        awaitCompleted(coordinator, initialRun);
+        clock.setInstant(STARTED_AT.plus(Duration.ofMinutes(6)));
+        var arenaRun = coordinator.startSystem(new SystemId("arena")).block(Duration.ofSeconds(1));
+
+        assertThat(arenaRun).isNotNull();
+        awaitCompleted(coordinator, arenaRun);
+        var expectedRetryAfter = clock.instant().plus(Duration.ofMinutes(5));
+
+        StepVerifier.create(coordinator.nesteManuelleKjoringForFeilede())
+                .expectNext(Optional.of(expectedRetryAfter))
+                .expectComplete()
+                .verify(Duration.ofSeconds(1));
+        StepVerifier.create(coordinator.startFailed())
+                .expectErrorSatisfies(throwable -> {
+                    assertThat(throwable).isInstanceOf(FunctionalTestCooldownException.class);
+                    assertThat(((FunctionalTestCooldownException) throwable).getRetryAfter())
+                            .isEqualTo(expectedRetryAfter);
+                })
+                .verify(Duration.ofSeconds(1));
     }
 
     @Test
@@ -651,6 +881,7 @@ class FunctionalTestCoordinatorTest {
         assertThat(completed.results()).singleElement()
                 .satisfies(status -> assertThat(status.systemId()).isEqualTo(new SystemId("aareg")));
         verify(listener, after(100).never()).onFullRunCompleted(any());
+        verify(listener, timeout(1000).times(2)).onPartialRunCompleted(any());
     }
 
     @ParameterizedTest
@@ -713,7 +944,8 @@ class FunctionalTestCoordinatorTest {
                 assertThat(started.poll(5, TimeUnit.SECONDS)).isEqualTo(definition.systemId + "-GLOBAL");
             }
             assertThat(started).isEmpty();
-            assertThat(coordinator.startAllExpired().block(Duration.ofSeconds(1))).isEqualTo(run);
+            assertThat(coordinator.startAllExpired().block(Duration.ofSeconds(1)))
+                    .isEqualTo(new RunReference(run.runId(), false));
             var statuses = coordinator.getRun(run.runId()).block(Duration.ofSeconds(1));
             assertThat(statuses).isNotNull();
             assertThat(statuses.results().subList(0, 4))
@@ -939,6 +1171,14 @@ class FunctionalTestCoordinatorTest {
                 CleanupExpectation.DELETED);
     }
 
+    private static FunctionalTestDescriptor descriptor(String systemId) {
+        return new FunctionalTestDescriptor(
+                new SystemId(systemId),
+                new DisplayName(systemId),
+                Set.of(FunctionalTestEnvironment.Q1),
+                CleanupExpectation.DELETED);
+    }
+
     private record TestValue() {
     }
 
@@ -1058,7 +1298,7 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class VerifyFailureDefinition extends GatedPreflightDefinition {
+    private static class VerifyFailureDefinition extends GatedPreflightDefinition {
 
         private final CountDownLatch cleanupInvoked = new CountDownLatch(1);
         private final AtomicInteger cleanupAttempts = new AtomicInteger();
@@ -1091,7 +1331,7 @@ class FunctionalTestCoordinatorTest {
         }
     }
 
-    private static final class CountingDefinition extends GatedPreflightDefinition {
+    private static class CountingDefinition extends GatedPreflightDefinition {
 
         private final AtomicInteger createAttempts = new AtomicInteger();
 

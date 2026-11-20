@@ -106,7 +106,7 @@ export const BrukerDropdown = () => {
 						</DropdownStyledLink>
 					</ActionMenu.Item>
 					{!bankIdBruker &&
-						brukerTeams?.map((team) => (
+						brukerTeams?.map?.((team) => (
 							<ActionMenu.Item
 								onClick={(event) => {
 									event.preventDefault()

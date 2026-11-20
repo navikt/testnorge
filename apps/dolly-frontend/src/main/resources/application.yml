@@ -73,6 +73,11 @@ consumers:
     namespace: dolly
     name: testnav-varslinger-service
     url: http://testnav-varslinger-service.dolly.svc.cluster.local
+  testnav-dollystatus:
+    url: http://testnav-dollystatus.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-dollystatus
   testnav-organisasjon-forvalter:
     cluster: dev-gcp
     namespace: dolly

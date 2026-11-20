@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.timeout;
@@ -109,6 +110,41 @@ class SlackNotifierTest {
                 .contains(":large_green_circle: Alle dollystatus tester kjørte vellykket!")
                 .doesNotContain(IDENT, "Downstream response");
         verifyNoMoreInteractions(slackConsumer);
+    }
+
+    @Test
+    void shouldPublishRecoveryWhenPartialRunClearsAllRedChecks() {
+        notifier.onCompleted(failedStatus());
+        verify(slackConsumer, timeout(1000)).publish(org.mockito.ArgumentMatchers.any());
+
+        notifier.onCompleted(status(FunctionalTestState.OK, TechnicalStatusState.UNKNOWN));
+        notifier.onPartialRunCompleted(completedRun(List.of(
+                status(FunctionalTestState.OK, TechnicalStatusState.UNKNOWN))));
+
+        var captor = ArgumentCaptor.forClass(Message.class);
+        verify(slackConsumer, timeout(1000).times(2)).publish(captor.capture());
+        assertThat(captor.getValue().toString())
+                .contains("er grønne igjen");
+        notifier.onPartialRunCompleted(completedRun(List.of(
+                status(FunctionalTestState.OK, TechnicalStatusState.UNKNOWN))));
+        verify(slackConsumer, after(200).times(2)).publish(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    void shouldNotPublishRecoveryWhileRedCheckRemains() {
+        notifier.onCompleted(failedStatus());
+        notifier.onPartialRunCompleted(completedRun(List.of(failedStatus())));
+
+        verify(slackConsumer, after(200).times(1)).publish(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    void shouldNotPublishRecoveryWithoutPreviousFailure() {
+        notifier.onCompleted(status(FunctionalTestState.OK, TechnicalStatusState.UNKNOWN));
+        notifier.onPartialRunCompleted(completedRun(List.of(
+                status(FunctionalTestState.OK, TechnicalStatusState.UNKNOWN))));
+
+        verify(slackConsumer, after(200).never()).publish(org.mockito.ArgumentMatchers.any());
     }
 
     @ParameterizedTest

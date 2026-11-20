@@ -11,6 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class FunctionalTestErrorSanitizerTest {
 
+    @Test
+    void shouldReturnFixedMessageWhenExceptionContainsNationalIdentityNumber() {
+        var failure = new IllegalStateException("Feil for ident 12345678901");
+
+        var error = FunctionalTestErrorSanitizer.sanitize(
+                FunctionalTestErrorSanitizer.FailurePhase.CREATE,
+                failure);
+
+        assertThat(error.message())
+                .isEqualTo("Testdata kunne ikke opprettes.")
+                .doesNotContain("12345678901");
+    }
+
     @ParameterizedTest
     @EnumSource(Reason.class)
     void shouldExposeOnlyFixedResponseFailureReasons(Reason reason) {

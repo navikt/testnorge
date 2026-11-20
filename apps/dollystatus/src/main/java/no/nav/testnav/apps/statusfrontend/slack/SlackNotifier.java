@@ -44,7 +44,21 @@ public class SlackNotifier implements FunctionalTestResultListener {
         if (run.state() == FunctionalTestRunState.COMPLETED
                 && !run.results().isEmpty()
                 && run.results().stream().allMatch(SlackTransitionTracker::isSuccessful)) {
+            transitionTracker.clearRecovery();
             publish(":large_green_circle: Alle dollystatus tester kjørte vellykket!");
+            return;
+        }
+        publishRecoveryIfResolved(run);
+    }
+
+    @Override
+    public void onPartialRunCompleted(FunctionalTestRunStatus run) {
+        publishRecoveryIfResolved(run);
+    }
+
+    private void publishRecoveryIfResolved(FunctionalTestRunStatus run) {
+        if (run.state() == FunctionalTestRunState.COMPLETED && transitionTracker.takeRecovery()) {
+            publish(":large_green_circle: Alle sjekker som feilet i dollystatus, er grønne igjen.");
         }
     }
 

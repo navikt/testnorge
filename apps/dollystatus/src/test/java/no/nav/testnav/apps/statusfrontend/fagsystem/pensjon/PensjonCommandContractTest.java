@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.statusfrontend.fagsystem.pensjon;
 
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreateAfpOffentligCommand;
+import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreatePensjonPersonCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreatePensjonsavtaleCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreatePoppCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreateTpForholdCommand;
@@ -21,6 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
+import java.time.LocalDate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -95,6 +97,53 @@ class PensjonCommandContractTest {
         verify(deleteRequestedFor(urlPathEqualTo("/pensjon/api/v1/tp/person/forhold"))
                 .withQueryParam("miljoer", equalTo("q1"))
                 .withHeader("pid", equalTo(IDENT)));
+    }
+
+    @Test
+    void shouldRegisterPensjonPersonWithBirthDateFromIdent() {
+        stubFor(post(urlPathEqualTo("/pensjon/api/v1/person"))
+                .willReturn(okJson(successResponse("q1"))));
+
+        var request = PensjonTestData.personRequest(IDENT, FunctionalTestEnvironment.Q1);
+
+        StepVerifier.create(new CreatePensjonPersonCommand(
+                        webClient, TOKEN, RUN_ID, request, TIMEOUT).call())
+                .verifyComplete();
+
+        verify(postRequestedFor(urlPathEqualTo("/pensjon/api/v1/person"))
+                .withHeader("Authorization", equalTo("Bearer " + TOKEN))
+                .withHeader("Nav-Call-Id", equalTo("Dollystatus-" + RUN_ID.value()))
+                .withHeader("Nav-Consumer-Id", equalTo("Dolly"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "miljoer": ["q1"],
+                          "fnr": "%s",
+                          "fodselsDato": "%s",
+                          "bostedsland": "NOR"
+                        }
+                        """.formatted(IDENT, PensjonTestData.foedselsdato(IDENT)))));
+    }
+
+    @Test
+    void shouldRejectFailedPensjonPersonRegistration() {
+        stubFor(post(urlPathEqualTo("/pensjon/api/v1/person"))
+                .willReturn(okJson("""
+                        {"status":[{"miljo":"q1","response":{"httpStatus":{"status":500,"reasonPhrase":"Internal Server Error"}}}]}
+                        """)));
+
+        var request = PensjonTestData.personRequest(IDENT, FunctionalTestEnvironment.Q1);
+
+        StepVerifier.create(new CreatePensjonPersonCommand(
+                        webClient, TOKEN, RUN_ID, request, TIMEOUT).call())
+                .expectError(IllegalStateException.class)
+                .verify();
+    }
+
+    @Test
+    void shouldDeriveBirthDateFromSyntheticAndDNumberIdents() {
+        assertThat(PensjonTestData.foedselsdato("01418512345")).isEqualTo(LocalDate.of(1985, 1, 1));
+        assertThat(PensjonTestData.foedselsdato("41818512345")).isEqualTo(LocalDate.of(1985, 1, 1));
+        assertThat(PensjonTestData.foedselsdato("15521055512")).isEqualTo(LocalDate.of(2010, 12, 15));
     }
 
     @Test

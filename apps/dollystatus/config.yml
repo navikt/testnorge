@@ -15,11 +15,21 @@ spec:
     sidecar:
       enabled: true
       autoLogin: true
+      autoLoginIgnorePaths:
+        - /api/**
     application:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+  tokenx:
+    enabled: true
   accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-idporten
+        - application: dolly-auth-local
     outbound:
       rules:
         - application: dolly-backend

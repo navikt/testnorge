@@ -13,6 +13,7 @@ import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDro
 import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { TeamVarsel } from '@/components/layout/header/TeamVarsel'
+import { DollyStatus } from '@/components/layout/header/DollyStatus'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -49,7 +50,10 @@ export default () => {
 				{isAdmin && <AdminDropdown />}
 			</div>
 			<TeamVarsel />
-			<BrukerDropdown />
+			<div className="header-right">
+				<DollyStatus />
+				<BrukerDropdown />
+			</div>
 		</header>
 	)
 }

@@ -4,10 +4,11 @@
 
 ## Slik kjøres sjekkene
 
-- Sidebesøk starter sjekker dersom cache har utløpt (cache med varighet på én time). Ingen sjekker starter automatisk uten besøk.
-- Både vellykkede og feilede resultater caches for å ikke spamme endepunkt. 
+- `POST /api/v1/testkjoringer` starter sjekker bare for systemer med utløpt cache. Cachetiden avhenger av resultatet: OK og UP gjelder i seks timer (`dollystatus.ttl.ok`), andre resultater i én time (`dollystatus.ttl.feil`).
+- Frontend starter automatisk sjekker når `nesteAutomatiskeKjoring` har passert. Dette skjer bare for Azure-brukere mens en Dolly-fane er åpen og synlig.
 - Dersom to eller flere besøkende går inn samtidig, vil de dele pågående kjøring i samme appinstans istedenfor å starte en hver. 
-- Manuell omkjøring er tilgjengelig fem minutter etter forrige sjekk.
+- `POST /api/v1/testkjoringer/feilede` starter sjekker for systemer med problemer. Svaret er 202 med `runId`. Endepunktet svarer 404 når ingen systemer har problemer, 409 når en kjøring pågår og 429 når det er under fem minutter siden forrige manuelle start.
+- `POST /api/v1/testkjoringer/alle` starter alle sjekkene på nytt, også når alt er OK. Svaret er 202 med `runId`. Endepunktet svarer 409 når en kjøring pågår og 429 når det er under 15 minutter siden en av sjekkene sist ble startet.
 - Panelene «Funksjonstester» og «Interne sjekker» har hver sin «Kjør alle på nytt». Knappen kjører alle sjekkene i panelet og er sperret i fem minutter etter at en av dem sist ble startet. PDL hører til funksjonstestene, men kjøres også med de interne sjekkene når MEDL krever det. Sperren ligger i minnet og nullstilles ved ny deploy eller restart.
 - Frontend poller hvert andre sekund og viser fremdrift og resultat per fagsystem og miljø, med Q1/Q2 der systemet støtter det. SSE er et mulig forbedringspunkt her, men ble sløyfet for enklere oppsett i første omgang.
 - PDL klargjøres først. Deretter kjøres Tags, Kontoregister, Pensjon, AAREG og Inntektstub før øvrige systemer. PDL-opprydding kjøres sist.
@@ -16,6 +17,21 @@
 - Opprydding får inntil tre nye forsøk ved feil som kan prøves på nytt. Systemer uten egnet opprydding har kun teknisk status for å ikke fylle opp med data.
 - Tekniske sjekker prøves inntil to ganger til, med ti sekunders mellomrom, ved timeout, nettverksfeil, HTTP 408, 429 og 5xx. Dette styres av `functional-test.technical-status.retry-attempts` og `retry-delay`. Sjekkene mot dolly-backend deler ett vellykket svar fra `/internal/status` i halve ventetiden. Feilede svar deles ikke. Rapporterer dolly-backend at en tjeneste ikke er OK, hentes statusen på nytt før sjekken settes til DOWN.
 - Eksisterende data på den dedikerte testidenten ryddes med fagsystemets slette- eller avslutningskall før ny oppretting. Oppryddingen etterkontrolleres, og preflight kjøres på nytt. Ved feil stoppes denne testen med oppryddingsfeil og vanlig Slack-varsling. Oppretting prøves ikke før oppryddingen er bekreftet.
+
+### Statusoversikt og tilgang
+
+`GET /api/v1/statusoversikt` leverer statusen som vises i statusindikatoren i dolly-frontend-headeren. Svaret inneholder `status`, `kjoringPagaar`, `sistOppdatert`, `nesteAutomatiskeKjoring`, `nesteManuelleKjoringTidligst` og `problemer`. Hvert problem inneholder `systemId`, `navn`, `miljo`, `tilstand`, `melding` og `tidspunkt`.
+
+- `FEIL` betyr at en funksjonstest har tilstanden `PREFLIGHT_FAILED`, `CREATE_FAILED`, `VERIFY_FAILED` eller `VERIFY_TIMEOUT`.
+- `ADVARSEL` betyr at en test er `BLOCKED` eller `CLEANUP_FAILED`, eller at en teknisk sjekk har status `DOWN`.
+- `UKJENT` vises når ingen sjekk er fullført, eller når det nyeste resultatet er eldre enn `dollystatus.utdatert-etter` (standard `PT6H`).
+- `OK` vises når ingen av de andre reglene gjelder.
+
+`nesteManuelleKjoringTidligst` gjelder «Kjør feilende tester på nytt» (fem minutters sperre) når det finnes problemer, og «Kjør alle tester på nytt» (15 minutters sperre) når det ikke finnes problemer. Feltet er `null` mens en kjøring pågår.
+
+API-et krever et Azure-token for en bruker. Tokenet må ha `scp` og en `oid` som er ulik `sub`, og det kan ikke ha `idtyp=app`. TokenX-brukere, inkludert BankID-brukere via dolly-frontend, kan bare lese `GET /api/v1/statusoversikt`. App-tokens med `idtyp=app` og tokens fra ukjente issuere avvises. Wonderwall hopper over innlogging for `/api/**`, slik at Spring kan validere tokenet.
+
+Nais-manifestet gir inbound-tilgang til `dolly-frontend`, `dolly-frontend-dev`, `dolly-idporten` og `dolly-auth-local`. dolly-frontend bruker gateway-ruten `/testnav-dollystatus`. Lokalt brukes `https://dollystatus.intern.dev.nav.no` via `dolly-auth-local`.
 
 Fagsystemenes klienter og kommandoer ligger i egne mapper under `src/main/java/no/nav/testnav/apps/statusfrontend/fagsystem`. Aktivering, tidsfrister og adresser styres i [application.yml](src/main/resources/application.yml).
 
@@ -93,7 +109,7 @@ Secreten skal inneholde disse verdiene for å aktivere varsling:
 | `SLACK_TOKEN` | Bot-token med tillatelse til å sende meldinger i kanalen |
 | `DOLLYSTATUS_SLACK_ENABLED` | `true` |
 
-Slack varsler når en utført sjekk feiler, inkludert ved oppryddingsfeil eller teknisk status DOWN. Samme system og miljø varsles ikke på nytt før sjekken har lykkes og deretter feiler igjen. Blokkerte og ikke-kjørte tester gir ikke varsel, og det sendes ingen friskmelding per system.
+Slack varsler når en utført sjekk feiler, inkludert ved oppryddingsfeil eller teknisk status DOWN. Samme system og miljø varsles ikke på nytt før sjekken har lykkes og deretter feiler igjen. Blokkerte og ikke-kjørte tester gir ikke varsel, og det sendes ingen friskmelding per system. Når en kjøring er ferdig og ingen av de varslede sjekkene lenger er røde, sendes én friskmelding: «Alle sjekker som feilet i dollystatus, er grønne igjen.»
 
 Etter en full kjøring der alle aktiverte sjekker lykkes, sendes én grønn melding: «Alle dollystatus tester kjørte vellykket!» Dette krever vellykket opprydding og teknisk status UP. Manuelle enkeltkjøringer og kjøringer som hopper over sjekker med gyldig cache, gir ingen grønn melding. Varsling er deaktivert som standard. Pass på at token ikke legges i Git.
 

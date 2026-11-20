@@ -69,6 +69,9 @@
 	"/testnav-varslinger-service/api": {
 		"changeOrigin": true
 	},
+	"/testnav-dollystatus/api": {
+		"changeOrigin": true
+	},
 	"/testnav-organisasjon-forvalter/api": {
 		"changeOrigin": true
 	},

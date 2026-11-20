@@ -14,6 +14,7 @@ import java.util.Optional;
 public class SlackTransitionTracker {
 
     private final Map<FunctionalTestKey, HealthState> states = new HashMap<>();
+    private boolean venterPaaFriskmelding;
 
     public synchronized Optional<SlackTransition> update(FunctionalTestStatus status) {
         var currentState = healthState(status);
@@ -24,9 +25,24 @@ public class SlackTransitionTracker {
         var key = new FunctionalTestKey(status.systemId(), status.environment());
         var previousState = states.put(key, currentState.get());
         if (currentState.get() == HealthState.RED && previousState != HealthState.RED) {
+            venterPaaFriskmelding = true;
             return Optional.of(SlackTransition.RED);
         }
         return Optional.empty();
+    }
+
+    public synchronized boolean takeRecovery() {
+        if (venterPaaFriskmelding && !states.containsValue(HealthState.RED)) {
+            venterPaaFriskmelding = false;
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized void clearRecovery() {
+        if (!states.containsValue(HealthState.RED)) {
+            venterPaaFriskmelding = false;
+        }
     }
 
     static boolean isSuccessful(FunctionalTestStatus status) {
