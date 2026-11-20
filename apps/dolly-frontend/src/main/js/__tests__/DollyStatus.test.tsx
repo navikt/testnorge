@@ -7,6 +7,8 @@ import { vi } from 'vitest'
 import api from '@/api'
 import { DollyStatus } from '@/components/layout/header/DollyStatus'
 import {
+	cancelStatusRetry,
+	scheduleStatusRetry,
 	useAutomatiskDollyStatusKjoring,
 	type DollyStatusOversikt,
 } from '@/utils/hooks/useDollyStatus'
@@ -302,6 +304,14 @@ dollyTest('shows a cooldown message when failed tests were started recently', as
 	expect(
 		await screen.findByText('Testene ble startet nylig. Prøv igjen om noen minutter.'),
 	).toHaveAttribute('role', 'status')
+
+	const statusknapp = screen.getByTestId('dolly-status-knapp')
+	await userEvent.click(statusknapp)
+	await userEvent.click(statusknapp)
+
+	expect(
+		screen.queryByText('Testene ble startet nylig. Prøv igjen om noen minutter.'),
+	).not.toBeInTheDocument()
 })
 
 dollyTest('retries an automatic test run once after a failed POST', async () => {
@@ -339,6 +349,69 @@ dollyTest('retries an automatic test run once after a failed POST', async () => 
 		unmount()
 		vi.useRealTimers()
 		vi.restoreAllMocks()
+	}
+})
+
+dollyTest('pauses automatic runs after three 202 responses without a new deadline', async () => {
+	vi.useFakeTimers()
+	vi.spyOn(Math, 'random').mockReturnValue(0)
+	const fetchSpy = vi
+		.spyOn(api, 'fetch')
+		.mockImplementation(async () => new Response(null, { status: 202 }))
+	const wrapper = ({ children }: PropsWithChildren) => (
+		<SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+	)
+	const statusoversikt = createStatusoversikt({
+		nesteAutomatiskeKjoring: new Date(Date.now() + 10_000).toISOString(),
+	})
+
+	const { unmount } = renderHook(() => useAutomatiskDollyStatusKjoring(statusoversikt, true), {
+		wrapper,
+	})
+	try {
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(10_000)
+		})
+		expect(fetchSpy).toHaveBeenCalledOnce()
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(125_000)
+		})
+		expect(fetchSpy).toHaveBeenCalledTimes(3)
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(14 * 60_000)
+		})
+		expect(fetchSpy).toHaveBeenCalledTimes(3)
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(90_000)
+		})
+		expect(fetchSpy).toHaveBeenCalledTimes(4)
+	} finally {
+		unmount()
+		vi.useRealTimers()
+		vi.restoreAllMocks()
+	}
+})
+
+dollyTest('keeps a single pending status retry when several requests fail', async () => {
+	cancelStatusRetry()
+	vi.useFakeTimers()
+	const revalidate = vi.fn()
+	try {
+		scheduleStatusRetry(revalidate)
+		scheduleStatusRetry(revalidate)
+		scheduleStatusRetry(revalidate)
+
+		await vi.advanceTimersByTimeAsync(60_000)
+		expect(revalidate).toHaveBeenCalledOnce()
+
+		scheduleStatusRetry(revalidate)
+		await vi.advanceTimersByTimeAsync(60_000)
+		expect(revalidate).toHaveBeenCalledTimes(2)
+	} finally {
+		vi.useRealTimers()
 	}
 })
 

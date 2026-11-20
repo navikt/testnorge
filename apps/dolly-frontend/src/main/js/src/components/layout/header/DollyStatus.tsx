@@ -186,6 +186,14 @@ export const DollyStatus = () => {
 		}
 	}
 
+	const togglePopover = () => {
+		if (!open) {
+			setPostError(false)
+			setPostOutcome(null)
+		}
+		setOpen(!open)
+	}
+
 	return (
 		<>
 			<HeaderStatusButton
@@ -195,7 +203,7 @@ export const DollyStatus = () => {
 				aria-label={getAriaLabel(statusoversikt, !!error)}
 				aria-expanded={open}
 				data-testid="dolly-status-knapp"
-				onClick={() => setOpen((isOpen) => !isOpen)}
+				onClick={togglePopover}
 			>
 				<StatusInnhold>
 					<span>

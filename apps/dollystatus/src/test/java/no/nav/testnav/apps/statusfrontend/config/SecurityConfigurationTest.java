@@ -152,6 +152,49 @@ class SecurityConfigurationTest {
     }
 
     @Test
+    void shouldForbidAzureAppTokenWithoutIdtyp() {
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt
+                        .issuer(AZURE_ISSUER)
+                        .subject("test-app-object-id")
+                        .claim("oid", "test-app-object-id")
+                        .claim("roles", "access_as_application")))
+                .post()
+                .uri(TESTKJORINGER_PATH)
+                .exchange()
+                .expectStatus()
+                .isForbidden();
+    }
+
+    @Test
+    void shouldForbidAzureTokenWithoutObjectId() {
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt
+                        .issuer(AZURE_ISSUER)
+                        .subject("test-user")
+                        .claim("scp", "defaultaccess")))
+                .get()
+                .uri(SecurityConfiguration.STATUSOVERSIKT_PATH)
+                .exchange()
+                .expectStatus()
+                .isForbidden();
+    }
+
+    @Test
+    void shouldForbidAzureTokenWithoutScope() {
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt
+                        .issuer(AZURE_ISSUER)
+                        .subject("test-user")
+                        .claim("oid", "test-user-object-id")))
+                .post()
+                .uri(TESTKJORINGER_PATH)
+                .exchange()
+                .expectStatus()
+                .isForbidden();
+    }
+
+    @Test
     void shouldForbidUnknownIssuer() {
         webTestClient
                 .mutateWith(mockJwt().jwt(jwt -> jwt
@@ -178,6 +221,8 @@ class SecurityConfigurationTest {
         return mockJwt().jwt(jwt -> jwt
                 .issuer(AZURE_ISSUER)
                 .subject("test-user")
+                .claim("oid", "test-user-object-id")
+                .claim("scp", "defaultaccess")
                 .claim("preferred_username", "test-user@nav.no"));
     }
 

@@ -26,7 +26,7 @@
 - `UKJENT` vises når ingen sjekk er fullført, eller når det nyeste resultatet er eldre enn `dollystatus.utdatert-etter` (standard `PT6H`).
 - `OK` vises når ingen av de andre reglene gjelder.
 
-API-et krever et Azure-token for en bruker. TokenX-brukere, inkludert BankID-brukere via dolly-frontend, kan bare lese `GET /api/v1/statusoversikt`. App-tokens med `idtyp=app` og tokens fra ukjente issuere avvises. Wonderwall hopper over innlogging for `/api/**`, slik at Spring kan validere tokenet.
+API-et krever et Azure-token for en bruker. Tokenet må ha `scp` og en `oid` som er ulik `sub`, og det kan ikke ha `idtyp=app`. TokenX-brukere, inkludert BankID-brukere via dolly-frontend, kan bare lese `GET /api/v1/statusoversikt`. App-tokens med `idtyp=app` og tokens fra ukjente issuere avvises. Wonderwall hopper over innlogging for `/api/**`, slik at Spring kan validere tokenet.
 
 Nais-manifestet gir inbound-tilgang til `dolly-frontend`, `dolly-frontend-dev`, `dolly-idporten` og `dolly-auth-local`. dolly-frontend bruker gateway-ruten `/testnav-dollystatus`. Lokalt brukes `https://dollystatus.intern.dev.nav.no` via `dolly-auth-local`.
 
@@ -106,7 +106,7 @@ Secreten skal inneholde disse verdiene for å aktivere varsling:
 | `SLACK_TOKEN` | Bot-token med tillatelse til å sende meldinger i kanalen |
 | `DOLLYSTATUS_SLACK_ENABLED` | `true` |
 
-Slack varsler når en utført sjekk feiler, inkludert ved oppryddingsfeil eller teknisk status DOWN. Samme system og miljø varsles ikke på nytt før sjekken har lykkes og deretter feiler igjen. Blokkerte og ikke-kjørte tester gir ikke varsel, og det sendes ingen friskmelding per system.
+Slack varsler når en utført sjekk feiler, inkludert ved oppryddingsfeil eller teknisk status DOWN. Samme system og miljø varsles ikke på nytt før sjekken har lykkes og deretter feiler igjen. Blokkerte og ikke-kjørte tester gir ikke varsel, og det sendes ingen friskmelding per system. Når en kjøring er ferdig og ingen av de varslede sjekkene lenger er røde, sendes én friskmelding: «Alle sjekker som feilet i dollystatus, er grønne igjen.»
 
 Etter en full kjøring der alle aktiverte sjekker lykkes, sendes én grønn melding: «Alle dollystatus tester kjørte vellykket!» Dette krever vellykket opprydding og teknisk status UP. Manuelle enkeltkjøringer og kjøringer som hopper over sjekker med gyldig cache, gir ingen grønn melding. Varsling er deaktivert som standard. Pass på at token ikke legges i Git.
 

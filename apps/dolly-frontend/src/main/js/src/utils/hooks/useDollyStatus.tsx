@@ -10,7 +10,27 @@ const testkjoringerUrl = '/testnav-dollystatus/api/v1/testkjoringer'
 const feiledeTestkjoringerUrl = `${testkjoringerUrl}/feilede`
 const maxTimerDelay = 2_147_483_647
 const retryDelay = 60_000
+const automaticRetryCooldown = 15 * 60_000
+const statusRetryDelay = 60_000
 const maxAutomaticAttempts = 3
+let statusRetryTimer: number | undefined
+
+export const scheduleStatusRetry = (revalidate: () => void) => {
+	if (statusRetryTimer !== undefined) {
+		return
+	}
+	statusRetryTimer = window.setTimeout(() => {
+		statusRetryTimer = undefined
+		revalidate()
+	}, statusRetryDelay)
+}
+
+export const cancelStatusRetry = () => {
+	if (statusRetryTimer !== undefined) {
+		window.clearTimeout(statusRetryTimer)
+		statusRetryTimer = undefined
+	}
+}
 
 export type DollyStatusNivaa = 'OK' | 'ADVARSEL' | 'FEIL' | 'UKJENT'
 export type DollyStatusKjoringResult = 'startet' | 'pagar' | 'ingenProblemer' | 'nedkjoling'
@@ -156,6 +176,9 @@ export const useDollyStatus = (): UseDollyStatusResult => {
 		dollyStatusFetcher,
 		{
 			refreshInterval: (latestData) => (latestData?.kjoringPagaar ? 15000 : 60000),
+			shouldRetryOnError: true,
+			onErrorRetry: (_error, _key, _config, revalidate, revalidateOptions) =>
+				scheduleStatusRetry(() => revalidate(revalidateOptions)),
 		},
 	)
 
@@ -181,9 +204,10 @@ export const useAutomatiskDollyStatusKjoring = (
 	statusoversikt: DollyStatusOversikt | undefined,
 	enabled: boolean,
 ) => {
-	const attemptRef = useRef<{ deadline: string | undefined; attempts: number }>({
+	const attemptRef = useRef<{ deadline: string | undefined; attempts: number; notBefore: number }>({
 		deadline: undefined,
 		attempts: 0,
+		notBefore: 0,
 	})
 	const { mutate: mutateStatus } = useSWRConfig()
 	const deadline = statusoversikt?.nesteAutomatiskeKjoring ?? undefined
@@ -191,7 +215,7 @@ export const useAutomatiskDollyStatusKjoring = (
 
 	useEffect(() => {
 		if (attemptRef.current.deadline !== deadline) {
-			attemptRef.current = { deadline, attempts: 0 }
+			attemptRef.current = { deadline, attempts: 0, notBefore: 0 }
 		}
 		if (!enabled || !deadline || kjoringPagaar) {
 			return
@@ -203,14 +227,12 @@ export const useAutomatiskDollyStatusKjoring = (
 		}
 
 		const currentAttempt = attemptRef.current
-		if (currentAttempt.attempts >= maxAutomaticAttempts) {
-			return
-		}
 
 		let active = true
 		let timer: number | undefined
 		let visibilityListener: (() => void) | undefined
-		const targetTime = Math.max(deadlineTime, Date.now()) + Math.random() * 30000
+		const targetTime =
+			Math.max(deadlineTime, currentAttempt.notBefore, Date.now()) + Math.random() * 30000
 
 		const removeVisibilityListener = () => {
 			if (visibilityListener) {
@@ -284,17 +306,20 @@ export const useAutomatiskDollyStatusKjoring = (
 					} catch (error) {
 						console.error('Klarte ikke å hente oppdatert teststatus.', error)
 					}
-					if (!active || attemptRef.current !== currentAttempt || postError === undefined) {
+					if (!active || attemptRef.current !== currentAttempt) {
 						return
 					}
-					if (getErrorStatus(postError) === 409 || getErrorStatus(postError) === 429) {
-						return
+					const status = getErrorStatus(postError)
+					if (postError !== undefined && status !== 409 && status !== 429) {
+						console.error('Klarte ikke å starte automatisk testkjøring.', postError)
 					}
 					if (currentAttempt.attempts >= maxAutomaticAttempts) {
-						console.error('Klarte ikke å starte automatisk testkjøring.', postError)
-						return
+						currentAttempt.attempts = 0
+						currentAttempt.notBefore = Date.now() + automaticRetryCooldown
+					} else {
+						currentAttempt.notBefore = Date.now() + retryDelay
 					}
-					schedule(Date.now() + retryDelay, () => startTestkjoring())
+					schedule(currentAttempt.notBefore, () => startTestkjoring())
 				})()
 			})
 		}

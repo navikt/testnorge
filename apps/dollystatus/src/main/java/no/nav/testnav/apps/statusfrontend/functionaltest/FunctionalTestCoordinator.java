@@ -995,11 +995,15 @@ public class FunctionalTestCoordinator {
                 activeRun = null;
             }
         }
-        if (executionCompleted && run.fullRun) {
+        if (executionCompleted) {
             var completedRun = run.snapshot();
             resultListeners.forEach(listener -> {
                 try {
-                    listener.onFullRunCompleted(completedRun);
+                    if (run.fullRun) {
+                        listener.onFullRunCompleted(completedRun);
+                    } else {
+                        listener.onPartialRunCompleted(completedRun);
+                    }
                 } catch (RuntimeException exception) {
                     log.error(
                             "Klarte ikke å behandle ferdig testkjøring: {}",

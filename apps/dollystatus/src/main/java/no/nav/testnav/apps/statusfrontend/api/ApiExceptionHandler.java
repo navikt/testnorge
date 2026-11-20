@@ -20,6 +20,7 @@ import java.time.Instant;
 @Slf4j
 @RestControllerAdvice(assignableTypes = {
         FagsystemStatusController.class,
+        StatusoversiktController.class,
         TestkjoringController.class
 })
 @RequiredArgsConstructor

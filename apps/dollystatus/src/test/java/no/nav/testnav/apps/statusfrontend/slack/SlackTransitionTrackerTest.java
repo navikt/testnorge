@@ -69,6 +69,19 @@ class SlackTransitionTrackerTest {
     }
 
     @Test
+    void shouldKeepPendingRecoveryWhenClearedWhileRedCheckRemains() {
+        var tracker = new SlackTransitionTracker();
+
+        tracker.update(status(FunctionalTestState.CREATE_FAILED, TechnicalStatusState.UNKNOWN));
+        tracker.clearRecovery();
+        assertThat(tracker.takeRecovery()).isFalse();
+
+        tracker.update(status(FunctionalTestState.OK, TechnicalStatusState.UNKNOWN));
+        assertThat(tracker.takeRecovery()).isTrue();
+        assertThat(tracker.takeRecovery()).isFalse();
+    }
+
+    @Test
     void shouldIgnoreUnknownTechnicalStatus() {
         var tracker = new SlackTransitionTracker();
 

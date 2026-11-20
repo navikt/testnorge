@@ -13,6 +13,13 @@ export const handlers = [
 	http.get('/dolly-backend/api/v1/bruker/current', () => {
 		return HttpResponse.json(gjeldendeAzureBrukerMock)
 	}),
+	http.get('/session/csrf', () => {
+		return HttpResponse.json({
+			headerName: 'X-CSRF-TOKEN',
+			parameterName: '_csrf',
+			token: 'test-token',
+		})
+	}),
 	http.get('/testnav-dollystatus/api/v1/statusoversikt', () => {
 		return HttpResponse.json({
 			status: 'OK',

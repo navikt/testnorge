@@ -23,6 +23,8 @@ class ApiTilgangsregler {
 
     private static final String IDTYP_CLAIM = "idtyp";
     private static final String APP_TOKEN = "app";
+    private static final String OBJECT_ID_CLAIM = "oid";
+    private static final String SCOPE_CLAIM = "scp";
 
     private final List<ResourceServerProperties> resourceServerProperties;
 
@@ -46,7 +48,22 @@ class ApiTilgangsregler {
         return tokenType(jwt)
                 .filter(ResourceServerType.AZURE_AD::equals)
                 .isPresent()
-                && !APP_TOKEN.equals(jwt.getClaimAsString(IDTYP_CLAIM));
+                && !APP_TOKEN.equals(jwt.getClaimAsString(IDTYP_CLAIM))
+                && erDelegertBrukertoken(jwt);
+    }
+
+    private boolean erDelegertBrukertoken(Jwt jwt) {
+        var objectId = jwt.getClaimAsString(OBJECT_ID_CLAIM);
+        var subject = jwt.getSubject();
+        var scope = jwt.getClaimAsString(SCOPE_CLAIM);
+        return harVerdi(objectId)
+                && harVerdi(subject)
+                && harVerdi(scope)
+                && !objectId.equals(subject);
+    }
+
+    private static boolean harVerdi(String verdi) {
+        return nonNull(verdi) && !verdi.isBlank();
     }
 
     private boolean erTokenX(Jwt jwt) {

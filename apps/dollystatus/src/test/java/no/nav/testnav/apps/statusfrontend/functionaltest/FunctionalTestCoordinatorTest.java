@@ -854,6 +854,7 @@ class FunctionalTestCoordinatorTest {
         assertThat(completed.results()).singleElement()
                 .satisfies(status -> assertThat(status.systemId()).isEqualTo(new SystemId("aareg")));
         verify(listener, after(100).never()).onFullRunCompleted(any());
+        verify(listener, timeout(1000).times(2)).onPartialRunCompleted(any());
     }
 
     @ParameterizedTest
