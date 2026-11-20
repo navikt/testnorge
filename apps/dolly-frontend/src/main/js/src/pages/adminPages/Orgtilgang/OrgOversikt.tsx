@@ -1,4 +1,3 @@
-import { Alert, Box, Pagination, Table, VStack } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Loading from '@/components/ui/loading/Loading'
 import React, { useEffect, useState } from 'react'
@@ -8,6 +7,8 @@ import { RedigerOrganisasjon } from '@/pages/adminPages/Orgtilgang/RedigerOrgani
 import styled from 'styled-components'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import Icon from '@/components/ui/icon/Icon'
+import { Box, InfoCard, Pagination, Table, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 type OversiktTypes = {
 	organisasjonTilgang: Array<OrgtilgangTypes>
@@ -59,9 +60,11 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: Ove
 		<Box background="default" padding="space-16">
 			<h2 style={{ marginTop: '5px' }}>Organisasjoner som har tilgang til Dolly</h2>
 			{error && (
-				<Alert variant={'error'} size={'small'}>
-					Feil: {error.message}
-				</Alert>
+				<InfoCard data-color="danger" size={'small'}>
+					<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+						Feil: {error.message}
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			{loading && (!organisasjonTilgang || organisasjonTilgang?.length === 0) && (
 				<Loading label="Laster organisasjoner ..." panel />

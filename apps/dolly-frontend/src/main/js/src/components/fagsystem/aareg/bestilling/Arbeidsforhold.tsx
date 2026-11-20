@@ -12,7 +12,8 @@ import {
 	Timeloennet,
 	Utenlands,
 } from '@/components/fagsystem/aareg/AaregTypes'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 type ArbeidsforholdData = {
 	arbeidsforholdListe: Array<Aareg>
@@ -218,9 +219,11 @@ export const Arbeidsforhold = ({ arbeidsforholdListe }: ArbeidsforholdData) => {
 			<ErrorBoundary>
 				<BestillingTitle>Arbeidsforhold (Aareg)</BestillingTitle>
 				{harAmelding ? (
-					<Alert variant="warning" size="small" style={{ marginBottom: '20px' }}>
-						Arbeidsforholdet inneholder A-melding, som ikke lenger er støttet.
-					</Alert>
+					<InfoCard data-color="warning" size="small" style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							Arbeidsforholdet inneholder A-melding, som ikke lenger er støttet.
+						</InfoCard.Message>
+					</InfoCard>
 				) : (
 					<DollyFieldArray header="Arbeidsforhold" data={arbeidsforholdListe}>
 						{(arbeidsforhold: Aareg, idx: number) => {

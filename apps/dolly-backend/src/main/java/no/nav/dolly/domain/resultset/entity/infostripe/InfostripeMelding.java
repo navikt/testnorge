@@ -15,6 +15,7 @@ public class InfostripeMelding {
 
     private Long id;
     private InfoStripeType type;
+    private String title;
     private String message;
     private LocalDateTime start;
     private LocalDateTime expires;

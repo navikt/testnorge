@@ -1,7 +1,8 @@
 import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { KjoennForm } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -36,10 +37,11 @@ export const PersondetaljerSamlet = ({
 	return (
 		<>
 			<div className="flexbox--full-width">
-				<Alert
-					variant={'info'}
-					size={'small'}
-				>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
+				<InfoCard data-color="info" size={'small'}>
+					<InfoCard.Message
+						icon={<InformationSquareFillIcon aria-hidden />}
+					>{`Identnummer${getTekst()} kan ikke endres her.`}</InfoCard.Message>
+				</InfoCard>
 
 				{formMethods.watch('navn') && (
 					<>

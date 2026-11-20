@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import Loading from '@/components/ui/loading/Loading'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
@@ -50,9 +50,9 @@ export const YrkesskaderVisning = ({ data, loading }: YrkesskaderVisningProps) =
 		<div>
 			<SubOverskrift label="Yrkesskader" iconKind="sykdom" isWarning={manglerFagsystemData} />
 			{manglerFagsystemData ? (
-				<Alert variant="warning" size="small" inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size="small" style={{ marginBottom: '20px' }}>
 					Fant ikke yrkesskade-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<div className="person-visning_content">
 					<DollyFieldArray header={'Yrkesskade'} data={data}>

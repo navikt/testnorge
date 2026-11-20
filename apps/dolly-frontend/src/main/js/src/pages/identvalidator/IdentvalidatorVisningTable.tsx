@@ -1,9 +1,9 @@
-import { Alert, Box, HStack, Pagination, Table, Tooltip, VStack } from '@navikt/ds-react'
 import { IdentvalidatorVisning } from '@/pages/identvalidator/IdentvalidatorVisning'
 import { useState } from 'react'
 import { getIcon, IconComponent } from '@/pages/identvalidator/utils'
 import Icon from '@/components/ui/icon/Icon'
 import { isBoolean } from 'lodash-es'
+import { Box, HStack, InlineMessage, Pagination, Table, Tooltip, VStack } from '@navikt/ds-react'
 
 interface IdentvalidatorVisningTableProps {
 	identListe: Array<IdentDataProps>
@@ -126,9 +126,7 @@ export const IdentvalidatorVisningTable = ({ identListe }: IdentvalidatorVisning
 									</Table.DataCell>
 									<Table.DataCell>
 										{feilIProdSjekk(identData) ? (
-											<Alert variant="warning" inline>
-												Ukjent
-											</Alert>
+											<InlineMessage status="warning">Ukjent</InlineMessage>
 										) : (
 											<IconComponent
 												isValid={identData.erIProd}

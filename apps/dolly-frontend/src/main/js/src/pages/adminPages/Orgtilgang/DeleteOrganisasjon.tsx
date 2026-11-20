@@ -1,11 +1,11 @@
-import { Alert, Button } from '@navikt/ds-react'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
-import { TrashIcon } from '@navikt/aksel-icons'
+import { TrashIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
 import React, { useState } from 'react'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { Button, InfoCard } from '@navikt/ds-react'
 
 type DeleteTypes = {
 	orgNr: string
@@ -49,9 +49,11 @@ export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 						<h4>Er du sikker på at du vil fjerne tilgang til Dolly for {navn}?</h4>
 					</div>
 					{error && (
-						<Alert variant={'error'} size={'small'}>
-							Feil ved sletting: {error.message}
-						</Alert>
+						<InfoCard data-color="danger" size={'small'}>
+							<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+								Feil ved sletting: {error.message}
+							</InfoCard.Message>
+						</InfoCard>
 					)}
 					<div className="slettModal-actions">
 						<NavButton onClick={closeModal} variant={'secondary'}>

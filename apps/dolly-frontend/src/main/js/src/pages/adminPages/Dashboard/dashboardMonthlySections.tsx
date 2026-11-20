@@ -1,4 +1,3 @@
-import { Alert, BodyShort, Heading, HGrid, VStack } from '@navikt/ds-react'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import { type Options } from 'highcharts'
 import {
@@ -8,6 +7,7 @@ import {
 	DashboardSelectButtons,
 } from './dashboardSharedComponents'
 import { MONTH_SCOPE_ALL, MONTH_SCOPE_LAST_12, type TeamDistributionPoint } from './dashboardUtils'
+import { BodyShort, Heading, HGrid, InlineMessage, VStack } from '@navikt/ds-react'
 
 export const MonthlyTeamTrendSection = ({
 	title = 'Nav-team statistikk',
@@ -41,9 +41,7 @@ export const MonthlyTeamTrendSection = ({
 			{isLoading ? (
 				<DollySpinner size={120} label="Laster statistikk..." />
 			) : filteredMonthlyTeamPointsLength === 0 ? (
-				<Alert variant="info" inline>
-					{emptyStateMessage}
-				</Alert>
+				<InlineMessage status="info">{emptyStateMessage}</InlineMessage>
 			) : (
 				<>
 					{showScopeToggle && (
@@ -110,9 +108,7 @@ export const MonthlyTeamDistributionSection = ({
 			{isLoading ? (
 				<DollySpinner size={120} label="Laster statistikk..." />
 			) : yearOptions.length === 0 ? (
-				<Alert variant="info" inline>
-					Ingen teamfordeling tilgjengelig.
-				</Alert>
+				<InlineMessage status="info">Ingen teamfordeling tilgjengelig.</InlineMessage>
 			) : (
 				<>
 					<DashboardSelectButtons
@@ -140,9 +136,9 @@ export const MonthlyTeamDistributionSection = ({
 						</HGrid>
 					)}
 					{teamDistribution.length === 0 ? (
-						<Alert variant="info" inline>
+						<InlineMessage status="info">
 							Ingen teamfordeling tilgjengelig for valgt måned.
-						</Alert>
+						</InlineMessage>
 					) : (
 						<DashboardChartPanel
 							options={monthlyDistributionChartOptions}

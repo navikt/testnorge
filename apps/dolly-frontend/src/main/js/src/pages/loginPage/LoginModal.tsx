@@ -73,7 +73,7 @@ const redirectTo = (path: string, toIdporten: boolean) => {
 
 export default () => {
 	const logoutAlert = getLogoutAlert(location.search)
-	const modalHeight = logoutAlert ? 450 : 350
+	const modalHeight = logoutAlert ? 490 : 350
 	const runningLocal = window.location.hostname.includes('localhost')
 
 	return (

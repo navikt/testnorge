@@ -1,12 +1,12 @@
 import Highcharts, { type Options } from 'highcharts'
 import {
-	Alert,
 	BodyShort,
 	Box,
 	Button,
 	Heading,
 	HGrid,
 	HStack,
+	InlineMessage,
 	Label,
 	VStack,
 } from '@navikt/ds-react'
@@ -172,9 +172,9 @@ export const DashboardHeaderActions = ({
 			</Button>
 		</HGrid>
 		{mockModeEnabled && (
-			<Alert variant="warning" inline>
+			<InlineMessage status="warning">
 				Testdata er aktiv. Bruk «Vis ekte data» for å vise reell data.
-			</Alert>
+			</InlineMessage>
 		)}
 	</>
 )

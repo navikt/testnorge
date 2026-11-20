@@ -3,13 +3,13 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, usePanelError } from '@/components/ui/form/formUtils'
 import { getAlder, validation } from '@/components/fagsystem/pensjon/form/validation'
 import React, { useContext, useState } from 'react'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import {
 	BestillingsveilederContext,
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
-import { ToggleGroup } from '@navikt/ds-react'
+import { InfoCard, ToggleGroup } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 import { FyllInnInntektForm } from '@/components/fagsystem/pensjon/form/FyllInnInntektForm'
 import { GenerertInntektForm } from '@/components/fagsystem/pensjon/form/GenerertInntektForm'
 import {
@@ -61,10 +61,13 @@ export const PensjonForm = () => {
 				informasjonstekst={hjelpetekst}
 			>
 				{!alder && (nyBestilling || nyBestillingFraMal) && (
-					<StyledAlert variant={'info'} size={'small'}>
-						Pensjonsgivende inntekt kan settes tidligst fra året personen fyller 13 år. For å sikre
-						at personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
-					</StyledAlert>
+					<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Pensjonsgivende inntekt kan settes tidligst fra året personen fyller 13 år. For å
+							sikre at personen får gyldig alder kan denne settes ved å huke av for "Alder" på
+							forrige side.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 
 				<ToggleGroup

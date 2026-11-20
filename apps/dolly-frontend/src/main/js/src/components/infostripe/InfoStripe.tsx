@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { GlobalAlert, VStack } from '@navikt/ds-react'
 import { InfoStripeType, useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
-import { DollyInfoAlert } from '@/components/infostripe/DollyInfoAlert'
+import { getInfostripeStatus } from '@/components/infostripe/InfostripeIcon'
 import Button from '@/components/ui/button/Button'
 import './InfoStripe.less'
 import CloseButton from '@/components/ui/button/CloseButton/CloseButton'
 
 const HIDDEN_ALERTS_KEY = 'HIDDEN_ALERTS'
+const INFOSTRIPE_TITLE = 'Melding fra Team Dolly'
 
 const loadHidden = (): number[] => {
 	try {
@@ -54,28 +56,21 @@ export const InfoStripe: React.FC = () => {
 	if (!visibleAlerts.length) return null
 
 	const multiple = visibleAlerts.length > 1
+	const alertsToShow = showAll ? visibleAlerts : visibleAlerts.slice(0, 1)
 
 	return (
 		<div className="info-stripe">
-			{!showAll && (
-				<DollyInfoAlert
-					type={visibleAlerts[0].type}
-					text={visibleAlerts[0].message}
-					id={visibleAlerts[0].id}
-					onHide={hideAlert}
-				/>
-			)}
-
-			{showAll &&
-				visibleAlerts.map((alert) => (
-					<DollyInfoAlert
-						key={alert.id}
-						type={alert.type}
-						text={alert.message}
-						id={alert.id}
-						onHide={hideAlert}
-					/>
+			<VStack gap="space-12" style={{ width: '100%' }}>
+				{alertsToShow.map((alert) => (
+					<GlobalAlert key={alert.id} status={getInfostripeStatus(alert.type)} size="small">
+						<GlobalAlert.Header>
+							<GlobalAlert.Title>{alert.title?.trim() || INFOSTRIPE_TITLE}</GlobalAlert.Title>
+							<GlobalAlert.CloseButton onClick={() => hideAlert(alert.id)} />
+						</GlobalAlert.Header>
+						<GlobalAlert.Content>{alert.message}</GlobalAlert.Content>
+					</GlobalAlert>
 				))}
+			</VStack>
 
 			{multiple && (
 				<div

@@ -1,6 +1,6 @@
 import Loading from '@/components/ui/loading/Loading'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
@@ -35,9 +35,9 @@ export const KelvinAapVisning = ({
 		<div>
 			<SubOverskrift label="Kelvin AAP-ytelse" iconKind="arena" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke Kelvin AAP-ytelse på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					<div className="person-visning_content">

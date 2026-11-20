@@ -5,11 +5,15 @@ import {
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 	useMalbestillingBruker,
 } from '@/utils/hooks/useMaler'
-import { HStack, Tabs, VStack } from '@navikt/ds-react'
+import { HStack, InfoCard, Tabs, VStack } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/maler/MalPanel'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Buildings3Icon, MagnifyingGlassIcon, PersonGroupIcon } from '@navikt/aksel-icons'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
+import {
+	Buildings3Icon,
+	InformationSquareFillIcon,
+	MagnifyingGlassIcon,
+	PersonGroupIcon,
+} from '@navikt/aksel-icons'
 import { useSearchHotkey } from '@/utils/hooks/useSearchHotkey'
 import { useSoekMalerBruker } from '@/utils/hooks/useTemplateSearch'
 
@@ -64,10 +68,12 @@ export default ({ brukerId }: { brukerId?: string }) => {
 			{isLoading ? (
 				<Loading label="Loading" />
 			) : antallEgneMaler === 0 && antallEgneOrgMaler === 0 && antallEgneTenorsoekMaler === 0 ? (
-				<StyledAlert variant={'info'}>
-					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
-					som en mal på siste side av bestillingsveilederen.
-				</StyledAlert>
+				<InfoCard data-color="info" style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+						Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
+						som en mal på siste side av bestillingsveilederen.
+					</InfoCard.Message>
+				</InfoCard>
 			) : (
 				<Tabs defaultValue={MalType.PERSON}>
 					<Tabs.List>

@@ -1,4 +1,3 @@
-import { Alert, Box, HStack, Tag, Tooltip, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
@@ -9,6 +8,8 @@ import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/Import
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { malTyper } from '@/pages/maler/MalModal'
 import { SoekNyMalDialog } from '@/components/ui/soekMaler/SoekNyMalDialog'
+import { Box, HStack, InfoCard, InlineMessage, Tag, Tooltip, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -78,10 +79,11 @@ export const TreffListe = ({
 
 	if (error || response?.error) {
 		return (
-			<Alert
-				variant="error"
-				size="small"
-			>{`Feil ved henting av personer: ${error || response?.error}`}</Alert>
+			<InfoCard data-color="danger" size="small">
+				<InfoCard.Message
+					icon={<XMarkOctagonFillIcon aria-hidden />}
+				>{`Feil ved henting av personer: ${error || response?.error}`}</InfoCard.Message>
+			</InfoCard>
 		)
 	}
 
@@ -173,10 +175,10 @@ export const TreffListe = ({
 					</div>
 				)}
 				{!nesteSide && antallTreff > 200 && (
-					<Alert variant="info" size="small" inline style={{ marginTop: '20px' }}>
+					<InlineMessage status="info" size="small" style={{ marginTop: '20px' }}>
 						Viser kun de {personListe?.length} første treffene. <br /> Gjør et nytt søk for å se
 						andre treff.
-					</Alert>
+					</InlineMessage>
 				)}
 			</div>
 			<div

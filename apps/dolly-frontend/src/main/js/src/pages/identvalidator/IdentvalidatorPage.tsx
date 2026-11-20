@@ -1,5 +1,6 @@
 import { useValiderIdenter } from '@/utils/hooks/useIdentPool'
-import { Alert, Box, Textarea, VStack } from '@navikt/ds-react'
+import { Box, InfoCard, Textarea, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import React, { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -66,9 +67,11 @@ export default () => {
 					</FormProvider>
 				</Box>
 				{error && (
-					<Alert variant={'error'} size={'small'}>
-						Feil ved validering: {error.message}
-					</Alert>
+					<InfoCard data-color="danger" size={'small'}>
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							Feil ved validering: {error.message}
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				<IdentvalidatorVisningTable identListe={validering} />
 			</VStack>

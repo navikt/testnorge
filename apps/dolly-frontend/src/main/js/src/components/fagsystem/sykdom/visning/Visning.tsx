@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Sykemelding } from '../SykemeldingTypes'
 import { harGyldigTransaksjonsid } from '@/components/transaksjonid/GyldigeBestillinger'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import React from 'react'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
@@ -53,9 +53,9 @@ export const SykemeldingPanel = ({
 
 	if (manglerFagsystemData) {
 		render = (
-			<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+			<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 				Fant ikke sykemelding-data på person
-			</Alert>
+			</InlineMessage>
 		)
 	} else {
 		render = <SykemeldingVisning ident={ident} sykemeldinger={sykemeldinger} />

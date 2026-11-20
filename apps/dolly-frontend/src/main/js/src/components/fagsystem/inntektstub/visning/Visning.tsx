@@ -8,7 +8,7 @@ import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDateTime, formatMonth } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import React, { useMemo, useState } from 'react'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 import { SlettInntektsinformasjon } from '@/components/fagsystem/inntektstub/visning/SlettInntektsinformasjon'
@@ -64,10 +64,10 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 		return <Loading label="Laster organisasjonsdata" />
 	} else if (errorVirksomheter || errorOpplysningspliktige) {
 		return (
-			<Alert variant={'error'} size={'small'} inline style={{ marginBottom: '20px' }}>
+			<InlineMessage status="error" size={'small'} style={{ marginBottom: '20px' }}>
 				Feil ved henting av organisasjonsdata:{' '}
 				{errorOpplysningspliktige?.message || errorVirksomheter?.message}
-			</Alert>
+			</InlineMessage>
 		)
 	}
 
@@ -151,9 +151,9 @@ export const InntektstubVisning = ({
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke inntekt-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					{numInntekter && numInntekter > 5 ? (

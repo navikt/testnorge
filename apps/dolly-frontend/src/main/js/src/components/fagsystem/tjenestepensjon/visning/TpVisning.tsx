@@ -4,7 +4,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
@@ -110,9 +110,9 @@ export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke tjenestepensjon-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}

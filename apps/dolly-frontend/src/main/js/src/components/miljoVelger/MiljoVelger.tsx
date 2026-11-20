@@ -9,7 +9,8 @@ import * as Yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import { useFormContext, useWatch } from 'react-hook-form'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -102,9 +103,11 @@ export const MiljoVelger = ({
 			{bestillingsdata && (
 				<>
 					{disableAllEnvironments && (
-						<StyledAlert variant={'info'} size={'small'}>
-							Denne bestillingen er uavhengig av miljøer.
-						</StyledAlert>
+						<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Denne bestillingen er uavhengig av miljøer.
+							</InfoCard.Message>
+						</InfoCard>
 					)}
 					<MiljoeInfo
 						bestillingsdata={bestillingsdata}

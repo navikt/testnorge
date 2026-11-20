@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Alert, BodyShort, VStack } from '@navikt/ds-react'
+import { BodyShort, InfoCard, VStack } from '@navikt/ds-react'
+import { InformationSquareFillIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import '@/pages/adminPages/Dashboard/dashboardHighchartsSetup'
 import { MONTH_SCOPE_LAST_12 } from '@/pages/adminPages/Dashboard/dashboardUtils'
@@ -116,19 +117,23 @@ export const BrukerStatistikk = ({ eierId, teamNavn }: BrukerStatistikkProps) =>
 
 	if (bestillingerOversiktError) {
 		return (
-			<Alert variant="error">
-				Klarte ikke å hente statistikk: {bestillingerOversiktError.message}
-			</Alert>
+			<InfoCard data-color="danger">
+				<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+					Klarte ikke å hente statistikk: {bestillingerOversiktError.message}
+				</InfoCard.Message>
+			</InfoCard>
 		)
 	}
 
 	if (!valgtPunkt) {
 		return (
-			<Alert variant="info">
-				{teamNavn
-					? `Teamet ${teamNavn} har ingen bestillinger enda. Statistikken vises her når teamet har bestilt identer.`
-					: 'Du har ingen bestillinger enda. Statistikken vises her når du har bestilt identer.'}
-			</Alert>
+			<InfoCard data-color="info">
+				<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+					{teamNavn
+						? `Teamet ${teamNavn} har ingen bestillinger enda. Statistikken vises her når teamet har bestilt identer.`
+						: 'Du har ingen bestillinger enda. Statistikken vises her når du har bestilt identer.'}
+				</InfoCard.Message>
+			</InfoCard>
 		)
 	}
 

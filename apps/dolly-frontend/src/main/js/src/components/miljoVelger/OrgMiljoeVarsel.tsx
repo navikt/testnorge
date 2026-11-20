@@ -1,7 +1,8 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useOrganisasjonForvalter } from '@/utils/hooks/useDollyOrganisasjoner'
 import { getOrgMiljoer } from '@/utils/OrgUtils'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 const extractOrgnummere = (formData: any): string[] => {
 	const orgnummere: string[] = []
@@ -64,9 +65,16 @@ export const OrgMiljoeVarsel = () => {
 	return (
 		<>
 			{warnings.map((warning, idx) => (
-				<StyledAlert key={idx} variant="warning" size="small" style={{ marginTop: 10 }}>
-					{warning}
-				</StyledAlert>
+				<InfoCard
+					data-color="warning"
+					key={idx}
+					size="small"
+					style={{ marginBottom: '20px', marginTop: 10 }}
+				>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						{warning}
+					</InfoCard.Message>
+				</InfoCard>
 			))}
 		</>
 	)
