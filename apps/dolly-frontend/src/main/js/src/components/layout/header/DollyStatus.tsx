@@ -12,8 +12,10 @@ import {
 	Button,
 	Detail,
 	Heading,
+	HStack,
 	InfoCard,
 	List,
+	Loader,
 	Popover,
 	VStack,
 } from '@navikt/ds-react'
@@ -86,6 +88,13 @@ const getBadgeColor = (
 }
 
 const getAriaLabel = (statusoversikt: DollyStatusOversikt | undefined, hasError: boolean) => {
+	const statusLabel = getStatusLabel(statusoversikt, hasError)
+	return !hasError && statusoversikt?.kjoringPagaar
+		? `${statusLabel}. Testkjøring pågår`
+		: statusLabel
+}
+
+const getStatusLabel = (statusoversikt: DollyStatusOversikt | undefined, hasError: boolean) => {
 	if (hasError || !statusoversikt || statusoversikt.status === 'UKJENT') {
 		return 'Systemstatus: Ukjent'
 	}
@@ -113,7 +122,9 @@ const getStatusText = (statusoversikt: DollyStatusOversikt | undefined, hasError
 		case 'FEIL':
 			return 'Noen systemer feiler.'
 		default:
-			return 'Status er ukjent.'
+			return statusoversikt?.kjoringPagaar
+				? 'Testene kjører. Status oppdateres når kjøringen er ferdig.'
+				: 'Status er ukjent.'
 	}
 }
 
@@ -148,6 +159,8 @@ export const DollyStatus = () => {
 	const statusColor = getBadgeColor(statusoversikt?.status, !!error)
 	const statusIcon = getStatusIcon(statusoversikt?.status, !!error)
 	const statusText = getStatusText(statusoversikt, !!error)
+	const kjoringPagaar = !error && !!statusoversikt?.kjoringPagaar
+	const kjoringPagaarUtenStatus = kjoringPagaar && statusoversikt?.status === 'UKJENT'
 	const canRunTests = !!currentBruker && currentBruker.brukertype !== 'BANKID'
 	const manualDeadline = statusoversikt?.nesteManuelleKjoringTidligst
 	const parsedManualDeadline = manualDeadline ? Date.parse(manualDeadline) : undefined
@@ -207,7 +220,11 @@ export const DollyStatus = () => {
 			>
 				<StatusInnhold>
 					<span>
-						<Badge aria-hidden data-color={statusColor} />
+						{kjoringPagaar ? (
+							<Loader size="xsmall" variant="inverted" transparent aria-hidden title="" />
+						) : (
+							<Badge aria-hidden data-color={statusColor} />
+						)}
 					</span>
 					<span>Status</span>
 				</StatusInnhold>
@@ -245,9 +262,25 @@ export const DollyStatus = () => {
 									</InfoCard.Content>
 								</>
 							) : (
-								<InfoCard.Message icon={statusIcon}>{statusText}</InfoCard.Message>
+								<InfoCard.Message
+									icon={
+										kjoringPagaarUtenStatus ? (
+											<Loader size="xsmall" aria-hidden title="" />
+										) : (
+											statusIcon
+										)
+									}
+								>
+									{statusText}
+								</InfoCard.Message>
 							)}
 						</InfoCard>
+						{kjoringPagaar && !kjoringPagaarUtenStatus && (
+							<HStack gap="space-8" align="center">
+								<Loader size="xsmall" aria-hidden title="" />
+								<BodyShort size="small">Ny testkjøring pågår.</BodyShort>
+							</HStack>
+						)}
 						{(isValidTimestamp(statusoversikt?.sistOppdatert) ||
 							isValidTimestamp(statusoversikt?.nesteAutomatiskeKjoring)) && (
 							<VStack gap="space-4">

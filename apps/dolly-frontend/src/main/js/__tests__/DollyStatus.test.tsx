@@ -458,3 +458,38 @@ dollyTest(
 		expect(await screen.findByText('Fikk ikke hentet status.')).toBeInTheDocument()
 	},
 )
+
+dollyTest('shows that tests are running when the status is unknown', async () => {
+	mockStatusoversikt(
+		createStatusoversikt({
+			status: 'UKJENT',
+			kjoringPagaar: true,
+			nesteAutomatiskeKjoring: null,
+		}),
+	)
+	mockBruker(gjeldendeAzureBrukerMock)
+	renderDollyStatus()
+
+	await userEvent.click(
+		await screen.findByRole('button', { name: 'Systemstatus: Ukjent. Testkjøring pågår' }),
+	)
+
+	expect(
+		await screen.findByText('Testene kjører. Status oppdateres når kjøringen er ferdig.'),
+	).toBeInTheDocument()
+	expect(screen.queryByText('Status er ukjent.')).not.toBeInTheDocument()
+	expect(screen.queryByRole('button', { name: 'Kjør tester' })).not.toBeInTheDocument()
+})
+
+dollyTest('keeps the known status and shows a running test run', async () => {
+	mockStatusoversikt(createStatusoversikt({ kjoringPagaar: true, nesteAutomatiskeKjoring: null }))
+	mockBruker(gjeldendeAzureBrukerMock)
+	renderDollyStatus()
+
+	await userEvent.click(
+		await screen.findByRole('button', { name: 'Systemstatus: Alt fungerer. Testkjøring pågår' }),
+	)
+
+	expect(await screen.findByText('Alle fagsystem OK.')).toBeInTheDocument()
+	expect(screen.getByText('Ny testkjøring pågår.')).toBeInTheDocument()
+})
