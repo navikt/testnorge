@@ -295,7 +295,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 				message: response.text(),
 				uuid: window.uuid,
 			})
-			throw new Error('Response fra endepunkt var ikke ok')
+			throw Object.assign(new Error('Response fra endepunkt var ikke ok'), {
+				status: response.status,
+			})
 		}
 		return response
 	})

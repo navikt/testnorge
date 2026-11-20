@@ -128,6 +128,17 @@ const soekMalerBruker = new RegExp(
 
 const mockRoutes: RouteInfo[] = [
 	{ url: api, response: [] },
+	{
+		url: /testnav-dollystatus\/api\/v1\/statusoversikt/,
+		response: {
+			status: 'OK',
+			kjoringPagaar: false,
+			sistOppdatert: new Date().toISOString(),
+			nesteAutomatiskeKjoring: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
+			nesteManuelleKjoringTidligst: null,
+			problemer: [],
+		},
+	},
 	{ url: weatherApi, status: 404, response: {} },
 	{ url: current, response: gjeldendeAzureBrukerMock },
 	{ url: profil, response: gjeldendeProfilMock },
