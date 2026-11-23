@@ -9,11 +9,6 @@ const initialTjenesteOppgaveOptions = [
 	{ label: 'Familie', value: 'familie' },
 ]
 
-export const initialTjenesteomraade = {
-	tjenesteoppgave: ['hjelpemidler'],
-	tjenestevirksomhet: 'nav',
-}
-
 interface TjenesteomraadeFormProps {
 	path: string
 }

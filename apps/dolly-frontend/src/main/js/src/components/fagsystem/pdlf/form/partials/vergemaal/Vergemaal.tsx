@@ -1,6 +1,9 @@
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialTjenesteomraade,
+	initialVergemaal,
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -8,19 +11,26 @@ import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdl
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { initialTjenesteomraade, TjenesteomraadeForm } from './TjenesteomraadeForm'
+import { TjenesteomraadeForm } from './TjenesteomraadeForm'
+import { NavTjenestevirksomhetAdvarsel } from './NavTjenestevirksomhetAdvarsel'
 
 interface VergemaalFormTypes {
 	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option
+	erRedigering?: boolean
 }
 
 export const VergemaalForm = ({
 	formMethods,
 	path,
 	eksisterendeNyPerson = null,
+	erRedigering = false,
 }: VergemaalFormTypes) => {
+	const vergeValgUtfylt =
+		!isEmpty(formMethods.watch(`${path}.nyVergeIdent`), ['syntetisk']) ||
+		formMethods.watch(`${path}.vergeIdent`) != null
+
 	return (
 		<>
 			<FormSelect
@@ -55,6 +65,9 @@ export const VergemaalForm = ({
 			>
 				{(tjenesteomraadePath: string) => <TjenesteomraadeForm path={tjenesteomraadePath} />}
 			</FormDollyFieldArray>
+			<NavTjenestevirksomhetAdvarsel
+				tjenesteomraade={formMethods.watch(`${path}.tjenesteomraade`)}
+			/>
 			<PdlPersonExpander
 				path={path}
 				nyPersonPath={`${path}.nyVergeIdent`}
@@ -62,10 +75,7 @@ export const VergemaalForm = ({
 				eksisterendeNyPerson={eksisterendeNyPerson}
 				label={'VERGE'}
 				formMethods={formMethods}
-				isExpanded={
-					!isEmpty(formMethods.watch(`${path}.nyVergeIdent`), ['syntetisk']) ||
-					formMethods.watch(`${path}.vergeIdent`) != null
-				}
+				isExpanded={!erRedigering && vergeValgUtfylt}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>

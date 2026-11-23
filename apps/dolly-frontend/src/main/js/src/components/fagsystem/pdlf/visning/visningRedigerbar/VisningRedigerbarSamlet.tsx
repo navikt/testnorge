@@ -285,7 +285,7 @@ export const VisningRedigerbarSamlet = ({
 					</DollyFieldArray>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form onSubmit={(data) => handleSubmit(data)} enableReinitialize>
+					<Form enableReinitialize>
 						<>
 							<DollyFieldArray
 								data={_.get(redigertAttributtListe, path) || initialValuesListe}
@@ -299,6 +299,7 @@ export const VisningRedigerbarSamlet = ({
 							<FieldArrayEdit>
 								<Knappegruppe>
 									<NavButton
+										type="button"
 										variant={'secondary'}
 										onClick={() => setVisningModus(Modus.Les)}
 										disabled={formMethods.formState.isSubmitting}
@@ -306,6 +307,7 @@ export const VisningRedigerbarSamlet = ({
 										Avbryt
 									</NavButton>
 									<NavButton
+										type="button"
 										variant={'primary'}
 										onClick={() => handleSubmit(formMethods.watch())}
 										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
