@@ -74,6 +74,12 @@ export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path:
 						name={`${path}.aktiveringDato`}
 						label="Aktiveringsdato"
 						minDate={new Date('2002-12-30')}
+						disabled={!!harOppfoelgingsvedtak14a}
+						title={
+							harOppfoelgingsvedtak14a
+								? 'Aktiveringsdato kan ikke settes på personer som har oppfølgingsvedtak § 14 a'
+								: null
+						}
 					/>
 				)}
 			</div>
