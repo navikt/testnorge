@@ -7,6 +7,7 @@ import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestSta
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.FunctionalTestStatus;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.RunId;
 import no.nav.testnav.apps.statusfrontend.functionaltest.model.SystemId;
+import no.nav.testnav.apps.statusfrontend.functionaltest.model.TechnicalStatusState;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -21,7 +22,7 @@ class FunctionalTestCacheTest {
     private static final DisplayName DISPLAY_NAME = new DisplayName("Arena");
 
     @Test
-    void shouldCacheResultUntilOneHourAfterCompletion() {
+    void shouldCacheSuccessfulResultUntilSixHoursAfterCompletion() {
         var startedAt = Instant.parse("2026-09-21T10:00:00Z");
         var completedAt = startedAt.plusSeconds(30);
         var clock = new MutableClock(completedAt);
@@ -39,12 +40,163 @@ class FunctionalTestCacheTest {
 
         assertThat(completedStatus).get()
                 .extracting(FunctionalTestStatus::cachedUntil)
-                .isEqualTo(completedAt.plus(Duration.ofHours(1)));
+                .isEqualTo(completedAt.plus(Duration.ofHours(6)));
         assertThat(cache.isExpired(KEY)).isFalse();
 
-        clock.setInstant(completedAt.plus(Duration.ofHours(1)));
+        clock.setInstant(completedAt.plus(Duration.ofHours(6)));
 
         assertThat(cache.isExpired(KEY)).isTrue();
+    }
+
+    @Test
+    void shouldCacheFailedResultUntilOneHourAfterCompletion() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var completedAt = startedAt.plusSeconds(30);
+        var cache = new FunctionalTestCache(new MutableClock(completedAt));
+        var runId = RunId.random();
+
+        cache.start(KEY, DISPLAY_NAME, runId, startedAt);
+        var completedStatus = cache.complete(
+                KEY,
+                runId,
+                FunctionalTestState.VERIFY_FAILED,
+                1,
+                null,
+                completedAt);
+
+        assertThat(completedStatus).get()
+                .extracting(FunctionalTestStatus::cachedUntil)
+                .isEqualTo(completedAt.plus(Duration.ofHours(1)));
+    }
+
+    @Test
+    void shouldCacheSuccessfulTechnicalStatusUntilSixHoursAfterCompletion() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var completedAt = startedAt.plusSeconds(30);
+        var cache = new FunctionalTestCache(new MutableClock(completedAt));
+        var runId = RunId.random();
+
+        cache.start(KEY, DISPLAY_NAME, runId, startedAt);
+        var completedStatus = cache.completeTechnical(KEY, runId, TechnicalStatusState.UP, completedAt);
+
+        assertThat(completedStatus).get()
+                .extracting(FunctionalTestStatus::cachedUntil)
+                .isEqualTo(completedAt.plus(Duration.ofHours(6)));
+    }
+
+    @Test
+    void shouldCacheFailedTechnicalStatusUntilOneHourAfterCompletion() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var completedAt = startedAt.plusSeconds(30);
+        var cache = new FunctionalTestCache(new MutableClock(completedAt));
+        var runId = RunId.random();
+
+        cache.start(KEY, DISPLAY_NAME, runId, startedAt);
+        var completedStatus = cache.completeTechnical(KEY, runId, TechnicalStatusState.DOWN, completedAt);
+
+        assertThat(completedStatus).get()
+                .extracting(FunctionalTestStatus::cachedUntil)
+                .isEqualTo(completedAt.plus(Duration.ofHours(1)));
+    }
+
+    @Test
+    void shouldKeepLastCompletedStatusWhileNewRunIsRunning() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var completedAt = startedAt.plusSeconds(30);
+        var cache = new FunctionalTestCache(new MutableClock(completedAt));
+        var firstRunId = RunId.random();
+        cache.start(KEY, DISPLAY_NAME, firstRunId, startedAt);
+        var completedStatus = cache.complete(
+                KEY,
+                firstRunId,
+                FunctionalTestState.VERIFY_FAILED,
+                1,
+                null,
+                completedAt).orElseThrow();
+
+        var secondRunId = RunId.random();
+        var secondStartedAt = completedAt.plusSeconds(1);
+        cache.start(KEY, DISPLAY_NAME, secondRunId, secondStartedAt);
+
+        assertThat(cache.get(KEY)).get()
+                .extracting(FunctionalTestStatus::state)
+                .isEqualTo(FunctionalTestState.RUNNING);
+        assertThat(cache.lastCompleted(KEY)).contains(completedStatus);
+
+        var secondCompletedStatus = cache.complete(
+                KEY,
+                secondRunId,
+                FunctionalTestState.OK,
+                0,
+                null,
+                secondStartedAt.plusSeconds(30)).orElseThrow();
+
+        assertThat(cache.lastCompleted(KEY)).contains(secondCompletedStatus);
+    }
+
+    @Test
+    void shouldUpdateLastCompletedStatusAfterTechnicalCompletion() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var completedAt = startedAt.plusSeconds(30);
+        var cache = new FunctionalTestCache(new MutableClock(completedAt));
+        var firstRunId = RunId.random();
+
+        cache.start(KEY, DISPLAY_NAME, firstRunId, startedAt);
+        cache.complete(KEY, firstRunId, FunctionalTestState.OK, 0, null, completedAt);
+        var secondRunId = RunId.random();
+        var secondStartedAt = completedAt.plusSeconds(1);
+        cache.start(KEY, DISPLAY_NAME, secondRunId, secondStartedAt);
+        var completedStatus = cache.completeTechnical(
+                KEY, secondRunId, TechnicalStatusState.DOWN, secondStartedAt.plusSeconds(30)).orElseThrow();
+
+        assertThat(cache.lastCompleted(KEY)).contains(completedStatus);
+    }
+
+    @Test
+    void shouldReturnEmptyLastCompletedStatusBeforeAnyCompletion() {
+        var cache = new FunctionalTestCache(new MutableClock(Instant.parse("2026-09-21T10:00:00Z")));
+
+        assertThat(cache.lastCompleted(KEY)).isEmpty();
+    }
+
+    @Test
+    void shouldUseCustomCacheDurations() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var completedAt = startedAt.plusSeconds(30);
+        var cache = new FunctionalTestCache(
+                new MutableClock(completedAt),
+                Duration.ofHours(2),
+                Duration.ofMinutes(15));
+        var runId = RunId.random();
+
+        cache.start(KEY, DISPLAY_NAME, runId, startedAt);
+        var successfulStatus = cache.complete(
+                KEY,
+                runId,
+                FunctionalTestState.OK,
+                1,
+                null,
+                completedAt);
+
+        assertThat(successfulStatus).get()
+                .extracting(FunctionalTestStatus::cachedUntil)
+                .isEqualTo(completedAt.plus(Duration.ofHours(2)));
+
+        var failedRunId = RunId.random();
+        var failedStartedAt = completedAt.plusSeconds(1);
+        var failedCompletedAt = failedStartedAt.plusSeconds(30);
+        cache.start(KEY, DISPLAY_NAME, failedRunId, failedStartedAt);
+        var failedStatus = cache.complete(
+                KEY,
+                failedRunId,
+                FunctionalTestState.VERIFY_FAILED,
+                1,
+                null,
+                failedCompletedAt);
+
+        assertThat(failedStatus).get()
+                .extracting(FunctionalTestStatus::cachedUntil)
+                .isEqualTo(failedCompletedAt.plus(Duration.ofMinutes(15)));
     }
 
     @Test
@@ -61,5 +213,21 @@ class FunctionalTestCacheTest {
         clock.setInstant(startedAt.plus(Duration.ofMinutes(5)));
 
         assertThat(cache.cooldownUntil(KEY)).isEmpty();
+    }
+
+    @Test
+    void shouldApplyFullRunCooldownForFifteenMinutesFromStart() {
+        var startedAt = Instant.parse("2026-09-21T10:00:00Z");
+        var clock = new MutableClock(startedAt.plus(Duration.ofMinutes(14)));
+        var cache = new FunctionalTestCache(clock);
+
+        cache.start(KEY, DISPLAY_NAME, RunId.random(), startedAt);
+
+        assertThat(cache.fullRunCooldownUntil(KEY))
+                .contains(startedAt.plus(Duration.ofMinutes(15)));
+
+        clock.setInstant(startedAt.plus(Duration.ofMinutes(15)));
+
+        assertThat(cache.fullRunCooldownUntil(KEY)).isEmpty();
     }
 }

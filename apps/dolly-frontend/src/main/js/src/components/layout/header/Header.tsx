@@ -13,6 +13,7 @@ import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDro
 import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
 import { TeamVarsel } from '@/components/layout/header/TeamVarsel'
+import { DollyStatus } from '@/components/layout/header/DollyStatus'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -26,13 +27,18 @@ export default () => {
 
 	return (
 		<header className="app-header">
-			<NavLink to="/" end className="home-nav">
-				<div className="img-logo">
-					<img alt="NAV logo" src={logo} />
+			<div className="header-left">
+				<NavLink to="/" end className="home-nav">
+					<div className="img-logo">
+						<img alt="NAV logo" src={logo} />
+					</div>
+					<Icon size={30} kind="dolly" className="dollysheep" />
+					<h1>Dolly</h1>
+				</NavLink>
+				<div className="header-status">
+					<DollyStatus />
 				</div>
-				<Icon size={30} kind="dolly" className="dollysheep" />
-				<h1>Dolly</h1>
-			</NavLink>
+			</div>
 
 			<div className="menu-links">
 				<PersonDropdown />
@@ -49,7 +55,9 @@ export default () => {
 				{isAdmin && <AdminDropdown />}
 			</div>
 			<TeamVarsel />
-			<BrukerDropdown />
+			<div className="header-right">
+				<BrukerDropdown />
+			</div>
 		</header>
 	)
 }

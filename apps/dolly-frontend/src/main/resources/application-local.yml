@@ -52,6 +52,8 @@ consumers:
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
     url: https://testnav-varslinger-service-dev.intern.dev.nav.no
+  testnav-dollystatus:
+    url: https://dollystatus.intern.dev.nav.no
   oppsummeringsdokument-service:
     url: https://testnav-oppsummeringsdokument-service.intern.dev.nav.no
   testnav-pdl-forvalter:

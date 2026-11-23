@@ -8,8 +8,16 @@ spring:
       resourceserver:
         aad:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
   reactor:
     context-propagation: auto
+
+dollystatus:
+  utdatert-etter: PT6H
+  ttl:
+    ok: PT6H
+    feil: PT1H
 
 consumers:
   testnav-pdl-forvalter:

@@ -1,7 +1,6 @@
 package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.libs.nais.NaisEnvironmentApplicationContextInitializer;
 import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
@@ -29,7 +28,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import java.util.function.Function;
 
-@Slf4j
 @Import({
         CoreConfig.class,
         FrontendConfig.class,
@@ -61,6 +59,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service"))
                 .route(createRoute(consumers.getTestnavOrganisasjonForvalter()))
                 .route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service"))
+                .route(createRoute(consumers.getTestnavDollystatus(), "testnav-dollystatus"))
                 .route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api"))
                 .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service"))
@@ -86,12 +85,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavApiOversiktService(), "testnav-oversikt-service"))
                 .route(createRoute(consumers.getTestnavIdentPool()))
                 .build();
-    }
-
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
-                .initializers(new NaisEnvironmentApplicationContextInitializer())
-                .run(args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
@@ -128,5 +121,11 @@ public class DollyFrontendApplicationStarter {
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
                         .filters(filter, removeCookiesFilter, addUserJwtHeaderFilter())
                 ).uri(host);
+    }
+
+    static void main(String[] args) {
+        new SpringApplicationBuilder(DollyFrontendApplicationStarter.class)
+                .initializers(new NaisEnvironmentApplicationContextInitializer())
+                .run(args);
     }
 }

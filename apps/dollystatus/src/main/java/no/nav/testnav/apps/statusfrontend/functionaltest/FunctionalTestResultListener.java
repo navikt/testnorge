@@ -9,4 +9,7 @@ public interface FunctionalTestResultListener {
 
     default void onFullRunCompleted(FunctionalTestRunStatus run) {
     }
+
+    default void onPartialRunCompleted(FunctionalTestRunStatus run) {
+    }
 }

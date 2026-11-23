@@ -4,6 +4,7 @@ import no.nav.testnav.apps.statusfrontend.config.Consumers;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PdlFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.config.FunctionalTestProperties.PensjonFunctionalTestProperties;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreateAfpOffentligCommand;
+import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreatePensjonPersonCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreatePensjonsavtaleCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreatePoppCommand;
 import no.nav.testnav.apps.statusfrontend.fagsystem.pensjon.command.CreateTpForholdCommand;
@@ -84,6 +85,17 @@ public class PensjonProxyHttpClient implements PensjonClient {
                         runId,
                         pdlProperties.getIdent(),
                         PensjonTestData.environmentName(environment),
+                        properties.getRequestTimeout()).call());
+    }
+
+    @Override
+    public Mono<Void> createPerson(FunctionalTestEnvironment environment, RunId runId) {
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new CreatePensjonPersonCommand(
+                        webClient,
+                        token.getTokenValue(),
+                        runId,
+                        PensjonTestData.personRequest(pdlProperties.getIdent(), environment),
                         properties.getRequestTimeout()).call());
     }
 

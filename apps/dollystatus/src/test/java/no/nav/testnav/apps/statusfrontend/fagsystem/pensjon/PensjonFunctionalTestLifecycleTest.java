@@ -151,6 +151,34 @@ class PensjonFunctionalTestLifecycleTest {
     }
 
     @Test
+    void shouldRegisterPensjonPersonBeforeCreatingPoppIncome() {
+        when(client.createPerson(Q1, RUN_ID)).thenReturn(Mono.empty());
+        when(client.createPopp(Q1, RUN_ID)).thenReturn(Mono.empty());
+        var lifecycle = new PoppFunctionalTest(client, properties, scheduler);
+        var context = context("pensjon-popp", Q1);
+
+        StepVerifier.create(lifecycle.create(context, null))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        InOrder calls = inOrder(client);
+        calls.verify(client).createPerson(Q1, RUN_ID);
+        calls.verify(client).createPopp(Q1, RUN_ID);
+    }
+
+    @Test
+    void shouldNotCreatePoppIncomeWhenPensjonPersonRegistrationFails() {
+        when(client.createPerson(Q1, RUN_ID)).thenReturn(Mono.error(new IllegalStateException("Feil.")));
+        var lifecycle = new PoppFunctionalTest(client, properties, scheduler);
+
+        StepVerifier.create(lifecycle.create(context("pensjon-popp", Q1), null))
+                .expectError(IllegalStateException.class)
+                .verify();
+
+        verify(client, times(0)).createPopp(any(), any());
+    }
+
+    @Test
     void shouldVerifyPensjonsavtaleInBothEnvironmentsButRegisterGlobalStatus() {
         when(client.getPensjonsavtale(Q1, RUN_ID))
                 .thenReturn(

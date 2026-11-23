@@ -67,7 +67,7 @@ export default () => {
 							Dolly fagssystemstatus
 						</Heading>
 						<p className="status-page-introduction">
-							Statusene oppdateres automatisk når siden lastes. Resultatene lagres i én time.
+							Statusene oppdateres automatisk når siden lastes. Vellykkede resultater lagres i seks timer, og feil i én time.
 						</p>
 						{import.meta.env.MODE === 'mock' && (
 							<div className="status-page-mock-notice">

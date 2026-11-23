@@ -12,6 +12,8 @@ public interface PensjonClient {
 
     Mono<Void> deleteTpForhold(FunctionalTestEnvironment environment, RunId runId);
 
+    Mono<Void> createPerson(FunctionalTestEnvironment environment, RunId runId);
+
     Mono<Void> createPopp(FunctionalTestEnvironment environment, RunId runId);
 
     Mono<PensjonResourceStatus> getPopp(FunctionalTestEnvironment environment, RunId runId);

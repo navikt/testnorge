@@ -121,7 +121,7 @@ public class FunctionalTestCoordinator {
         return Mono.deferContextual(contextView -> Mono.fromSupplier(() -> {
             synchronized (runMonitor) {
                 if (nonNull(activeRun)) {
-                    return new RunReference(activeRun.runId());
+                    return new RunReference(activeRun.runId(), false);
                 }
 
                 var registrations = registry.registrations().stream()
@@ -160,6 +160,61 @@ public class FunctionalTestCoordinator {
                 keysOf(registrations, technicalRegistrations));
     }
 
+    public Mono<RunReference> startFailed() {
+        return Mono.defer(() -> isRunActive()
+                ? Mono.<List<FunctionalTestStatus>>error(new FunctionalTestRunInProgressException())
+                : getSystemStatuses()).flatMap(statuses -> {
+            var selection = failedSelection(statuses);
+            if (selection.problemSystemIds().isEmpty()) {
+                return Mono.error(new FunctionalTestNotFoundException());
+            }
+            return startManual(
+                    selection.registrations(),
+                    selection.technicalRegistrations(),
+                    selection.pdlLifecycle(),
+                    selection.cooldownKeys());
+        });
+    }
+
+    public Mono<Optional<Instant>> nesteManuelleKjoringForFeilede() {
+        return getSystemStatuses().map(statuses -> failedSelection(statuses).cooldownKeys().stream()
+                .map(cache::cooldownUntil)
+                .flatMap(Optional::stream)
+                .max(Instant::compareTo));
+    }
+
+    public Mono<RunReference> startAll() {
+        var registrations = registry.registrations();
+        var technicalRegistrations = registry.technicalRegistrations();
+        var pdlLifecycle = pdlLifecycles.stream().findFirst();
+        return startManual(
+                registrations,
+                technicalRegistrations,
+                pdlLifecycle,
+                allKeys(registrations, technicalRegistrations, pdlLifecycle),
+                cache::fullRunCooldownUntil);
+    }
+
+    public Optional<Instant> nesteManuelleKjoringForAlle() {
+        var registrations = registry.registrations();
+        var technicalRegistrations = registry.technicalRegistrations();
+        return allKeys(registrations, technicalRegistrations, pdlLifecycles.stream().findFirst()).stream()
+                .map(cache::fullRunCooldownUntil)
+                .flatMap(Optional::stream)
+                .max(Instant::compareTo);
+    }
+
+    private List<FunctionalTestKey> allKeys(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
+            Optional<PdlTestLifecycle<?, ?>> pdlLifecycle
+    ) {
+        return Stream.concat(
+                        pdlLifecycle.map(this::pdlKeys).stream().flatMap(List::stream),
+                        keysOf(registrations, technicalRegistrations).stream())
+                .toList();
+    }
+
     public Mono<RunReference> startFunctionalTests() {
         var registrations = registry.registrations();
         var pdlLifecycle = pdlLifecycles.stream().findFirst();
@@ -185,6 +240,16 @@ public class FunctionalTestCoordinator {
             Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
             List<FunctionalTestKey> cooldownKeys
     ) {
+        return startManual(registrations, technicalRegistrations, pdlLifecycle, cooldownKeys, cache::cooldownUntil);
+    }
+
+    private Mono<RunReference> startManual(
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
+            Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
+            List<FunctionalTestKey> cooldownKeys,
+            Function<FunctionalTestKey, Optional<Instant>> cooldownUntil
+    ) {
         return Mono.deferContextual(contextView -> Mono.fromSupplier(() -> {
             synchronized (runMonitor) {
                 if (nonNull(activeRun)) {
@@ -193,7 +258,7 @@ public class FunctionalTestCoordinator {
                 if (registrations.isEmpty() && technicalRegistrations.isEmpty() && pdlLifecycle.isEmpty()) {
                     throw new FunctionalTestNotFoundException();
                 }
-                verifyCooldown(cooldownKeys);
+                verifyCooldown(cooldownKeys, cooldownUntil);
                 return launch(registrations, technicalRegistrations, pdlLifecycle, contextView, false);
             }
         }));
@@ -210,6 +275,44 @@ public class FunctionalTestCoordinator {
                         .anyMatch(registration -> registration.definition().requiresPdl()));
     }
 
+    private FailedSelection failedSelection(List<FunctionalTestStatus> statuses) {
+        var problemSystemIds = statuses.stream()
+                .filter(FunctionalTestStatus::hasProblem)
+                .map(FunctionalTestStatus::systemId)
+                .distinct()
+                .toList();
+        var selectedPdlLifecycle = pdlLifecycles.stream()
+                .filter(lifecycle -> problemSystemIds.contains(lifecycle.descriptor().systemId()))
+                .findFirst();
+        var selectedSystemIds = problemSystemIds.stream()
+                .filter(systemId -> selectedPdlLifecycle
+                        .filter(lifecycle -> lifecycle.descriptor().systemId().equals(systemId))
+                        .isEmpty())
+                .toList();
+        var registrations = selectedSystemIds.stream()
+                .flatMap(systemId -> registry.registrationsFor(systemId).stream())
+                .distinct()
+                .toList();
+        var technicalRegistrations = selectedSystemIds.stream()
+                .flatMap(systemId -> registry.technicalRegistrationsFor(systemId).stream())
+                .distinct()
+                .toList();
+        var pdlLifecycle = selectedPdlLifecycle.isPresent()
+                ? selectedPdlLifecycle
+                : requiredPdlLifecycle(registrations, technicalRegistrations);
+        var cooldownKeys = Stream.concat(
+                        keysOf(registrations, technicalRegistrations).stream(),
+                        pdlLifecycle.map(this::pdlKeys).stream().flatMap(List::stream))
+                .distinct()
+                .toList();
+        return new FailedSelection(
+                problemSystemIds,
+                registrations,
+                technicalRegistrations,
+                pdlLifecycle,
+                cooldownKeys);
+    }
+
     private static List<FunctionalTestKey> keysOf(
             List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
             List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations
@@ -222,9 +325,21 @@ public class FunctionalTestCoordinator {
                 .toList();
     }
 
-    private void verifyCooldown(List<FunctionalTestKey> keys) {
+    private record FailedSelection(
+            List<SystemId> problemSystemIds,
+            List<FunctionalTestRegistry.RegisteredFunctionalTest> registrations,
+            List<FunctionalTestRegistry.RegisteredTechnicalStatus> technicalRegistrations,
+            Optional<PdlTestLifecycle<?, ?>> pdlLifecycle,
+            List<FunctionalTestKey> cooldownKeys
+    ) {
+    }
+
+    private void verifyCooldown(
+            List<FunctionalTestKey> keys,
+            Function<FunctionalTestKey, Optional<Instant>> cooldownUntil
+    ) {
         var retryAfter = keys.stream()
-                        .map(cache::cooldownUntil)
+                        .map(cooldownUntil)
                         .flatMap(Optional::stream)
                         .max(Instant::compareTo);
         if (retryAfter.isPresent()) {
@@ -239,6 +354,12 @@ public class FunctionalTestCoordinator {
                     .map(ActiveRun::snapshot)
                     .orElseThrow(FunctionalTestRunNotFoundException::new);
         });
+    }
+
+    public boolean isRunActive() {
+        synchronized (runMonitor) {
+            return nonNull(activeRun);
+        }
     }
 
     private void evictExpiredRuns() {
@@ -919,11 +1040,15 @@ public class FunctionalTestCoordinator {
                 activeRun = null;
             }
         }
-        if (executionCompleted && run.fullRun) {
+        if (executionCompleted) {
             var completedRun = run.snapshot();
             resultListeners.forEach(listener -> {
                 try {
-                    listener.onFullRunCompleted(completedRun);
+                    if (run.fullRun) {
+                        listener.onFullRunCompleted(completedRun);
+                    } else {
+                        listener.onPartialRunCompleted(completedRun);
+                    }
                 } catch (RuntimeException exception) {
                     log.error(
                             "Klarte ikke å behandle ferdig testkjøring: {}",

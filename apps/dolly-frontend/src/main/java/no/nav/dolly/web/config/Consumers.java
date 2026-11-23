@@ -56,6 +56,7 @@ public class Consumers {
     private ServerProperties testnavTpsMessagingService;
     private ServerProperties testnavUdistubProxy;
     private ServerProperties testnavVarslingerService;
+    private ServerProperties testnavDollystatus;
     private ServerProperties testnorgeProfilApi;
     private ServerProperties testnorgeTilbakemeldingApi;
     private ServerProperties testnavTenorSearchService;
