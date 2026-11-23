@@ -195,8 +195,7 @@ inneholder en blanding av syntetiske og prodlike maskerte data. Det siste er nø
 ikke støtter syntetiske fødselsnumre. Av samme grunn er det verdt å nevne at registre for sykemelding og arbeidssøker
 som også konsumeres av Infotrygd kun finnes i Q1. Så derfor, inkluder Q1 som miljøvalg hvis dette skal kombineres med
 sykemelding/registrering av arbeidssøker. Q4 støttes og benyttes unntaksvis av AAREG og ARENA; tilgjengelighet
-på miljøet kan være begrenset. For mer informasjon se
-link:https://confluence.adeo.no/pages/viewpage.action?pageId=305341700[Navs testmiljøer].
+på miljøet kan være begrenset.
 
 image::dolly/miljoe_valg.png[Miljøvalg]
 
@@ -395,34 +394,27 @@ lagt til slettet, sammen med øvrige registre og systemer som støtter sletting.
 [[dolly_testnorge_idporten]]
 ===== ID-Porten
 
-Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident.
+Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident
 
-[[demo]]
-==== Diverse demoer av Dolly
+[[identvalidator]]
+=== Identvalidator
 
-[[demo_opprette_tilfeldige]]
-===== Opprette personer med tilfeldige verdier
+Identvalidator er tilgjengelig under Person-menyen og gir deg mulighet til å validere syntetiske og prodlike identer.
 
-++++
-<figure>
-  <video aria-label="Demo som viser oppretting av personer med tilfeldige verdier" controls poster="_images/videos/person-tilfeldige-verdier.png" style="max-width:730px">
-    <source src="_images/videos/person-tilfeldige-verdier.mp4" type="video/mp4" >
-    Din nettleser støtter ikke innebygde videoer.
-  </video>
-</figure>
-++++
+image::dolly/identvalidator_meny.png[Ident validator]
 
-[[demo_opprette_onskede]]
-===== Opprette person med ønskede verdier
+Teamene er ansvarlig for at egne testerscenario benytter testdata i samsvar med GDPR. I prakisis betyr det at syntetiske
+identer skal brukes, og prodlike identer kun kan brukes når syntetiske ikke er mulig og gyldig unntak foreligger.
+Validatoren gir deg mulighet til å identifisere prodlike identer som faktisk finnes i produksjon.
 
-++++
-<figure>
-  <video aria-label="Demo som viser oppretting av personer med spesifikke verdier" controls poster="_images/videos/person-spesifikke-verdier.png" style="max-width:730px">
-    <source src="_images/videos/person-spesifikke-verdier.mp4" type="video/mp4" >
-    Din nettleser støtter ikke innebygde videoer.
-  </video>
-</figure>
-++++
+image::dolly/identvalidator_spoerring.png[Ident validator]
+
+Resultatet viser egenskapene til identen, og om den er syntetisk eller prodlik. Kun prodlike identer vil bli sjekket mot
+produksjon. Kapasitet på sjekk mot produksjon er begrenset, og det kan derfor ta noe tid før resultatet vises.
+Validatoren har blitt sjekket og kjørt med 10k (10000) identer i en spørring.
+Resultatet kan lastes opp til en CSV-fil for videre analyse.
+
+image::dolly/identvalidator_resultat.png[Ident validator]
 
 [[endringsmelding_status]]
 === Endringsmelding (status)
