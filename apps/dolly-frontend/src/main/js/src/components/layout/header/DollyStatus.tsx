@@ -58,7 +58,7 @@ const StatusInnhold = styled.span`
 	display: flex;
 	flex-wrap: wrap;
 	align-content: flex-start;
-	justify-content: flex-end;
+	justify-content: flex-start;
 	column-gap: 6px;
 	height: 1.5rem;
 	overflow: hidden;
@@ -235,14 +235,14 @@ export const DollyStatus = () => {
 							<Badge aria-hidden data-color={statusColor} />
 						)}
 					</span>
-					<span>Status</span>
+					<span>Systemstatus</span>
 				</StatusInnhold>
 			</HeaderStatusButton>
 			<Popover
 				open={open}
 				onClose={() => setOpen(false)}
 				anchorEl={anchorElement}
-				placement="bottom-end"
+				placement="bottom-start"
 			>
 				<Popover.Content style={{ maxWidth: '24rem' }}>
 					<VStack gap="space-12">
@@ -300,7 +300,7 @@ export const DollyStatus = () => {
 								)}
 								{isValidTimestamp(statusoversikt?.nesteAutomatiskeKjoring) && (
 									<Detail textColor="subtle">
-										Neste automatiske kjøring kl.{' '}
+										Neste automatiske sjekk kl.{' '}
 										{formatClockTime(statusoversikt.nesteAutomatiskeKjoring)}
 									</Detail>
 								)}

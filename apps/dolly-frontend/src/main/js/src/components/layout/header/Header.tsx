@@ -27,13 +27,18 @@ export default () => {
 
 	return (
 		<header className="app-header">
-			<NavLink to="/" end className="home-nav">
-				<div className="img-logo">
-					<img alt="NAV logo" src={logo} />
+			<div className="header-left">
+				<NavLink to="/" end className="home-nav">
+					<div className="img-logo">
+						<img alt="NAV logo" src={logo} />
+					</div>
+					<Icon size={30} kind="dolly" className="dollysheep" />
+					<h1>Dolly</h1>
+				</NavLink>
+				<div className="header-status">
+					<DollyStatus />
 				</div>
-				<Icon size={30} kind="dolly" className="dollysheep" />
-				<h1>Dolly</h1>
-			</NavLink>
+			</div>
 
 			<div className="menu-links">
 				<PersonDropdown />
@@ -51,7 +56,6 @@ export default () => {
 			</div>
 			<TeamVarsel />
 			<div className="header-right">
-				<DollyStatus />
 				<BrukerDropdown />
 			</div>
 		</header>
