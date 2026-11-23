@@ -21,7 +21,8 @@ import {
 	Modus,
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
@@ -274,11 +275,13 @@ export const VisningRedigerbarPersondetaljer = ({
 						<h1>Sletting</h1>
 						<h4>Hvilke opplysninger ønsker du å slette?</h4>
 						{slettAttr.skjerming && (
-							<Alert variant={'info'}>
-								Sletting av skjerming sletter all data på person i skjermingregisteret. For å heller
-								avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato for
-								skjermingen.
-							</Alert>
+							<InfoCard data-color="info">
+								<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+									Sletting av skjerming sletter all data på person i skjermingregisteret. For å
+									heller avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato for
+									skjermingen.
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						<div className="flexbox--flex-wrap">
 							{harNavn && (

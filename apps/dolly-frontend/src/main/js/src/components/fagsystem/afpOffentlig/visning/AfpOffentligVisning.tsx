@@ -2,7 +2,7 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -107,9 +107,9 @@ export const AfpOffentligVisning = ({
 		<ErrorBoundary>
 			<SubOverskrift label="AFP offentlig" iconKind="pensjon" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke AFP offentlig-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}

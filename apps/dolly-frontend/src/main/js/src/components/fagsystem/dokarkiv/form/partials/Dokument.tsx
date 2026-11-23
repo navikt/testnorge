@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import Digitalinnsending from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
-import { Alert, FileObject, FileUpload, Heading, VStack } from '@navikt/ds-react'
+import { FileObject, FileUpload, Heading, InfoCard, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import Loading from '@/components/ui/loading/Loading'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
@@ -297,9 +298,11 @@ export const Dokument = ({ path, formMethods, digitalInnsending }: DokumentProps
 					<Loading label="Laster vedlegg fra mal ..." />
 				)}
 				{errorDokumenterFraMal && malId && (
-					<Alert variant="error" size="small">
-						{errorDokumenterFraMal.message}
-					</Alert>
+					<InfoCard data-color="danger" size="small">
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							{errorDokumenterFraMal.message}
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{vedlegg?.length > 0 && (
 					<VStack gap="space-8">

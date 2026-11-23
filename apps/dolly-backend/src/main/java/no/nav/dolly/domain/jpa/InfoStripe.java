@@ -29,6 +29,9 @@ public class InfoStripe implements Serializable {
     @Column("type")
     private InfoStripeType type;
 
+    @Column("title")
+    private String title;
+
     @Column("message")
     private String message;
 
@@ -49,6 +52,7 @@ public class InfoStripe implements Serializable {
         return new EqualsBuilder()
                 .append(id, that.id)
                 .append(type, that.type)
+                .append(title, that.title)
                 .append(message, that.message)
                 .append(start, that.start)
                 .append(expires, that.expires)
@@ -60,6 +64,7 @@ public class InfoStripe implements Serializable {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(type)
+                .append(title)
                 .append(message)
                 .append(start)
                 .append(expires)
@@ -71,6 +76,7 @@ public class InfoStripe implements Serializable {
         return "InfoStripe{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
+                ", title='" + title + '\'' +
                 ", message='" + message + '\'' +
                 ", start=" + start +
                 ", expires=" + expires +

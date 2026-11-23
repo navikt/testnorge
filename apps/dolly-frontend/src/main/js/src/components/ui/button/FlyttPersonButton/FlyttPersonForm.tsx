@@ -4,7 +4,7 @@ import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/ste
 import { DollyErrorMessageWrapper } from '@/utils/DollyErrorMessageWrapper'
 import Loading from '@/components/ui/loading/Loading'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { Alert, Box, Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react'
+import { Box, Button, Checkbox, CheckboxGroup, InlineMessage, Search } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useFormContext } from 'react-hook-form'
 
@@ -41,9 +41,8 @@ const PersonKolonne = styled.div`
 	width: 50%;
 	max-height: 25rem;
 
-	.aksel-alert {
+	.aksel-inline-message {
 		margin-left: 20px;
-		margin-bottom: 10px;
 		color: var(--ax-text-info-subtle);
 	}
 
@@ -177,10 +176,10 @@ export const FlyttPersonForm = ({
 				<PersonKolonne>
 					<FormLabel style={{ marginLeft: '20px' }}>Valgte personer</FormLabel>
 					{harRelatertePersoner(formMethods.getValues('identer')) && (
-						<Alert variant="info" size="small" inline>
+						<InlineMessage status="info" size="small">
 							Du har valgt én eller flere personer som har relaterte personer. Disse vil også
 							flyttes.
-						</Alert>
+						</InlineMessage>
 					)}
 					<ValgtePersonerList data-testid={TestComponentSelectors.CONTAINER_VALGTE_PERSONER}>
 						{identer.length > 0 ? (

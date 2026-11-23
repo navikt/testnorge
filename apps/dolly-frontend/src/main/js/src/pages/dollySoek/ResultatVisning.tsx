@@ -1,5 +1,5 @@
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import { Alert, Pagination } from '@navikt/ds-react'
+import { InlineMessage, Pagination } from '@navikt/ds-react'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
 import React, { Fragment } from 'react'
@@ -35,9 +35,9 @@ export const ResultatVisning = ({
 	if (resultat?.error || soekError) {
 		return (
 			<ContentContainer>
-				<Alert variant={'error'} size={'small'} inline>
+				<InlineMessage status="error" size={'small'}>
 					Feil: {resultat?.error || soekError?.message}
-				</Alert>
+				</InlineMessage>
 			</ContentContainer>
 		)
 	}
@@ -45,9 +45,9 @@ export const ResultatVisning = ({
 	if (resultat?.totalHits < 1) {
 		return (
 			<ContentContainer>
-				<Alert variant="warning" size="small" inline>
+				<InlineMessage status="warning" size="small">
 					Ingen treff
-				</Alert>
+				</InlineMessage>
 			</ContentContainer>
 		)
 	}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Logger } from '@/logger/Logger'
-import { Alert, Button } from '@navikt/ds-react'
+import { Button, InfoCard } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { isChunkLoadError } from '@/utils/chunkErrorUtils'
 import { captureFrontendError } from '@/observability/frontendTelemetry'
 
@@ -37,16 +38,18 @@ export default class StepErrorBoundary extends React.Component<Props, { error: a
 		if (this.state.error) {
 			const chunkError = isChunkLoadError(this.state.error)
 			return (
-				<Alert variant="error" style={{ margin: '1rem 0' }}>
-					{chunkError
-						? 'En ny versjon av Dolly er tilgjengelig. Siden bør lastes inn på nytt for å unngå problemer.'
-						: `Noe gikk galt ved visning av "${this.props.stepLabel}".`}
-					<div style={{ marginTop: '0.5rem' }}>
-						<Button variant="secondary" size="small" onClick={() => window.location.reload()}>
-							Last inn siden på nytt
-						</Button>
-					</div>
-				</Alert>
+				<InfoCard data-color="danger" style={{ margin: '1rem 0' }}>
+					<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+						{chunkError
+							? 'En ny versjon av Dolly er tilgjengelig. Siden bør lastes inn på nytt for å unngå problemer.'
+							: `Noe gikk galt ved visning av "${this.props.stepLabel}".`}
+						<div style={{ marginTop: '0.5rem' }}>
+							<Button variant="secondary" size="small" onClick={() => window.location.reload()}>
+								Last inn siden på nytt
+							</Button>
+						</div>
+					</InfoCard.Message>
+				</InfoCard>
 			)
 		}
 		return this.props.children

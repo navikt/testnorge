@@ -5,6 +5,7 @@ import { csrfFetch } from '@/api/csrf'
 
 export interface InfoStripeType {
 	id: number
+	title?: string | null
 	message: string
 	type: 'INFO' | 'WARNING' | 'ERROR' | 'SUCCESS'
 	start: Date
@@ -13,9 +14,10 @@ export interface InfoStripeType {
 
 export interface CreateInfostripeInput {
 	type: InfoStripeType['type']
+	title?: string | null
 	message: string
-	start: Date | string
-	expires: Date | string
+	start: Date | string | null
+	expires: Date | string | null
 }
 
 export interface UpdateInfostripeInput extends CreateInfostripeInput {

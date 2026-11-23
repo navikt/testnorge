@@ -16,9 +16,10 @@ import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/Ku
 import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
 import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
 import { useFormContext } from 'react-hook-form'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = () => {
@@ -40,14 +41,16 @@ export const ArbeidsplassenForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>
 				{!harArbeidssoekerregisteret && (
-					<StyledAlert
-						variant={'warning'}
+					<InfoCard
+						data-color="warning"
 						size={'small'}
 						style={{ marginBottom: 0, wordBreak: 'auto-phrase' }}
 					>
-						For å kunne registrere CV må personen være under oppfølging av Nav. Derfor må "Er
-						arbeidssøker" under Arbeidssøkerregisteret velges på forrige steg.
-					</StyledAlert>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							For å kunne registrere CV må personen være under oppfølging av Nav. Derfor må "Er
+							arbeidssøker" under Arbeidssøkerregisteret velges på forrige steg.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				<div className="flexbox--flex-wrap">
 					<JobboenskerForm />

@@ -26,6 +26,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Slf4j
 @RestController
@@ -54,6 +55,10 @@ public class InfostripeController {
     public Mono<InfoStripe> opprettNyMelding(@RequestBody RsInfostripeMelding melding) {
 
         return Mono.just(mapperFacade.map(melding, InfoStripe.class))
+                .map(infostripe -> {
+                    infostripe.setTitle(trimToNull(melding.getTitle()));
+                    return infostripe;
+                })
                 .flatMap(informasjonsmeldingRepository::save);
     }
 
@@ -67,6 +72,7 @@ public class InfostripeController {
                 .switchIfEmpty(Mono.error(new NotFoundException(id + " finnes ikke")))
                 .map(infostripe -> {
                     infostripe.setType(melding.getType());
+                    infostripe.setTitle(trimToNull(melding.getTitle()));
                     infostripe.setMessage(melding.getMessage());
                     infostripe.setStart(melding.getStart());
                     infostripe.setExpires(melding.getExpires());

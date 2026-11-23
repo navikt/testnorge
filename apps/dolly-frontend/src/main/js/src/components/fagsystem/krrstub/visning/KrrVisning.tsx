@@ -12,7 +12,7 @@ import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 
 const EditDeleteKnapper = styled.div`
 	position: absolute;
@@ -177,9 +177,9 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 					isWarning={manglerFagsystemdata}
 				/>
 				{manglerFagsystemdata ? (
-					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+					<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 						Fant ikke KRR-data på person
-					</Alert>
+					</InlineMessage>
 				) : (
 					<div className="person-visning_content">
 						<ArrayHistorikk

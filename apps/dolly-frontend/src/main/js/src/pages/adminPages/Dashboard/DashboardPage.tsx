@@ -10,7 +10,8 @@ import {
 	MonthlyTeamTrendSection,
 } from '@/pages/adminPages/Dashboard/dashboardMonthlySections'
 import { useErDollyAdmin } from '@/utils/DollyAdmin'
-import { Alert, Box, VStack } from '@navikt/ds-react'
+import { Box, InfoCard, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import '@/pages/adminPages/Dashboard/dashboardHighchartsSetup'
 import { DashboardFeilProvider } from './DashboardFeilContext'
@@ -99,40 +100,54 @@ export default () => {
 						)}
 
 						{coreData.dashboardBestillingerError && (
-							<Alert variant="error">
-								Klarte ikke å hente bestillingsdata: {coreData.dashboardBestillingerError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente bestillingsdata: {coreData.dashboardBestillingerError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						{coreData.selectedDayFeilError && (
-							<Alert variant="error">
-								Klarte ikke å hente feil for valgt dag: {coreData.selectedDayFeilError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente feil for valgt dag: {coreData.selectedDayFeilError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						{coreData.dashboardTeamsError && (
-							<Alert variant="error">
-								Klarte ikke å hente teamdata: {coreData.dashboardTeamsError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente teamdata: {coreData.dashboardTeamsError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						{coreData.dashboardOrganisasjonerError && (
-							<Alert variant="error">
-								Klarte ikke å hente organisasjonsdata:{' '}
-								{coreData.dashboardOrganisasjonerError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente organisasjonsdata:{' '}
+									{coreData.dashboardOrganisasjonerError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						{coreData.dashboardDollyTeamsError && (
-							<Alert variant="error">
-								Klarte ikke å hente dolly team-data: {coreData.dashboardDollyTeamsError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente dolly team-data: {coreData.dashboardDollyTeamsError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						{coreData.feilSummertError && (
-							<Alert variant="error">
-								Klarte ikke å hente feildata: {coreData.feilSummertError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente feildata: {coreData.feilSummertError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						{coreData.feilDetaljertError && (
-							<Alert variant="error">
-								Klarte ikke å hente detaljerte feil: {coreData.feilDetaljertError.message}
-							</Alert>
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Klarte ikke å hente detaljerte feil: {coreData.feilDetaljertError.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 
 						<MonthlyTeamTrendSection

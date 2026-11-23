@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { Alert, Box, Pagination, Table, VStack } from '@navikt/ds-react'
+import { Box, InfoCard, Pagination, Table, VStack } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 import { useLevendeArbeidsforholdLogg } from '@/utils/hooks/useLevendeArbeidsforhold'
 import { formatDate } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
@@ -39,7 +40,11 @@ export default () => {
 					{loading ? (
 						<Loading label="Laster arbeidsforhold ..." />
 					) : !sortData || sortData.length < 1 ? (
-						<Alert variant="info">Fant ingen arbeidsforhold</Alert>
+						<InfoCard data-color="info">
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Fant ingen arbeidsforhold
+							</InfoCard.Message>
+						</InfoCard>
 					) : (
 						<div>
 							<Table>

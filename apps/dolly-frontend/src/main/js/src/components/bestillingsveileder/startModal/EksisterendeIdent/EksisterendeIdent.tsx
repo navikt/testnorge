@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Alert, Button, Table, Textarea, VStack } from '@navikt/ds-react'
+import { Button, InfoCard, Table, Textarea, VStack } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { usePdlfEksistens } from '@/utils/hooks/usePdlForvalter'
 import Icon from '@/components/ui/icon/Icon'
 import './eksisterendeIdent.less'
@@ -66,10 +67,12 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 	return (
 		<div className="ny-bestilling-form_row eksisterende-ident-form">
 			{error && (
-				<Alert variant="error">
-					<Icon kind="report-problem-triangle" />
-					{error.message}
-				</Alert>
+				<InfoCard data-color="danger">
+					<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+						<Icon kind="report-problem-triangle" />
+						{error.message}
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			<VStack gap="space-16" style={{ maxHeight: '20vh', margin: '15px 20px 0 0' }}>
 				<Textarea
@@ -146,9 +149,11 @@ export const EksisterendeIdent = ({ gruppeId }: any) => {
 				</div>
 			)}
 			{hasInvalidIdentifiers && (
-				<Alert variant="warning" style={{ width: '100%', marginRight: '20px' }}>
-					Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
-				</Alert>
+				<InfoCard data-color="warning" style={{ width: '100%', marginRight: '20px' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 		</div>
 	)

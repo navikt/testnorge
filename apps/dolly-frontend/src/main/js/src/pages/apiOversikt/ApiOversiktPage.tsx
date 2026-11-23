@@ -1,6 +1,7 @@
 import React from 'react'
 import { useApiOversikt } from '@/utils/hooks/useApiOversikt'
-import { Alert, Box, Table } from '@navikt/ds-react'
+import { Box, InfoCard, Table } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 import Loading from '@/components/ui/loading/Loading'
 import { SystemVisning } from '@/pages/apiOversikt/SystemVisning'
 
@@ -16,7 +17,11 @@ export default () => {
 				{loading ? (
 					<Loading label="Laster systemer ..." />
 				) : error ? (
-					<Alert variant="warning">{`Feil ved henting av data: ${error}`}</Alert>
+					<InfoCard data-color="warning">
+						<InfoCard.Message
+							icon={<ExclamationmarkTriangleFillIcon aria-hidden />}
+						>{`Feil ved henting av data: ${error}`}</InfoCard.Message>
+					</InfoCard>
 				) : (
 					<Table>
 						<Table.Body>

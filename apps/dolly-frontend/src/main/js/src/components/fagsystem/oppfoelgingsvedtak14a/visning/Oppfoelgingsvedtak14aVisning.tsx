@@ -1,6 +1,6 @@
 import Loading from '@/components/ui/loading/Loading'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
@@ -53,9 +53,9 @@ export const Oppfoelgingsvedtak14aVisning = ({
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke Oppfølgingsvedtak § 14 a på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					<div className="person-visning_content">

@@ -20,7 +20,8 @@ import {
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 interface ForeldreansvarForm {
 	formMethods: UseFormReturn
@@ -49,8 +50,7 @@ export const ForeldreansvarForm = ({
 	const foedselsaar = ((opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.foedselsdato?.[0]
 		?.foedselsaar ||
 		(opts?.personFoerLeggTil as any)?.pdl?.hentPerson?.foedsel?.[0]?.foedselsaar) as
-		| number
-		| undefined
+		number | undefined
 
 	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 
@@ -221,17 +221,21 @@ export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 	return (
 		<>
 			{!leggTilPaaGruppe && !harBarn() && !personFoerLeggTil && (
-				<StyledAlert variant={'warning'} size={'small'}>
-					For å sette foreldreansvar må personen også ha et barn. Det kan du legge til ved å huke av
-					for Har barn/foreldre under Familierelasjoner på forrige side, og sette en relasjon av
-					typen barn.
-				</StyledAlert>
+				<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						For å sette foreldreansvar må personen også ha et barn. Det kan du legge til ved å huke
+						av for Har barn/foreldre under Familierelasjoner på forrige side, og sette en relasjon
+						av typen barn.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 
 			{!leggTilPaaGruppe && harBarnUtenIdentifikator() && (
-				<StyledAlert variant={'warning'} size={'small'}>
-					Personen har ett eller flere barn uten identifikator, disse vil ikke få foreldreansvar.
-				</StyledAlert>
+				<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						Personen har ett eller flere barn uten identifikator, disse vil ikke få foreldreansvar.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 
 			<FormDollyFieldArray

@@ -5,11 +5,11 @@ import { codeToNorskLabel, formatDate, oversettBoolean, showLabel } from '@/util
 import Loading from '@/components/ui/loading/Loading'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard, InlineMessage } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { isSameDay } from 'date-fns'
 import { mergeMiljoData } from '@/components/ui/miljoTabs/utils'
@@ -66,10 +66,12 @@ const DataVisning = ({ data, miljo, ident }) => {
 	return (
 		<>
 			{!vedtakAP && !loading && (
-				<StyledAlert variant={'warning'} size={'small'}>
-					Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
-					klar ennå, eller at opprettelse av alderspensjon har feilet.
-				</StyledAlert>
+				<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
+						klar ennå, eller at opprettelse av alderspensjon har feilet.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			<DollyFieldArray data={data} header={null} nested>
 				{(item, idx) => {
@@ -161,9 +163,9 @@ export const AlderspensjonVisning = ({
 		<ErrorBoundary>
 			<SubOverskrift label="Alderspensjon" iconKind="pensjon" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke alderspensjon-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}

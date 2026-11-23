@@ -77,7 +77,6 @@ import {
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { SykemeldingPanel } from '@/components/fagsystem/sykdom/visning/Visning'
 import {
 	sjekkManglerUforetrygdData,
@@ -125,8 +124,8 @@ import { Oppfoelgingsvedtak14aVisning } from '@/components/fagsystem/oppfoelging
 import { useHenvendelser } from '@/utils/hooks/useHenvendelse'
 import { usePdlAktoerId } from '@/utils/hooks/usePdlPerson'
 import { HenvendelseVisning } from '@/components/fagsystem/henvendelse/visning/HenvendelseVisning'
-import { Button } from '@navikt/ds-react'
-import { PlusCircleIcon } from '@navikt/aksel-icons'
+import { Button, InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { OpprettMal } from '@/pages/maler/OpprettMal'
 import { malTyper } from '@/pages/maler/MalModal'
 import { getIdenttypeFraIdent } from '@/utils/identtype'
@@ -678,11 +677,13 @@ const PersonVisning = (props: PersonVisningProps) => {
 					)}
 				</div>
 				{!isLoadingAlleFagsystemer && manglerFagsystemdata() && (
-					<StyledAlert variant={'info'} size={'small'}>
-						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
-						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med Team Dolly
-						dersom problemet vedvarer.
-					</StyledAlert>
+					<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Det ser ut til at denne personen har ufullstendige data fra ett eller flere
+							fagsystemer. Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt
+							med Team Dolly dersom problemet vedvarer.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{ident.master === 'PDLF' && <PdlfVisning fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (

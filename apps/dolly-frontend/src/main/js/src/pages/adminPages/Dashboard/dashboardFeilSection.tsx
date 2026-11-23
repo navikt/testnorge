@@ -1,6 +1,5 @@
 import {
 	Accordion,
-	Alert,
 	BodyShort,
 	Box,
 	Button,
@@ -8,6 +7,7 @@ import {
 	Heading,
 	HGrid,
 	HStack,
+	InlineMessage,
 	Skeleton,
 	Tag,
 	VStack,
@@ -175,9 +175,7 @@ export const DashboardFeilSection = ({
 				{isLoading ? (
 					<DollySpinner size={120} label="Laster feildata..." />
 				) : feilYearOptions.length === 0 ? (
-					<Alert variant="info" inline>
-						Ingen feildata tilgjengelig.
-					</Alert>
+					<InlineMessage status="info">Ingen feildata tilgjengelig.</InlineMessage>
 				) : (
 					<>
 						<DashboardSelectButtons
@@ -201,9 +199,7 @@ export const DashboardFeilSection = ({
 								<Skeleton variant="rectangle" height="360px" />
 							</VStack>
 						) : !hasFeilData ? (
-							<Alert variant="success" inline>
-								Ingen feil registrert i valgt måned.
-							</Alert>
+							<InlineMessage status="success">Ingen feil registrert i valgt måned.</InlineMessage>
 						) : (
 							<>
 								<HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">
@@ -241,9 +237,9 @@ export const DashboardFeilSection = ({
 											{loadingFeilDetaljert ? (
 												<Skeleton variant="rectangle" height="160px" />
 											) : feilGrupper.length === 0 ? (
-												<Alert variant="info" inline>
+												<InlineMessage status="info">
 													Ingen detaljerte feil registrert for valgt dag.
-												</Alert>
+												</InlineMessage>
 											) : (
 												<FeilGrupperVisning
 													feilGrupper={feilGrupper}

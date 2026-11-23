@@ -11,7 +11,8 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import './RedigerGruppe.less'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 type Props = {
 	gruppeId: string
@@ -131,9 +132,11 @@ export const RedigerGruppe = ({ gruppeId, onCancel }: Props) => {
 					{buttons}
 				</div>
 				{feilmelding && (
-					<Alert variant={'error'} size={'small'} style={{ margin: '0 10px 15px' }}>
-						{feilmelding}
-					</Alert>
+					<InfoCard data-color="danger" size={'small'} style={{ margin: '0 10px 15px' }}>
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							{feilmelding}
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 			</form>
 		</FormProvider>
