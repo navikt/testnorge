@@ -44,6 +44,7 @@ public class SplittGruppeService {
                                 isNull(bestilling.getOpprettetFraGruppeId()) &&
                                         isNull(bestilling.getOpprettetFraId()) &&
                                         isNull(bestilling.getGjenopprettetFraIdent()))
+                        .distinct(Bestilling::getId)
                         .flatMap(bestilling -> moveBestilling(bestilling, identer, testgruppe))
                         .collectList()
                         .thenReturn(testgruppe))
@@ -101,11 +102,21 @@ public class SplittGruppeService {
                                         .collectList()
                                         .flatMap(progresser ->
                                                 deleteKildeBestilling(bestilling)
+                                                        .then(oppdaterAntallIdenterIKildeBestilling(bestilling, progresser.size()))
                                                         .thenReturn(oppdatertBestilling)
                                                         .flatMap(oppdatert -> {
-                                                            oppdatertBestilling.setAntallIdenter(bestilling.getAntallIdenter() - progresser.size());
+                                                            oppdatertBestilling.setAntallIdenter(progresser.size());
                                                             return bestillingRepository.save(oppdatertBestilling);
                                                         }))));
+    }
+
+    private Mono<Bestilling> oppdaterAntallIdenterIKildeBestilling(Bestilling bestilling, int antallFlyttet) {
+
+        return bestillingRepository.findById(bestilling.getId())
+                .flatMap(kildeBestilling -> {
+                    kildeBestilling.setAntallIdenter(Math.max(0, kildeBestilling.getAntallIdenter() - antallFlyttet));
+                    return bestillingRepository.save(kildeBestilling);
+                });
     }
 
     private Mono<Void> deleteKildeBestilling(Bestilling bestilling) {
