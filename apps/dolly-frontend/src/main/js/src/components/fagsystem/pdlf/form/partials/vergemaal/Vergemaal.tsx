@@ -12,7 +12,7 @@ import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { TjenesteomraadeForm } from './TjenesteomraadeForm'
-import { NavTjenestevirksomhetAdvarsel } from './NavTjenestevirksomhetAdvarsel'
+import { NavTjenestevirksomhetSkjemaAdvarsel } from './NavTjenestevirksomhetAdvarsel'
 
 interface VergemaalFormTypes {
 	formMethods: UseFormReturn
@@ -65,9 +65,7 @@ export const VergemaalForm = ({
 			>
 				{(tjenesteomraadePath: string) => <TjenesteomraadeForm path={tjenesteomraadePath} />}
 			</FormDollyFieldArray>
-			<NavTjenestevirksomhetAdvarsel
-				tjenesteomraade={formMethods.watch(`${path}.tjenesteomraade`)}
-			/>
+			<NavTjenestevirksomhetSkjemaAdvarsel path={path} />
 			<PdlPersonExpander
 				path={path}
 				nyPersonPath={`${path}.nyVergeIdent`}

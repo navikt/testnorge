@@ -2,11 +2,12 @@ import { render, screen } from '@testing-library/react'
 import {
 	harNavTjenestevirksomhet,
 	NavTjenestevirksomhetAdvarsel,
+	VergemaalOppsummeringAdvarsel,
 } from '@/components/fagsystem/pdlf/form/partials/vergemaal/NavTjenestevirksomhetAdvarsel'
 import { Vergemaal } from '@/components/fagsystem/pdlf/bestilling/Vergemaal'
 import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 
-const advarsel = /Ingen tjenesteoppgaver er knyttet til Nav som tjenestevirksomhet/
+const advarsel = /Legg til et tjenesteområde der tjenestevirksomhet er «nav»/
 
 describe('harNavTjenestevirksomhet', () => {
 	it('should accept nav regardless of case and surrounding whitespace', () => {
@@ -106,5 +107,29 @@ describe('Vergemaal bestillingsvisning', () => {
 		)
 
 		expect(screen.queryByText(advarsel)).not.toBeInTheDocument()
+	})
+})
+
+const medNav = { tjenesteomraade: [{ tjenestevirksomhet: 'nav', tjenesteoppgave: ['pensjon'] }] }
+const utenNav = {
+	tjenesteomraade: [{ tjenestevirksomhet: 'kommune', tjenesteoppgave: ['pensjon'] }],
+}
+
+describe('VergemaalOppsummeringAdvarsel', () => {
+	it('should name which vergemaal lack nav when there are several', () => {
+		render(<VergemaalOppsummeringAdvarsel vergemaalListe={[medNav, utenNav, utenNav] as never} />)
+
+		expect(
+			screen.getByText('Vergemål 2, 3 mangler Nav som tjenestevirksomhet.'),
+		).toBeInTheDocument()
+		expect(screen.getByText(/Gå tilbake til Vergemål under Personinformasjon/)).toBeInTheDocument()
+	})
+
+	it('should render nothing when every vergemaal has nav', () => {
+		const { container } = render(
+			<VergemaalOppsummeringAdvarsel vergemaalListe={[medNav] as never} />,
+		)
+
+		expect(container).toBeEmptyDOMElement()
 	})
 })
