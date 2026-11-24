@@ -295,6 +295,11 @@ export const getInitialNavn = (master = 'FREG') => ({
 	master: master,
 })
 
+export const initialTjenesteomraade = {
+	tjenesteoppgave: ['hjelpemidler'],
+	tjenestevirksomhet: 'nav',
+}
+
 export const initialVergemaal = {
 	vergemaalEmbete: null as unknown as string,
 	sakType: null as unknown as string,
@@ -303,7 +308,7 @@ export const initialVergemaal = {
 	nyVergeIdent: initialPdlPerson as unknown,
 	vergeIdent: null as unknown as string,
 	mandatType: null as unknown as string,
-	tjenesteomraade: [] as Array<{
+	tjenesteomraade: [initialTjenesteomraade] as Array<{
 		tjenesteoppgave: string[]
 		tjenestevirksomhet: string
 	}>,

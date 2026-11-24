@@ -22,6 +22,7 @@ export const FieldArrayAddButton = ({
 	disabled = false,
 }) => (
 	<Button
+		type="button"
 		variant="tertiary"
 		size="xsmall"
 		icon={<PlusCircleIcon aria-hidden />}
@@ -37,6 +38,7 @@ export const FieldArrayAddButton = ({
 export const DeleteButton = ({ onClick, title = 'Fjern' }) =>
 	!onClick ? null : (
 		<Button
+			type="button"
 			className="dolly-delete-button"
 			variant="tertiary"
 			size="small"

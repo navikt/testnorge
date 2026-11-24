@@ -388,7 +388,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<FormProvider {...formMethods}>
-					<Form onSubmit={(data) => handleSubmit(data)}>
+					<Form>
 						<>
 							<div className="flexbox--flex-wrap">
 								<PersondetaljerSamlet
@@ -400,6 +400,7 @@ export const VisningRedigerbarPersondetaljer = ({
 							</div>
 							<Knappegruppe>
 								<NavButton
+									type="button"
 									variant={'secondary'}
 									style={{ marginRight: '10px' }}
 									onClick={() => setVisningModus(Modus.Les)}
@@ -408,6 +409,7 @@ export const VisningRedigerbarPersondetaljer = ({
 									Avbryt
 								</NavButton>
 								<NavButton
+									type="button"
 									variant={'primary'}
 									onClick={() => handleSubmit(formMethods.watch())}
 									disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}

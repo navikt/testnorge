@@ -9,6 +9,7 @@ import { arrayToString, codeToNorskLabel, formatDate } from '@/utils/DataFormatt
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/partials/EkspanderbarVisning'
 import * as _ from 'lodash-es'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/partials/RelatertPerson'
+import { NavTjenestevirksomhetAdvarsel } from '@/components/fagsystem/pdlf/form/partials/vergemaal/NavTjenestevirksomhetAdvarsel'
 
 type VergemaalTypes = {
 	vergemaalListe: Array<VergemaalValues>
@@ -67,6 +68,7 @@ export const Vergemaal = ({ vergemaalListe }: VergemaalTypes) => {
 										)
 									}}
 								</DollyFieldArray>
+								<NavTjenestevirksomhetAdvarsel tjenesteomraade={vergemaal.tjenesteomraade} />
 								<EkspanderbarVisning vis={_.get(vergemaal, 'nyVergeIdent')} header="VERGE">
 									<RelatertPerson personData={vergemaal.nyVergeIdent} tittel="Verge" />
 								</EkspanderbarVisning>
