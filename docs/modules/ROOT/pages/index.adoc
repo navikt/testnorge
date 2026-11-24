@@ -80,7 +80,7 @@ Dolly støtter BankID pålogging for eksterne brukere. Betingelsen er at organis
 fått Dolly-tilgang ved forspørsel på dolly@nav.no. I tillegg må den ekstren brukeren være tildelt Altinn-rollen #Navs Dolly
 for samarbeidspartnere#. Rollen kan kun tildeles av Altinn-ansvarlig i den eksterne organisasjonen.
 
-[[Førstegangsbruk]]
+[[foerstegangsbruk]]
 === Førstegangsbruk
 Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter.
 Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
@@ -111,7 +111,7 @@ Trykk Opprett og gå til gruppe.
 image::dolly/opprett_gruppe.png[Testdatagrupper]
 
 [[legge_til_personer_i_en_gruppe]]
-==== Legge til personer i en gruppe
+=== Legge til personer i en gruppe
 Inne på gruppen har du en oversikt over alle personene som tilhører gruppen og hvilke egenskaper de har.
 Her kan du velge #Opprett personer# for å lage nye Nav-syntetiske personer, eller #Importer personer# for å gjøre et Tenor-søk
 og importere Test-Norge-personer fra Skatteetaten. Bemerk at brukere med BankID-pålogging er begrenset til import fra Test-Norge
@@ -119,7 +119,8 @@ kun slik at referanser er gyldig på tvers av organisasjonene.
 
 image::dolly/ny_testdatagruppe.png[Ny testdatagruppe]
 
-==== Opprett/import av personer
+[[opprett_import_av_personer]]
+==== Opprett personer eller Importer personer
 
 Ved #Importer personer# er det først et eget skjermbilde for valg av kandidater som oppfyller de ønskede personkriterier, og
 eventuelt krav til opplysninger i andre fagsystem (hos Skatteetaten):
@@ -138,6 +139,9 @@ image::dolly/opprett_personer.png[opprett personer]
 - Opprette fra eksisterende FNR, DNR eller NPID (identene kan ikke finnes i prod eller i Dolly fra før), dette blir det
 gjort sjekk for før man går videre.
 
+[[velg_gruppe_og_mal]]
+==== Velg gruppe og mal
+
 Både ved oppretting og import er dialogen videre identisk i steg 1:
 
 image::dolly/gruppe_og_mal.png[Gruppe og mal]
@@ -146,9 +150,7 @@ Her identifiserer du hvilken gruppe personene skal legges til i, og eventuelt hv
 Mal her betyr bare at visse egenskaper og verdier er pre-utfylt, men kan likevel endres før innsending.
 
 [[velg_egenskaper]]
-===== Velg egenskaper
-
-image::dolly/velg_egenskaper.png[Velg egenskaper]
+==== Velg egenskaper
 
 I steg 2 bestemmes egenskaper; dette omfatter personopplysninger og data som skal legges til i interne registre hos Nav.
 Trykk på ønsket fane og velg de systemene som er relevante for dine tester.
@@ -163,7 +165,7 @@ Vi videreutvikler Dolly kontinuerlig og nye egenskaper legges til fortløpende e
 Savner du noe, meld inn på Slack-kanalen link:https://nav-it.slack.com/archives/CA3P9NGA2[#dolly].
 
 [[velg_verdier]]
-===== Velg verdier
+==== Velg verdier
 
 I steg 3 spesifiserer du verdiene på de egenskapene du valgte i steg 2.
 
@@ -177,7 +179,7 @@ Arbeidsforhold har flere attributter som kan settes, men disse er de viktigste.
 image::dolly/velg_verdier.png[Velg verdier]
 
 [[velg_personverdier]]
-====== Personverdier
+===== Personverdier
 Det kan være greit å vite at ved opprett person med FNR, vil disse automatisk få fødselsnummer, navn, kjønn, fødested,
 fødselsdato, sivilstatus ugift, bostedsadresse, norsk statsborgerskap og folkeregister-personstatus bosatt. For alle personer,
 hvis ikke annet er valgt vil aldersdistribusjon være 30-60 år og kjønnnsfordeling være lik mellom mann og kvinne.
@@ -187,7 +189,7 @@ Alt Dette kan endres ved å velge egenskapene i steg 2 og angi verdier i steg 3.
 
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
 
-[[velg_miljø]]
+[[velg_miljoe]]
 ===== Oppsummering/Velg miljø
 
 Ikke alle miljø er tilgjengelig for Dolly; vårt hovedmiljø er det helsyntetiske Q2-miljøet. Vi støtter også Q1 som
@@ -207,21 +209,22 @@ Trykk opprett og bestillingen starter. Du vil få en oppdatert statusmelding nå
 personfanen for å se detaljer på personen(e). Merk at persondata til PDL er uavhengig av miljø; det havner i alle miljøer,
 med unntak av Q0, og pensjon persondata (unntatt for NPID) distribueres alltid til Q1 og Q2.
 
-image::dolly/bestilling_status.png[bestilling status]
-
 [[bestilling_status]]
+==== Fremdrift og bestillingsstatus
+
+image::dolly/bestilling_status.png[bestilling status]
 
 Opprettet testpersonen har blitt lagt til i gruppe og testdata kan hentes fra PDL og fagsystem, her AAREG.
 Trykk på personfanen for å ekspandere denne og vise detaljene.
 
 [[leggtil_endre_person]]
-==== Legg til eller endre person
+=== Legg til eller endre person
 
 Denne funksjonaliteten lar deg legge til ekstra egenskaper på en eksisterende ident eller endre verdier på allerede eksisterende egenskaper.
 For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisning for personen, trykk LEGG TIL/ENDRE og velg egenskaper.
 
 [[demo_legg-til-endre]]
-===== Demo - Legg til/endre
+==== Demo - Legg til/endre
 
 ++++
 <figure>
@@ -232,8 +235,21 @@ For å legge til ekstra egenskaper på en eksisterende person: åpne detaljvisni
 </figure>
 ++++
 
+[[gjenopprett_person]]
+=== Gjenopprett person, bestilling eller gruppe
+
+Av ulike grunner kan det være behov for å gjenopprette en person; det kan skje at testmiljø ikke var helt friskt og ny
+innsending kan fikse dette. Gjennoppretting er også nødvendig atter prodlast for å laste Test-Norge og Dolly-personer til
+PDL i Q1, og tilsvarende for andre systemer som har prodlast. Dette kan gjøres ved å trykke på GJENOPPRETT PERSON i
+detaljvisning for personen. Det skal også nevnes at det er mulig å gjenopprette en hel gruppe. Og gjenopprett bestilling
+finnes også. Dog kan man ikke gjenopprette en gjenoppretting.
+
+Hvis selve oppretting av persondetaljer mislyktes (gjelder Opprett person), vil det ikke være mulig å gjenopprette, da alle
+operasjoner for gjenopprett fortutsetter at personopplysningene er veldefinerte. Hvis det er enkeltopplysninger som er
+problemet kan man evt slette disse i personvisningen og forsøke å legge til nye ved Legg-til/endre funksjonen på person.
+
 [[flytte_identer]]
-==== Flytte identer mellom grupper
+=== Flytte identer mellom grupper
 
 Dolly har mulighet til å flytte identer mellom grupper ved å trykke "Flytt personer" i menyen under header på en gruppe.
 Dette kan være nyttig hvis du ønsker å samle personer med lignende egenskaper i samme gruppe, eller ønsker at noen andre skal ta over eierskap til visse identer.
@@ -253,13 +269,15 @@ image::dolly/flytte_identer.png[Flytte identer]
 ++++
 
 [[maler]]
-==== Opprette og bruke maler
+=== Oppretting og bruke maler
 
 Når du oppretter en ny person i Dolly kan du velge å lagre bestillingen som en mal.
 Malen kan senere gjenbrukes av deg og andre og gir en ferdigutfylt bestilling som også kan endres før innsending.
 
-For å lage en mal huk av for Lagre som mal på siste steg i prosessen.
-Gi malen et beskrivende navn.
+For å lage en mal huk av for Lagre som mal på siste steg i prosessen, og gi malen et beskrivende navn.
+
+Merk at du også kan bestemme deg for å opprette en mal i etterkant, fra en bestilling eller fra en person. Mal fra person
+er tilgjengelig øverst i personvisningen, og mal fra person vil inneholde opplysningene fra samtlige bestillinger på personen.
 
 image::dolly/opprette_mal.png[Opprette mal]
 
@@ -269,12 +287,15 @@ image::dolly/bruk_mal.png[Bruk mal]
 
 Du kan endre verdier før innsending.
 
+[[oversikt_mine_maler]]
+==== Oversikt på mine maler
+
 Du vil også finne en oversikt over maler på "Mine maler" i menyen øverst til høyre.
 
 image::dolly/minside.png[Min side]
 
 [[demo_maler]]
-===== Demo - Opprette og bruke maler
+==== Demo - Opprette og bruke maler
 
 ++++
 <figure>
@@ -286,7 +307,7 @@ image::dolly/minside.png[Min side]
 ++++
 
 [[team_samarbeid]]
-==== Team-funksjonalitet
+=== Team-funksjonalitet
 
 Team gjør det mulig å samarbeide på de samme gruppene i Dolly.
 Et team er en samling av Dolly-brukere som alle har tilgang på de samme dataene.
@@ -294,14 +315,14 @@ Du kan velge om du representerer deg selv eller et team.
 Når du representerer et team vil alt du oppretter av grupper, personer og maler tilhøre teamet og ikke deg selv.
 
 [[valg_representasjon]]
-===== Valg av representasjon
+==== Valg av representasjon
 
 Brukermenyen øverst til høyre viser deg selv og alle team du er medlem av.
 Når du velger et team endres visninger som mine grupper til å heller vise teamets grupper.
 Øverst til høyre ser du alltid hvem du representerer.
 
 [[team_oversikt]]
-===== Team-oversikt
+==== Team-oversikt
 
 I brukermenyen finnes nå ett nytt valg for team-oversikt.
 Denne siden viser alle team du er medlem av og lar deg forlate, redigere og slette team.
@@ -310,7 +331,7 @@ Her kan du:
 * Opprette nye team * Slette team du eier som ikke har medlemmer eller data * Legge til eller fjerne medlemmer i team du er medlem av * Bli med i eller forlate eksisterende team.
 
 [[opprette_nytt_team]]
-===== Opprette nytt team
+==== Opprette nytt team
 
 1. Åpne Team-oversikt
 2. Velg Opprett team
@@ -322,7 +343,7 @@ Dette teamet kan nå velges ved å trykke på brukernavnet ditt øverst til høy
 Mens du representerer teamet lagres nye grupper, personer og maler på teamet.
 
 [[bli_med_eksisterende_team]]
-===== Bli med i eksisterende team
+==== Bli med i eksisterende team
 
 1. Åpne Team-oversikt
 2. Velg Bli med i team
@@ -332,7 +353,7 @@ Mens du representerer teamet lagres nye grupper, personer og maler på teamet.
 Etter innmelding kan du på samme måte som over bytte representasjon til teamet fra brukermenyen.
 
 [[demo_team_funksjonalitet]]
-===== Demo: Team-funksjonalitet
+==== Demo: Team-funksjonalitet
 
 ++++
 <figure>
@@ -343,14 +364,14 @@ Etter innmelding kan du på samme måte som over bytte representasjon til teamet
 </figure>
 ++++
 
-===== Tips
+==== Tips
 
 * Bytt tilbake til deg selv for personlige grupper og maler
 * Gruppene som allerede tilhører din egen bruker kan enkelt flyttes til et team ved å gå til gruppen mens du representerer deg selv og velge "Bytt Eier" i gruppe-menyen
 * Kontroller at du representerer ønsket team eller deg selv før du oppretter nye data
 
 [[dolly_testnorge]]
-==== Test-Norge
+=== Test-Norge
 
 Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i forbindelse med nytt folkeregister.
 Populasjonen er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
@@ -367,6 +388,8 @@ verdier for inntekt (A-ordningen) og summert skattegrunnlag automatisk overføre
 Inntektstub og Sigrunstub ved import. Også arbeidsforhold kan eksistere fra før på enkelte Test-Norge-personer og
 innholdet der motsvarer det som allerede finnes i vårt AAREG. Alt dette er søkbart fra Tenor-søkeside hos oss og hos Skatteetaten.
 
+[[demo_finnperson_tenor]]
+===== Demo: Søk i Tenor og import til Dolly
 Videoen under viser en demo.
 
 ++++
@@ -385,21 +408,17 @@ For å identifisere personen i vår søkeløsning er det enkleste å klippe å l
 Av-og-til vil man da oppleve at personen enten ikke finnes (for BankID-brukere betyr det at person har blitt allokert av en
 annen) eller allerede er i bruk. Hvis man gjør søket i Dolly, som bør være førstevalget, minimerer man dette problemet.
 
-[[demo_finnperson_tenor]]
-===== Demo: Søk i Tenor og import til Dolly
-
-NB: Når man frigjør eller sletter en Test-Norge person fra Dolly vil også eventuelle personopplysninger som har blitt
-lagt til slettet, sammen med øvrige registre og systemer som støtter sletting.
-
 [[dolly_testnorge_idporten]]
 ===== ID-Porten
 
-Vi anbefaler bruk av TestID når man skal teste ID-Porten ved bruk av importert Test-Norge ident
+Ved bruk av ID-porten i testmiljø skal alle syntetiske personer, både Nav-syntetiske og Test-Norge personer kunne benyttes,
+da ID-porten har blitt åpnet for alle identer +40 og høyere på måned i test. Hvis man trenger personer som er daglig leder i en
+organisasjon, må man benytte utvalgte Test-Norge personer da Dolly ikke støtter dette.
 
 [[identvalidator]]
-=== Identvalidator
+=== Identvalidatoren
 
-Identvalidator er tilgjengelig under Person-menyen og gir deg mulighet til å validere syntetiske og prodlike identer.
+Vår identvalidator er tilgjengelig under Person-menyen og gir deg mulighet til å validere syntetiske og prodlike identer.
 
 image::dolly/identvalidator_meny.png[Ident validator]
 
@@ -429,7 +448,7 @@ Eksempelet viser resultat på et tekstsøk som gav traff på noen bestillinger o
 image::dolly/soekefelt_resultat.png[Søk og naviger]
 
 [[dolly_soek]]
-=== Dollysøk
+=== Søk i Dolly (egenskaper)
 
 Gjenbruk er bra, og ved å identifisere testdata som allerede har blitt opprettet kan man spare tid og ressurser.
 Dollysøk gir deg mulighet til å søke på tvers av Dolly og Test-Norge.
@@ -442,7 +461,9 @@ søket gav 13 treff.
 
 image:dolly/dollysoek_resultat.png[Dollysøk resultat]
 
-Velg en av personene for å se detaljer og vurder om denne kan benyttes i ditt scenario.
+Velg en av personene for å se detaljer og vurder om denne kan benyttes i ditt scenario. Typisk har det vært en prodlast
+og en eller flere av systemene er ufullstendige. Gjør *Gjenopprett* fra header i personvisningen for å sende inn på ny
+og få en komplett person.
 Som alltid, hvis det er nødvendig å endre verdier på personens egenskaper, hør med eier av gruppe først før du oppdaterer
 med Legg til/endre-funksjonaliteten.
 
@@ -621,8 +642,8 @@ Avvik (brudd på regler for testdata eller sikkerhetstiltak) håndteres slik:
 
 Dolly er åpen kildekode og lagret i GitHub.
 
-[[dolly_github_repos]]
-==== Repos
+[[dolly_github_repo]]
+==== Repo
 
 Se kildekode og relaterte prosjekter:
 
@@ -977,3 +998,6 @@ include::local/local_db.adoc[leveloffset=+2]
 include::local/local_general.adoc[leveloffset=+2]
 include::local/local_opensearch.adoc[leveloffset=+2]
 include::local/local_secretmanager.adoc[leveloffset=+2]
+
+[[index]]
+== Index

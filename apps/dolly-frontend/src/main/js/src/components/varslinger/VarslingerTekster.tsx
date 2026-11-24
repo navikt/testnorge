@@ -115,7 +115,7 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 						gjøre endringer på opprettede personer som har TPS som master.
 					</p>
 					<p>
-						Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>
+						Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>{' '}
 						dersom du har noen spørsmål eller kommentarer.
 					</p>
 				</>
