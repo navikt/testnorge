@@ -4,7 +4,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import * as _ from 'lodash-es'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -145,9 +145,9 @@ export const SigrunstubSummertSkattegrunnlagVisning = ({
 		<>
 			<SubOverskrift label="Summert skattegrunnlag (Sigrun)" iconKind="sigrun" />
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke data for summert skattegrunnlag på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					{antallSkattegrunnlag > 5 ? (

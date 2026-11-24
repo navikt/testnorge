@@ -5,11 +5,11 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { Alert, BodyLong, Button, Dialog } from '@navikt/ds-react'
+import { BodyLong, Button, Dialog, InfoCard } from '@navikt/ds-react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { filterMiljoe, gyldigeDollyMiljoer } from '@/components/miljoVelger/MiljoVelgerUtils'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
-import { ArrowsCirclepathIcon } from '@navikt/aksel-icons'
+import { ArrowsCirclepathIcon, ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString } from '@/utils/DataFormatter'
 
@@ -127,7 +127,11 @@ export const GjenopprettModal = ({
 								/>
 								{warningText && (
 									<div style={{ padding: '0 20px' }}>
-										<Alert variant={'warning'}>{warningText}</Alert>
+										<InfoCard data-color="warning">
+											<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+												{warningText}
+											</InfoCard.Message>
+										</InfoCard>
 									</div>
 								)}
 							</form>

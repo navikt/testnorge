@@ -7,7 +7,8 @@ import {
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
@@ -188,15 +189,19 @@ export const PdlEksisterendePerson = ({
 					isDisabled={bestillingFlerePersoner || disabled}
 				/>
 			) : pdlError || gruppeError ? (
-				<Alert variant="error" size="small" style={{ marginBottom: '15px' }}>
-					{pdlError?.message || gruppeError?.message || 'Feil ved henting av personer'}
-				</Alert>
+				<InfoCard data-color="danger" size="small" style={{ marginBottom: '15px' }}>
+					<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+						{pdlError?.message || gruppeError?.message || 'Feil ved henting av personer'}
+					</InfoCard.Message>
+				</InfoCard>
 			) : (
 				!pdlLoading &&
 				!gruppeLoading && (
-					<Alert variant="info" size="small" style={{ marginBottom: '15px' }}>
-						Det finnes ingen eksisterende gyldige personer i denne gruppen.
-					</Alert>
+					<InfoCard data-color="info" size="small" style={{ marginBottom: '15px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Det finnes ingen eksisterende gyldige personer i denne gruppen.
+						</InfoCard.Message>
+					</InfoCard>
 				)
 			)}
 		</div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Alert, Button, GlobalAlert } from '@navikt/ds-react'
+import { Button, GlobalAlert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { useVersionCheck } from '@/utils/hooks/useVersionCheck'
 import { useLocation } from 'react-router'
@@ -48,9 +48,9 @@ export const AppBanner = () => {
 	if (!showVersion && !showRestored && !reloadRequired) return null
 
 	return (
-		<StickyAlertWrapper>
+		<>
 			{reloadRequired && (
-				<StyledGlobalAlert status="warning">
+				<GlobalAlert status="warning" size="small">
 					<GlobalAlert.Header>
 						<GlobalAlert.Title as="h2">Last inn siden på nytt</GlobalAlert.Title>
 					</GlobalAlert.Header>
@@ -60,15 +60,15 @@ export const AppBanner = () => {
 								Dolly kunne ikke fullføre handlingen din. Last inn siden på nytt og prøv igjen.
 								{isOnBestilling && ' Bestillingen din blir lagret før siden lastes inn på nytt.'}
 							</span>
-							<Button variant="tertiary" size="xsmall" onClick={handleReload}>
+							<Button variant="secondary" size="xsmall" onClick={handleReload}>
 								Last inn på nytt
 							</Button>
 						</StyledContent>
 					</GlobalAlert.Content>
-				</StyledGlobalAlert>
+				</GlobalAlert>
 			)}
 			{showVersion && (
-				<StyledGlobalAlert status="announcement">
+				<GlobalAlert status="announcement" size="small">
 					<GlobalAlert.Header>
 						<GlobalAlert.Title as="h2">Ny versjon tilgjengelig</GlobalAlert.Title>
 						<GlobalAlert.CloseButton onClick={() => setDismissed(true)} />
@@ -80,50 +80,28 @@ export const AppBanner = () => {
 								{isOnBestilling &&
 									' Alle endringene dine vil bli lagret før siden lastes inn igjen.'}
 							</span>
-							<Button variant="tertiary" size="xsmall" onClick={handleReload}>
+							<Button variant="secondary" size="xsmall" onClick={handleReload}>
 								Oppdater nå
 							</Button>
 						</StyledContent>
 					</GlobalAlert.Content>
-				</StyledGlobalAlert>
+				</GlobalAlert>
 			)}
 			{showRestored && (
-				<Alert variant="success" closeButton onClose={() => setShowRestored(false)}>
-					Endringene dine ble gjenopprettet!
-				</Alert>
+				<GlobalAlert status="success" size="small">
+					<GlobalAlert.Header>
+						<GlobalAlert.Title as="h2">Endringene dine ble gjenopprettet!</GlobalAlert.Title>
+						<GlobalAlert.CloseButton onClick={() => setShowRestored(false)} />
+					</GlobalAlert.Header>
+				</GlobalAlert>
 			)}
-		</StickyAlertWrapper>
+		</>
 	)
 }
-
-const StickyAlertWrapper = styled.div`
-	position: sticky;
-	top: 0;
-	z-index: 1000;
-	max-width: 940px;
-	margin: 10px auto 10px;
-`
-
-const StyledGlobalAlert = styled(GlobalAlert)`
-	.aksel-base-alert__header {
-		justify-content: center;
-		position: relative;
-	}
-
-	.aksel-base-alert__title {
-		text-align: center;
-	}
-
-	.aksel-base-alert__close-button {
-		position: absolute;
-		right: 0;
-		top: 0;
-	}
-`
 
 const StyledContent = styled.div`
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: flex-start;
 	gap: 0.5rem;
 `

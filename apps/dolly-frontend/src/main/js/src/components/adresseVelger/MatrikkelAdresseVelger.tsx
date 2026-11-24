@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import MatrikkelAdresseSok from './MatrikkelAdresseSok'
 import styled from 'styled-components'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { useMatrikkelAdresser } from '@/utils/hooks/useAdresseSoek'
 
 const StyledAdresseVelger = styled.div`
@@ -17,11 +18,11 @@ type Search = {
 	bruksnummer?: string
 }
 
-const Feil = styled(Alert)`
+const Feil = styled(InfoCard)`
 	margin-top: 15px;
 `
 
-const Advarsel = styled(Alert)`
+const Advarsel = styled(InfoCard)`
 	margin-top: 15px;
 `
 
@@ -69,13 +70,17 @@ export default ({ onSelect }: Props) => {
 		<StyledAdresseVelger>
 			<MatrikkelAdresseSok onSubmit={onSubmit} loading={loading} />
 			{error && !notFound && (
-				<Feil variant={'error'} size={'small'}>
-					Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.
+				<Feil data-color="danger" size={'small'}>
+					<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+						Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.
+					</InfoCard.Message>
 				</Feil>
 			)}
 			{notFound && (
-				<Advarsel variant={'warning'} size={'small'}>
-					Fant ikke et resultat. Prøv å endre kombinasjon av felter i søket.
+				<Advarsel data-color="warning" size={'small'}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						Fant ikke et resultat. Prøv å endre kombinasjon av felter i søket.
+					</InfoCard.Message>
 				</Advarsel>
 			)}
 			{adresser && (

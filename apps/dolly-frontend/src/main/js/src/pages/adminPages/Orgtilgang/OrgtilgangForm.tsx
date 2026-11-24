@@ -1,4 +1,3 @@
-import { Alert, Box, Button } from '@navikt/ds-react'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -7,6 +6,7 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { useState } from 'react'
 import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
+import { Box, Button, InlineMessage } from '@navikt/ds-react'
 
 type Inputs = {
 	organisasjonsnummer: string
@@ -89,14 +89,14 @@ export const OrgtilgangForm = ({ mutate }: any) => {
 						</Button>
 						{isLoading && <Loading label="Oppretter tilgang ..." />}
 						{okStatus && (
-							<Alert variant={'success'} size={'small'} inline>
+							<InlineMessage status="success" size={'small'}>
 								{okStatus}
-							</Alert>
+							</InlineMessage>
 						)}
 						{error && (
-							<Alert variant={'error'} size={'small'} inline>
+							<InlineMessage status="error" size={'small'}>
 								{error}
-							</Alert>
+							</InlineMessage>
 						)}
 					</div>
 				</Form>

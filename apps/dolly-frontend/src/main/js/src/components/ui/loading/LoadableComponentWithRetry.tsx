@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
 import styled from 'styled-components'
-import { Alert, Button } from '@navikt/ds-react'
+import { Button, InfoCard } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 interface LoadableComponent<T> {
 	onFetch: () => Promise<T>
@@ -14,7 +15,7 @@ const Knapp = styled(Button)`
 	display: block;
 `
 
-const AlertError = styled(Alert)`
+const AlertError = styled(InfoCard)`
 	margin-bottom: 15px;
 	margin-right: 15px;
 `
@@ -49,17 +50,19 @@ function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableCompo
 	}
 	if (error) {
 		return (
-			<AlertError variant={'error'}>
-				Noe gikk galt! Trykk på "Prøv på nytt" eller kontakt Team Dolly.
-				<Knapp
-					form="kompakt"
-					onClick={(event) => {
-						event.preventDefault()
-						callPromise()
-					}}
-				>
-					Prøv på nytt
-				</Knapp>
+			<AlertError data-color="danger">
+				<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+					Noe gikk galt! Trykk på "Prøv på nytt" eller kontakt Team Dolly.
+					<Knapp
+						form="kompakt"
+						onClick={(event) => {
+							event.preventDefault()
+							callPromise()
+						}}
+					>
+						Prøv på nytt
+					</Knapp>
+				</InfoCard.Message>
 			</AlertError>
 		)
 	}

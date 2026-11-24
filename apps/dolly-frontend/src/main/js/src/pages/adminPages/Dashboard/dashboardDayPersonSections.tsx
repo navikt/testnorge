@@ -1,4 +1,3 @@
-import { Alert, Box, Heading, HGrid, Skeleton, TextField, VStack } from '@navikt/ds-react'
 import DollySpinner from '@/components/ui/loading/DollySpinner'
 import { type Options } from 'highcharts'
 import {
@@ -14,6 +13,7 @@ import { type DashboardBestillingerDTO } from '@/utils/hooks/useDashboard'
 import { useDashboardPerson } from './DashboardPersonContext'
 import { QUICK_RANGE_OPTIONS } from './dashboardUtils'
 import dollyImg from '@/assets/img/dolly-sheep-confetti.svg'
+import { Box, Heading, HGrid, InlineMessage, Skeleton, TextField, VStack } from '@navikt/ds-react'
 
 export type PersonSummary = {
 	nyeBestillinger: number
@@ -54,9 +54,7 @@ const PreviousDayFeilBlock = ({
 			{isLoading ? (
 				<Skeleton variant="rectangle" height="120px" />
 			) : feilGrupper.length === 0 ? (
-				<Alert variant="success" inline>
-					Ingen feil registrert for valgt periode.
-				</Alert>
+				<InlineMessage status="success">Ingen feil registrert for valgt periode.</InlineMessage>
 			) : (
 				<FeilGrupperVisning feilGrupper={feilGrupper} feilDetaljertCount={feilDetaljertCount} />
 			)}
@@ -112,9 +110,7 @@ export const PreviousDaySection = ({
 			{isLoading ? (
 				<DollySpinner size={120} label="Laster statistikk..." />
 			) : selectedDayDatesCount === 0 ? (
-				<Alert variant="info" inline>
-					Ingen data tilgjengelig for valgt dag.
-				</Alert>
+				<InlineMessage status="info">Ingen data tilgjengelig for valgt dag.</InlineMessage>
 			) : (
 				<HGrid columns={{ xs: 1, sm: 2 }} gap="space-16" align="stretch">
 					<VStack gap="space-16">
@@ -263,9 +259,7 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 							/>
 						</HGrid>
 						{personTrendDataLength === 0 ? (
-							<Alert variant="info" inline>
-								Ingen persondata i valgt periode.
-							</Alert>
+							<InlineMessage status="info">Ingen persondata i valgt periode.</InlineMessage>
 						) : (
 							<VStack gap="space-16">
 								<HGrid
@@ -275,9 +269,9 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 								>
 									<VStack gap="space-8">
 										{nyeGjenopprettedeTotal === 0 ? (
-											<Alert variant="info" inline>
+											<InlineMessage status="info">
 												Ingen nye eller gjenopprettede bestillinger i valgt periode.
-											</Alert>
+											</InlineMessage>
 										) : (
 											<DashboardChartPanel
 												options={nyeGjenopprettedeDonutChartOptions}
@@ -287,9 +281,9 @@ export const PersonAnalysisSection = ({ isLoading = false }: { isLoading?: boole
 									</VStack>
 									<VStack gap="space-8">
 										{identerTotal === 0 ? (
-											<Alert variant="info" inline>
+											<InlineMessage status="info">
 												Ingen nye personer i valgt periode.
-											</Alert>
+											</InlineMessage>
 										) : (
 											<DashboardChartPanel
 												options={identerDonutChartOptions}

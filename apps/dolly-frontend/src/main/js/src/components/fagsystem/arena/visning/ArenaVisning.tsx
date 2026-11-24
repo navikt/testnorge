@@ -6,8 +6,9 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import { InfoCard, InlineMessage } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon, InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 const Visning = ({ data }) => {
 	if (!data) {
@@ -18,18 +19,22 @@ const Visning = ({ data }) => {
 
 	if (arenaData.feilmelding) {
 		return (
-			<StyledAlert variant={'warning'} size={'small'}>
-				{arenaData.feilmelding}
-			</StyledAlert>
+			<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+				<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+					{arenaData.feilmelding}
+				</InfoCard.Message>
+			</InfoCard>
 		)
 	}
 
 	if (arenaData.error) {
 		return (
-			<StyledAlert variant={'info'} size={'small'}>
-				Fant ingen data i dette miljøet. Forsøk å gjenopprette personen for å fikse dette, og ta
-				eventuelt kontakt med Team Dolly dersom problemet vedvarer.
-			</StyledAlert>
+			<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+				<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+					Fant ingen data i dette miljøet. Forsøk å gjenopprette personen for å fikse dette, og ta
+					eventuelt kontakt med Team Dolly dersom problemet vedvarer.
+				</InfoCard.Message>
+			</InfoCard>
 		)
 	}
 
@@ -158,9 +163,9 @@ export const ArenaVisning = ({
 				isWarning={!miljoerMedData || miljoerMedData?.length < 1}
 			/>
 			{!miljoerMedData || miljoerMedData?.length < 1 ? (
-				<StyledAlert variant={'warning'} size={'small'} inline>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke Arena-data på person
-				</StyledAlert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}

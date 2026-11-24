@@ -35,7 +35,8 @@ import {
 	BestillingsveilederContextType,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import {
 	sigrunstubSummertSkattegrunnlagAttributt,
@@ -86,7 +87,13 @@ const Steg2: React.FC = () => {
 	const importTestnorge = opts?.is?.importTestnorge
 
 	if (!harAvhukedeAttributter(getValues())) {
-		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge)}</Alert>
+		return (
+			<InfoCard data-color="info">
+				<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+					{getEmptyMessage(leggTil, importTestnorge)}
+				</InfoCard.Message>
+			</InfoCard>
+		)
 	}
 
 	return (

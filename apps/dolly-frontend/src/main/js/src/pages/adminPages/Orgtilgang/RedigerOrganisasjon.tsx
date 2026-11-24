@@ -1,6 +1,5 @@
-import { Alert, Button } from '@navikt/ds-react'
 import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
-import { PencilIcon } from '@navikt/aksel-icons'
+import { PencilIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
 import React, { useState } from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
@@ -9,6 +8,7 @@ import './RedigerModal.less'
 import { DollyModal } from '@/components/ui/modal/DollyModal'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 import { miljoer } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
+import { Button, InfoCard } from '@navikt/ds-react'
 
 type RedigerTypes = {
 	orgNr: string
@@ -77,9 +77,11 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 							/>
 						</div>
 						{error && (
-							<Alert variant={'error'} size={'small'}>
-								Feil ved oppdatering: {error.message}
-							</Alert>
+							<InfoCard data-color="danger" size={'small'}>
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									Feil ved oppdatering: {error.message}
+								</InfoCard.Message>
+							</InfoCard>
 						)}
 						<ModalActionKnapper
 							submitknapp="Endre tilgang"

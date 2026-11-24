@@ -1,7 +1,7 @@
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -45,9 +45,9 @@ export const SigrunstubPensjonsgivendeVisning = ({ data, loading, harBestilling 
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke data for pensjonsgivende inntekt på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<ErrorBoundary>
 					<div className="person-visning_content" style={{ marginTop: '-15px' }}>

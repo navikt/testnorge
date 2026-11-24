@@ -5,7 +5,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Panel from '@/components/ui/panel/Panel'
 import { runningE2ETest } from '@/service/services/Request'
-import { Alert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { showLabel } from '@/utils/DataFormatter'
@@ -96,9 +96,9 @@ export const PensjonsavtaleVisning = ({ data, loading, bestillingIdListe, tilgje
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke pensjonsavtale-data for person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}

@@ -12,7 +12,6 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { validation } from '@/components/fagsystem/yrkesskader/form/validation'
 import { useYrkesskadeKodeverk } from '@/utils/hooks/useYrkesskade'
 import {
@@ -20,6 +19,8 @@ import {
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { YrkesskadeTypes } from '@/components/fagsystem/yrkesskader/YrkesskaderTypes'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 export const yrkesskaderAttributt = 'yrkesskader'
 
@@ -131,10 +132,12 @@ export const YrkesskaderForm = () => {
 			>
 				<>
 					{manglerVergeEllerForelder() && (
-						<StyledAlert variant={'info'} size={'small'}>
-							Person må ha verge, eller forelder dersom alder er 5-17 år. Dette kan legges til ved å
-							huke av for "Vergemål" eller "Har barn/foreldre" på forrige side.
-						</StyledAlert>
+						<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Person må ha verge, eller forelder dersom alder er 5-17 år. Dette kan legges til ved
+								å huke av for "Vergemål" eller "Har barn/foreldre" på forrige side.
+							</InfoCard.Message>
+						</InfoCard>
 					)}
 					<FormDollyFieldArray
 						name={yrkesskaderAttributt}

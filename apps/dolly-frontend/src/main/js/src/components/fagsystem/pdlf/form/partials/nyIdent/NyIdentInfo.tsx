@@ -1,5 +1,5 @@
 import { InfoCard, ReadMore } from '@navikt/ds-react'
-import { InformationSquareIcon } from '@navikt/aksel-icons'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 interface NyIdentRegelInfoProps {
 	flereIdenttyper?: boolean
@@ -7,7 +7,7 @@ interface NyIdentRegelInfoProps {
 
 export const NyIdentRegelInfo = ({ flereIdenttyper = false }: NyIdentRegelInfoProps) => (
 	<InfoCard data-color="info" size="small" style={{ marginBottom: '20px' }}>
-		<InfoCard.Message icon={<InformationSquareIcon aria-hidden />}>
+		<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
 			Identhistorikk følger en spesifikk rekkefølge. Rekkefølgen er NPID → DNR → FNR.
 			<ReadMore header="Les mer om rekkefølgen" size="small">
 				Ny identitet av samme eller senere type i rekkefølgen erstatter gjeldende identitet, som

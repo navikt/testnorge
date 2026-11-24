@@ -16,8 +16,7 @@ import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visnin
 import Panel from '@/components/ui/panel/Panel'
 import styled from 'styled-components'
 import { PadlockLockedFillIcon } from '@navikt/aksel-icons'
-import { BodyLong } from '@navikt/ds-react'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { BodyLong, InlineMessage } from '@navikt/ds-react'
 import { ArbeidsplassenTypes } from '@/components/fagsystem/arbeidsplassen/ArbeidsplassenTypes'
 
 type ArbeidsplassenVisningProps = {
@@ -59,9 +58,9 @@ export const ArbeidsplassenVisning = ({ data, loading, error }: ArbeidsplassenVi
 		return (
 			<>
 				<SubOverskrift label="Nav CV" iconKind="cv" isWarning />
-				<StyledAlert variant={'warning'} size={'small'} inline>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					{error?.message ?? 'Fant ikke CV-data på person'}
-				</StyledAlert>
+				</InlineMessage>
 			</>
 		)
 	}

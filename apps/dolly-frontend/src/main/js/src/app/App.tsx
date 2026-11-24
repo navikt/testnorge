@@ -60,8 +60,10 @@ export const App = () => {
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
-			<AppBanner />
-			<InfoStripe />
+			<div className="app-alerts">
+				<AppBanner />
+				<InfoStripe />
+			</div>
 			<main>
 				<ErrorBoundary>
 					<Suspense fallback={<Loading label="Laster inn" />}>

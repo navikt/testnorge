@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class RsInfostripeMelding {
 
     private InfoStripeType type;
+    private String title;
     private String message;
     private LocalDateTime start;
     private LocalDateTime expires;

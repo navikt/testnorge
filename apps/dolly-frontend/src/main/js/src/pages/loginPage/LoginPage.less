@@ -1,43 +1,49 @@
 .login-container {
-  position: relative;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  height: calc(100vh - 64px);
-  width: 100vw;
-  overflow: hidden;
+	position: relative;
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	height: calc(100vh - 64px);
+	width: 100vw;
+	overflow: hidden;
 }
 
 .login-modal {
-  text-align: center;
-  background-color: white;
-  box-shadow: var(--ax-shadow-dialog);
-  margin-top: 5vw;
-  padding: 50px;
+	text-align: center;
+	background-color: white;
+	box-shadow: var(--ax-shadow-dialog);
+	margin-top: 5vw;
+	padding: 50px;
 
-  h1 {
-    font-size: 4em;
-    margin: 0;
-    padding-bottom: 20px;
-  }
+	h1 {
+		font-size: 4em;
+		margin: 0;
+		padding-bottom: 20px;
+	}
 
-  &_description {
-    width: 625px;
-    margin-left: 60px;
-    margin-right: 60px;
-    font-weight: normal;
-    font-size: 1.1rem;
-  }
+	.aksel-base-alert {
+		width: 625px;
+		margin: 20px 60px;
+		text-align: start;
+	}
 
-  &_button-nav {
-    margin: 10px 10px 10px 29px;
-    padding-right: 50px;
-    padding-left: 50px;
-  }
+	&_description {
+		width: 625px;
+		margin-left: 60px;
+		margin-right: 60px;
+		font-weight: normal;
+		font-size: 1.1rem;
+	}
 
-  &_button-bankid {
-    margin: 10px 0 10px 10px;
-    padding-right: 50px;
-    padding-left: 50px;
-  }
+	&_button-nav {
+		margin: 10px 10px 10px 29px;
+		padding-right: 50px;
+		padding-left: 50px;
+	}
+
+	&_button-bankid {
+		margin: 10px 0 10px 10px;
+		padding-right: 50px;
+		padding-left: 50px;
+	}
 }

@@ -4,7 +4,8 @@ import Panel from '@/components/ui/panel/Panel'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { ToggleGroup } from '@navikt/ds-react'
+import { InfoCard, ToggleGroup } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon, InformationSquareFillIcon } from '@navikt/aksel-icons'
 import * as _ from 'lodash-es'
 import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
 import {
@@ -23,7 +24,6 @@ import {
 } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { useFormContext } from 'react-hook-form'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
@@ -213,59 +213,75 @@ export const AlderspensjonForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [alderspensjonPath])}
 			>
 				{nyBestilling && (!harAlder || !harGyldigAlder) && (
-					<StyledAlert variant={'warning'} size={'small'}>
-						For å sikre at personen har rett på alderspensjon må alder settes til 62 år eller
-						høyere. Eventuelt må iverksettelsesdato settes til etter personen har fylt 62 år.
-					</StyledAlert>
+					<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							For å sikre at personen har rett på alderspensjon må alder settes til 62 år eller
+							høyere. Eventuelt må iverksettelsesdato settes til etter personen har fylt 62 år.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{((leggTil && alderLeggTilPerson < 62) ||
 					(importTestnorge && alderImportertPerson?.some((alder) => alder < 62))) && (
-					<StyledAlert variant={'warning'} size={'small'}>
-						Personer under 62 år har ikke rett på alderspensjon.
-					</StyledAlert>
+					<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							Personer under 62 år har ikke rett på alderspensjon.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{harUgyldigFoedselsaar() && (
-					<StyledAlert variant={'warning'} size={'small'}>
-						Personer født før 1944 følger gammelt pensjonsregelverk, som ikke støttes av
-						alderspensjon-søknad.
-					</StyledAlert>
+					<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							Personer født før 1944 følger gammelt pensjonsregelverk, som ikke støttes av
+							alderspensjon-søknad.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{((nyBestilling && alderNyPerson > 61 && alderNyPerson < 67) ||
 					(leggTil && alderLeggTilPerson > 61 && alderLeggTilPerson < 67) ||
 					(importTestnorge && alderImportertPerson?.some((alder) => alder > 61 && alder < 67))) &&
 					!harPopp && (
-						<StyledAlert variant={'info'} size={'small'}>
-							Personer med alder fra 62 til 66 år vil kun få AP-vedtak om de har høy nok opptjening
-							til å ta ut alderspensjon før 67 år. Opptjening kan legges inn på pensjonsgivende
-							inntekt (POPP) ved å huke av for dette valget på forrige side.
-						</StyledAlert>
+						<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Personer med alder fra 62 til 66 år vil kun få AP-vedtak om de har høy nok
+								opptjening til å ta ut alderspensjon før 67 år. Opptjening kan legges inn på
+								pensjonsgivende inntekt (POPP) ved å huke av for dette valget på forrige side.
+							</InfoCard.Message>
+						</InfoCard>
 					)}
 				{!leggTilPaaGruppe && !harNorskBankkonto && (
-					<StyledAlert variant={'info'} size={'small'}>
-						Personen må ha norsk bankkontonummer for at det skal fattes vedtak og for at vedtaksbrev
-						skal kunne opprettes automatisk.
-					</StyledAlert>
+					<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							Personen må ha norsk bankkontonummer for at det skal fattes vedtak og for at
+							vedtaksbrev skal kunne opprettes automatisk.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{!harNorskAdresse() && (
-					<StyledAlert variant={'warning'} size={'small'}>
-						Personen må ha norsk adresse for at det skal fattes vedtak og for at vedtaksbrev skal
-						kunne opprettes automatisk.
-					</StyledAlert>
+					<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+							Personen må ha norsk adresse for at det skal fattes vedtak og for at vedtaksbrev skal
+							kunne opprettes automatisk.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				{formMethods.getValues(`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`) &&
 					!leggTilPaaGruppe &&
 					!harPartner &&
 					!harPartnerImportertPerson() && (
-						<StyledAlert variant={'info'} size={'small'}>
-							Personen må ha ektefelle/partner for at feltet "Ektefelle/partners inntekt" skal være
-							gyldig.
-						</StyledAlert>
+						<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Personen må ha ektefelle/partner for at feltet "Ektefelle/partners inntekt" skal
+								være gyldig.
+							</InfoCard.Message>
+						</InfoCard>
 					)}
 				{manglerPoppOpptjening() && (
-					<StyledAlert variant={'info'} size={'small'}>
-						For å sikre at AFP privat innvilges må personen ha minst 30 år med opptjening i POPP (de
-						siste 5 årene er spesielt viktige), gjerne med inntekt over gjennomsnittet.
-					</StyledAlert>
+					<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							For å sikre at AFP privat innvilges må personen ha minst 30 år med opptjening i POPP
+							(de siste 5 årene er spesielt viktige), gjerne med inntekt over gjennomsnittet.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 
 				<div className="flexbox--flex-wrap">

@@ -15,8 +15,9 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { useFormContext } from 'react-hook-form'
 import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
 import { useBoolean } from 'react-use'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { krrInitialValues } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/KontaktReservasjon'
+import { InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 
 type Change = {
 	value: boolean
@@ -85,10 +86,12 @@ export const KrrstubForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [krrAttributt])}
 			>
 				{showInfoStripe && (
-					<StyledAlert variant={'info'} size={'small'}>
-						E-post blir automatisk lagt til dersom identen er reservert slik at den får digital
-						kontaktinformasjon i KRR.
-					</StyledAlert>
+					<InfoCard data-color="info" size={'small'} style={{ marginBottom: '20px' }}>
+						<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+							E-post blir automatisk lagt til dersom identen er reservert slik at den får digital
+							kontaktinformasjon i KRR.
+						</InfoCard.Message>
+					</InfoCard>
 				)}
 				<div className="flexbox--flex-wrap">
 					<DollySelect

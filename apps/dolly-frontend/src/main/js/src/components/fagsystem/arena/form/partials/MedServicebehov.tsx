@@ -8,7 +8,8 @@ import {
 	BestillingsveilederContextType,
 	useBestillingsveileder,
 } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { InfoCard } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,
@@ -49,9 +50,11 @@ export const MedServicebehov = ({ formMethods, path }: { formMethods: any; path:
 	return (
 		<React.Fragment>
 			{!opts?.is?.leggTil && !opts?.is?.importTestnorge && feilmelding && (
-				<StyledAlert variant={'warning'} size={'small'}>
-					{feilmelding}
-				</StyledAlert>
+				<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						{feilmelding}
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			<div className="flexbox--flex-wrap">
 				<FormSelect

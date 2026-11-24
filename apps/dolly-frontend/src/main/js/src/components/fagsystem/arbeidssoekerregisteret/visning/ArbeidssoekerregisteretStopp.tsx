@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import { ArbeidssoekerregisteretApi } from '@/service/Api'
-import { Alert, BodyLong, Button, Dialog, Heading, VStack } from '@navikt/ds-react'
-import { CircleSlashIcon } from '@navikt/aksel-icons'
+import { BodyLong, Button, Dialog, Heading, InfoCard, VStack } from '@navikt/ds-react'
+import { CircleSlashIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 type Props = {
 	ident: string
@@ -57,7 +57,13 @@ export const ArbeidssoekerregisteretStopp = ({ ident, onStopped }: Props) => {
 				<Dialog.Body>
 					<VStack gap="space-16">
 						<BodyLong>Er du sikker på at du vil stoppe arbeidssøkerregistreringen?</BodyLong>
-						{errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+						{errorMessage && (
+							<InfoCard data-color="danger">
+								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+									{errorMessage}
+								</InfoCard.Message>
+							</InfoCard>
+						)}
 					</VStack>
 				</Dialog.Body>
 				<Dialog.Footer>

@@ -1,7 +1,8 @@
 import React from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import { Accordion, Alert, CopyButton } from '@navikt/ds-react'
+import { Accordion, CopyButton, InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon } from '@navikt/aksel-icons'
 import Loading from '@/components/ui/loading/Loading'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
@@ -9,7 +10,6 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { useHendelseId } from '@/utils/hooks/useHendelseId'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export type RelatertPerson = {
 	type: string
@@ -71,9 +71,11 @@ const hendelseHarFeil = (hendelse: Hendelse): boolean =>
 
 const ImportertRelasjonMelding = () => {
 	return (
-		<StyledAlert variant="info" size="small" className="hendelse-importert-relasjon">
-			{IMPORTERT_RELASJON_MESSAGE}
-		</StyledAlert>
+		<InfoCard data-color="info" size="small" className="hendelse-importert-relasjon">
+			<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+				{IMPORTERT_RELASJON_MESSAGE}
+			</InfoCard.Message>
+		</InfoCard>
 	)
 }
 
@@ -146,9 +148,11 @@ const HendelseIdInfo = ({ ident, relatertIdent, onCategoryOpened }: HendelseIdIn
 	if (synligeOrdrer.length === 0) {
 		return (
 			<div className="boks">
-				<Alert variant="info" size="small">
-					Ingen hendelser å vise.
-				</Alert>
+				<InfoCard data-color="info" size="small">
+					<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+						Ingen hendelser å vise.
+					</InfoCard.Message>
+				</InfoCard>
 			</div>
 		)
 	}

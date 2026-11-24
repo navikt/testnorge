@@ -1,34 +1,35 @@
 import React, { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { Alert, Box, Button, Textarea } from '@navikt/ds-react'
+import { Controller, useForm } from 'react-hook-form'
+import { Button, HStack, InfoCard, Select, Textarea, TextField, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import { InfoStripeType, useDollyInfostriper } from '@/utils/hooks/useDollyInfostriper'
-import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { InfostripeFormValues } from '@/pages/adminPages/dollyInfostriper/CreateInfostripeForm'
+import {
+	INFOSTRIPE_TITLE_MAX_LENGTH,
+	InfostripeFormValues,
+	infostripeTypeOptions,
+	toLocalDateTime,
+} from '@/pages/adminPages/dollyInfostriper/CreateInfostripeForm'
+import { InfostripeDatepicker } from '@/pages/adminPages/dollyInfostriper/InfostripeDatepicker'
 
 interface Props {
 	stripe: InfoStripeType
 	onDone(): void
 }
 
-const infostripeTypeOptions = [
-	{ label: 'Info', value: 'INFO' },
-	{ label: 'Advarsel', value: 'WARNING' },
-	{ label: 'Feil', value: 'ERROR' },
-	{ label: 'Suksess', value: 'SUCCESS' },
-]
+const toDate = (value?: Date | string | null) => (value ? new Date(value) : undefined)
 
 export const EditInfostripeForm: React.FC<Props> = ({ stripe, onDone }) => {
 	const { updateInfostripe } = useDollyInfostriper()
 	const [serverError, setServerError] = useState<string | null>(null)
 
-	const methods = useForm<InfostripeFormValues>({
+	const { handleSubmit, control, formState } = useForm<InfostripeFormValues>({
 		defaultValues: {
 			type: stripe.type,
+			title: stripe.title ?? '',
 			message: stripe.message,
-			start: stripe.start,
-			expires: stripe.expires,
+			start: toDate(stripe.start),
+			expires: toDate(stripe.expires),
 		},
 	})
 
@@ -38,9 +39,10 @@ export const EditInfostripeForm: React.FC<Props> = ({ stripe, onDone }) => {
 			await updateInfostripe({
 				id: stripe.id,
 				type: data.type,
+				title: data.title,
 				message: data.message.trim(),
-				start: data.start,
-				expires: data.expires,
+				start: toLocalDateTime(data.start),
+				expires: toLocalDateTime(data.expires),
 			})
 			onDone()
 		} catch (e: any) {
@@ -49,56 +51,97 @@ export const EditInfostripeForm: React.FC<Props> = ({ stripe, onDone }) => {
 	}
 
 	return (
-		<FormProvider {...methods}>
-			<Box
-				as="form"
-				onSubmit={methods.handleSubmit(onSubmit)}
-				style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
-			>
-				{serverError && <Alert variant="error">{serverError}</Alert>}
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<VStack gap="space-16">
+				{serverError && (
+					<InfoCard data-color="danger">
+						<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+							{serverError}
+						</InfoCard.Message>
+					</InfoCard>
+				)}
 
-				<DollySelect
-					isClearable={false}
-					label="Type"
-					size="medium"
+				<Controller
 					name="type"
-					options={infostripeTypeOptions}
+					control={control}
+					rules={{ required: 'Påkrevd' }}
+					render={({ field, fieldState }) => (
+						<Select
+							{...field}
+							label="Type"
+							error={fieldState.error?.message}
+							style={{ maxWidth: '200px' }}
+						>
+							{infostripeTypeOptions.map((option) => (
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							))}
+						</Select>
+					)}
 				/>
 
-				<Textarea
-					label="Melding"
-					maxLength={500}
-					{...methods.register('message', { required: 'Påkrevd' })}
-					error={methods.formState.errors.message?.message}
-					data-testid={TestComponentSelectors.INPUT_INFOSTRIPE_MESSAGE_EDIT}
+				<Controller
+					name="title"
+					control={control}
+					rules={{
+						maxLength: {
+							value: INFOSTRIPE_TITLE_MAX_LENGTH,
+							message: `Maks ${INFOSTRIPE_TITLE_MAX_LENGTH} tegn`,
+						},
+					}}
+					render={({ field, fieldState }) => (
+						<TextField
+							{...field}
+							label="Tittel"
+							maxLength={INFOSTRIPE_TITLE_MAX_LENGTH}
+							error={fieldState.error?.message}
+						/>
+					)}
 				/>
 
-				<div style={{ display: 'flex', gap: '1rem', marginTop: '4px' }}>
-					<DollyDatepicker label="Start" name="start" />
-					<DollyDatepicker label="Slutt" name="expires" />
-				</div>
+				<Controller
+					name="message"
+					control={control}
+					rules={{
+						required: 'Påkrevd',
+						maxLength: { value: 500, message: 'Maks 500 tegn' },
+					}}
+					render={({ field, fieldState }) => (
+						<Textarea
+							{...field}
+							label="Melding"
+							maxLength={500}
+							error={fieldState.error?.message}
+							data-testid={TestComponentSelectors.INPUT_INFOSTRIPE_MESSAGE_EDIT}
+						/>
+					)}
+				/>
 
-				<div style={{ display: 'flex', gap: '.5rem' }}>
+				<HStack gap="space-16">
+					<InfostripeDatepicker name="start" label="Start" control={control} required={false} />
+					<InfostripeDatepicker name="expires" label="Slutt" control={control} required={false} />
+				</HStack>
+
+				<HStack gap="space-12" align="center" marginBlock="space-8 space-0">
 					<Button
 						type="submit"
-						size="small"
-						loading={methods.formState.isSubmitting}
+						loading={formState.isSubmitting}
 						data-testid={TestComponentSelectors.BUTTON_SAVE_INFOSTRIPE}
 					>
 						Lagre
 					</Button>
 					<Button
 						type="button"
-						size="small"
 						variant="secondary"
-						disabled={methods.formState.isSubmitting}
+						disabled={formState.isSubmitting}
 						onClick={onDone}
 						data-testid={TestComponentSelectors.BUTTON_CANCEL_EDIT_INFOSTRIPE}
 					>
 						Avbryt
 					</Button>
-				</div>
-			</Box>
-		</FormProvider>
+				</HStack>
+			</VStack>
+		</form>
 	)
 }

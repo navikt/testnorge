@@ -1,10 +1,11 @@
-import { Alert, Box, Tag, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorOrganisasjon } from '@/utils/hooks/useTenorSoek'
 import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { OrganisasjonTenorVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTenorVisning'
+import { Box, InfoCard, InlineMessage, Tag, VStack } from '@navikt/ds-react'
+import { XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 
 const OrganisasjonNavn = styled.h3`
 	word-break: break-word;
@@ -39,10 +40,11 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 
 	if (error || response?.error) {
 		return (
-			<Alert
-				variant="error"
-				size="small"
-			>{`Feil ved henting av organisasjoner: ${error || response?.error}`}</Alert>
+			<InfoCard data-color="danger" size="small">
+				<InfoCard.Message
+					icon={<XMarkOctagonFillIcon aria-hidden />}
+				>{`Feil ved henting av organisasjoner: ${error || response?.error}`}</InfoCard.Message>
+			</InfoCard>
 		)
 	}
 
@@ -110,9 +112,9 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 					</div>
 				)}
 				{organisasjonListe?.length === 200 && antallTreff > 200 && (
-					<Alert variant="info" size="small" inline style={{ marginTop: '20px' }}>
+					<InlineMessage status="info" size="small" style={{ marginTop: '20px' }}>
 						Viser kun de 200 første treffene. <br /> Gjør et nytt søk for å se andre treff.
-					</Alert>
+					</InlineMessage>
 				)}
 			</div>
 			<div

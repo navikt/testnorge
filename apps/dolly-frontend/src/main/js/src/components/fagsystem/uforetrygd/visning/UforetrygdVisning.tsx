@@ -2,7 +2,8 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Alert } from '@navikt/ds-react'
+import { InfoCard, InlineMessage } from '@navikt/ds-react'
+import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -11,7 +12,6 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import styled from 'styled-components'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
-import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const BarnetilleggSamlet = styled.div`
 	margin: 0 0 15px 0;
@@ -75,10 +75,12 @@ const DataVisning = ({ data, miljo }) => {
 	return (
 		<>
 			{!vedtakUT && !loading && (
-				<StyledAlert variant={'warning'} size={'small'}>
-					Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
-					klar ennå, eller at opprettelse av uføresak har feilet.
-				</StyledAlert>
+				<InfoCard data-color="warning" size={'small'} style={{ marginBottom: '20px' }}>
+					<InfoCard.Message icon={<ExclamationmarkTriangleFillIcon aria-hidden />}>
+						Kunne ikke hente vedtaksstatus for person. Dette skyldes enten at vedtaksstatus ikke er
+						klar ennå, eller at opprettelse av uføresak har feilet.
+					</InfoCard.Message>
+				</InfoCard>
 			)}
 			<div className="person-visning_content">
 				<TitleValue title="Vedtaksstatus" value={getSisteOppdatering(vedtakUT?.sisteOppdatering)} />
@@ -138,9 +140,9 @@ export const UforetrygdVisning = ({ data, loading, bestillingIdListe, tilgjengel
 		<ErrorBoundary>
 			<SubOverskrift label="Uføretrygd" iconKind="pensjon" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+				<InlineMessage status="warning" size={'small'} style={{ marginBottom: '20px' }}>
 					Fant ikke uføretrygd-data på person
-				</Alert>
+				</InlineMessage>
 			) : (
 				<MiljoTabs
 					bestilteMiljoer={bestilteMiljoer}
