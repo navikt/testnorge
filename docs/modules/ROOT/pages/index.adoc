@@ -6,7 +6,8 @@
 [[introduksjon]]
 == Introduksjon
 
-Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til Dolly og syntetiske testdata.
+Github repo *testnorge* er et monorepo som inneholder frontend- og backend-applikasjoner som støtter tjenester knyttet til
+Dolly og syntetiske testdata. Vi har til hensikt å endre navnet til *testnav* for å unngå forveksling med system fra Skatteetaten.
 
 === Om
 
@@ -57,7 +58,8 @@ Link til Dolly: https://dolly.ekstern.dev.nav.no/
 
 Se xref:index.adoc#brukerveiledning[Brukerveiledning] for å lære hvordan du oppretter dine første testpersoner.
 
-Har du spørsmål? Se xref:index.adoc#faq[Ofte stilte spørsmål (FAQ)] eller kontakt oss på Slack-kanalen #dolly.
+Har du spørsmål? Se xref:index.adoc#faq[Ofte stilte spørsmål (FAQ)] eller kontakt oss på Slack-kanalen #dolly, evt. via epost
+til dolly@nav.no.
 
 Et omfattende eksempel på bestilling av tilgang til Dolly samt bruk av Dolly er tilgjengelig på team helsearbeidsgiver sine docs: https://github.com/navikt/sykepenger-im-lps-api/wiki/Testdata
 
@@ -740,12 +742,13 @@ Formatet ble innført i 1964, og ved denne oppbygning er det mulig å hente ut f
 per dag. For enkelte datoer har man allerede sluppet opp for tilgjengelige fødselsnumre, og hos Folkeregisteret har man derfor
 en egen opplysningsstype for fødselsdato, og en for kjønn, og det er disse som skal benyttes heller enn å avlede fra fødselsnummeret.
 
-Fra 2032 innføres det et nytt fødselsnummer som ligner på dagens. Det vil fortsatt være 11 siffer, og bestå av fødselsdato (6 sifre)
-og personummer (5 sifre). Forskjellen er de tre første sifre er et løpenummer, og da har man 1000 mulige kombinasjoner per dag.
+Fra 2032 innføres det et nytt regime for fødselsnummere som ligner på dagens. Det vil fortsatt være 11 siffer, og består av
+fødselsdato (6 sifre) og personummer (5 sifre). Forskjellen er de tre første sifre er et løpenummer, og da har man 1000
+mulige kombinasjoner per dag.
 Informasjonen om århundre og kjønn vil ikke lenger være tilgjengelig i fødselsnummeret, men må hentes fra Folkeregisteret.
 De to siste sifre er fortsatt kontrollsiffer, men her er det fire mulige kombinasjoner som tillates, og noen ganger bare tre
 på grunn av beregningsmetoden. Man får dermed totalt 3000, og i de fleste tilfeller 4000 mulige kombinasjoner per dag som vil
-være en 20-dobling av dagens kapasitet.
+være opptil en 20-dobling av dagens kapasitet.
 
 [[faq_syntetisk_identifikator]]
 === Syntetisk identifikator i Nav
