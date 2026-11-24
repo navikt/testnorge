@@ -753,12 +753,12 @@ per dag. For enkelte datoer har man allerede sluppet opp for tilgjengelige føds
 en egen opplysningsstype for fødselsdato, og en for kjønn, og det er disse som skal benyttes heller enn å avlede fra fødselsnummeret.
 
 Fra 2032 innføres det et nytt regime for fødselsnummere som ligner på dagens. Det vil fortsatt være 11 siffer, og består av
-fødselsdato (6 sifre) og personummer (5 sifre). Forskjellen er de tre første sifre er et løpenummer, og da har man 1000
-mulige kombinasjoner per dag.
+fødselsdato (6 sifre) og personummer (5 sifre). Forskjellen er de tre første sifre i personummerdelen er et løpenummer,
+og da har man 1000 mulige kombinasjoner per dag.
 Informasjonen om århundre og kjønn vil ikke lenger være tilgjengelig i fødselsnummeret, men må hentes fra Folkeregisteret.
-De to siste sifre er fortsatt kontrollsiffer, men her er det fire mulige kombinasjoner som tillates, og noen ganger bare tre
-på grunn av beregningsmetoden. Man får dermed totalt 3000, og i de fleste tilfeller 4000 mulige kombinasjoner per dag som vil
-være opptil en 20-dobling av dagens kapasitet.
+De to siste sifre er fortsatt kontrollsiffer, men her er det blitt fire mulige kombinasjoner som tillates, og noen ganger
+bare tre på grunn av beregningsmetoden. Man får dermed totalt 3000, og i de fleste tilfeller 4000 mulige kombinasjoner
+per dag som vil være opptil en 20-dobling av dagens kapasitet.
 
 [[faq_syntetisk_identifikator]]
 === Syntetisk identifikator i Nav
