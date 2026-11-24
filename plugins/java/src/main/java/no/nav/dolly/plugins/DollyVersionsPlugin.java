@@ -40,12 +40,15 @@ public class DollyVersionsPlugin implements Plugin<Project> {
         public String jweaver = "1.9.26";
         public String jwt = "4.6.2";
         public String logback = "9.0";
+        public String lz4 = "1.11.4";
         public String mq = "4.1.2";
         public String okhttp = "5.5.1";
         public String onnxruntime = "1.31.1";
         public String opensearchClient = "3.10.0";
         public String orika = "1.5.4";
         public String reactorTest = "3.8.8";
+        public String scram = "3.4";
+        public String snappy = "1.1.10.12";
         public String springdoc = "3.2.0";
         public String swagger = "2.2.55";
         public String testcontainers = "2.0.5";
