@@ -71,4 +71,34 @@ describe('soekPersoner', () => {
 		expect(secondPage.hasMorePdl).toBe(true)
 		expect(setError).not.toHaveBeenCalled()
 	})
+
+	it('uses the current ident and aktør-ID when the person has a historical ident', async () => {
+		mockGetAktoerFraPdl.mockResolvedValue({
+			data: {
+				data: {
+					hentIdenter: {
+						identer: [
+							{ ident: '12345678901', historisk: true, gruppe: 'FOLKEREGISTERIDENT' },
+							{ ident: '10987654321', historisk: false, gruppe: 'FOLKEREGISTERIDENT' },
+							{ ident: '1234567890123', historisk: false, gruppe: 'AKTORID' },
+						],
+					},
+					hentPerson: { navn: [{ fornavn: 'Ola', etternavn: 'Nordmann' }] },
+				},
+			},
+		})
+
+		const result = await soekPersoner('1234567890123', vi.fn(), vi.fn(), 0, 123, {
+			pdlf: false,
+			pdl: false,
+			pdlAktoer: true,
+		})
+
+		expect(result.pdlAktoerer).toEqual([
+			expect.objectContaining({ ident: '10987654321', aktoerId: '1234567890123' }),
+		])
+		expect(result.personer).toEqual([
+			{ value: '10987654321', label: '1234567890123 - OLA NORDMANN' },
+		])
+	})
 })

@@ -4,6 +4,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { identerSearch } from '@/service/services/dollysearch/DollySearch'
 import { useReduxDispatch, useReduxSelector } from '@/utils/hooks/useRedux'
 import { navigerTilPerson } from '@/ducks/finnPerson'
+import { Ident } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { GroupedOption, SoekTypeValg } from './NavigeringTypes'
 
 type Person = {
@@ -135,12 +136,14 @@ export const soekPersoner = async (
 		setError(pdlValues?.reason?.message)
 	}
 	if (pdlAktoerValues?.status === 'fulfilled') {
-		const ident = pdlAktoerValues.value?.data?.data?.hentIdenter?.identer?.[0]?.ident
+		const identer: Ident[] = pdlAktoerValues.value?.data?.data?.hentIdenter?.identer ?? []
+		const gjeldendeIdenter = identer.filter((identInfo) => !identInfo.historisk)
+		const ident = gjeldendeIdenter.find((identInfo) => identInfo.gruppe !== 'AKTORID')?.ident
 		if (ident) {
 			pdlAktoerer = [
 				{
 					ident,
-					aktoerId: pdlAktoerValues.value?.data?.data?.hentIdenter?.identer?.[1]?.ident,
+					aktoerId: gjeldendeIdenter.find((identInfo) => identInfo.gruppe === 'AKTORID')?.ident,
 					fornavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.fornavn,
 					mellomnavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.mellomnavn,
 					etternavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.etternavn,
