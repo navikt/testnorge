@@ -998,6 +998,3 @@ include::local/local_db.adoc[leveloffset=+2]
 include::local/local_general.adoc[leveloffset=+2]
 include::local/local_opensearch.adoc[leveloffset=+2]
 include::local/local_secretmanager.adoc[leveloffset=+2]
-
-[[index]]
-== Index
