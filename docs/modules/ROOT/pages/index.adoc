@@ -416,20 +416,45 @@ Resultatet kan lastes opp til en CSV-fil for videre analyse.
 
 image::dolly/identvalidator_resultat.png[Ident validator]
 
-[[endringsmelding_status]]
-=== Endringsmelding (status)
+[[soek_og_naviger]]
+=== Søk og naviger
+
+For å navigere til en gitt person, bestilling eller gruppe, benytt søkefeltet som er tilgjengelig på startsiden, og
+skriv inn din søketekst og eller sifre som skal gjenkjennes. En evt. aktørID må være komplett, 13 sifre for å gi treff.
+
+image::dolly/soekefelt_navigasjon.png[Søk og naviger]
+
+Eksempelet viser resultat på et tekstsøk som gav traff på noen bestillinger og grupper.
+
+image::dolly/soekefelt_resultat.png[Søk og naviger]
+
+[[dolly_soek]]
+=== Dollysøk
+
+Gjenbruk er bra, og ved å identifisere testdata som allerede har blitt opprettet kan man spare tid og ressurser.
+Dollysøk gir deg mulighet til å søke på tvers av Dolly og Test-Norge.
+
+image:dolly/dollysoek_meny.png[Dollysøk meny]
+
+Angi hvilke systemer og personegenskaper som er relevante for ditt søk.
+Her er "Arbeidsforhold -- Ordinært" i miljø "Q1", ""Bankkonto i Norge" samt "Nav sykemelding" valgt som eksempel, og
+søket gav 13 treff.
+
+image:dolly/dollysoek_resultat.png[Dollysøk resultat]
+
+Velg en av personene for å se detaljer og vurder om denne kan benyttes i ditt scenario.
+Som alltid, hvis det er nødvendig å endre verdier på personens egenskaper, hør med eier av gruppe først før du oppdaterer
+med Legg til/endre-funksjonaliteten.
+
+[[endringsmelding]]
+=== Endringsmelding
 
 Øverst i menyen kan du velge endringsmelding.
-Her kan du sende inn fødselsmelding eller dødsmelding til ønsket testmiljø.
-Dette er en separat applikasjon med egne tilganger.
+Endringsmelding er en egen applikasjon separat fra Dolly som brukes til å sende inn fødsels- og dødsmeldinger for de
+prodlike identer som ikke er administrert av Dolly.
 
-Merk: Kun én person per melding.
-Funksjonaliteten vil bli erstattet; bruk Dolly-funksjonene for fødsels- og dødsmeldinger:
-
-* Fødselsmelding: Gå til gruppe, finn forelder, velg Legg til/endre og kryss av Barn eller bruk Legg til relasjoner.
-* Dødsmelding: Gå til gruppe, velg Legg til/endre og kryss av Dødsdato.
-
-For personer som ikke eksisterer i Dolly: Opprett person, velg Eksisterende person og skriv inn ident.
+* Fødselsmelding: søk opp mor som må finnes i miljø, og legg til barn.
+* Dødsmelding: søk opp og send dødsmelding for person som finnes i miljø.
 
 image::dolly/endringsmelding.png[Endringsmelding]
 
@@ -445,7 +470,8 @@ image::dolly/api_dok.png[API dok]
 
 image::dolly/logged_out_error.png[Tvungen utlogging]
 
-Hvis du gjentatte ganger blir logget ut eller ikke kommer inn kan det skyldes cookies.
+Hvis du gjentatte ganger blir logget ut eller ikke kommer inn kan det skyldes at cookies i nettleseren er oppdaterte.
+Prøv å tømme cookies og logg inn på nytt.
 
 * Manuell logout: https://dolly.intern.dev.nav.no/oauth2/logout
 * Tøm cookies i nettleser (se video under)
@@ -467,7 +493,8 @@ Ved unntaksvis bruk av produksjonsdata gjelder spesielle sikkerhetstiltak.
 Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
 
 * Syntetiske testdata kan ikke kobles til reelle personer og er ikke personopplysninger
-* Produksjonsdata kan direkte eller indirekte knyttes til en enkeltperson og må håndteres som personopplysninger som må beskyttes gjennom tilgangskontroll, maskering, logging m.m.
+* Produksjonsdata kan direkte eller indirekte knyttes til en enkeltperson og må håndteres som personopplysninger som må
+beskyttes gjennom tilgangskontroll, maskering, logging m.m.
 
 Retningslinjene gjelder for alle ansatte og eksterne som er involvert i utvikling av Navs IT‑løsninger.
 Følgende har et spesielt ansvar:
@@ -490,9 +517,9 @@ For områder der syntetiske data ikke er tilgjengelig vil sikkerhetsregler for u
 
 Syntetiske testdata skal brukes til utvikling og forvaltning, og er tilgjengelig som:
 
-* Mini‑Norge (befolkningsutvalg) i syntetiske utviklings-/testmiljøer
 * Egendefinerte data fra Dolly selvbetjening (randtilfeller og spesielle testbehov).
 Dolly sikrer at personer og egenskaper er syntetiske
+* Testpopulasjonen fra Skatteteaten (Test-Norge) er syntetisk og kan brukes til integrasjonstester mot eksterne samhandlere
 * Syntetiske datasett for integrasjonstest med eksterne samhandlere
 * Tekniske stubber som simulerer eksterne kilder til volum- og basistesting
 
@@ -501,7 +528,7 @@ Syntetiske testdata er ikke personopplysninger og kan brukes uten ekstra sikkerh
 Kvalitetskontroller for å hindre reelle data i syntetiske miljøer:
 
 * Navnepool med fiktive navn
-* Identpool med identer som teknisk sjekkes mot reelle identiteter i Folkeregisteret
+* Identpool med syntetiske identer og prodlike som vaskes mot eksisterende identiteter i produksjon.
 * Jevnlige tekniske sjekker av syntetiske miljøer (fiktive navn og identer)
 * Manuelle stikkprøver av testdata fra eksterne samhandlere
 * Miljøoppsett som hindrer krysskobling mellom syntetiske og produksjonsnære miljøer
@@ -515,7 +542,7 @@ Brukere må følge disse prinsippene:
 * Ikke ta utgangspunkt i reelle personer – alle verdier må velges uavhengig og tilfeldig
 * Ikke gjør endringer eller slett andres grupper/personer uten avtale
 * Del aldri påloggingsinformasjon
-* Kontakt oss på Slack‑kanalen #dolly for innspill, ønsker eller feil
+* Kontakt oss på Slack‑kanalen #dolly, alternativt epost: dolly@nav.no for innspill, ønsker eller feil
 
 [[dolly_retningslinjer_unntak]]
 ==== Unntak fra bruk av syntetiske testdata
@@ -636,6 +663,24 @@ Se xref:index.adoc#brukerveiledning[Brukerveiledning] for full oversikt over til
 Savner du noe? Kontakt oss på Slack-kanalen #dolly eller epost dolly@nav.no.
 
 [[faq_mangler_stoette]]
+=== Ved oppretting av en person i Dolly, hvilke personopplysninger får man med?
+
+For alle personer, hvis ikke annet er valgt vil aldersdistribusjon være 30-60 år og kjønnnsfordeling være lik mellom mann og kvinne.
+Barn vil automatisk få aldersdistribusjon 0-17 år, og foreldre 60-80 år.
+Ektefelle/partner vil aldersmessig samsvare hovedperson med +- 3 år. Hvert 20. par (5%) vil være likekjønnet.
+
+En FNR-person, vil automatisk få fødselsnummer, navn, kjønn, fødested,
+fødselsdato, sivilstatus ugift, norsk bostedsadresse, norsk statsborgerskap og folkeregister-personstatus bosatt
+
+En DNR-person vil automatisk få D-nummer, navn, kjønn, fødested i utlandet, fødselsdato, sivilstatus ugift, utenlandsk bostedsadresse,
+utenlandsk statsborgerskap og folkeregister-personstatus midlertidig.
+
+En NPID-person vil automatisk få en Nav personidentifikator (11 sifre), navn, kjønn, fødested i utlandet, fødselsdato,
+sivilstatus ugift, utenlandsk bostedsadresse, utenlandsk statsborgerskap og ingen folkeregister-personstatus.
+Personen kan ikke få pensjonsopptjening og det er begrensning på noen andre type ytelser. Hvert fagsystem bestemmer om
+NPID er tilstrekkelig som identifikator.
+
+[[faq_mangler_stoette]]
 === Dere har ikke lagt til rette for vårt behov - hva gjør vi?
 
 Vi jobber kontinuerlig med å utvide Dolly basert på tilbakemeldinger fra brukere.
@@ -660,8 +705,45 @@ For å opprette en organisasjon med mange ansatte i Dolly:
 2. Opprett deretter personer som skal være ansatte
 3. Under egenskaper for personene, velg "Arbeidsforhold" og knytt dem til organisasjonens organisasjonsnummer
 4. Du kan opprette flere personer samtidig og knytte dem alle til samme organisasjon
+5. For en eksisterende gruppe med personer kan arbeidsforhold legges til i etterkant ved å bruke "Legg til" på gruppe.
 
 Tips: Bruk mal-funksjonalitet for å gjenbruke organisasjonsinformasjon når du oppretter flere ansatte.
+
+[[faq__folkeregister_identifikator]]
+=== Folkeregister personnummer 1964 og 2032 identifikator
+
+Folkeregisterets personummer består av 11 sifre, med fødseldato (6 siffer) og personnummer (5 siffer), der de tre
+første sifre av personnummerdelen angir århundre og kjønn (partall er kvinner, oddetall for menn). Og de to siste sifre er
+kontrollsiffer (sjekksum) og formidler gyldighet av identen.
+Formatet ble innført i 1964, og ved denne oppbygning er det mulig å hente ut fødselsnumre tilsvarende ca 200 menn og 200 kvinner
+per dag. For enkelte datoer har man allerede sluppet opp for tilgjengelige fødselsnumre, og hos Folkeregisteret har man derfor
+en egen opplysningsstype for fødselsdato, og en for kjønn, og det er disse som skal benyttes heller enn å avlede fra fødselsnummeret.
+
+Fra 2032 innføres det et nytt fødselsnummer som ligner på dagens. Det vil fortsatt være 11 siffer, og bestå av fødselsdato (6 sifre)
+og personummer (5 sifre). Forskjellen er de tre første sifre er et løpenummer, og da har man 1000 mulige kombinasjoner per dag.
+Informasjonen om århundre og kjønn vil ikke lenger være tilgjengelig i fødselsnummeret, men må hentes fra Folkeregisteret.
+De to siste sifre er fortsatt kontrollsiffer, men her er det fire mulige kombinasjoner som tillates, og noen ganger bare tre
+på grunn av beregningsmetoden. Man får dermed totalt 3000, og i de fleste tilfeller 4000 mulige kombinasjoner per dag som vil
+være en 20-dobling av dagens kapasitet.
+
+[[faq_syntetisk_identifikator]]
+=== Syntetisk identifikator i Nav
+
+Syntetiske identifikatorer, eller identer hos Nav kjennetegnes med et tillegg av +40 på måned, og en gitt måned vil derfor angis
+i intervallet 41 til 52 for et FNR. For DNR (D-nummer) legges det i tillegg til +40 på dag, og disse finnes da i området 41 til 71.
+For NPID legges det i utgangspunktet til +20 på måned, og med syntetisk NPID finnes disse da i intervallet 61 til 72.
+
+Syntetiske fødselsnummere fra Folkeregisteret (Skatteetaten) har fått lagt til +80 på måned for FNR. og DNR har også her,
+som i produksjon et tillegg på +40 på dag.
+
+[[faq_organisasjon_med_daglig_leder]]
+=== Hvordan oppretter jeg en organisasjon med daglig leder?
+
+Det korte svaret er at det får du ikke gjort. Vår Brregstub har ikke noen integrasjon som er pt. er nyttig. Gjør i stedet
+følgende: søk opp en Tenor-person som er daglig leder (Velg virksomhet -> rolle: daglig leder), og benytt organisasjonen
+vedkommende tilhører for din testcase. Da har du både daglig-leder person fra Test-Norge, og hvis formålet er å opprette
+et arbeidsforhold pass på at bedriftstypen er BEDR. Hvis testcase behøver både overenhet og underenhet for organisasjonen
+må du foreløbig gjøre Tenorsøket hos Skattetaten som har tilgjengeligjort begge typer enhet i samme spørring.
 
 [[faq_sikkerhetstiltak]]
 === Hvordan bruker jeg sikkerhetstiltak og adressebeskyttelse?
@@ -671,7 +753,8 @@ Mange brukere er usikre på forskjellen mellom sikkerhetstiltak og adressebeskyt
 * *Adressebeskyttelse (kode 6 og 7)*: Dette er offisielle beskyttelseskoder fra Folkeregisteret
 ** Kode 6: Strengt fortrolig adresse
 ** Kode 7: Fortrolig adresse
-* *Sikkerhetstiltak*: Generelle sikkerhetstiltak som kan legges til personer. For eksempel: "Nav-ansatt skal aldri være alene med bruker (på grunn av voldshistorikk)". Sikkerhetstiltaket her er altså for den Nav-ansatte, ikke for brukeren.
+* *Sikkerhetstiltak*: Generelle sikkerhetstiltak som kan legges til personer. For eksempel: "Nav-ansatt skal aldri være
+alene med bruker (på grunn av voldshistorikk)". Sikkerhetstiltaket her er altså for den Nav-ansatte, ikke for brukeren.
 * *Skjerming*: Brukes for å skjerme personer fra innsyn
 
 Mange brukere velger "Sikkerhetstiltak" når de egentlig trenger "Adressebeskyttelse". Velg riktig kategori basert på testscenarioet ditt:
@@ -682,7 +765,8 @@ Mange brukere velger "Sikkerhetstiltak" når de egentlig trenger "Adressebeskytt
 [[faq_vergemaal_fullmakt]]
 === Hva er forskjellen på vergemål og fullmakt?
 
-* *Vergemål*: En juridisk ordning der en person (verge) er oppnevnt av fylkesmannen til å ivareta interessene til en person som ikke kan ivareta egne interesser (f.eks. barn, personer med utviklingshemming)
+* *Vergemål*: En juridisk ordning der en person (verge) er oppnevnt av fylkesmannen til å ivareta interessene til en
+person som ikke kan ivareta egne interesser (f.eks. barn, personer med utviklingshemming)
 * *Fullmakt*: En frivillig avtale der en person gir en annen person rett til å handle på sine vegne i spesifikke situasjoner
 
 I Dolly kan du legge til begge:
@@ -693,20 +777,37 @@ I Dolly kan du legge til begge:
 [[faq_prodlast]]
 === Hvorfor er testpersonene mine borte etter prodlast?
 
-Testpersoner kan forsvinne etter en prodlast (migrering av data fra produksjon til testmiljø). Dette skyldes at prodlasten overskriver data i testmiljøet.
+Testpersoner kan forsvinne etter en prodlast (migrering av data fra produksjon til testmiljø).
+Dette skyldes at prodlasten overskriver data i testmiljøet.
 
 Spesielt viktig å merke seg:
 
-* *Arena*: Ved datamigreringsaktiviteter i Arena kan syntetiske personer bli overskrevet
+* Både *Arena* og *AAREG*: ved datamigreringsaktiviteter blir miljøet i Q1 og Q4 slettet
 * Følg med på varsler i kanalen #datamigrering for planlagte prodlaster
-* Hvis personene dine er borte etter en prodlast, må de opprettes på nytt
+* Hvis personer og/eller øvrig testdata er borte etter en prodlast, så kan de gjenopprettes
 
 Hva kan du gjøre?
 
-* *Gjenopprett gruppe* – det beste tiltaket etter en prodlast. Gå til gruppen din og klikk "GJENOPPRETT" i gruppeheaderen. Da lastes alle personene i gruppen inn på nytt til de valgte miljøene
-* Lagre bestillingene som maler slik at du enkelt kan gjenskape personene
-* Bruk Test-Norge personer som er mer stabile over tid
-* Kontakt oss på #dolly hvis du har kritiske testpersoner som må bevares
+* *Gjenopprett gruppe* – det beste tiltaket etter en prodlast. Gå til gruppen din og klikk "GJENOPPRETT" i gruppeheaderen.
+Da lastes alle personene og øvrig testdata for personene i gruppen inn på nytt til de valgte miljøene
+* Du kan også gjenopprette enkeltpersoner, hvis noen skulle feile gruppegjenopprettingen.
+Gå til personens detaljside og klikk "GJENOPPRETT" i headeren
+
+[[faq_forskjell_paa_dolly_og_testnorge]]
+=== Hva er forskjellen på personer fra Dolly og Test-Norge?
+
+Disse to kildene gir deg syntetiske testpersoner, men med noe ulikt innhold og formål:
+
+* *Dolly*: Gir deg mulighet til å lage egne syntetiske personer med ønskede egenskaper og relasjoner.
+Du kan opprette personer for spesifikke behov, som for eksempel komplekse familierelasjoner.
+Disse har du full kontroll på og du kan gi de ny identitet eller legge til et dødsfall.
+Syntetiske personer fra Dolly er ment å benyttes i Navs testmiljøer.
+
+* *Test-Norge*: Gir deg tilgang til en stor syntetisk testpopulasjon som er laget av Skatteetaten.
+Test-Norge er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
+Bruk disse når samarbeid med eksterne samhandlere er pågrevd. Pass på at Test-Norge-personen du søker er i riktig
+alderskategori for ditt testscenario.
+
 
 [[faq_komplekse_relasjoner]]
 === Hvordan lager jeg komplekse familierelasjoner?
@@ -738,7 +839,11 @@ For disse scenariene, bygg opp familien steg for steg ved å bruke "Legg til/end
 [[faq_altinn_dolly_samarbeidspartner]]
 === Hvorfor finner jeg ikke "Navs Dolly for samarbeidspartnere" i Altinn?
 
-Altinn lar deg velge "Hvem vil du bruke Altinn på vegne av", og det er organisasjonsnummer som Dolly har gitt tilgang for som benyttes.
+Dette valget er kun tilgjengelig for organisasjoner som har fått tilgang til Dolly.
+For å få tilgang må behovet meldes inn på epost til dolly@nav.no.
+
+Altinn lar deg velge "Hvem vil du bruke Altinn på vegne av", og det er organisasjonsnummer som Dolly har gitt tilgang for
+som benyttes.
 
 For riktig organisasjon:
 
