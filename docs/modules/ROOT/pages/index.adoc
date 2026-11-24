@@ -20,6 +20,7 @@ Spesifikke søk kan gjøres i søkefelt øverst til høyre.
 Dolly er Navs selvbetjeningsløsning for å opprette og forvalte syntetiske testdata.
 Med Dolly kan utviklingsteam raskt og enkelt opprette realistiske testpersoner med komplekse egenskaper, familiestrukturer og livsforløp – uten å berøre personopplysninger fra produksjon.
 
+[[hva_er_dolly]]
 === Hva er Dolly?
 
 Dolly er et verktøy som gjør det mulig å:
@@ -30,6 +31,7 @@ Dolly er et verktøy som gjør det mulig å:
 * *Gjenbruke testdata* – lagre bestillinger som maler for senere bruk
 * *Samarbeide i team* – del og forvalt testdata sammen med teamet ditt
 
+[[hovorfor_dolly]]
 === Hvorfor Dolly?
 
 Testing med produksjonsdata medfører betydelig risiko og administrative byrder:
@@ -42,6 +44,7 @@ Testing med produksjonsdata medfører betydelig risiko og administrative byrder:
 Dolly løser disse utfordringene ved å tilby *fullstendig syntetiske data* som ikke kan spores tilbake til reelle personer.
 Dette gir teamene frihet til å teste grundig uten personvernhensyn, samtidig som Nav overholder regelverket.
 
+[[hvem_er_dolly_for]]
 === Hvem er Dolly for?
 
 Dolly er primært laget for:
@@ -52,6 +55,7 @@ Dolly er primært laget for:
 
 Alle Nav-ansatte og konsulenter med tilgang kan bruke Dolly etter innlogging.
 
+[[kom_i_gang]]
 === Kom i gang
 
 Link til Dolly: https://dolly.ekstern.dev.nav.no/
@@ -71,11 +75,13 @@ Følg veiledningen under for å komme i gang.
 
 [[palogging]]
 === Pålogging
+[[paalogging_internt]]
 ==== Pålogging internt
 
 Dolly benytter seg av Single Sign On (SSO) som betyr at du automatisk er pålogget når du allerede er innloget hos Nav.
 Motsatt blir du krevd for Nav-pålogging hvis dette mangler.
 
+[[paalogging_eksternt]]
 ==== Pålogging eksternt
 
 Dolly støtter BankID pålogging for eksterne brukere. Betingelsen er at organisasjonen den eksterne brukeren tilhører har
@@ -134,6 +140,10 @@ Opprett personer og Importer personer følger så en fire stegs vegviser som i s
 image::dolly/opprettelse_prosess.png[Opprettelse prosess]
 
 Ved #Opprett personer# får du valg mellom ny person eller eksisterende person:
+
+[[velg_identtype]]
+==== Velg identtype
+Velg identtype og antall:
 
 image::dolly/opprett_personer.png[opprett personer]
 
@@ -836,29 +846,22 @@ alderskategori for ditt testscenario.
 [[faq_komplekse_relasjoner]]
 === Hvordan lager jeg komplekse familierelasjoner?
 
-For å lage komplekse familierelasjoner i Dolly, for eksempel med partner og foreldreansvar:
+For å lage komplekse familierelasjoner i Dolly, for eksempel med partner, barn med delt bosted, og delt foreldreansvar,
+kan du følge disse trinnene:
 
-1. Opprett hovedperson
-2. Velg "Relasjoner" → "Ektefelle/Partner"
-3. Du kan enten opprette ny partner eller velge eksisterende person
-4. For å legge til barn: Velg "Relasjoner" → "Barn" eller "Foreldreansvar"
-5. Barn kan også opprettes med begge foreldrene automatisk
+Velg egenskaper:
 
-Uten partner, men med foreldreansvar:
+image:dolly/Kompleks familierelasjon egenskaper.png[Kompleks familierelasjon egenskaper]
 
-1. Opprett person som skal ha foreldreansvar
-2. Opprett barn separat
-3. Velg "Legg til/endre" på personen
-4. Velg "Foreldreansvar" og knytt til barnet
+Velg verdier:
 
-Mer komplekse strukturer:
+image:dolly/kompleks_familierelasjon_verdier.png[Kompleks familierelasjon verdier]
 
-* Samboere uten formelt forhold
-* Delt foreldreansvar
-* Verge som ikke er forelder
-* Flere generasjoner
+Dette oppretter hovedperson med partner og barn, der barnet har fått to foreldre, delt bosted og begge foreldre har fått
+foreldreansvar.
 
-For disse scenariene, bygg opp familien steg for steg ved å bruke "Legg til/endre" funksjonalitet og "Relasjoner". Se også xref:index.adoc#demo_legg-til-endre[Demo - Legg til/endre].
+Du kan også gjøre tilsvarende i flere operasjoner vha. legg til/endre funksjonaliteten. Og du kan velge å knytte
+relasjoner mellom eksisterende personer i samme gruppe heller enn å opprette disse som nye.
 
 [[faq_altinn_dolly_samarbeidspartner]]
 === Hvorfor finner jeg ikke "Navs Dolly for samarbeidspartnere" i Altinn?
