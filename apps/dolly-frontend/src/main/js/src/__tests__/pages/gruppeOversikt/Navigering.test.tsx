@@ -20,6 +20,7 @@ vi.mock('react-select', () => ({
 		options,
 		onInputChange,
 		onChange,
+		onBlur,
 		onMenuScrollToBottom,
 		noOptionsMessage,
 	}: {
@@ -29,6 +30,7 @@ vi.mock('react-select', () => ({
 		}>
 		onInputChange: (value: string, meta: { action: 'input-change' }) => void
 		onChange: (option: { value: string; label: string; type: SoekTypeValg }) => void
+		onBlur: () => void
 		onMenuScrollToBottom: () => void
 		noOptionsMessage: () => string
 	}) => {
@@ -39,6 +41,7 @@ vi.mock('react-select', () => ({
 					aria-label="Person"
 					value={inputValue}
 					onChange={(event) => onInputChange(event.target.value, { action: 'input-change' })}
+					onBlur={onBlur}
 				/>
 				{visibleOptions.map((option) => (
 					<span key={option.value}>{option.label}</span>
@@ -209,5 +212,43 @@ describe('Navigering', () => {
 
 		expect(screen.queryByText('1 - GAMMELT SØK')).not.toBeInTheDocument()
 		expect(screen.getByText('2 - NYTT SØK')).toBeInTheDocument()
+	})
+
+	it('clears the search field and results when the field loses focus', async () => {
+		render(<Navigering />)
+		const input = screen.getByRole('textbox', { name: 'Person' })
+
+		fireEvent.change(input, { target: { value: 'abc' } })
+		await waitFor(() => expect(screen.getByText('1 - UKJENT')).toBeInTheDocument())
+
+		fireEvent.blur(input)
+
+		expect(input).toHaveValue('')
+		expect(screen.queryByText('1 - UKJENT')).not.toBeInTheDocument()
+	})
+
+	it('keeps the error after blur and removes it when the user types again', async () => {
+		mocks.searchPerson
+			.mockReset()
+			.mockRejectedValueOnce(new Error('Personsøk feilet'))
+			.mockResolvedValue({
+				group: { label: 'Personer', options: [] },
+				hasMorePdlf: false,
+				hasMorePdl: false,
+			})
+
+		render(<Navigering />)
+		const input = screen.getByRole('textbox', { name: 'Person' })
+
+		fireEvent.change(input, { target: { value: 'abc' } })
+		await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Personsøk feilet'))
+
+		fireEvent.blur(input)
+		expect(screen.getByRole('alert')).toHaveTextContent('Personsøk feilet')
+
+		fireEvent.change(input, { target: { value: 'a' } })
+
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+		expect(mocks.resetPersonError).toHaveBeenCalled()
 	})
 })

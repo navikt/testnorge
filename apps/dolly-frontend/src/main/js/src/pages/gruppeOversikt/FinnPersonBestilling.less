@@ -44,6 +44,20 @@
 }
 
 
+.navigering {
+  display: contents;
+}
+
+.gruppe--full:has(.navigering-feilmelding) {
+  flex-wrap: wrap;
+}
+
+.navigering-feilmelding {
+  flex: 0 0 482px;
+  margin-left: calc(100% - 482px);
+  margin-top: var(--ax-space-4);
+}
+
 .finnperson-container.skjemaelement {
   display: flex;
   position: relative;
