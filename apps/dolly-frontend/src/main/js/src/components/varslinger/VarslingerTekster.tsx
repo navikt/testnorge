@@ -72,8 +72,8 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 						vår. Den finner du {brukerveiledning}, eller under Brukerdokumentasjon i menyen.
 					</p>
 					<p>
-						Kontakt oss gjerne på {dollySlack} dersom det er noe du lurer på eller trenger hjelp
-						med.
+						Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>
+						dersom det er noe du lurer på eller trenger hjelp med.
 					</p>
 				</>
 			)
@@ -114,7 +114,10 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 						ny mal dersom du får varsel om at malen din er ugyldig. Det vil heller ikke være mulig å
 						gjøre endringer på opprettede personer som har TPS som master.
 					</p>
-					<p>Kontakt oss gjerne på {dollySlack} dersom du har noen spørsmål eller kommentarer.</p>
+					<p>
+						Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>{' '}
+						dersom du har noen spørsmål eller kommentarer.
+					</p>
 				</>
 			)
 		default:
