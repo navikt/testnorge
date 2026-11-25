@@ -195,8 +195,8 @@ image::dolly/velg_verdier.png[Velg verdier]
 Det kan være greit å vite at ved opprett person med FNR, vil disse automatisk få fødselsnummer, navn, kjønn, fødested,
 fødselsdato, sivilstatus ugift, bostedsadresse, norsk statsborgerskap og folkeregister-personstatus bosatt. For alle personer,
 hvis ikke annet er valgt vil aldersdistribusjon være 30-60 år og kjønnnsfordeling være lik mellom mann og kvinne.
-Barn vil automatisk få aldersdistribusjon 0-17 år, og foreldre 60-80 år.
-Ektefelle/partner vil aldersmessig samsvare hovedperson med +- 3 år. Hvert 20. par (5%) vil være likekjønnet.
+Barn vil automatisk få aldersdistribusjon 0-18 år, og foreldre til de voksne 70-90 år.
+Ektefelle/partner vil aldersmessig samsvare hovedperson med +- 3 år, og ca 5% vil være likekjønnet.
 Alt Dette kan endres ved å velge egenskapene i steg 2 og angi verdier i steg 3.
 
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
@@ -694,8 +694,8 @@ Savner du noe? Kontakt oss på Slack-kanalen #dolly eller epost dolly@nav.no.
 === Ved oppretting av en person i Dolly, hvilke personopplysninger får man med automatisk?
 
 For alle personer, hvis ikke annet er valgt vil aldersdistribusjon være 30-60 år og kjønnnsfordeling være lik mellom mann og kvinne.
-Barn vil automatisk få aldersdistribusjon 0-17 år, og foreldre 60-80 år.
-Ektefelle/partner vil aldersmessig samsvare hovedperson med +- 3 år. Hvert 20. par (5%) vil være likekjønnet.
+Barn vil automatisk få aldersdistribusjon 0-17 år, og foreldre 70-90 år.
+Ektefelle/partner vil aldersmessig samsvare hovedperson med +- 3 år, og ca 5% vil være likekjønnet.
 
 En FNR-person, vil automatisk få fødselsnummer, navn, kjønn, fødested,
 fødselsdato, sivilstatus ugift, norsk bostedsadresse, norsk statsborgerskap og folkeregister-personstatus bosatt
@@ -762,7 +762,7 @@ og da har man 1000 mulige kombinasjoner per dag.
 Informasjonen om århundre og kjønn vil ikke lenger være tilgjengelig i fødselsnummeret, men må hentes fra Folkeregisteret.
 De to siste sifre er fortsatt kontrollsiffer, men her har det blitt fire mulige kombinasjoner som tillates, og noen ganger
 bare tre på grunn av beregningsmetoden. Man får dermed totalt 3000, og i de fleste tilfeller 4000 mulige kombinasjoner
-per dag som vil være opptil en 20-dobling av dagens kapasitet.
+per dag som vil være opptil en 10-dobling av dagens kapasitet.
 
 [[faq_syntetisk_identifikator]]
 === Syntetisk identifikator i Nav
