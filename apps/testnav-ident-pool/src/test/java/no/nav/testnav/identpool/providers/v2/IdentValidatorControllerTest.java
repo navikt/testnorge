@@ -9,6 +9,9 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
+import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
+import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -19,6 +22,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +46,17 @@ class IdentValidatorControllerTest extends AbstractTestcontainer {
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
 
+    @MockitoBean
+    private GetUserInfo getUserInfo;
+
     @MockitoSpyBean
     private PersonnummerValidatorService personnummerValidatorService;
+
+    @BeforeEach
+    void setup() {
+        when(getUserInfo.call()).thenReturn(Mono.just(new UserInfoExtended(
+                "test-user", null, null, null, null, false, List.of())));
+    }
 
     @Test
     void validerProduksjonIdenterUgyldig() {

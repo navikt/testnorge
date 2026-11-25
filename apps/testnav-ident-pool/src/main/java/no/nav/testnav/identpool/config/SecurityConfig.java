@@ -4,7 +4,6 @@ import no.nav.dolly.libs.security.config.DollyServerHttpSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -21,13 +20,9 @@ class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchanges -> {
-                    exchanges.pathMatchers(
-                            HttpMethod.POST, "/api/v2/ident/validerflere"
-                    ).permitAll();
-                    DollyServerHttpSecurity.withDefaultHttpRequests()
-                            .customize(exchanges);
-                })
+                .authorizeExchange(exchanges ->
+                        DollyServerHttpSecurity.withDefaultHttpRequests()
+                                .customize(exchanges))
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults())).build();
     }
 }
