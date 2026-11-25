@@ -60,7 +60,7 @@ test.describe('Navigering', () => {
 			.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY)
 			.click()
 
-		await expect(page.getByTestId(TestComponentSelectors.ERROR_MESSAGE_NAVIGERING)).toHaveText(
+		await expect(page.getByTestId(TestComponentSelectors.ERROR_MESSAGE_NAVIGERING)).toContainText(
 			ERROR_NAVIGATE_IDENT,
 		)
 

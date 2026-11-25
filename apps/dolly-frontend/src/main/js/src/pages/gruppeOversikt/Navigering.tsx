@@ -6,11 +6,11 @@ import Select, {
 	InputActionMeta,
 	OptionProps,
 } from 'react-select'
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Highlighter from 'react-highlight-words'
-import { LocalAlert } from '@navikt/ds-react'
+import { InlineMessage } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { resetFeilmelding } from '@/ducks/finnPerson'
 import { useReduxDispatch } from '@/utils/hooks/useRedux'
@@ -54,10 +54,6 @@ const customAsyncSelectStyles = {
 	placeholder: (provided: any) => ({
 		...provided,
 		pointerEvents: 'none',
-	}),
-	menu: (provided: any) => ({
-		...provided,
-		zIndex: 3,
 	}),
 }
 
@@ -306,10 +302,16 @@ const Navigering = () => {
 		setError(null)
 	}, [dispatch, resetPersonError])
 
+	useEffect(() => {
+		return () => {
+			dispatch(resetFeilmelding())
+		}
+	}, [dispatch])
+
 	const handleSearchSelect = useCallback(
 		(option: NavigeringOption | null) => {
 			if (!option?.value) {
-				dispatch(resetFeilmelding())
+				clearError()
 				return
 			}
 
@@ -328,7 +330,7 @@ const Navigering = () => {
 					break
 			}
 		},
-		[dispatch, resetSearch, clearError, selectPerson, selectBestilling, selectGruppe],
+		[resetSearch, clearError, selectPerson, selectBestilling, selectGruppe],
 	)
 
 	const handleInputChange = useCallback(
@@ -383,15 +385,15 @@ const Navigering = () => {
 						/>
 					</div>
 					{displayError && (
-						<LocalAlert status="error" size="small" className="navigering-feilmelding">
-							<LocalAlert.Header>
-								<LocalAlert.Title as="h2">Søket feilet</LocalAlert.Title>
-								<LocalAlert.CloseButton onClick={clearError} />
-							</LocalAlert.Header>
-							<LocalAlert.Content data-testid={TestComponentSelectors.ERROR_MESSAGE_NAVIGERING}>
-								{displayError}
-							</LocalAlert.Content>
-						</LocalAlert>
+						<InlineMessage
+							className="navigering-feilmelding"
+							status="error"
+							size="small"
+							role="alert"
+							data-testid={TestComponentSelectors.ERROR_MESSAGE_NAVIGERING}
+						>
+							{displayError}
+						</InlineMessage>
 					)}
 				</div>
 			</NavigeringContext.Provider>

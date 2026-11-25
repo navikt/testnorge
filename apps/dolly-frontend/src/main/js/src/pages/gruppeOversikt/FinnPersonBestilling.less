@@ -45,16 +45,17 @@
 
 
 .navigering {
-  position: relative;
+  display: contents;
+}
+
+.gruppe--full:has(.navigering-feilmelding) {
+  flex-wrap: wrap;
 }
 
 .navigering-feilmelding {
-  position: absolute;
-  top: calc(100% + var(--ax-space-8));
-  right: 0;
-  width: 480px;
-  z-index: 2;
-  box-shadow: var(--ax-shadow-dialog);
+  flex: 0 0 482px;
+  margin-left: calc(100% - 482px);
+  margin-top: var(--ax-space-4);
 }
 
 .finnperson-container.skjemaelement {

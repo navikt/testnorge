@@ -227,21 +227,28 @@ describe('Navigering', () => {
 		expect(screen.queryByText('1 - UKJENT')).not.toBeInTheDocument()
 	})
 
-	it('keeps the error after blur and removes it when the alert is closed', async () => {
-		mocks.searchPerson.mockReset().mockRejectedValue(new Error('Personsøk feilet'))
+	it('keeps the error after blur and removes it when the user types again', async () => {
+		mocks.searchPerson
+			.mockReset()
+			.mockRejectedValueOnce(new Error('Personsøk feilet'))
+			.mockResolvedValue({
+				group: { label: 'Personer', options: [] },
+				hasMorePdlf: false,
+				hasMorePdl: false,
+			})
 
 		render(<Navigering />)
 		const input = screen.getByRole('textbox', { name: 'Person' })
 
 		fireEvent.change(input, { target: { value: 'abc' } })
-		await waitFor(() => expect(screen.getByText('Personsøk feilet')).toBeInTheDocument())
+		await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Personsøk feilet'))
 
 		fireEvent.blur(input)
-		expect(screen.getByText('Personsøk feilet')).toBeInTheDocument()
+		expect(screen.getByRole('alert')).toHaveTextContent('Personsøk feilet')
 
-		fireEvent.click(screen.getByRole('button', { name: 'Lukk' }))
+		fireEvent.change(input, { target: { value: 'a' } })
 
-		expect(screen.queryByText('Personsøk feilet')).not.toBeInTheDocument()
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument()
 		expect(mocks.resetPersonError).toHaveBeenCalled()
 	})
 })
