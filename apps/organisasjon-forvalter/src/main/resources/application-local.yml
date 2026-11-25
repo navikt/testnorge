@@ -11,8 +11,6 @@ consumers:
     url: https://generer-navn-service.intern.dev.nav.no
   testnav-orgnummer-service:
     url: https://testnav-orgnummer-service.intern.dev.nav.no
-  organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.intern.dev.nav.no
   testnav-adresse-service:
     url: https://testnav-adresse-service.intern.dev.nav.no
   testnav-organisasjon-service:

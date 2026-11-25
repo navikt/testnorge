@@ -40,7 +40,6 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-        - application: organisasjon-bestilling-service
         - application: testnav-adresse-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service

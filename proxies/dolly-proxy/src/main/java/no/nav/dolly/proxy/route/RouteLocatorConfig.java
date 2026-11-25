@@ -13,11 +13,11 @@ class RouteLocatorConfig {
 
     private final Aareg aareg;
     private final Arena arena;
-    private final Batch batch;
     private final Oppfoelgingsvedtak14a oppfoelgingsvedtak14a;
     private final Brregstub brregstub;
     private final Dokarkiv dokarkiv;
     private final Ereg ereg;
+    private final EregDolly eregDolly;
     private final Fullmakt fullmakt;
     private final Henvendelse henvendelse;
     private final Histark histark;
@@ -53,7 +53,6 @@ class RouteLocatorConfig {
                 .route("arena-q1", arena.build(Arena.SpecialCase.Q1))
                 .route("arena-q2", arena.build(Arena.SpecialCase.Q2))
                 .route("arena-q4", arena.build(Arena.SpecialCase.Q4))
-                .route("batch", batch.build())
                 .route("brregstub", brregstub.build())
                 .route("dokarkiv-q1", dokarkiv.build(Dokarkiv.SpecialCase.Q1))
                 .route("dokarkiv-q2", dokarkiv.build(Dokarkiv.SpecialCase.Q2))
@@ -61,6 +60,9 @@ class RouteLocatorConfig {
                 .route("ereg-q1", ereg.build(Ereg.SpecialCase.Q1))
                 .route("ereg-q2", ereg.build(Ereg.SpecialCase.Q2))
                 .route("ereg-q4", ereg.build(Ereg.SpecialCase.Q4))
+                .route("ereg-dolly-q1", eregDolly.build(EregDolly.SpecialCase.Q1))
+                .route("ereg-dolly-q2", eregDolly.build(EregDolly.SpecialCase.Q2))
+                .route("ereg-dolly-q4", eregDolly.build(EregDolly.SpecialCase.Q4))
                 .route("fullmakt", fullmakt.build())
                 .route("henvendelse", henvendelse.build())
                 .route("histark", histark.build())

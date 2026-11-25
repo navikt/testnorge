@@ -29,11 +29,6 @@ consumers:
     name: testnav-orgnummer-service
     cluster: dev-gcp
     namespace: dolly
-  organisasjon-bestilling-service:
-    url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
-    name: organisasjon-bestilling-service
-    cluster: dev-gcp
-    namespace: dolly
   testnav-adresse-service:
     url: http://testnav-adresse-service.dolly.svc.cluster.local
     name: testnav-adresse-service

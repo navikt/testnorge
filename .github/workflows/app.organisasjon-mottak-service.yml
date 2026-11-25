@@ -6,10 +6,7 @@ on:
       - .github/workflows/app.organisasjon-mottak-service.yml
       - apps/organisasjon-mottak-service/**
       - libs/avro-schema/**
-      - libs/commands/**
-      - libs/data-transfer-objects/**
       - libs/kafka-config/**
-      - libs/kafka-producers/**
       - libs/reactive-core/**
       - libs/security-core/**
       - libs/reactive-standalone-security/**
@@ -28,4 +25,3 @@ jobs:
       contents: read
       id-token: write
     secrets: inherit
-

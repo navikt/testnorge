@@ -65,6 +65,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
@@ -119,11 +120,11 @@ class RouteLocatorConfigTest {
         registry.add("app.targets.aareg-vedlikehold", () -> wireMockServer.baseUrl());
         registry.add("app.targets.arena-forvalteren", () -> wireMockServer.baseUrl());
         registry.add("app.targets.arena-ords", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
         registry.add("app.targets.oppfoelgingsvedtak14a", () -> wireMockServer.baseUrl());
         registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
         registry.add("app.targets.dokarkiv", () -> wireMockServer.baseUrl());
         registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
+        registry.add("app.targets.ereg-dolly", () -> wireMockServer.baseUrl());
         registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
         registry.add("app.targets.henvendelse", () -> wireMockServer.baseUrl());
         registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
@@ -259,30 +260,6 @@ class RouteLocatorConfigTest {
 
     }
 
-
-    @Test
-    void testBatch() {
-
-        var downstreamPath = "/api/v1/testdata";
-        var responseBody = "Success from mocked batch";
-
-        wireMockServer.stubFor(get(urlEqualTo(downstreamPath))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "text/plain")
-                        .withBody(responseBody)));
-
-        webClient
-                .get()
-                .uri("/batch" + downstreamPath)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType("text/plain")
-                .expectBody(String.class).isEqualTo(responseBody);
-
-        wireMockServer.verify(1, getRequestedFor(urlEqualTo(downstreamPath)));
-
-    }
 
     @Test
     void testBrregstub() {
@@ -549,6 +526,35 @@ class RouteLocatorConfigTest {
                 .expectBody(String.class).isEqualTo(responseBody);
 
         wireMockServer.verify(1, getRequestedFor(urlEqualTo(servedPath)));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"q1", "q2", "q4"})
+    void shouldRouteEregDollyStartWithTrygdeetatenToken(String miljo) {
+
+        var downstreamPath = "/api/start";
+        var flatfil = "HEADER\nENH TEST\nTRAILER";
+
+        wireMockServer.stubFor(post(urlEqualTo(downstreamPath))
+                .willReturn(aResponse()
+                        .withStatus(202)));
+
+        webClient
+                .post()
+                .uri("/ereg-dolly/" + miljo + downstreamPath)
+                .bodyValue(flatfil.getBytes(UTF_8))
+                .exchange()
+                .expectStatus().isAccepted();
+
+        wireMockServer.verify(1, postRequestedFor(urlEqualTo(downstreamPath))
+                .withHeader(HttpHeaders.AUTHORIZATION, matching("Bearer " + TOKEN))
+                .withRequestBody(equalTo(flatfil)));
+        verify(trygdeetatenTokenService).exchange(argThat(serverProperties ->
+                "dev-fss".equals(serverProperties.getCluster()) &&
+                        "arbeidsforhold".equals(serverProperties.getNamespace()) &&
+                        ("ereg-dolly-enheter-integrasjon-" + miljo).equals(serverProperties.getName())));
+        verify(navTokenService, never()).exchange(any());
 
     }
 

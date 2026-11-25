@@ -19,10 +19,3 @@ springdoc:
 
 kafka:
   groupid: organisasjon-faste-data-service-v1
-
-consumers:
-  organisasjon-bestilling-service:
-    url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
-    cluster: dev-gcp
-    namespace: dolly
-    name: organisasjon-bestilling-service

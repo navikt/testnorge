@@ -72,10 +72,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
-        - application: jenkins-batch-status-service
-          cluster: dev-gcp
-        - application: organisasjon-bestilling-service
-          cluster: dev-gcp
         - application: pdl-testdata
           namespace: pdl
         - application: pensjon-afp-offentlig-mock-q1
@@ -103,8 +99,6 @@ spec:
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
         - application: testnav-inntektsmelding-service-dev
-          cluster: dev-gcp
-        - application: testnav-jenkins-batch-status-service
           cluster: dev-gcp
         - application: testnav-joark-dokument-service
           cluster: dev-gcp
@@ -145,6 +139,12 @@ spec:
         - application: ereg-services-q2
           namespace: arbeidsforhold
         - application: ereg-services-q4
+          namespace: arbeidsforhold
+        - application: ereg-dolly-enheter-integrasjon-q1
+          namespace: arbeidsforhold
+        - application: ereg-dolly-enheter-integrasjon-q2
+          namespace: arbeidsforhold
+        - application: ereg-dolly-enheter-integrasjon-q4
           namespace: arbeidsforhold
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp

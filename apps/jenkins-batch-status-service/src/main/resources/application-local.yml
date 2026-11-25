@@ -1,8 +1,0 @@
-spring:
-  config:
-    import: "sm@"
-
-consumers:
-  organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.intern.dev.nav.no
-    name: organisasjon-bestilling-service

@@ -19,10 +19,10 @@ class Targets {
     String aaregVedlikehold;
     String arenaForvalteren;
     String arenaOrds;
-    String batch;
     String brregstub;
     String dokarkiv;
     String ereg;
+    String eregDolly;
     String fullmakt;
     String henvendelse;
     String histark;

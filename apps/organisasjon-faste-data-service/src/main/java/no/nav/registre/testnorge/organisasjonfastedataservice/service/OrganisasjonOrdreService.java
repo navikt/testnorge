@@ -1,22 +1,18 @@
 package no.nav.registre.testnorge.organisasjonfastedataservice.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.OrganisasjonBestillingConsumer;
 import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.OrganisasjonMottakConsumer;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 import no.nav.registre.testnorge.organisasjonfastedataservice.repository.OrganisasjonRepository;
-import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonOrdreService {
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
-    private final OrganisasjonBestillingConsumer organisasjonBestillingConsumer;
     private final OrganisasjonRepository repository;
 
     public String create(Organisasjon organisasjon, String miljo) {
@@ -27,10 +23,6 @@ public class OrganisasjonOrdreService {
     public String change(Organisasjon organisasjon, String miljo) {
         var ordreId = UUID.randomUUID().toString();
         return organisasjonMottakConsumer.change(organisasjon, miljo, ordreId);
-    }
-
-    public List<ItemDTO> getStatus(String ordreId) {
-        return organisasjonBestillingConsumer.getOrdreStatus(ordreId);
     }
 
     public String create(Gruppe gruppe, String miljo) {

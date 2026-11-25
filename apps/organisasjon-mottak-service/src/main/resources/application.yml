@@ -1,30 +1,13 @@
 spring:
   application:
     name: testnav-organisasjon-mottak-service
-    description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
+    description: Lytter på Kafka og sender organisasjoner til ereg via ereg-dolly-enheter-integrasjon.
   main:
     web-application-type: reactive
   config:
     import: "dolly-application.yml"
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
 
 consumers:
-  jenkins-batch-status-service:
-    url: http://testnav-jenkins-batch-status-service.dolly.svc.cluster.local
-    namespace: dolly
-    name: testnav-jenkins-batch-status-service
-    cluster: dev-gcp
-  organisasjon-bestilling-service:
-    url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
-    name: organisasjon-bestilling-service
-    cluster: dev-gcp
-    namespace: dolly
   testnav-dolly-proxy:
     name: testnav-dolly-proxy
     namespace: dolly
@@ -32,7 +15,3 @@ consumers:
     cluster: dev-fss
 
 kafka.groupid: testnav-organisasjon-mottak-service-v1
-
-JENKINS_SERVER_Q1: q1-ereg@b27jbsl01602.preprod.local
-JENKINS_SERVER_Q2: q2-ereg@b27jbsl01610.preprod.local
-JENKINS_SERVER_Q4: q4-ereg@b27jbsl01609.preprod.local

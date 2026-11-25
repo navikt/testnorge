@@ -6,6 +6,7 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,6 +35,7 @@ public class OrganisasjonServiceCommand implements Callable<Flux<OrganisasjonDTO
                 .header(MILJOE, environment)
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
+                .onErrorResume(WebClientResponseException.NotFound.class, _ -> Flux.empty())
                 .doOnError(WebClientError.logTo(log))
                 .onErrorResume(throwable -> Mono.just(OrganisasjonDTO.builder()
                         .error(WebClientError.describe(throwable).getMessage())

@@ -28,7 +28,6 @@ public class Consumers {
     private ServerProperties testnavAdresseService;
     private ServerProperties genererNavnService;
     private ServerProperties testnavMiljoerService;
-    private ServerProperties organisasjonBestillingService;
     private ServerProperties testnavOrganisasjonService;
     private ServerProperties testnavOrgnummerService;
     private ExtendedServerProperties eregServices;

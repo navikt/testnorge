@@ -34,7 +34,6 @@ spec:
         - application: dolly-idporten
         - application: testnav-dolly-proxy
         - application: generer-navn-service
-        - application: organisasjon-bestilling-service
         - application: dolly-auth-local
         - application: testnav-adresse-service
         - application: testnav-altinn3-tilgang-service
@@ -53,7 +52,6 @@ spec:
         - application: testnav-ident-pool
         - application: testnav-inntektsmelding-generator-service
         - application: testnav-inntektsmelding-service
-        - application: testnav-jenkins-batch-status-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-levende-arbeidsforhold-ansettelse
@@ -90,7 +88,6 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-idporten
         - application: generer-navn-service
-        - application: organisasjon-bestilling-service
         - application: dolly-auth-local
         - application: testnav-adresse-service
         - application: testnav-altinn3-tilgang-service
@@ -109,7 +106,6 @@ spec:
         - application: testnav-ident-pool
         - application: testnav-inntektsmelding-generator-service
         - application: testnav-inntektsmelding-service
-        - application: testnav-jenkins-batch-status-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
         - application: testnav-levende-arbeidsforhold-ansettelse

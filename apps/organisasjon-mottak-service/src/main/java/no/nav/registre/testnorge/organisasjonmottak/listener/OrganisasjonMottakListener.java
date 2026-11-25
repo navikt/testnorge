@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.JenkinsConsumer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.EregDollyEnheterConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte;
 import no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Epost;
@@ -24,21 +24,26 @@ import no.nav.testnav.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
 import no.nav.testnav.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -46,35 +51,46 @@ import static java.util.Objects.nonNull;
 @Component
 @RequiredArgsConstructor
 public class OrganisasjonMottakListener {
-    private final JenkinsConsumer jenkinsConsumer;
+    private final EregDollyEnheterConsumer eregDollyEnheterConsumer;
 
-
-    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
-    public void create(List<ConsumerRecord<String, Opprettelsesdokument>> records) {
-        records.stream().collect(Collectors.groupingBy(value -> value.value().getMetadata().getMiljo())).forEach((miljo, list) -> {
-            var organisasjoner = list.stream().map(value -> value.value().getOrganisasjon()).collect(Collectors.toList());
-            var ids = list.stream().map(ConsumerRecord::key).collect(Collectors.toSet());
-            save(organisasjoner, miljo, false, ids);
-        });
+    private record Dokument(String miljo, Organisasjon organisasjon, boolean update) {
     }
 
-    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON)
-    public void update(List<ConsumerRecord<String, Endringsdokument>> records) {
-        records.stream().collect(Collectors.groupingBy(value -> value.value().getMetadata().getMiljo())).forEach((miljo, list) -> {
-            var organisasjoner = list.stream().map(value -> value.value().getOrganisasjon()).collect(Collectors.toList());
-            var ids = list.stream().map(ConsumerRecord::key).collect(Collectors.toSet());
-            save(organisasjoner, miljo, true, ids);
-        });
+    @KafkaListener(topics = {
+            OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON,
+            OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON
+    })
+    public void listen(List<ConsumerRecord<String, SpecificRecord>> records) {
+        Flux.fromIterable(records.stream()
+                        .map(ConsumerRecord::value)
+                        .map(OrganisasjonMottakListener::tilDokument)
+                        .flatMap(Optional::stream)
+                        .sorted(Comparator.comparing(Dokument::update))
+                        .collect(Collectors.groupingBy(Dokument::miljo, LinkedHashMap::new, Collectors.toList()))
+                        .entrySet())
+                .flatMap(entry -> save(entry.getValue(), entry.getKey()))
+                .blockLast();
     }
 
-    private void save(List<Organisasjon> organisasjoner, String miljo, boolean update, Set<String> ids) {
-        var lines = organisasjoner
+    private static Optional<Dokument> tilDokument(SpecificRecord value) {
+        if (value instanceof Opprettelsesdokument opprettelse) {
+            return Optional.of(new Dokument(opprettelse.getMetadata().getMiljo(), opprettelse.getOrganisasjon(), false));
+        }
+        if (value instanceof Endringsdokument endring) {
+            return Optional.of(new Dokument(endring.getMetadata().getMiljo(), endring.getOrganisasjon(), true));
+        }
+        log.warn("Ukjent dokumenttype {} ble ignorert.", isNull(value) ? null : value.getClass().getName());
+        return Optional.empty();
+    }
+
+    private Mono<Void> save(List<Dokument> dokumenter, String miljo) {
+        var lines = dokumenter
                 .stream()
-                .map(organisajon -> createRecords(organisajon, update))
+                .map(dokument -> createRecords(dokument.organisasjon(), dokument.update()))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
 
-        jenkinsConsumer.send(Flatfil.create(lines), miljo, ids);
+        return eregDollyEnheterConsumer.send(Flatfil.create(lines), miljo);
     }
 
     private List<Record> createRecords(Organisasjon organisasjon, boolean update) {
