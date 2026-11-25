@@ -420,13 +420,6 @@ For å identifisere personen i vår søkeløsning er det enkleste å klippe å l
 Av-og-til vil man da oppleve at personen enten ikke finnes (for BankID-brukere betyr det at person har blitt allokert av en
 annen) eller allerede er i bruk. Hvis man gjør søket i Dolly, som bør være førstevalget, minimerer man dette problemet.
 
-[[dolly_testnorge_idporten]]
-===== ID-Porten
-
-Ved bruk av ID-porten i testmiljø skal alle syntetiske personer, både Nav-syntetiske og Test-Norge personer kunne benyttes,
-da ID-porten har blitt åpnet for alle identer +40 og høyere på måned i test. Hvis man trenger personer som er daglig leder i en
-organisasjon, må man benytte utvalgte Test-Norge personer da Dolly ikke støtter dette.
-
 [[identvalidator]]
 === Identvalidatoren
 
@@ -695,8 +688,8 @@ Se xref:index.adoc#brukerveiledning[Brukerveiledning] for full oversikt over til
 
 Savner du noe? Kontakt oss på Slack-kanalen #dolly eller epost dolly@nav.no.
 
-[[faq_mangler_stoette]]
-=== Ved oppretting av en person i Dolly, hvilke personopplysninger får man med?
+[[faq_automatiske_personegenskaper]]
+=== Ved oppretting av en person i Dolly, hvilke personopplysninger får man med automatisk?
 
 For alle personer, hvis ikke annet er valgt vil aldersdistribusjon være 30-60 år og kjønnnsfordeling være lik mellom mann og kvinne.
 Barn vil automatisk få aldersdistribusjon 0-17 år, og foreldre 60-80 år.
@@ -720,7 +713,7 @@ Vi jobber kontinuerlig med å utvide Dolly basert på tilbakemeldinger fra bruke
 
 Hvis du mangler funksjonalitet:
 
-1. Kontakt oss på Slack-kanalen #dolly
+1. Kontakt oss på Slack-kanalen #dolly, evt. epost dolly@nav.no
 2. Beskriv ditt behov så konkret som mulig:
 ** Hva trenger du å teste?
 ** Hvilke egenskaper eller data mangler?
@@ -729,14 +722,23 @@ Hvis du mangler funksjonalitet:
 
 Vi kan ikke alltid imøtekomme alle ønsker umiddelbart, men alle innspill hjelper oss å prioritere riktig.
 
+[[faq_idporten]]
+=== ID-Porten
+
+Ved bruk av ID-porten i testmiljø skal alle syntetiske personer, både Nav-syntetiske og Test-Norge personer kunne benyttes
+da ID-porten har blitt åpnet for alle identer +40 og høyere på måned i test-miljø. Hvis man trenger personer som er daglig
+leder i en organisasjon, må man benytte utvalgte Test-Norge personer da Dolly ikke har støtte for oppretting av dette.
+
 [[faq_organisasjon_ansatte]]
 === Hvordan oppretter jeg en organisasjon med mange ansatte?
 
 For å opprette en organisasjon med mange ansatte i Dolly:
 
-1. Opprett først organisasjonen med ønsket organisasjonsnummer og egenskaper
-2. Opprett deretter personer som skal være ansatte
-3. Under egenskaper for personene, velg "Arbeidsforhold" og knytt dem til organisasjonens organisasjonsnummer
+1. Opprett først organisasjonen med ønskede egenskaper. AAREG krever en overordnet organisasjon, typisk
+et AS, og en underenhet av type BEDR (evt AAFY); det er sistnevnte som kan ha ansatte. Alternativt kan du søke opp, og
+benytte en organisasjon fra Tenor (Test-Norge).
+2. Opprett deretter personer som skal ansettes
+3. Under egenskaper for personene, velg "Arbeidsforhold" og knytt dem til organisasjonens organisasjonsnummer for underenheten.
 4. Du kan opprette flere personer samtidig og knytte dem alle til samme organisasjon
 5. For en eksisterende gruppe med personer kan arbeidsforhold legges til i etterkant ved å bruke "Legg til" på gruppe.
 
@@ -768,7 +770,7 @@ i intervallet 41 til 52 for et FNR. For DNR (D-nummer) legges det i tillegg til 
 For NPID legges det i utgangspunktet til +20 på måned, og med syntetisk NPID finnes disse da i intervallet 61 til 72.
 
 Syntetiske fødselsnummere fra Folkeregisteret (Skatteetaten) har fått lagt til +80 på måned for FNR. og DNR har også her,
-som i produksjon et tillegg på +40 på dag.
+i tillegg fått tillegget +40 på dag.
 
 [[faq_organisasjon_med_daglig_leder]]
 === Hvordan oppretter jeg en organisasjon med daglig leder?
@@ -777,7 +779,8 @@ Det korte svaret er at det får du ikke gjort. Vår Brregstub har ikke noen inte
 følgende: søk opp en Tenor-person som er daglig leder (Velg virksomhet -> rolle: daglig leder), og benytt organisasjonen
 vedkommende tilhører for din testcase. Da har du både daglig-leder person fra Test-Norge, og hvis formålet er å opprette
 et arbeidsforhold pass på at bedriftstypen er BEDR. Hvis testcase behøver både overenhet og underenhet for organisasjonen
-må du foreløbig gjøre Tenorsøket hos Skattetaten som har tilgjengeligjort begge typer enhet i samme spørring.
+må du foreløbig gjøre Tenorsøket hos Skattetaten som har tilgjengeligjort resultatet som inkluderer begge typer enhet i
+samme spørring.
 
 [[faq_sikkerhetstiltak]]
 === Hvordan bruker jeg sikkerhetstiltak og adressebeskyttelse?
