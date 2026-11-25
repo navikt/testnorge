@@ -202,7 +202,7 @@ Alt Dette kan endres ved å velge egenskapene i steg 2 og angi verdier i steg 3.
 Når du har angitt aktuelle verdier for egenskapene trykk videre og velg miljø.
 
 [[velg_miljoe]]
-===== Oppsummering/Velg miljø
+==== Oppsummering/Velg miljø
 
 Ikke alle miljø er tilgjengelig for Dolly; vårt hovedmiljø er det helsyntetiske Q2-miljøet. Vi støtter også Q1 som
 inneholder en blanding av syntetiske og prodlike maskerte data. Det siste er nødvendig fordi Navs Infotrygd på stormaskin
@@ -227,7 +227,9 @@ med unntak av Q0, og pensjon persondata (unntatt for NPID) distribueres alltid t
 image::dolly/bestilling_status.png[bestilling status]
 
 Opprettet testpersonen har blitt lagt til i gruppe og testdata kan hentes fra PDL og fagsystem, her AAREG.
-Trykk på personfanen for å ekspandere denne og vise detaljene.
+Trykk på personfanen for å ekspandere denne og vise detaljene. Ved å peke på ikon for PDL eller Q1 leses persondata
+tilbake fra PDL for respektivt Q2- eller Q1-miljø, og det er slik mulig å se hvordan opplysningene ser ut i
+persondataregisteret. Dolly tar også vare på kvitteringene ved innsending og disse kan hentes ut og vises under hendelse-ID.
 
 [[leggtil_endre_person]]
 === Legg til eller endre person
