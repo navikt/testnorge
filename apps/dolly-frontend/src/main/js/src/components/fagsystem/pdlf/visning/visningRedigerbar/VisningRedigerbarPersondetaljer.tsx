@@ -2,13 +2,9 @@ import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
-import Button from '@/components/ui/button/Button'
 import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import { deleteSkjerming } from '@/utils/hooks/useSkjerming'
-import Icon from '@/components/ui/icon/Icon'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import useBoolean from '@/utils/hooks/useBoolean'
 import {
 	folkeregisterpersonstatus,
 	kjoenn,
@@ -16,13 +12,12 @@ import {
 } from '@/components/fagsystem/pdlf/form/validation/validation'
 import { ifPresent } from '@/utils/YupValidations'
 import { PersondetaljerSamlet } from '@/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
-import { Checkbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import {
 	Modus,
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
-import { InfoCard } from '@navikt/ds-react'
-import { InformationSquareFillIcon } from '@navikt/aksel-icons'
+import { Button as AkselButton, Checkbox, CheckboxGroup, Dialog, InfoCard } from '@navikt/ds-react'
+import { InformationSquareFillIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
@@ -68,6 +63,9 @@ const EditDeleteKnapper = styled.div`
 	right: 0;
 	top: 0;
 	margin: -5px 10px 0 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-4);
 
 	&&& {
 		button {
@@ -81,16 +79,14 @@ const Knappegruppe = styled.div`
 	align-content: baseline;
 `
 
-const SlettCheckbox = styled(Checkbox)`
-	margin-right: 20px;
-`
-
 const initialSlettAttr = {
 	navn: false,
 	kjoenn: false,
 	folkeregisterpersonstatus: false,
 	skjerming: false,
 }
+
+type SlettAttr = typeof initialSlettAttr
 
 export const VisningRedigerbarPersondetaljer = ({
 	dataVisning,
@@ -106,8 +102,8 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [errorMessageSkjerming, setErrorMessageSkjerming] = useState(null)
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [slettAttr, setSlettAttr] = useState(initialSlettAttr)
+	const [slettModalOpen, setSlettModalOpen] = useState(false)
+	const [slettAttr, setSlettAttr] = useState<SlettAttr>(initialSlettAttr)
 	const formMethods = useForm({
 		mode: 'onBlur',
 		defaultValues: redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues,
@@ -262,104 +258,75 @@ export const VisningRedigerbarPersondetaljer = ({
 		? redigertAttributt?.skjermingsregister?.skjermetFra
 		: initialValues?.skjermingsregister?.skjermetFra
 
-	const SlettModal = () => {
-		const close = () => {
-			setSlettAttr(initialSlettAttr)
-			closeModal()
-		}
-		return (
-			<DollyModal isOpen={modalIsOpen} closeModal={close} width="40%" overflow="auto">
-				<div className="slettModal">
-					<div className="slettModal slettModal-content">
-						<Icon size={50} kind="report-problem-circle" />
-						<h1>Sletting</h1>
-						<h4>Hvilke opplysninger ønsker du å slette?</h4>
-						{slettAttr.skjerming && (
-							<InfoCard data-color="info">
-								<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
-									Sletting av skjerming sletter all data på person i skjermingregisteret. For å
-									heller avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato for
-									skjermingen.
-								</InfoCard.Message>
-							</InfoCard>
-						)}
-						<div className="flexbox--flex-wrap">
-							{harNavn && (
-								<SlettCheckbox
-									id={'navn'}
-									size={'xxsmall'}
-									checked={slettAttr.navn}
-									label="Navn"
-									onChange={() => {
-										setSlettAttr({
-											...slettAttr,
-											navn: !slettAttr.navn,
-										})
-									}}
-								/>
-							)}
-							{harKjoenn && (
-								<SlettCheckbox
-									id={'kjoenn'}
-									size={'xxsmall'}
-									checked={slettAttr.kjoenn}
-									label="Kjønn"
-									onChange={() => {
-										setSlettAttr({
-											...slettAttr,
-											kjoenn: !slettAttr.kjoenn,
-										})
-									}}
-								/>
-							)}
-							{harPersonstatus && (
-								<SlettCheckbox
-									id={'folkeregisterpersonstatus'}
-									size={'xxsmall'}
-									checked={slettAttr.folkeregisterpersonstatus}
-									label="Personstatus"
-									onChange={() => {
-										setSlettAttr({
-											...slettAttr,
-											folkeregisterpersonstatus: !slettAttr.folkeregisterpersonstatus,
-										})
-									}}
-								/>
-							)}
-							{harSkjerming && (
-								<Checkbox
-									id={'skjerming'}
-									size={'xxsmall'}
-									checked={slettAttr.skjerming}
-									label="Skjerming (egenansatt)"
-									onChange={() => {
-										setSlettAttr({
-											...slettAttr,
-											skjerming: !slettAttr.skjerming,
-										})
-									}}
-								/>
-							)}
-						</div>
-					</div>
-					<div className="slettModal-actions">
-						<NavButton onClick={close} variant={'secondary'}>
-							Avbryt
-						</NavButton>
-						<NavButton
-							onClick={() => {
-								close()
-								return handleDelete(slettAttr)
-							}}
-							variant={'primary'}
-						>
-							Slett
-						</NavButton>
-					</div>
-				</div>
-			</DollyModal>
-		)
+	const valgteSlettAttr = Object.keys(slettAttr).filter((key) => slettAttr[key as keyof SlettAttr])
+
+	const handleSlettAttrChange = (valgte: string[]) => {
+		setSlettAttr({
+			navn: valgte.includes('navn'),
+			kjoenn: valgte.includes('kjoenn'),
+			folkeregisterpersonstatus: valgte.includes('folkeregisterpersonstatus'),
+			skjerming: valgte.includes('skjerming'),
+		})
 	}
+
+	const handleSlettModalOpenChange = (open: boolean) => {
+		setSlettModalOpen(open)
+		if (!open) {
+			setSlettAttr(initialSlettAttr)
+		}
+	}
+
+	const slettModal = (
+		<Dialog open={slettModalOpen} onOpenChange={handleSlettModalOpenChange}>
+			<Dialog.Trigger>
+				<AkselButton size="xsmall" variant="tertiary" icon={<TrashIcon title="Slett" />} />
+			</Dialog.Trigger>
+			<Dialog.Popup closeOnOutsideClick={false}>
+				<Dialog.Header>
+					<Dialog.Title>Slett opplysninger</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<CheckboxGroup
+						legend="Hvilke opplysninger ønsker du å slette?"
+						value={valgteSlettAttr}
+						onChange={handleSlettAttrChange}
+					>
+						{harNavn && <Checkbox value="navn">Navn</Checkbox>}
+						{harKjoenn && <Checkbox value="kjoenn">Kjønn</Checkbox>}
+						{harPersonstatus && <Checkbox value="folkeregisterpersonstatus">Personstatus</Checkbox>}
+						{harSkjerming && <Checkbox value="skjerming">Skjerming (egenansatt)</Checkbox>}
+					</CheckboxGroup>
+					{slettAttr.skjerming && (
+						<InfoCard data-color="info" size="small" style={{ marginTop: '1rem' }}>
+							<InfoCard.Message icon={<InformationSquareFillIcon aria-hidden />}>
+								Sletting av skjerming sletter all data på person i skjermingregisteret. For å heller
+								avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato for
+								skjermingen.
+							</InfoCard.Message>
+						</InfoCard>
+					)}
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<AkselButton variant="secondary" data-color="neutral">
+							Avbryt
+						</AkselButton>
+					</Dialog.CloseTrigger>
+					<AkselButton
+						variant="danger"
+						disabled={valgteSlettAttr.length === 0}
+						onClick={() => {
+							const attrSomSkalSlettes = slettAttr
+							handleSlettModalOpenChange(false)
+							return handleDelete(attrSomSkalSlettes)
+						}}
+					>
+						Slett
+					</AkselButton>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
+	)
 
 	return (
 		<>
@@ -368,16 +335,13 @@ export const VisningRedigerbarPersondetaljer = ({
 				<PersondetaljerVisning>
 					{dataVisning}
 					<EditDeleteKnapper>
-						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && (
-							<Button
-								kind="trashcan"
-								fontSize={'1.4rem'}
-								onClick={() => openModal()}
-								title="Slett"
-							/>
-						)}
-						<SlettModal />
+						<AkselButton
+							size="xsmall"
+							variant="tertiary"
+							icon={<PencilIcon title="Endre" />}
+							onClick={() => setVisningModus(Modus.Skriv)}
+						/>
+						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && slettModal}
 					</EditDeleteKnapper>
 					<div className="flexbox--full-width">
 						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}

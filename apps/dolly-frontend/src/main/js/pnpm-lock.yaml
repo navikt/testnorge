@@ -28,7 +28,7 @@ importers:
         version: 2.11.8
       axios:
         specifier: ^1.21.1
-        version: 1.21.1(debug@4.4.3)
+        version: 1.21.1
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -77,9 +77,6 @@ importers:
       react-inlinesvg:
         specifier: ^4.6.0
         version: 4.6.0(react@19.3.1)
-      react-modal:
-        specifier: ^3.16.3
-        version: 3.16.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-router:
         specifier: ^8.5.1
         version: 8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -109,7 +106,7 @@ importers:
         version: 3.1.0(redux@5.0.1)
       styled-components:
         specifier: ^6.6.0
-        version: 6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 6.6.0(css-to-react-native@3.2.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       uuid:
         specifier: ^14.0.3
         version: 14.0.3
@@ -174,9 +171,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.3.0
         version: 19.3.0(@types/react@19.3.0)
-      '@types/react-modal':
-        specifier: ^3.16.3
-        version: 3.16.3
       '@types/react-redux':
         specifier: ^7.1.35
         version: 7.1.35
@@ -983,6 +977,17 @@ packages:
       react-dom: '>=17.0.0'
       react-router: '>=6.0.0'
       react-router-dom: '>=6.0.0'
+    peerDependenciesMeta:
+      '@grafana/faro-react':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      react-router:
+        optional: true
+      react-router-dom:
+        optional: true
 
   '@napi-rs/wasm-runtime@1.2.6':
     resolution: {integrity: sha512-mRyDmEw9/fCDXCGfL1sbgIw/GUK0PVxRW4YwgPN61F3LQ+fSyoBFarJVzgGyhF6kRzEQZ0FejDqm4WLXSeqQmw==}
@@ -1008,6 +1013,9 @@ packages:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@navikt/ds-tokens@8.22.1':
     resolution: {integrity: sha512-cDmfPn5Q0HmE8eTie5jkj76zKMrS/AeZcAKscxtZFTL6sFdIFKON8AwWcS0pdRuC3yxYNGRmO176xGjn2POLCQ==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.22.1/43f354b993b9a56b9b4329ab54a9e17c5decf92b}
@@ -1578,9 +1586,6 @@ packages:
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
     peerDependencies:
       '@types/react': ^19.3.0
-
-  '@types/react-modal@3.16.3':
-    resolution: {integrity: sha512-xXuGavyEGaFQDgBv4UVm8/ZsG+qxeQ7f77yNrW3n+1J6XAstUy5rYHeIHPh1KzsGc6IkCIdu6lQ2xWzu1jBTLg==}
 
   '@types/react-redux@7.1.35':
     resolution: {integrity: sha512-iA6Q3vvIh0O5lm/E41bwvXMTVmUb0FW7HYAEt2k1SljUZV4Q9jTtEC17Bg/4t2pttPzJRZ0fxP/j0YhMNGjIFQ==}
@@ -2390,9 +2395,6 @@ packages:
   execa@9.6.1:
     resolution: {integrity: sha512-9Be3ZoN4LmYR90tUoVu2te2BsbzHfhJyfEiAVfz7N5/zv+jduIfLrV2xdQXOHbaD6KgpGdO9PRPM1Y4Q9QkPkA==}
     engines: {node: ^18.19.0 || >=20.5.0}
-
-  exenv@1.2.2:
-    resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
 
   expect-type@1.4.0:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
@@ -3416,15 +3418,6 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-lifecycles-compat@3.0.4:
-    resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
-
-  react-modal@3.16.3:
-    resolution: {integrity: sha512-yCYRJB5YkeQDQlTt17WGAgFJ7jr2QYcWa1SHqZ3PluDmnKJ/7+tVU+E6uKyZ0nODaeEj+xCpK4LcSnKXLMC0Nw==}
-    peerDependencies:
-      react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19
-      react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19
-
   react-redux@9.3.1:
     resolution: {integrity: sha512-vxMLT0lalUjbZPkoTepWyKAZbjIIFssNx/CEL9lTfwQBU6XpkGSmCNdcCIrkOBUgB68uftZMnbXVb6DwGnhRKQ==}
     peerDependencies:
@@ -4050,9 +4043,6 @@ packages:
   w3c-xmlserializer@6.0.0:
     resolution: {integrity: sha512-4Nsy8K5Tr6SPDH9jhKJOHf7ChDrc1zufZTVSF7x72hwuEXBqxqk9G6cK+K2NRUtB3iELRJqjXb4JPDMBjMTl2Q==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
-
-  warning@4.0.3:
-    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
   web-vitals@6.2.3:
     resolution: {integrity: sha512-Dmy+vdO1UPMqXiAtZSNayhl4f794Bxfd94W4HIj2HlYtczEQfEOon969memlcpcHrTuOKLa5baFjX7WbgmOq+A==}
@@ -4801,6 +4791,7 @@ snapshots:
       react-router-dom: 7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@grafana/faro-web-sdk@2.12.1':
     dependencies:
@@ -4845,6 +4836,7 @@ snapshots:
       '@opentelemetry/semantic-conventions': 1.45.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@grafana/rrdom@2.0.0-grafana.2':
     dependencies:
@@ -4976,12 +4968,13 @@ snapshots:
 
   '@nais/apm@0.7.3(@grafana/faro-react@2.14.0(react-dom@19.3.1(react@19.3.1))(react-router-dom@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react-router-dom@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@grafana/faro-react': 2.14.0(react-dom@19.3.1(react@19.3.1))(react-router-dom@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
       '@grafana/faro-web-sdk': 2.12.1
       '@grafana/faro-web-tracing': 2.12.1
       '@grafana/rrweb': 2.0.0-grafana.2
       '@grafana/rrweb-snapshot': 2.0.0-grafana.2
       fflate: 0.8.3
+    optionalDependencies:
+      '@grafana/faro-react': 2.14.0(react-dom@19.3.1(react@19.3.1))(react-router-dom@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       react-router: 8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -5022,11 +5015,12 @@ snapshots:
       '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@navikt/aksel-icons': 8.22.1
       '@navikt/ds-tokens': 8.22.1
-      '@types/react': 19.3.0
       date-fns: 4.4.0
       react: 19.3.1
       react-day-picker: 10.0.2(@types/react@19.3.0)(react@19.3.1)
       react-dom: 19.3.1(react@19.3.1)
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   '@navikt/ds-tokens@8.22.1': {}
 
@@ -5077,6 +5071,7 @@ snapshots:
       '@opentelemetry/otlp-exporter-base': 0.223.1(@opentelemetry/api@1.10.0)
       '@opentelemetry/otlp-transformer': 0.223.1(@opentelemetry/api@1.10.0)
       '@opentelemetry/sdk-trace': 2.12.1(@opentelemetry/api@1.10.0)
+    optional: true
 
   '@opentelemetry/instrumentation-fetch@0.222.0(@opentelemetry/api@1.10.0)':
     dependencies:
@@ -5097,6 +5092,7 @@ snapshots:
       '@opentelemetry/web-common': 0.223.1(@opentelemetry/api@1.10.0)
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@opentelemetry/instrumentation-xml-http-request@0.222.0(@opentelemetry/api@1.10.0)':
     dependencies:
@@ -5117,6 +5113,7 @@ snapshots:
       '@opentelemetry/web-common': 0.223.1(@opentelemetry/api@1.10.0)
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@opentelemetry/instrumentation@0.222.0(@opentelemetry/api@1.10.0)':
     dependencies:
@@ -5135,6 +5132,7 @@ snapshots:
       require-in-the-middle: 8.0.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@opentelemetry/otlp-exporter-base@0.222.0(@opentelemetry/api@1.10.0)':
     dependencies:
@@ -5147,6 +5145,7 @@ snapshots:
       '@opentelemetry/api': 1.10.0
       '@opentelemetry/core': 2.12.1(@opentelemetry/api@1.10.0)
       '@opentelemetry/otlp-transformer': 0.223.1(@opentelemetry/api@1.10.0)
+    optional: true
 
   '@opentelemetry/otlp-transformer@0.222.0(@opentelemetry/api@1.10.0)':
     dependencies:
@@ -5257,6 +5256,7 @@ snapshots:
       '@opentelemetry/api': 1.10.0
       '@opentelemetry/core': 2.12.1(@opentelemetry/api@1.10.0)
       '@opentelemetry/semantic-conventions': 1.45.0
+    optional: true
 
   '@oxc-project/types@0.156.0': {}
 
@@ -5569,10 +5569,6 @@ snapshots:
     dependencies:
       '@types/react': 19.3.0
 
-  '@types/react-modal@3.16.3':
-    dependencies:
-      '@types/react': 19.3.0
-
   '@types/react-redux@7.1.35':
     dependencies:
       '@types/hoist-non-react-statics': 3.3.7(@types/react@19.3.0)
@@ -5881,9 +5877,9 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.21.1(debug@4.4.3):
+  axios@1.21.1:
     dependencies:
-      follow-redirects: 1.16.3(debug@4.4.3)
+      follow-redirects: 1.16.3
       form-data: 4.0.6
       https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
@@ -5951,7 +5947,8 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  camelize@1.0.1: {}
+  camelize@1.0.1:
+    optional: true
 
   caniuse-lite@1.0.30001826: {}
 
@@ -6026,7 +6023,8 @@ snapshots:
 
   cookie-es@3.1.1: {}
 
-  cookie@1.1.1: {}
+  cookie@1.1.1:
+    optional: true
 
   cookie@2.0.2: {}
 
@@ -6063,7 +6061,8 @@ snapshots:
     dependencies:
       type-fest: 1.4.0
 
-  css-color-keywords@1.0.0: {}
+  css-color-keywords@1.0.0:
+    optional: true
 
   css-in-js-utils@3.1.0:
     dependencies:
@@ -6074,6 +6073,7 @@ snapshots:
       camelize: 1.0.1
       css-color-keywords: 1.0.0
       postcss-value-parser: 4.2.0
+    optional: true
 
   css-tree@1.1.3:
     dependencies:
@@ -6416,8 +6416,6 @@ snapshots:
       strip-final-newline: 4.0.0
       yoctocolors: 2.2.0
 
-  exenv@1.2.2: {}
-
   expect-type@1.4.0: {}
 
   fast-deep-equal@3.1.3: {}
@@ -6513,9 +6511,7 @@ snapshots:
 
   flru@1.0.2: {}
 
-  follow-redirects@1.16.3(debug@4.4.3):
-    optionalDependencies:
-      debug: 4.4.3
+  follow-redirects@1.16.3: {}
 
   form-data@4.0.6:
     dependencies:
@@ -7211,7 +7207,8 @@ snapshots:
 
   pngjs@7.0.0: {}
 
-  postcss-value-parser@4.2.0: {}
+  postcss-value-parser@4.2.0:
+    optional: true
 
   postcss@8.5.32:
     dependencies:
@@ -7345,17 +7342,6 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-lifecycles-compat@3.0.4: {}
-
-  react-modal@3.16.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
-    dependencies:
-      exenv: 1.2.2
-      prop-types: 15.8.1
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-      react-lifecycles-compat: 3.0.4
-      warning: 4.0.3
-
   react-redux@9.3.1(@types/react@19.3.0)(react@19.3.1)(redux@5.0.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
@@ -7370,6 +7356,7 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       react-router: 7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+    optional: true
 
   react-router@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
@@ -7378,6 +7365,7 @@ snapshots:
       set-cookie-parser: 2.7.3
     optionalDependencies:
       react-dom: 19.3.1(react@19.3.1)
+    optional: true
 
   react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
@@ -7597,7 +7585,8 @@ snapshots:
 
   semver@7.8.6: {}
 
-  set-cookie-parser@2.7.3: {}
+  set-cookie-parser@2.7.3:
+    optional: true
 
   set-cookie-parser@3.2.2: {}
 
@@ -7694,15 +7683,15 @@ snapshots:
     dependencies:
       min-indent: 1.0.1
 
-  styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  styled-components@6.6.0(css-to-react-native@3.2.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
       '@types/stylis': 4.2.7
-      css-to-react-native: 3.2.0
       csstype: 3.2.3
       react: 19.3.1
       stylis: 4.3.6
     optionalDependencies:
+      css-to-react-native: 3.2.0
       react-dom: 19.3.1(react@19.3.1)
 
   stylis@4.2.0: {}
@@ -7908,10 +7897,6 @@ snapshots:
   w3c-xmlserializer@6.0.0:
     dependencies:
       xml-name-validator: 5.0.0
-
-  warning@4.0.3:
-    dependencies:
-      loose-envify: 1.4.0
 
   web-vitals@6.2.3: {}
 

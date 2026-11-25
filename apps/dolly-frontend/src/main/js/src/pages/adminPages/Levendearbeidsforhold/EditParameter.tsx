@@ -1,8 +1,6 @@
 import { PencilWritingIcon } from '@navikt/aksel-icons'
-import { Button, Select } from '@navikt/ds-react'
-import React from 'react'
-import useBoolean from '@/utils/hooks/useBoolean'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
+import { Button, Dialog, Select } from '@navikt/ds-react'
+import React, { useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useForm } from 'react-hook-form'
 import { FetchData } from '@/pages/adminPages/Levendearbeidsforhold/util/Typer'
@@ -18,8 +16,8 @@ interface Props {
 }
 
 export const EditParameter = ({ name, label, initialValue, options, data, setData }: Props) => {
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	//const formMethods = useForm({ defaultValues: { [name]: initialValue } })
+	const [modalIsOpen, setModalIsOpen] = useState(false)
+	const formId = `rediger-parameter-${name}`
 
 	const {
 		register,
@@ -54,34 +52,32 @@ export const EditParameter = ({ name, label, initialValue, options, data, setDat
 		const nyttObjektIndex = kopi.findIndex((obj) => obj.navn === name)
 		kopi[nyttObjektIndex] = { ...kopi[nyttObjektIndex], verdi: value }
 		setData(kopi)
-		closeModal()
+		setModalIsOpen(false)
 	}
 
 	return (
-		<>
-			<Button
-				onClick={openModal}
-				variant={'tertiary'}
-				icon={<PencilWritingIcon title="Rediger" />}
-				size={'small'}
-			/>
-			<ErrorBoundary>
-				<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>
-					<form
-						onSubmit={handleSubmit(({ value }) => {
-							oppdaterParameterverdi(value)
-						})}
-					>
-						<div className="modal">
-							<h1>Rediger parameter</h1>
-							<br />
+		<ErrorBoundary>
+			<Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
+				<Dialog.Trigger>
+					<Button variant="tertiary" icon={<PencilWritingIcon title="Rediger" />} size="small" />
+				</Dialog.Trigger>
+				<Dialog.Popup>
+					<Dialog.Header>
+						<Dialog.Title>Rediger parameter</Dialog.Title>
+					</Dialog.Header>
+					<Dialog.Body>
+						<form
+							id={formId}
+							onSubmit={handleSubmit(({ value }) => {
+								oppdaterParameterverdi(value)
+							})}
+						>
 							<Select
 								{...register('value', {
 									validate: validerParameter,
 								})}
 								label={label}
 								error={errors.value?.message}
-								style={{ marginBottom: '10px' }}
 							>
 								{options.map((option, index) => (
 									<option key={index} value={option}>
@@ -89,11 +85,18 @@ export const EditParameter = ({ name, label, initialValue, options, data, setDat
 									</option>
 								))}
 							</Select>
-							<Button>Lagre</Button>
-						</div>
-					</form>
-				</DollyModal>
-			</ErrorBoundary>
-		</>
+						</form>
+					</Dialog.Body>
+					<Dialog.Footer>
+						<Dialog.CloseTrigger>
+							<Button variant="secondary">Avbryt</Button>
+						</Dialog.CloseTrigger>
+						<Button type="submit" form={formId}>
+							Lagre
+						</Button>
+					</Dialog.Footer>
+				</Dialog.Popup>
+			</Dialog>
+		</ErrorBoundary>
 	)
 }

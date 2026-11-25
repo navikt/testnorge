@@ -1,13 +1,18 @@
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import React, { useState } from 'react'
-import { Form, FormProvider, useForm } from 'react-hook-form'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { Controller, useForm } from 'react-hook-form'
 import { DollyApi } from '@/service/Api'
 import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	Button,
+	Dialog,
+	ErrorMessage,
+	TextField,
+	UNSAFE_Combobox as Combobox,
+	VStack,
+} from '@navikt/ds-react'
 
 const initialValues = {
 	id: null,
@@ -25,6 +30,8 @@ const validation = Yup.object().shape({
 	brukere: Yup.array(),
 })
 
+const FORM_ID = 'opprett-rediger-team'
+
 export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 	const erOppretting = !team
 
@@ -36,12 +43,11 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 	const brukereFiltrert = brukere?.filter(
 		(bruker) => bruker?.brukertype !== 'TEAM' && bruker?.brukerId !== currentBruker?.brukerId,
 	)
-	const brukerOptions = brukereFiltrert?.map((bruker) => {
-		return {
-			value: bruker?.brukerId,
+	const brukerOptions =
+		brukereFiltrert?.map((bruker) => ({
+			value: String(bruker?.brukerId),
 			label: bruker?.brukernavn,
-		}
-	})
+		})) || []
 
 	const getDefaultValues = team
 		? {
@@ -57,6 +63,11 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 		defaultValues: getDefaultValues,
 		resolver: yupResolver(validation),
 	})
+	const {
+		register,
+		control,
+		formState: { errors },
+	} = formMethods
 
 	const handleOpprettTeam = () => {
 		setIsLoading(true)
@@ -99,62 +110,81 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 	}
 
 	return (
-		<FormProvider {...formMethods}>
-			<Form
-				onSubmit={formMethods.handleSubmit(erOppretting ? handleOpprettTeam : handleRedigerTeam)}
-			>
-				<h1>{team ? `Rediger team ${team.navn}` : 'Opprett team'}</h1>
-				<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
-					<FormTextInput
-						useControlled
-						name="navn"
-						label="Navn på teamet"
-						size="large"
-						data-testid={TestComponentSelectors.INPUT_TEAM_NAVN}
-					/>
-					<FormTextInput
-						useControlled
-						name="beskrivelse"
-						label="Beskrivelse av teamet"
-						size="xlarge"
-						data-testid={TestComponentSelectors.INPUT_TEAM_BESKRIVELSE}
-					/>
-				</div>
-				<div className="flexbox--full-width">
-					<FormSelect
-						name="brukere"
-						label="Medlemmer i teamet"
-						placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg brukere ...'}
-						options={brukerOptions}
-						isMulti={true}
-						size="grow"
-					/>
-				</div>
-				{error && <div className="skjemaelement__feilmelding">{error}</div>}
-				<div className="dollymodal_buttons">
-					<NavButton variant={'danger'} onClick={closeModal}>
-						Avbryt
-					</NavButton>
-					<NavButton
-						variant={'primary'}
-						onClick={() => {
-							formMethods.trigger(['navn', 'beskrivelse'])
-							formMethods.setValue('navn', formMethods.getValues('navn'), {
-								shouldValidate: true,
-								shouldTouch: true,
-							})
-							formMethods.setValue('beskrivelse', formMethods.getValues('beskrivelse'), {
-								shouldValidate: true,
-								shouldTouch: true,
-							})
-						}}
+		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+			<Dialog.Popup closeOnOutsideClick={false}>
+				<Dialog.Header>
+					<Dialog.Title>{team ? `Rediger team ${team.navn}` : 'Opprett team'}</Dialog.Title>
+					{!team && (
+						<Dialog.Description>
+							Fyll ut skjemaet for å opprette et nytt team. Du blir selv automatisk medlem av
+							teamet.
+						</Dialog.Description>
+					)}
+				</Dialog.Header>
+				<Dialog.Body>
+					<form
+						id={FORM_ID}
+						onSubmit={formMethods.handleSubmit(
+							erOppretting ? handleOpprettTeam : handleRedigerTeam,
+						)}
+					>
+						<VStack gap="space-16">
+							<TextField
+								{...register('navn')}
+								label="Navn på teamet"
+								error={errors.navn?.message}
+								data-testid={TestComponentSelectors.INPUT_TEAM_NAVN}
+							/>
+							<TextField
+								{...register('beskrivelse')}
+								label="Beskrivelse av teamet"
+								error={errors.beskrivelse?.message}
+								data-testid={TestComponentSelectors.INPUT_TEAM_BESKRIVELSE}
+							/>
+							<Controller
+								name="brukere"
+								control={control}
+								render={({ field }) => {
+									const valgteBrukere = (field.value || []).map(String)
+									return (
+										<Combobox
+											label="Medlemmer i teamet"
+											options={brukerOptions}
+											selectedOptions={brukerOptions.filter((option) =>
+												valgteBrukere.includes(option.value),
+											)}
+											isLoading={loadingBrukere}
+											isMultiSelect
+											onToggleSelected={(value, isSelected) => {
+												const bruker = brukereFiltrert?.find((b) => String(b?.brukerId) === value)
+												const nyeBrukere = isSelected
+													? [...(field.value || []), bruker?.brukerId ?? value]
+													: (field.value || []).filter((id) => String(id) !== value)
+												field.onChange(nyeBrukere)
+											}}
+										/>
+									)
+								}}
+							/>
+							{error && <ErrorMessage showIcon>{error}</ErrorMessage>}
+						</VStack>
+					</form>
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<Button variant="secondary">Avbryt</Button>
+					</Dialog.CloseTrigger>
+					<Button
+						type="submit"
+						form={FORM_ID}
+						variant="primary"
 						loading={isLoading}
 						data-testid={TestComponentSelectors.BUTTON_TEAM_SUBMIT}
 					>
 						{team ? 'Lagre endringer' : 'Opprett team'}
-					</NavButton>
-				</div>
-			</Form>
-		</FormProvider>
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
 	)
 }

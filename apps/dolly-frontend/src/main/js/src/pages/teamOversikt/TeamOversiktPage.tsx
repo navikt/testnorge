@@ -9,7 +9,6 @@ import {
 import { TeamVisning } from '@/pages/teamOversikt/TeamVisning'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { OpprettRedigerTeam } from '@/pages/teamOversikt/OpprettRedigerTeam'
 import React, { useState } from 'react'
 import { useBrukerTeams, useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -168,7 +167,7 @@ export default () => {
 						Bli med i team
 					</Button>
 				</Knappegruppe>
-				<DollyModal isOpen={bliMedITeamModalIsOpen} closeModal={closeBliMedITeamModal} width="60%">
+				{bliMedITeamModalIsOpen && (
 					<BliMedITeam
 						brukerId={currentBruker?.brukerId}
 						brukerTeams={brukerTeams}
@@ -178,8 +177,8 @@ export default () => {
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
-				<DollyModal isOpen={forlatTeamModalIsOpen} closeModal={closeForlatTeamModal} width="40%">
+				)}
+				{forlatTeamModalIsOpen && valgtTeam && (
 					<ForlatTeam
 						team={valgtTeam}
 						brukerId={currentBruker?.brukerId}
@@ -189,12 +188,8 @@ export default () => {
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
-				<DollyModal
-					isOpen={opprettRedigerTeamModalIsOpen}
-					closeModal={closeOpprettRedigerTeamModal}
-					width="60%"
-				>
+				)}
+				{opprettRedigerTeamModalIsOpen && (
 					<OpprettRedigerTeam
 						team={valgtTeam}
 						closeModal={() => {
@@ -203,8 +198,8 @@ export default () => {
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
-				<DollyModal isOpen={slettTeamModalIsOpen} closeModal={closeSlettTeamModal} width="40%">
+				)}
+				{slettTeamModalIsOpen && valgtTeam && (
 					<SlettTeam
 						team={valgtTeam}
 						closeModal={() => {
@@ -213,7 +208,7 @@ export default () => {
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
+				)}
 			</Box>
 		</>
 	)

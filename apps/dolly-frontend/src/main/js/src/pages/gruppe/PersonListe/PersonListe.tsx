@@ -19,6 +19,8 @@ import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButt
 import { Bestilling, useGruppeById } from '@/utils/hooks/useGruppe'
 import { useLocation } from 'react-router'
 import { usePdlfPersoner } from '@/utils/hooks/usePdlForvalter'
+import { Button } from '@navikt/ds-react'
+import { ChatElipsisIcon } from '@navikt/aksel-icons'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -229,9 +231,10 @@ export default function PersonListe({
 							}}
 						>
 							<div>
-								<Icon
-									kind="kommentar"
-									size={20}
+								<Button
+									size="xsmall"
+									variant="tertiary"
+									icon={<ChatElipsisIcon title="Endre kommentar" />}
 									onClick={(event) => {
 										setSelectedIdent(row.ident)
 										openKommentarModal()

@@ -1,16 +1,23 @@
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
+import { Dialog } from '@navikt/ds-react'
 
-export const KommentarModal = ({ ident, closeModal }) => {
-	return (
-		<ErrorBoundary>
-			<DollyModal isOpen closeModal={closeModal} width="50%" overflow="auto">
-				<h1>Endre kommentar</h1>
-				<br />
-				<BeskrivelseConnector ident={ident} closeModal={closeModal} />
-			</DollyModal>
-		</ErrorBoundary>
-	)
+type Props = {
+	ident: { beskrivelse: string; ident: number }
+	closeModal: () => void
 }
+
+export const KommentarModal = ({ ident, closeModal }: Props) => (
+	<ErrorBoundary>
+		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+			<Dialog.Popup width="medium">
+				<Dialog.Header>
+					<Dialog.Title>Endre kommentar</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<BeskrivelseConnector ident={ident} closeModal={closeModal} />
+				</Dialog.Body>
+			</Dialog.Popup>
+		</Dialog>
+	</ErrorBoundary>
+)

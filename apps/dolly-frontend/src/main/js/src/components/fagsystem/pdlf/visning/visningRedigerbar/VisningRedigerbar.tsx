@@ -2,12 +2,11 @@ import React, { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
-import Button from '@/components/ui/button/Button'
+import { Button } from '@navikt/ds-react'
+import { PencilIcon } from '@navikt/aksel-icons'
 import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
-import Icon from '@/components/ui/icon/Icon'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import useBoolean from '@/utils/hooks/useBoolean'
+import { BekreftSlettModal } from '@/components/ui/button/SlettModal/BekreftSlettModal'
 import { StatsborgerskapForm } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import { InnvandringForm } from '@/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
@@ -99,7 +98,10 @@ const FieldArrayEdit = styled.div`
 const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 8px;
-	margin-top: -10px;
+	margin-top: -5px;
+	display: flex;
+	flex-direction: column;
+	gap: var(--ax-space-4);
 
 	&&& {
 		button {
@@ -137,7 +139,6 @@ export const VisningRedigerbar = ({
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
@@ -362,37 +363,20 @@ export const VisningRedigerbar = ({
 					<>
 						{dataVisning}
 						<EditDeleteKnapper>
-							<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
 							<Button
-								kind="trashcan"
-								fontSize={'1.4rem'}
-								onClick={() => openModal()}
-								title="Slett"
+								size="xsmall"
+								variant="tertiary"
+								icon={<PencilIcon title="Endre" />}
+								onClick={() => setVisningModus(Modus.Skriv)}
+							/>
+							<BekreftSlettModal
+								tittel="Er du sikker på at du vil slette opplysningen?"
+								beskrivelse="Du er i ferd med å slette en opplysning fra personen. Denne handlingen kan ikke angres."
+								onBekreft={() =>
+									relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
+								}
 								disabled={disableSlett}
 							/>
-							<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-								<div className="slettModal">
-									<div className="slettModal slettModal-content">
-										<Icon size={50} kind="report-problem-circle" />
-										<h1>Sletting</h1>
-										<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
-									</div>
-									<div className="slettModal-actions">
-										<NavButton onClick={closeModal} variant="secondary">
-											Nei
-										</NavButton>
-										<NavButton
-											onClick={() => {
-												closeModal()
-												return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
-											}}
-											variant="primary"
-										>
-											Ja, jeg er sikker
-										</NavButton>
-									</div>
-								</div>
-							</DollyModal>
 						</EditDeleteKnapper>
 						<div className="flexbox--full-width">
 							{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}

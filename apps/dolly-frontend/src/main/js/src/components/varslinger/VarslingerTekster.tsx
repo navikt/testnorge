@@ -27,7 +27,7 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 		case 'VELKOMMEN_TIL_DOLLY':
 			return (
 				<>
-					<h1>Velkommen til Dolly</h1>
+					<h1 id="varsling-tittel">Velkommen til Dolly</h1>
 
 					<h2>Prinsipper for bruk av Dolly</h2>
 					<p>
@@ -80,7 +80,7 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 		case 'AZURE_AD_INNLOGGING':
 			return (
 				<>
-					<h1>Ny innlogging i Dolly</h1>
+					<h1 id="varsling-tittel">Ny innlogging i Dolly</h1>
 
 					<h2>Z-bruker er erstattet med personlig innlogging</h2>
 					<p>
@@ -94,7 +94,7 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 		case 'PDL_SOM_MASTER':
 			return (
 				<>
-					<h1>PDL som master for bestillinger</h1>
+					<h1 id="varsling-tittel">PDL som master for bestillinger</h1>
 
 					<p>
 						Det er gjort en større endring på bestilling av personer i Dolly: Vi har endret master

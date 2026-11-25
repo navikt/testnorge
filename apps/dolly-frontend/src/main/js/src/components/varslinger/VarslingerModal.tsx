@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { updateVarslingerBruker } from '@/ducks/varslinger'
 import { VarslingerApi } from '@/service/Api'
 import { useBoolean } from 'react-use'
-import { Stepper } from '@navikt/ds-react'
+import { Button, Dialog, Stepper } from '@navikt/ds-react'
 import { useDispatch } from 'react-redux'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { runningE2ETest } from '@/service/services/Request'
@@ -83,43 +81,39 @@ export const VarslingerModal = () => {
 
 	return (
 		<ErrorBoundary>
-			<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
-				<div className="varslinger-modal">
-					{antallVarslinger > 1 && <Stepper activeStep={steg}>{varslingerSteg}</Stepper>}
-
-					<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
-
-					<div className="varslinger-buttons">
-						{steg > 0 && (
-							<NavButton
-								variant={'secondary'}
-								onClick={() => setSteg(steg - 1)}
-								style={{ float: 'left' }}
-							>
-								Forrige side
-							</NavButton>
-						)}
+			<Dialog open={modalOpen} onOpenChange={() => {}}>
+				<Dialog.Popup
+					width="large"
+					closeOnOutsideClick={false}
+					aria-labelledby="varsling-tittel"
+					className="varslinger-modal"
+				>
+					<Dialog.Body>
+						{antallVarslinger > 1 && <Stepper activeStep={steg}>{varslingerSteg}</Stepper>}
+						<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
+					</Dialog.Body>
+					<Dialog.Footer>
 						{steg < antallVarslinger - 1 ? (
-							<NavButton
-								variant={'primary'}
-								onClick={() => submitSettVarsling(false)}
-								style={{ float: 'right' }}
-							>
+							<Button variant="primary" onClick={() => submitSettVarsling(false)}>
 								Neste side
-							</NavButton>
+							</Button>
 						) : (
-							<NavButton
+							<Button
 								data-testid={TestComponentSelectors.BUTTON_VARSLING_LUKK}
-								variant={'primary'}
+								variant="primary"
 								onClick={() => submitSettVarsling(true)}
-								style={{ float: 'right' }}
 							>
 								Lukk
-							</NavButton>
+							</Button>
 						)}
-					</div>
-				</div>
-			</DollyModal>
+						{steg > 0 && (
+							<Button variant="secondary" onClick={() => setSteg(steg - 1)}>
+								Forrige side
+							</Button>
+						)}
+					</Dialog.Footer>
+				</Dialog.Popup>
+			</Dialog>
 		</ErrorBoundary>
 	)
 }

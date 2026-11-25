@@ -1,24 +1,35 @@
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import React, { useState } from 'react'
+import {
+	BodyLong,
+	Button,
+	Dialog,
+	ErrorMessage,
+	UNSAFE_Combobox as Combobox,
+} from '@navikt/ds-react'
 import { DollyApi } from '@/service/Api'
-import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-
 import { useHentAlleTeam } from '@/utils/hooks/useTeam'
 
-export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }) => {
+type Props = {
+	brukerId?: string
+	brukerTeams: Array<{ id: number }>
+	closeModal: () => void
+	mutate: () => void
+}
+
+export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }: Props) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
-	const [valgtTeam, setValgtTeam] = useState(null)
+	const [valgtTeam, setValgtTeam] = useState<string | null>(null)
 	const [valgtTeamError, setValgtTeamError] = useState('')
 
 	const { alleTeam, loading: loadingTeams } = useHentAlleTeam()
 	const filtrerteTeam = alleTeam?.filter((team) => !brukerTeams?.some((t) => t.id === team.id))
-	const teamOptions = filtrerteTeam?.map((team) => {
-		return {
-			value: team?.id,
+	const teamOptions =
+		filtrerteTeam?.map((team) => ({
+			value: String(team?.id),
 			label: team?.navn,
-		}
-	})
+		})) || []
+	const valgtTeamOption = teamOptions.filter((option) => option.value === valgtTeam)
 
 	const handleBliMedITeam = () => {
 		if (!valgtTeam) {
@@ -45,41 +56,39 @@ export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }) => {
 	}
 
 	return (
-		<>
-			<h1>Bli med i team</h1>
-			<div className={'skjemaelement dollyselect' + (valgtTeamError ? ' error' : '')}>
-				<div className="flexbox--full-width" style={{ marginTop: '15px' }}>
-					<DollySelect
-						name="team"
-						value={valgtTeam}
-						onChange={(e) => {
-							setValgtTeam(e?.value)
+		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+			<Dialog.Popup width="medium" closeOnOutsideClick={false}>
+				<Dialog.Header>
+					<Dialog.Title>Bli med i team</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<Combobox
+						label="Velg et team å bli med i"
+						options={teamOptions}
+						selectedOptions={valgtTeamOption}
+						isLoading={loadingTeams}
+						onToggleSelected={(value, isSelected) => {
+							setValgtTeam(isSelected ? value : null)
 							setValgtTeamError('')
 						}}
-						label="Velg et team å bli med i"
-						placeholder={loadingTeams ? 'Laster team ...' : 'Velg team ...'}
-						options={teamOptions}
-						size="grow"
-						isClearable={false}
+						error={valgtTeamError}
+						shouldAutocomplete
 					/>
-					{valgtTeamError && (
-						<div role="alert" aria-live="assertive">
-							<div className="skjemaelement__feilmelding" style={{ marginTop: '-10px' }}>
-								{valgtTeamError}
-							</div>
-						</div>
+					{error && (
+						<BodyLong as="div" style={{ marginTop: '1rem' }}>
+							<ErrorMessage showIcon>{error}</ErrorMessage>
+						</BodyLong>
 					)}
-				</div>
-			</div>
-			{error && <div className="skjemaelement__feilmelding">{error}</div>}
-			<div className="dollymodal_buttons">
-				<NavButton variant={'danger'} onClick={closeModal}>
-					Avbryt
-				</NavButton>
-				<NavButton variant={'primary'} onClick={handleBliMedITeam} loading={isLoading}>
-					Bli med i team
-				</NavButton>
-			</div>
-		</>
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<Button variant="secondary">Avbryt</Button>
+					</Dialog.CloseTrigger>
+					<Button variant="primary" onClick={handleBliMedITeam} loading={isLoading}>
+						Bli med i team
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
 	)
 }

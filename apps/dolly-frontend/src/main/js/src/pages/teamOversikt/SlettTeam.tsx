@@ -1,9 +1,14 @@
-import Icon from '@/components/ui/icon/Icon'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import React, { useState } from 'react'
+import { BodyLong, Button, Dialog, ErrorMessage } from '@navikt/ds-react'
 import { DollyApi } from '@/service/Api'
 
-export const SlettTeam = ({ team, closeModal, mutate }) => {
+type Props = {
+	team: { id: number; navn: string }
+	closeModal: () => void
+	mutate: () => void
+}
+
+export const SlettTeam = ({ team, closeModal, mutate }: Props) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
 
@@ -28,21 +33,26 @@ export const SlettTeam = ({ team, closeModal, mutate }) => {
 	}
 
 	return (
-		<div className="slettModal">
-			<Icon size={50} kind="report-problem-circle" />
-			<div className="slettModal slettModal-content">
-				<h1>Slett team</h1>
-				<h4>{`Er du sikker på at du vil slette team ${team.navn}?`}</h4>
-				{error && <div className="skjemaelement__feilmelding">{error}</div>}
-			</div>
-			<div className="dollymodal_buttons">
-				<NavButton variant={'secondary'} onClick={closeModal}>
-					Nei
-				</NavButton>
-				<NavButton variant={'primary'} onClick={handleSlettTeam} loading={isLoading}>
-					Ja, jeg er sikker
-				</NavButton>
-			</div>
-		</div>
+		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+			<Dialog.Popup role="alertdialog" closeOnOutsideClick={false}>
+				<Dialog.Header withClosebutton={false}>
+					<Dialog.Title>Slett team</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<BodyLong>{`Er du sikker på at du vil slette team ${team.navn}? Denne handlingen kan ikke angres.`}</BodyLong>
+					{error && <ErrorMessage showIcon>{error}</ErrorMessage>}
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<Button variant="secondary" data-color="neutral">
+							Avbryt
+						</Button>
+					</Dialog.CloseTrigger>
+					<Button variant="danger" onClick={handleSlettTeam} loading={isLoading}>
+						Ja, slett team
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
 	)
 }
