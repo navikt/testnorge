@@ -85,7 +85,7 @@ Motsatt blir du krevd for Nav-pålogging hvis dette mangler.
 ==== Pålogging eksternt
 
 Dolly støtter BankID pålogging for eksterne brukere. Betingelsen er at organisasjonen den eksterne brukeren tilhører har
-fått Dolly-tilgang ved forspørsel på dolly@nav.no. I tillegg må den ekstren brukeren være tildelt Altinn-rollen #Navs Dolly
+fått Dolly-tilgang ved forspørsel på dolly@nav.no. I tillegg må den eksterne brukeren være tildelt Altinn-rollen #Navs Dolly
 for samarbeidspartnere#. Rollen kan kun tildeles av Altinn-ansvarlig i den eksterne organisasjonen.
 
 [[foerstegangsbruk]]
