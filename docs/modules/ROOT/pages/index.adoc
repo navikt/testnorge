@@ -760,7 +760,7 @@ Fra 2032 innføres det et nytt regime for fødselsnummere som ligner på dagens.
 fødselsdato (6 sifre) og personummer (5 sifre). Forskjellen er de tre første sifre i personummerdelen er et løpenummer,
 og da har man 1000 mulige kombinasjoner per dag.
 Informasjonen om århundre og kjønn vil ikke lenger være tilgjengelig i fødselsnummeret, men må hentes fra Folkeregisteret.
-De to siste sifre er fortsatt kontrollsiffer, men her er det blitt fire mulige kombinasjoner som tillates, og noen ganger
+De to siste sifre er fortsatt kontrollsiffer, men her har det blitt fire mulige kombinasjoner som tillates, og noen ganger
 bare tre på grunn av beregningsmetoden. Man får dermed totalt 3000, og i de fleste tilfeller 4000 mulige kombinasjoner
 per dag som vil være opptil en 20-dobling av dagens kapasitet.
 
@@ -821,14 +821,15 @@ Dette skyldes at prodlasten overskriver data i testmiljøet.
 
 Spesielt viktig å merke seg:
 
-* Både *Arena* og *AAREG*: ved datamigreringsaktiviteter blir miljøet i Q1 og Q4 slettet
-* Følg med på varsler i kanalen #datamigrering for planlagte prodlaster
-* Hvis personer og/eller øvrig testdata er borte etter en prodlast, så kan de gjenopprettes
+* Både *Arena* og *AAREG*: ved datamigreringsaktiviteter blir miljøene i Q1 og Q4 slettet
+* Følg med på varsler i kanalen #datamigrering for planlagte prodlaster; det skjer to ganger i året, hver høst og vinter
+* Personer og/eller øvrig testdata som er borte etter en prodlast kan gjenopprettes
 
 Hva kan du gjøre?
 
-* *Gjenopprett gruppe* – det beste tiltaket etter en prodlast. Gå til gruppen din og klikk "GJENOPPRETT" i gruppeheaderen.
-Da lastes alle personene og øvrig testdata for personene i gruppen inn på nytt til de valgte miljøene
+* *Gjenopprett gruppe* er det mest effektive etter en prodlast. Gå til gruppen din og klikk "GJENOPPRETT" i gruppeheaderen.
+Da lastes alle personene og øvrig testdata i gruppen inn på nytt til de opprinnelige miljøene, eventuelt kan
+miljø også anngis spesifikt
 * Du kan også gjenopprette enkeltpersoner, hvis noen skulle feile gruppegjenopprettingen.
 Gå til personens detaljside og klikk "GJENOPPRETT" i headeren
 
@@ -846,6 +847,7 @@ Syntetiske personer fra Dolly er ment å benyttes i Navs testmiljøer.
 Test-Norge er levende og endrer seg fortløpende ved at personer fødes, dør, får barn osv.
 Bruk disse når samarbeid med eksterne samhandlere er pågrevd. Pass på at Test-Norge-personen du søker er i riktig
 alderskategori for ditt testscenario.
+
 
 
 [[faq_komplekse_relasjoner]]
@@ -951,7 +953,6 @@ Proxy (lenke til repo), Cluster (proxyens primære cluster utledet fra accessPol
 |link:https://github.com/navikt/testnorge/tree/master/proxies/dolly-proxy[dolly-proxy] |dev-fss |https://testnav-dolly-proxy.intern.dev.nav.no |digdir-krr-stub |- |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/nom-proxy[nom-proxy] |dev-gcp |https://testnav-nom-proxy.intern.dev.nav.no |nom-api |http://nom-api.nom.svc.cluster.local |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/pdl-proxy[pdl-proxy] |dev-fss |https://testnav-pdl-proxy.dev-fss-pub.nais.io |pdl-api, pdl-api-q1, pdl-testdata |http://pdl-api.pdl.svc.nais.local, http://pdl-api-q1.pdl.svc.nais.local, http://pdl-testdata.pdl.svc.nais.local |true |aktiv
-|link:https://github.com/navikt/testnorge/tree/master/proxies/sykemelding-proxy[sykemelding-proxy] |dev-gcp |- |- |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/synthdata-meldekort-proxy[synthdata-meldekort-proxy] |dev-fss |https://testnav-synthdata-meldekort-proxy.intern.dev.nav.no |synthdata-arena-meldekort |https://synthdata-arena-meldekort.intern.dev.nav.no |true |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/texas-proxy[texas-proxy] |dev-gcp |https://dolly-texas-proxy.intern.dev.nav.no |samler alle andre proxyer (WIP) |- |false |aktiv
 |link:https://github.com/navikt/testnorge/tree/master/proxies/yrkesskade-proxy[yrkesskade-proxy] |dev-gcp |https://testnav-yrkesskade-proxy.intern.dev.nav.no |yrkesskade-datagenerator-service |http://yrkesskade-datagenerator-service.yrkesskade.svc.cluster.local |false |aktiv
