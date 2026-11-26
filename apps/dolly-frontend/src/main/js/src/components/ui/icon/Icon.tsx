@@ -66,7 +66,6 @@ import {
 	TenancyIcon,
 	ThumbDownFillIcon,
 	ThumbUpFillIcon,
-	TrashIcon,
 	WrenchIcon,
 	XMarkIcon,
 } from '@navikt/aksel-icons'
@@ -99,7 +98,6 @@ export const icons = {
 	tenor: TenorLogo,
 	slack: SlackLogo,
 
-	trashcan: TrashIcon,
 	'add-circle': PlusCircleIcon,
 	'remove-circle': MinusCircleIcon,
 	edit: PencilIcon,
