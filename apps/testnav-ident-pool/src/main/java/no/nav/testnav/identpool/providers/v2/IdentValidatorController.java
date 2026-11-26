@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
 import no.nav.testnav.libs.dto.identpool.v2.ValideringResponseDTO;
 import org.apache.commons.lang3.StringUtils;

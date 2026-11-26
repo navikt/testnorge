@@ -1,0 +1,7 @@
+
+consumers:
+  ident-pool:
+    url: https://testnav-ident-pool.intern.dev.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool

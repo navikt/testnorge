@@ -1,0 +1,120 @@
+spring:
+  application:
+    name: dolly-fasade
+    version: 1
+    description: App som eksponerer utvalgte tjenester
+  config:
+    import: "dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+  main:
+    allow-bean-definition-overriding: true
+
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+spring.jmx.enabled: true
+server.tomcat.mbeanregistry.enabled: true
+
+consumers:
+  ident-pool:
+    url: http://testnav-ident-pool.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool
+  testnav-organisasjon-forvalter:
+    name: testnav-organisasjon-forvalter
+    namespace: dolly
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-inntektsmelding-service:
+    name: testnav-inntektsmelding-service
+    namespace: dolly
+    url: http://testnav-inntektsmelding-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-tps-messaging-service:
+    name: testnav-tps-messaging-service
+    namespace: dolly
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-miljoer-service:
+    name: testnav-miljoer-service
+    namespace: dolly
+    url: http://testnav-miljoer-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-person-service:
+    name: testnav-person-service
+    namespace: dolly
+    url: http://testnav-person-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-kodeverk-service:
+    name: testnav-kodeverk-service
+    namespace: dolly
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-dolly-proxy:
+    name: testnav-dolly-proxy
+    namespace: dolly
+    url: https://testnav-dolly-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter
+    namespace: dolly
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-organisasjon-service:
+    name: testnav-organisasjon-service
+    namespace: dolly
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-arbeidsplassencv-proxy:
+    name: testnav-arbeidsplassencv-proxy
+    namespace: dolly
+    url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  yrkesskade-proxy:
+    name: testnav-yrkesskade-proxy
+    namespace: dolly
+    url: http://testnav-yrkesskade-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  arbeidssoekerregisteret-proxy:
+    name: testnav-arbeidssoekerregisteret-proxy
+    namespace: dolly
+    url: http://testnav-arbeidssoekerregisteret-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  bruker-service:
+    name: testnav-bruker-service
+    namespace: dolly
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  etterlatte:
+    name: etterlatte-testdata
+    namespace: etterlatte
+    url: http://etterlatte-testdata.etterlatte.svc.cluster.local
+    cluster: dev-gcp
+  nom-proxy:
+    name: testnav-nom-proxy
+    namespace: dolly
+    url: http://testnav-nom-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
+  teamkatalog:
+    name: team-catalog-backend
+    namespace: org
+    url: https://teamkatalog-api.intern.nav.no
+    cluster: prod-gcp
+  altinn3-tilgang-service:
+    name: testnav-altinn3-tilgang-service-prod
+    namespace: dolly
+    url: https://testnav-altinn3-tilgang-service.nav.no
+    cluster: prod-gcp

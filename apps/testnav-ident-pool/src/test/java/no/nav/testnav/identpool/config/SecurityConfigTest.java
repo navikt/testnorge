@@ -3,7 +3,7 @@ package no.nav.testnav.identpool.config;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.providers.v2.IdentController;
 import no.nav.testnav.identpool.providers.v2.IdentValidatorController;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;

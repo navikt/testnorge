@@ -1,0 +1,28 @@
+name: dolly-fasade
+
+on:
+  push:
+    paths:
+      - .github/workflows/app.dolly-fasade.yml
+      - apps/dolly-fasade/**
+      - libs/data-transfer-objects/**
+      - libs/security-core/**
+      - libs/reactive-core/**
+      - libs/reactive-security/**
+      - libs/reactive-standalone-security/**
+      - libs/testing/**
+      - plugins/**
+      - Dockerfile
+      - Dockerfile.dockerignore
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/dolly-fasade"
+      deploy-tag: "#deploy-dolly-fasade"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
+

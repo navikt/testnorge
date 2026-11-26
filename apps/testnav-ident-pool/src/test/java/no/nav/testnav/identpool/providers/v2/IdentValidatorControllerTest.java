@@ -5,7 +5,7 @@ import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.config.AbstractTestcontainer;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
-import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
 import no.nav.testnav.libs.dto.identpool.v1.Identtype;
 import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
