@@ -13,8 +13,6 @@ export default () => {
 	const [statusData, setStatusData] = useState<Jobbstatus>({ nesteKjoring: '', status: false })
 	const [henterStatus, setHenterStatus] = useState(false)
 
-	let optionsData: FetchData[] = []
-
 	const SCHEDULER_DOMENE: string = '/testnav-levende-arbeidsforhold-scheduler'
 	const ANSETTELSE_DOMENE: string = '/testnav-levende-arbeidsforhold-ansettelse'
 
@@ -93,11 +91,8 @@ export default () => {
 	async function hentParametere() {
 		await fetch(`${ANSETTELSE_DOMENE}/api/v1/parameter`)
 			.then((res) => res.json())
-			.then((res) => {
-				res.map((r: FetchData) => optionsData.push(r))
-			})
+			.then((parametere: Array<FetchData>) => setApiData(parametere))
 			.catch((err) => console.error(err))
-		setApiData(optionsData)
 	}
 
 	useEffect(() => {
