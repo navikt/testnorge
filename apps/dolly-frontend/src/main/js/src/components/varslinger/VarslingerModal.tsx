@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
-import { VarslingerTekster } from './VarslingerTekster'
-import './varslingerModal.less'
+import { hentVarslingTekst } from './VarslingerTekster'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { updateVarslingerBruker } from '@/ducks/varslinger'
 import { VarslingerApi } from '@/service/Api'
@@ -70,9 +69,7 @@ export const VarslingerModal = () => {
 		return null
 	}
 
-	const varslingerSteg = gyldigeVarslinger.map((varsling: Varsling) => ({
-		label: varsling.varslingId,
-	}))
+	const varslingTekst = hentVarslingTekst(gyldigeVarslinger[steg].varslingId)
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)
@@ -82,15 +79,21 @@ export const VarslingerModal = () => {
 	return (
 		<ErrorBoundary>
 			<Dialog open={modalOpen} onOpenChange={() => {}}>
-				<Dialog.Popup
-					width="large"
-					closeOnOutsideClick={false}
-					aria-labelledby="varsling-tittel"
-					className="varslinger-modal"
-				>
+				<Dialog.Popup width="large" closeOnOutsideClick={false}>
+					<Dialog.Header withClosebutton={false}>
+						<Dialog.Title>{varslingTekst?.tittel}</Dialog.Title>
+					</Dialog.Header>
 					<Dialog.Body>
-						{antallVarslinger > 1 && <Stepper activeStep={steg}>{varslingerSteg}</Stepper>}
-						<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
+						{antallVarslinger > 1 && (
+							<Stepper activeStep={steg + 1} orientation="horizontal">
+								{gyldigeVarslinger.map((varsling: Varsling) => (
+									<Stepper.Step key={varsling.varslingId} interactive={false}>
+										{hentVarslingTekst(varsling.varslingId)?.tittel ?? varsling.varslingId}
+									</Stepper.Step>
+								))}
+							</Stepper>
+						)}
+						{varslingTekst?.innhold}
 					</Dialog.Body>
 					<Dialog.Footer>
 						{steg < antallVarslinger - 1 ? (
