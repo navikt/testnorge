@@ -78,6 +78,7 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 							render={({ field }) => (
 								<CheckboxGroup
 									legend="Miljø"
+									className="checkbox-group--aksel-default"
 									value={field.value}
 									onChange={field.onChange}
 									error={field.value?.length === 0 && 'Velg minst ett miljø'}

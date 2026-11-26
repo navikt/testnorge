@@ -99,6 +99,7 @@ export const RelatertPersonImportButton = ({
 								{relatertPersonIdenter.length > 1 ? (
 									<CheckboxGroup
 										legend="Velg hvilke relaterte personer du ønsker å importere"
+										className="checkbox-group--aksel-default"
 										onChange={handleChange}
 									>
 										{relatertPersonIdenter.map((ident) => {

@@ -288,6 +288,7 @@ export const VisningRedigerbarPersondetaljer = ({
 				<Dialog.Body>
 					<CheckboxGroup
 						legend="Hvilke opplysninger ønsker du å slette?"
+						className="checkbox-group--aksel-default"
 						value={valgteSlettAttr}
 						onChange={handleSlettAttrChange}
 					>
