@@ -351,7 +351,11 @@ export const validation = Yup.object({
 				fullForm?.personFoerLeggTil?.arenaforvalteren
 			)
 				return true
+			const harOppfoelgingsvedtak14a =
+				fullForm?.oppfoelgingsvedtak14a || context?.personFoerLeggTil?.oppfoelgingsvedtak14a
 			const { arenaforvalter } = fullForm
+			if (harOppfoelgingsvedtak14a && arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV')
+				return true
 			const ingenYtelser =
 				arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' &&
 				!arenaforvalter?.aap115 &&

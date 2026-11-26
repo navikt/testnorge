@@ -40,7 +40,14 @@ export const ArenaForm = () => {
 		if (harOppfoelgingsvedtak14a && formMethods.getValues(`${arenaPath}.kvalifiseringsgruppe`)) {
 			formMethods.setValue(`${arenaPath}.kvalifiseringsgruppe`, null)
 		}
-	}, [harOppfoelgingsvedtak14a, formMethods])
+		if (
+			harOppfoelgingsvedtak14a &&
+			servicebehovAktiv &&
+			formMethods.getValues(`${arenaPath}.aktiveringDato`)
+		) {
+			formMethods.setValue(`${arenaPath}.aktiveringDato`, null)
+		}
+	}, [harOppfoelgingsvedtak14a, servicebehovAktiv, formMethods])
 
 	return (
 		<Vis attributt={arenaPath}>
