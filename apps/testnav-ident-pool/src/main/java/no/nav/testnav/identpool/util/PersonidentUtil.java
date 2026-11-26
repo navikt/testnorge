@@ -2,10 +2,10 @@ package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.exception.UgyldigPersonidentifikatorException;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 
 import java.time.LocalDate;
 import java.util.List;

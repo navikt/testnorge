@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 
 import java.time.LocalDate;
 

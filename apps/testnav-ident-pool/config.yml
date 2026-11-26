@@ -59,6 +59,7 @@ spec:
     inbound:
       rules:
         - application: dolly-auth-local
+        - application: dolly-fasade
         - application: testnav-endringsmelding-service
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter

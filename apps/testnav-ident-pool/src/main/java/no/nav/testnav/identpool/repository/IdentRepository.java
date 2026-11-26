@@ -1,9 +1,9 @@
 package no.nav.testnav.identpool.repository;
 
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;

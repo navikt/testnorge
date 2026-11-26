@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.service.IdentGeneratorService;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -179,13 +179,13 @@ public class AjourholdService {
         return identRepository.countAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean), getFoedtFoer(yearToClean))
                 .doOnNext(count -> log.info("Antall identer som er LEDIG i ident-pool: {}", count))
                 .filter(count -> count > 0)
-                .flatMapMany(count -> identRepository.findAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean),
+                .flatMapMany(_ -> identRepository.findAllIkkeSyntetisk(LEDIG, getFoedtEtter(yearToClean),
                         getFoedtFoer(yearToClean)))
                 .map(Ident::getPersonidentifikator)
                 .buffer(MAX_SIZE_TPS_QUEUE)
                 .delayElements(Duration.ofMillis(100))
                 .flatMap(idents -> tpsMessagingConsumer.getIdenterProdStatus(new HashSet<>(idents)))
-                .doOnNext(ident -> {
+                .doOnNext(_ -> {
                     if (counter.incrementAndGet() % 10000 == 0) {
                         log.info("Hentet {} identer fra TPS for sjekk av prod-miljø.", counter.get());
                     }

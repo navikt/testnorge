@@ -2,11 +2,11 @@ package no.nav.testnav.identpool.ajourhold;
 
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.service.IdentGeneratorService;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

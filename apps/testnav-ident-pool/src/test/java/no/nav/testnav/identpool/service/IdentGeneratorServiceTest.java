@@ -1,8 +1,8 @@
 package no.nav.testnav.identpool.service;
 
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

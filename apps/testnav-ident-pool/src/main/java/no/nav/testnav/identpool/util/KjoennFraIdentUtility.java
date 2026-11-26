@@ -1,13 +1,13 @@
 package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 
 import java.security.SecureRandom;
 
 import static java.lang.Integer.parseInt;
-import static no.nav.testnav.identpool.domain.Kjoenn.KVINNE;
-import static no.nav.testnav.identpool.domain.Kjoenn.MANN;
+import static no.nav.testnav.libs.dto.identpool.v1.Kjoenn.KVINNE;
+import static no.nav.testnav.libs.dto.identpool.v1.Kjoenn.MANN;
 
 @UtilityClass
 public class KjoennFraIdentUtility {
