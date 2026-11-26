@@ -5,7 +5,7 @@ import {
 	REGEX_BACKEND_TRANSAKSJONID,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
-import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
+import { GjenopprettDialog } from '@/components/bestilling/gjenopprett/GjenopprettDialog'
 import {
 	useBestilteMiljoerAlleFagsystemer,
 	useIkkeFerdigBestillingerGruppe,
@@ -87,7 +87,7 @@ export const GjenopprettPerson = ({ ident, gruppeId, onGjenopprettDone }: Gjenop
 	const bestillingerSamlet = getBestillingerSamlet()
 
 	return (
-		<GjenopprettModal
+		<GjenopprettDialog
 			environments={bestilteMiljoer}
 			submitForm={handleSubmit}
 			title={`Gjenopprett person: ${ident.ident}`}

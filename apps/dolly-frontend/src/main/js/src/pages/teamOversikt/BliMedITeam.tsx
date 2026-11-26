@@ -12,11 +12,11 @@ import { useHentAlleTeam } from '@/utils/hooks/useTeam'
 type Props = {
 	brukerId?: string
 	brukerTeams: Array<{ id: number }>
-	closeModal: () => void
+	closeDialog: () => void
 	mutate: () => void
 }
 
-export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }: Props) => {
+export const BliMedITeam = ({ brukerId, brukerTeams, closeDialog, mutate }: Props) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
 	const [valgtTeam, setValgtTeam] = useState<string | null>(null)
@@ -44,7 +44,7 @@ export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }: Props
 					setError('Noe gikk galt: ' + response.data?.error)
 					setIsLoading(false)
 				} else {
-					closeModal()
+					closeDialog()
 					setIsLoading(false)
 					return mutate()
 				}
@@ -56,7 +56,7 @@ export const BliMedITeam = ({ brukerId, brukerTeams, closeModal, mutate }: Props
 	}
 
 	return (
-		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+		<Dialog open onOpenChange={(open) => !open && closeDialog()}>
 			<Dialog.Popup width="medium" closeOnOutsideClick={false}>
 				<Dialog.Header>
 					<Dialog.Title>Bli med i team</Dialog.Title>

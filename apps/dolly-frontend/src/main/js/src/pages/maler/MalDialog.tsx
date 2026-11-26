@@ -19,7 +19,7 @@ export const malTyper = {
 	TENORSOEK: 'TENORSOEK',
 }
 
-type MalModalProps = {
+type MalDialogProps = {
 	id?: string
 	verdier?: any
 	malType: string
@@ -27,7 +27,7 @@ type MalModalProps = {
 	setOpen: (open: boolean) => void
 }
 
-export const MalModal = ({ id, verdier, malType, open, setOpen }: MalModalProps) => {
+export const MalDialog = ({ id, verdier, malType, open, setOpen }: MalDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [nyttMalnavn, setMalnavn] = useState('')
 	const matchMutate = useMatchMutate()

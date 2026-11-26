@@ -5,15 +5,15 @@ import React, { useEffect, useState } from 'react'
 import { Button, Dialog, HStack } from '@navikt/ds-react'
 import { ArrowLeftIcon, ArrowRightIcon, InformationSquareIcon } from '@navikt/aksel-icons'
 
-type BestillingSammendragModalProps = {
+type BestillingSammendragDialogProps = {
 	bestillinger: any[]
 }
 
-export const BestillingSammendragModal = ({
+export const BestillingSammendragDialog = ({
 	bestillinger: usorterteBestillinger,
-}: BestillingSammendragModalProps) => {
+}: BestillingSammendragDialogProps) => {
 	const bestillingerSortert = usorterteBestillinger?.sort?.((a, b) => a?.id - b?.id)
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [dialogIsOpen, openDialog, closeDialog] = useBoolean(false)
 	const [aktivBestilling, setAktivBestilling] = useState(bestillingerSortert[0])
 	const [aktivIndex, setAktivIndex] = useState(0)
 
@@ -44,14 +44,14 @@ export const BestillingSammendragModal = ({
 				size="xsmall"
 				variant="tertiary"
 				icon={<InformationSquareIcon aria-hidden />}
-				onClick={openModal}
+				onClick={openDialog}
 				aria-haspopup="dialog"
-				aria-controls={modalIsOpen ? 'bestilling-sammendrag-modal' : undefined}
+				aria-controls={dialogIsOpen ? 'bestilling-sammendrag-dialog' : undefined}
 			>
 				Bestillingsdetaljer
 			</Button>
-			<Dialog open={modalIsOpen} onOpenChange={modalIsOpen ? closeModal : openModal}>
-				<Dialog.Popup width="large" id="bestilling-sammendrag-modal">
+			<Dialog open={dialogIsOpen} onOpenChange={dialogIsOpen ? closeDialog : openDialog}>
+				<Dialog.Popup width="large" id="bestilling-sammendrag-dialog">
 					<Dialog.Header>
 						<HStack gap="space-16" align="flex-start">
 							<Dialog.Title>Bestilling #{aktivBestilling?.id}</Dialog.Title>
@@ -76,7 +76,7 @@ export const BestillingSammendragModal = ({
 						</HStack>
 					</Dialog.Header>
 					<Dialog.Body>
-						<BestillingSammendrag bestilling={aktivBestilling} closeModal={closeModal} />
+						<BestillingSammendrag bestilling={aktivBestilling} closeDialog={closeDialog} />
 					</Dialog.Body>
 				</Dialog.Popup>
 			</Dialog>

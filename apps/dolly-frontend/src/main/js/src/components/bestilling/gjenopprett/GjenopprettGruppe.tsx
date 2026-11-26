@@ -1,6 +1,6 @@
 import { arrayToString } from '@/utils/DataFormatter'
 import { useDispatch } from 'react-redux'
-import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
+import { GjenopprettDialog } from '@/components/bestilling/gjenopprett/GjenopprettDialog'
 import { DollyApi } from '@/service/Api'
 import { useBestilteMiljoerForGruppe } from '@/utils/hooks/useBestilling'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
@@ -30,7 +30,7 @@ export const GjenopprettGruppe = ({ gruppeId }: GjenopprettGruppeProps) => {
 	}
 
 	return (
-		<GjenopprettModal
+		<GjenopprettDialog
 			environments={miljoer}
 			submitForm={submitForm}
 			title={`Gjenopprett gruppe: ${gruppe?.navn} (#${gruppe?.id})`}

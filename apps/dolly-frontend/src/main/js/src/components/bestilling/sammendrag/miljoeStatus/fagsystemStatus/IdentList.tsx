@@ -19,7 +19,7 @@ const NavigerTilIdentButton = styled(Button)`
 	}
 `
 
-function IdentList({ identer, closeModal }: { identer: string[]; closeModal?: () => void }) {
+function IdentList({ identer, closeDialog }: { identer: string[]; closeDialog?: () => void }) {
 	const dispatch = useDispatch()
 	const [loading, setLoading] = useState(false)
 
@@ -35,7 +35,7 @@ function IdentList({ identer, closeModal }: { identer: string[]; closeModal?: ()
 							setLoading(true)
 							dispatch(navigerTilPerson(cleanIdent)).then(() => {
 								setLoading(false)
-								closeModal?.()
+								closeDialog?.()
 							})
 						}}
 						key={idx}
@@ -54,15 +54,15 @@ function IdentSammendrag({ identer }: { identer: string[] }) {
 
 export default function WrappedIdentList({
 	identer,
-	closeModal,
+	closeDialog,
 }: {
 	identer?: string[]
-	closeModal?: () => void
+	closeDialog?: () => void
 }) {
 	const [isOpen, toggleOpen] = useToggle(identer && identer.length <= 5)
 	return (
 		<div className="flexbox">
-			{isOpen && <IdentList identer={identer} closeModal={closeModal} />}
+			{isOpen && <IdentList identer={identer} closeDialog={closeDialog} />}
 			{!isOpen && <IdentSammendrag identer={identer} />}
 			{identer && identer.length > 5 && <ExpandButton expanded={isOpen} onClick={toggleOpen} />}
 		</div>

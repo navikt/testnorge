@@ -2,7 +2,7 @@ import Button from '@/components/ui/button/Button'
 import { Feedback } from '@/components/feedback'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
-import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
+import { BestillingSammendragDialog } from '@/components/bestilling/sammendrag/BestillingSammendragDialog'
 import './BestillingResultat.less'
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 import { Bestillingsstatus } from '@/utils/hooks/useDollyOrganisasjoner'
@@ -142,7 +142,7 @@ export default function BestillingResultat({
 							</div>
 						)}
 						<div className="flexbox--all-center">
-							<BestillingSammendragModal bestillinger={[bestilling]} />
+							<BestillingSammendragDialog bestillinger={[bestilling]} />
 							{harIdenterOpprettet && (
 								<GjenopprettConnector
 									bestilling={bestilling}

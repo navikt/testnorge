@@ -10,7 +10,7 @@ test('Mine maler testing', async ({ page }) => {
 	await expect(page.getByTestId(TestComponentSelectors.BUTTON_SEND_MELDING)).toBeDisabled()
 
 	await page
-		.getByTestId(TestComponentSelectors.INPUT_KONTAKT_MODAL)
+		.getByTestId(TestComponentSelectors.INPUT_KONTAKT_DIALOG)
 		.fill('When you wish upon a star')
 
 	await page.getByTestId(TestComponentSelectors.CHECKBOX_KONTAKT_ANONYM).click()

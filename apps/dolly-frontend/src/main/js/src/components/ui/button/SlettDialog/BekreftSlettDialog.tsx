@@ -2,19 +2,19 @@ import React from 'react'
 import { BodyLong, Button, Dialog } from '@navikt/ds-react'
 import { TrashIcon } from '@navikt/aksel-icons'
 
-type BekreftSlettModalProps = {
+type BekreftSlettDialogProps = {
 	tittel: string
 	beskrivelse: string
 	onBekreft: () => unknown
 	disabled?: boolean
 }
 
-export const BekreftSlettModal = ({
+export const BekreftSlettDialog = ({
 	tittel,
 	beskrivelse,
 	onBekreft,
 	disabled = false,
-}: BekreftSlettModalProps) => (
+}: BekreftSlettDialogProps) => (
 	<Dialog>
 		<Dialog.Trigger>
 			<Button

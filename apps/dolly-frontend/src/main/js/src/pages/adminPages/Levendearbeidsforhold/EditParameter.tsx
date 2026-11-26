@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const EditParameter = ({ name, label, initialValue, options, data, setData }: Props) => {
-	const [modalIsOpen, setModalIsOpen] = useState(false)
+	const [dialogIsOpen, setDialogIsOpen] = useState(false)
 	const formId = `rediger-parameter-${name}`
 
 	const {
@@ -52,12 +52,12 @@ export const EditParameter = ({ name, label, initialValue, options, data, setDat
 		const nyttObjektIndex = kopi.findIndex((obj) => obj.navn === name)
 		kopi[nyttObjektIndex] = { ...kopi[nyttObjektIndex], verdi: value }
 		setData(kopi)
-		setModalIsOpen(false)
+		setDialogIsOpen(false)
 	}
 
 	return (
 		<ErrorBoundary>
-			<Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
+			<Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
 				<Dialog.Trigger>
 					<Button variant="tertiary" icon={<PencilWritingIcon title="Rediger" />} size="small" />
 				</Dialog.Trigger>

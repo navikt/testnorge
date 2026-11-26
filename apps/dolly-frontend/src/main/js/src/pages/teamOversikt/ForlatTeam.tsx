@@ -5,11 +5,11 @@ import { DollyApi } from '@/service/Api'
 type Props = {
 	team: { id: number; navn: string }
 	brukerId?: string
-	closeModal: () => void
+	closeDialog: () => void
 	mutate: () => void
 }
 
-export const ForlatTeam = ({ team, brukerId, closeModal, mutate }: Props) => {
+export const ForlatTeam = ({ team, brukerId, closeDialog, mutate }: Props) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
 
@@ -22,7 +22,7 @@ export const ForlatTeam = ({ team, brukerId, closeModal, mutate }: Props) => {
 					setError('Noe gikk galt: ' + response.data?.error)
 					setIsLoading(false)
 				} else {
-					closeModal()
+					closeDialog()
 					setIsLoading(false)
 					return mutate()
 				}
@@ -34,7 +34,7 @@ export const ForlatTeam = ({ team, brukerId, closeModal, mutate }: Props) => {
 	}
 
 	return (
-		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+		<Dialog open onOpenChange={(open) => !open && closeDialog()}>
 			<Dialog.Popup role="alertdialog" closeOnOutsideClick={false}>
 				<Dialog.Header withClosebutton={false}>
 					<Dialog.Title>Forlat team</Dialog.Title>

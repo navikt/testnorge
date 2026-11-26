@@ -34,7 +34,7 @@ const validation = Yup.object().shape({
 
 const initialValues = { identer: [], gruppeId: undefined }
 
-export const FlyttPersonModal = ({ gruppeId, open, setOpen }: FlyttPersonButtonTypes) => {
+export const FlyttPersonDialog = ({ gruppeId, open, setOpen }: FlyttPersonButtonTypes) => {
 	const formMethods = useForm({
 		defaultValues: initialValues,
 		resolver: yupResolver(validation),

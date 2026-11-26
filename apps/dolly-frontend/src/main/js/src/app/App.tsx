@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Outlet } from 'react-router'
 import Header from '@/components/layout/header/Header'
 import Loading from '@/components/ui/loading/Loading'
-import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
+import { VarslingerDialog } from '@/components/varslinger/VarslingerDialog'
 import './App.less'
 import { Kontaktinfo } from '@/components/feedback/Kontaktinfo'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
@@ -57,7 +57,7 @@ export const App = () => {
 	return (
 		<ErrorBoundary>
 			<RouteChangeHandler />
-			<VarslingerModal />
+			<VarslingerDialog />
 			<Header />
 			<Breadcrumbs />
 			<div className="app-alerts">

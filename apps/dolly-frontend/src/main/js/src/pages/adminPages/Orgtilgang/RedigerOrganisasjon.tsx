@@ -19,7 +19,7 @@ type RedigerValues = {
 
 export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => {
 	const [isLoading, setIsLoading, resetLoading] = useBoolean(false)
-	const [modalIsOpen, setModalIsOpen] = useState(false)
+	const [dialogIsOpen, setDialogIsOpen] = useState(false)
 	const [error, setError] = useState<Error | null>(null)
 	const formId = `rediger-organisasjon-${orgNr}`
 
@@ -38,7 +38,7 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 			resetLoading()
 			setError(null)
 		}
-		setModalIsOpen(open)
+		setDialogIsOpen(open)
 	}
 
 	const updateOrganisasjon = async (values: RedigerValues) => {
@@ -47,7 +47,7 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 			.then(() => {
 				mutate().then(() => {
 					resetLoading()
-					setModalIsOpen(false)
+					setDialogIsOpen(false)
 				})
 			})
 			.catch((error) => {
@@ -57,7 +57,7 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 	}
 
 	return (
-		<Dialog open={modalIsOpen} onOpenChange={handleOpenChange}>
+		<Dialog open={dialogIsOpen} onOpenChange={handleOpenChange}>
 			<Dialog.Trigger>
 				<Button
 					variant="tertiary"

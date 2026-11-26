@@ -8,10 +8,10 @@ import IdentList from '@/components/bestilling/sammendrag/miljoeStatus/fagsystem
 
 export default function FagsystemStatus({
 	statusrapport,
-	closeModal,
+	closeDialog,
 }: {
 	statusrapport: Status[]
-	closeModal?: () => void
+	closeDialog?: () => void
 }) {
 	if (statusrapport.length <= 0) {
 		return null
@@ -97,7 +97,7 @@ export default function FagsystemStatus({
 							</td>
 							<td>{status.miljo || <i>Ikke relevant</i>}</td>
 							<td>
-								<IdentList identer={status.identer} closeModal={closeModal} />
+								<IdentList identer={status.identer} closeDialog={closeDialog} />
 							</td>
 						</tr>
 					))}

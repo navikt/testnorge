@@ -4,7 +4,7 @@ export enum TestComponentSelectors {
 	INPUT_NY_GRUPPE_NAVN = 'input-ny-gruppe-navn',
 	INPUT_NY_GRUPPE_HENSIKT = 'input-ny-gruppe-hensikt',
 	INPUT_HENSIKT = 'input-hensikt',
-	INPUT_KONTAKT_MODAL = 'input-kontakt-modal',
+	INPUT_KONTAKT_DIALOG = 'input-kontakt-dialog',
 	INPUT_BESTILLING_MALNAVN = 'input-bestilling-malnavn',
 	INPUT_MALER_ENDRE_MALNAVN = 'input-maler-endre-malnavn',
 	INPUT_TEAM_NAVN = 'input-team-navn',

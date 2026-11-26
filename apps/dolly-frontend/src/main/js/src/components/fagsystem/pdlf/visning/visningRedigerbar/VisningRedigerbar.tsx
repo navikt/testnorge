@@ -6,7 +6,7 @@ import { Button } from '@navikt/ds-react'
 import { PencilIcon } from '@navikt/aksel-icons'
 import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
-import { BekreftSlettModal } from '@/components/ui/button/SlettModal/BekreftSlettModal'
+import { BekreftSlettDialog } from '@/components/ui/button/SlettDialog/BekreftSlettDialog'
 import { StatsborgerskapForm } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import { InnvandringForm } from '@/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
@@ -370,7 +370,7 @@ export const VisningRedigerbar = ({
 								icon={<PencilIcon title="Endre" />}
 								onClick={() => setVisningModus(Modus.Skriv)}
 							/>
-							<BekreftSlettModal
+							<BekreftSlettDialog
 								tittel="Er du sikker på at du vil slette opplysningen?"
 								beskrivelse="Du er i ferd med å slette en opplysning fra personen. Denne handlingen kan ikke angres."
 								onBekreft={() =>

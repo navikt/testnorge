@@ -5,13 +5,13 @@ import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Button, Dialog, InlineMessage, UNSAFE_Combobox, VStack } from '@navikt/ds-react'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 
-type EndreTilknytningModalProps = {
+type EndreTilknytningDialogProps = {
 	gruppe: Gruppe
 	open: boolean
 	setOpen: (open: boolean) => void
 }
 
-export const EndreTilknytningModal = ({ gruppe, open, setOpen }: EndreTilknytningModalProps) => {
+export const EndreTilknytningDialog = ({ gruppe, open, setOpen }: EndreTilknytningDialogProps) => {
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
 	const [valgtBruker, setValgtBruker] = useState(null)
 	const [feilmelding, setFeilmelding] = useState('')

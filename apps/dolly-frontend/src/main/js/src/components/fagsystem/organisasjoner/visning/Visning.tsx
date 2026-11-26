@@ -4,7 +4,7 @@ import { Detaljer } from './Detaljer'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { EnhetBestilling, EnhetData } from '../types'
-import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
+import { BestillingSammendragDialog } from '@/components/bestilling/sammendrag/BestillingSammendragDialog'
 import { DollyApi } from '@/service/Api'
 import { OrganisasjonMiljoeinfo } from '@/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonMiljoeinfo'
 
@@ -37,7 +37,7 @@ export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningP
 			<TidligereBestillinger ids={data.bestillingId} erOrg={true} />
 			<OrganisasjonMiljoeinfo orgnummer={data.organisasjonsnummer} />
 			<div className="flexbox--align-center--justify-end info-block">
-				<BestillingSammendragModal
+				<BestillingSammendragDialog
 					bestillinger={[
 						bestillinger.filter((bestilling) => bestilling.id === data.bestillingId[0])[0],
 					]}

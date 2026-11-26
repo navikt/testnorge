@@ -16,9 +16,9 @@ type Varsling = {
 	varslingId: string
 }
 
-export const VarslingerModal = () => {
+export const VarslingerDialog = () => {
 	const [steg, setSteg] = useState(0)
-	const [modalOpen, setModalOpen] = useState(true)
+	const [dialogOpen, setDialogOpen] = useState(true)
 	const [varslinger, setVarslinger] = useState(null)
 	const [varslingerBruker, setVarslingerbruker] = useState(null)
 	const dispatch = useDispatch()
@@ -72,13 +72,13 @@ export const VarslingerModal = () => {
 	const varslingTekst = hentVarslingTekst(gyldigeVarslinger[steg].varslingId)
 
 	const submitSettVarsling = (siste: boolean) => {
-		siste ? setModalOpen(false) : setSteg(steg + 1)
+		siste ? setDialogOpen(false) : setSteg(steg + 1)
 		dispatch(updateVarslingerBruker(gyldigeVarslinger[steg].varslingId))
 	}
 
 	return (
 		<ErrorBoundary>
-			<Dialog open={modalOpen} onOpenChange={() => {}}>
+			<Dialog open={dialogOpen} onOpenChange={() => {}}>
 				<Dialog.Popup width="large" closeOnOutsideClick={false}>
 					<Dialog.Header withClosebutton={false}>
 						<Dialog.Title>{varslingTekst?.tittel}</Dialog.Title>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { EndreTilknytningModal } from '@/pages/gruppe/EndreTilknytning/EndreTilknytningModal'
+import { EndreTilknytningDialog } from '@/pages/gruppe/EndreTilknytning/EndreTilknytningDialog'
 import { Button } from '@navikt/ds-react'
 import { PersonPencilIcon } from '@navikt/aksel-icons'
 import { Gruppe } from '@/utils/hooks/useGruppe'
@@ -21,7 +21,7 @@ export const EndreTilknytning = ({ gruppe }: EndreTilknytningProps) => {
 			>
 				Bytt eier
 			</Button>
-			{open && <EndreTilknytningModal gruppe={gruppe} open={open} setOpen={setOpen} />}
+			{open && <EndreTilknytningDialog gruppe={gruppe} open={open} setOpen={setOpen} />}
 		</>
 	)
 }

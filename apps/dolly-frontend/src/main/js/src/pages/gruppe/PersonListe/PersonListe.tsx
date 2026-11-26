@@ -7,7 +7,7 @@ import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/ico
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
+import { KommentarDialog } from '@/pages/gruppe/PersonListe/dialog/KommentarDialog'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
 import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
@@ -49,7 +49,7 @@ export default function PersonListe({
 	fetchPdlPersoner,
 	sorting,
 }: any) {
-	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
+	const [isKommentarDialogOpen, openKommentarDialog, closeKommentarDialog] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
@@ -237,7 +237,7 @@ export default function PersonListe({
 									icon={<ChatElipsisIcon title="Endre kommentar" />}
 									onClick={(event) => {
 										setSelectedIdent(row.ident)
-										openKommentarModal()
+										openKommentarDialog()
 										event.stopPropagation()
 									}}
 								/>
@@ -337,8 +337,8 @@ export default function PersonListe({
 					)}
 					onHeaderClick={onHeaderClick}
 				/>
-				{isKommentarModalOpen && selectedIdent && (
-					<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
+				{isKommentarDialogOpen && selectedIdent && (
+					<KommentarDialog closeDialog={closeKommentarDialog} ident={selectedIdent} />
 				)}
 			</span>
 		</ErrorBoundary>

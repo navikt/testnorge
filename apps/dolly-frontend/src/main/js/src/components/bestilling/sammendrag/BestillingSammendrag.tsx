@@ -9,16 +9,16 @@ import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsd
 
 export const BestillingSammendrag = ({
 	bestilling,
-	closeModal,
+	closeDialog,
 }: {
 	bestilling: any
-	closeModal?: () => void
+	closeDialog?: () => void
 }) => {
 	const erOrganisasjon = _.has(bestilling, 'organisasjonNummer')
 
 	return (
 		<>
-			<MiljoeStatus bestilling={bestilling} closeModal={closeModal} />
+			<MiljoeStatus bestilling={bestilling} closeDialog={closeDialog} />
 			<Suspense fallback={<Loading label={'Laster bestillingskriterier ...'} />}>
 				<div className="bestilling-data">
 					<SubOverskrift label="Bestillingskriterier" />

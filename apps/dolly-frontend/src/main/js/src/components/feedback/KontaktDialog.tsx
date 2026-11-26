@@ -10,10 +10,10 @@ import { Logger } from '@/logger/Logger'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type Props = {
-	closeModal: () => void
+	closeDialog: () => void
 }
 
-export const KontaktModal = ({ closeModal }: Props) => {
+export const KontaktDialog = ({ closeDialog }: Props) => {
 	const { brukerBilde } = useBrukerProfilBilde()
 	const { brukerProfil } = useBrukerProfil()
 	const { currentBruker } = useCurrentBruker()
@@ -33,12 +33,12 @@ export const KontaktModal = ({ closeModal }: Props) => {
 			brukernavn: isAnonym ? null : brukerProfil?.visningsNavn,
 			tilknyttetOrganisasjon: isAnonym ? null : brukerProfil?.organisasjon,
 		})
-		closeModal()
+		closeDialog()
 	}
 
 	return (
 		<ErrorBoundary>
-			<Dialog open onOpenChange={(open) => !open && closeModal()}>
+			<Dialog open onOpenChange={(open) => !open && closeDialog()}>
 				<Dialog.Popup width="large" closeOnOutsideClick={false}>
 					<Dialog.Header>
 						<Dialog.Title>Kontakt team Dolly</Dialog.Title>
@@ -51,16 +51,16 @@ export const KontaktModal = ({ closeModal }: Props) => {
 						</Dialog.Description>
 					</Dialog.Header>
 					<Dialog.Body>
-						<div className="modal-content">
+						<div className="dialog-content">
 							{isAnonym ? (
 								<Icon kind="user" className="bruker-ikon" />
 							) : (
 								<img alt="Profilbilde" src={brukerBilde || dolly} />
 							)}
-							<div className="modal-input">
+							<div className="dialog-input">
 								<VStack gap="space-12">
 									<Textarea
-										data-testid={TestComponentSelectors.INPUT_KONTAKT_MODAL}
+										data-testid={TestComponentSelectors.INPUT_KONTAKT_DIALOG}
 										value={melding}
 										label="Melding"
 										placeholder="Forsøk å være så spesifikk som mulig"

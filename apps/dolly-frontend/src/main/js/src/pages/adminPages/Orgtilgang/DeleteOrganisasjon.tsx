@@ -12,14 +12,14 @@ type DeleteTypes = {
 
 export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 	const [isLoading, setIsLoading, resetLoading] = useBoolean(false)
-	const [modalIsOpen, setModalIsOpen] = useState(false)
+	const [dialogIsOpen, setDialogIsOpen] = useState(false)
 	const [error, setError] = useState<Error | null>(null)
 
 	const handleOpenChange = (open: boolean) => {
 		if (open) {
 			setError(null)
 		}
-		setModalIsOpen(open)
+		setDialogIsOpen(open)
 	}
 
 	const slettOrg = async () => {
@@ -28,7 +28,7 @@ export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 			.then(() => {
 				mutate().then(() => {
 					resetLoading()
-					setModalIsOpen(false)
+					setDialogIsOpen(false)
 				})
 			})
 			.catch((error) => {
@@ -38,7 +38,7 @@ export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 	}
 
 	return (
-		<Dialog open={modalIsOpen} onOpenChange={handleOpenChange}>
+		<Dialog open={dialogIsOpen} onOpenChange={handleOpenChange}>
 			<Dialog.Trigger>
 				<Button variant="tertiary" icon={<TrashIcon title="Slett tilgang" />} size="small" />
 			</Dialog.Trigger>

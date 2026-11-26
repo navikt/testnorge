@@ -9,7 +9,7 @@ import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { InlineMessage } from '@navikt/ds-react'
-import { BekreftSlettModal } from '@/components/ui/button/SlettModal/BekreftSlettModal'
+import { BekreftSlettDialog } from '@/components/ui/button/SlettDialog/BekreftSlettDialog'
 
 const EditDeleteKnapper = styled.div`
 	position: absolute;
@@ -88,7 +88,7 @@ export const Visning = ({ data }: VisningProps) => {
 						/>
 
 						<EditDeleteKnapper>
-							<BekreftSlettModal
+							<BekreftSlettDialog
 								tittel="Er du sikker på at du vil slette kontaktinformasjonen?"
 								beskrivelse="Du er i ferd med å slette kontaktinformasjon fra personen. Denne handlingen kan ikke angres."
 								onBekreft={() => handleDelete(data)}

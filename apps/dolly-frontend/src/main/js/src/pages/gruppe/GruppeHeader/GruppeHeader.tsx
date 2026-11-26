@@ -2,12 +2,12 @@ import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
-import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
-import { LaasModal } from '@/components/ui/button/LaasButton/LaasModal'
+import { SlettDialog } from '@/components/ui/button/SlettDialog/SlettDialog'
+import { LaasDialog } from '@/components/ui/button/LaasButton/LaasDialog'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString, formatBrukerNavn, formatStringDates } from '@/utils/DataFormatter'
 import './GruppeHeader.less'
-import { TagsModal } from '@/components/ui/button/Tags/TagsModal'
+import { TagsDialog } from '@/components/ui/button/Tags/TagsDialog'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
@@ -123,7 +123,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 						)}
 						<GjenopprettGruppe gruppeId={gruppeId} />
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<LaasModal
+							<LaasDialog
 								autoMutate={false}
 								gruppeId={gruppe.id}
 								action={laasGruppe}
@@ -131,7 +131,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							/>
 						)}
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<SlettModal
+							<SlettDialog
 								action={deleteGruppe}
 								gruppeId={gruppe.id}
 								loading={isDeletingGruppe}
@@ -141,7 +141,7 @@ const GruppeHeader = ({ gruppeId }: GruppeHeaderProps) => {
 							/>
 						)}
 						{brukertype !== 'BANKID' && (
-							<TagsModal gruppeId={gruppe.id} eksisterendeTags={gruppe.tags} />
+							<TagsDialog gruppeId={gruppe.id} eksisterendeTags={gruppe.tags} />
 						)}
 						{!gruppe.erEierAvGruppe && <FavoriteButton groupId={gruppe.id} />}
 						<EksporterExcel gruppeId={gruppe.id} />

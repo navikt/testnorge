@@ -6,7 +6,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
 import styled from 'styled-components'
 import { formatDate } from '@/utils/DataFormatter'
-import { BekreftSlettModal } from '@/components/ui/button/SlettModal/BekreftSlettModal'
+import { BekreftSlettDialog } from '@/components/ui/button/SlettDialog/BekreftSlettDialog'
 
 type Data = {
 	data: NorskBankkontoData
@@ -64,7 +64,7 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 			</div>
 			{extraButtons && (
 				<EditDeleteKnapper>
-					<BekreftSlettModal
+					<BekreftSlettDialog
 						tittel="Er du sikker på at du vil slette bankkontoen?"
 						beskrivelse="Du er i ferd med å slette en bankkonto fra personen. Denne handlingen kan ikke angres."
 						onBekreft={handleDelete}

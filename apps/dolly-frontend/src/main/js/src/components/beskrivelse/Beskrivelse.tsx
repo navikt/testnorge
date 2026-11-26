@@ -7,11 +7,11 @@ import { Textarea } from '@navikt/ds-react'
 type BeskrivelseProps = {
 	ident: { beskrivelse: string; ident: number }
 	isUpdatingBeskrivelse: boolean
-	closeModal: () => void
+	closeDialog: () => void
 	updateBeskrivelse: (arg0: any, arg1: string) => Promise<any>
 }
 export const Beskrivelse = ({
-	closeModal,
+	closeDialog,
 	ident: { beskrivelse: besk, ident },
 	isUpdatingBeskrivelse,
 	updateBeskrivelse,
@@ -20,7 +20,7 @@ export const Beskrivelse = ({
 	const [beskrivelse, setBeskrivelse] = React.useState(besk)
 
 	if (isUpdatingBeskrivelse) {
-		closeModal && closeModal()
+		closeDialog && closeDialog()
 		return <Loading label="oppdaterer kommentar" />
 	}
 

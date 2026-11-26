@@ -1,5 +1,5 @@
 import { arrayToString } from '@/utils/DataFormatter'
-import { GjenopprettModal } from './GjenopprettModal'
+import { GjenopprettDialog } from './GjenopprettDialog'
 import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { useSWRConfig } from 'swr'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -47,7 +47,7 @@ export default function GjenopprettBestilling(props: GjenopprettBestillingProps)
 	}
 
 	return (
-		<GjenopprettModal
+		<GjenopprettDialog
 			environments={environments}
 			submitForm={submitForm}
 			title={`Gjenopprett bestilling #${bestilling.id}`}

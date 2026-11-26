@@ -4,18 +4,18 @@ import { Dialog } from '@navikt/ds-react'
 
 type Props = {
 	ident: { beskrivelse: string; ident: number }
-	closeModal: () => void
+	closeDialog: () => void
 }
 
-export const KommentarModal = ({ ident, closeModal }: Props) => (
+export const KommentarDialog = ({ ident, closeDialog }: Props) => (
 	<ErrorBoundary>
-		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+		<Dialog open onOpenChange={(open) => !open && closeDialog()}>
 			<Dialog.Popup width="medium">
 				<Dialog.Header>
 					<Dialog.Title>Endre kommentar</Dialog.Title>
 				</Dialog.Header>
 				<Dialog.Body>
-					<BeskrivelseConnector ident={ident} closeModal={closeModal} />
+					<BeskrivelseConnector ident={ident} closeDialog={closeDialog} />
 				</Dialog.Body>
 			</Dialog.Popup>
 		</Dialog>

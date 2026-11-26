@@ -13,7 +13,7 @@ import { ArrowsCirclepathIcon, ExclamationmarkTriangleFillIcon } from '@navikt/a
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString } from '@/utils/DataFormatter'
 
-type GjenopprettModalProps = {
+type GjenopprettDialogProps = {
 	environments?: Array<string>
 	submitForm: any
 	title: string
@@ -25,7 +25,7 @@ type GjenopprettModalProps = {
 	disabledTitle?: string
 }
 
-export const GjenopprettModal = ({
+export const GjenopprettDialog = ({
 	environments,
 	submitForm,
 	title,
@@ -35,7 +35,7 @@ export const GjenopprettModal = ({
 	bestilteMiljoer,
 	disabled = false,
 	disabledTitle = undefined,
-}: GjenopprettModalProps) => {
+}: GjenopprettDialogProps) => {
 	const [open, setOpen] = useState(false)
 	const [gjenopprettLoading, setGjenopprettLoading] = useState(false)
 

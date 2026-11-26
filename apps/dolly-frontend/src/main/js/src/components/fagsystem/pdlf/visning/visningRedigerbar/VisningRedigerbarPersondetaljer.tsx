@@ -102,7 +102,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [errorMessageSkjerming, setErrorMessageSkjerming] = useState(null)
-	const [slettModalOpen, setSlettModalOpen] = useState(false)
+	const [slettDialogOpen, setSlettDialogOpen] = useState(false)
 	const [slettAttr, setSlettAttr] = useState<SlettAttr>(initialSlettAttr)
 	const formMethods = useForm({
 		mode: 'onBlur',
@@ -269,15 +269,15 @@ export const VisningRedigerbarPersondetaljer = ({
 		})
 	}
 
-	const handleSlettModalOpenChange = (open: boolean) => {
-		setSlettModalOpen(open)
+	const handleSlettDialogOpenChange = (open: boolean) => {
+		setSlettDialogOpen(open)
 		if (!open) {
 			setSlettAttr(initialSlettAttr)
 		}
 	}
 
-	const slettModal = (
-		<Dialog open={slettModalOpen} onOpenChange={handleSlettModalOpenChange}>
+	const slettDialog = (
+		<Dialog open={slettDialogOpen} onOpenChange={handleSlettDialogOpenChange}>
 			<Dialog.Trigger>
 				<AkselButton size="xsmall" variant="tertiary" icon={<TrashIcon title="Slett" />} />
 			</Dialog.Trigger>
@@ -318,7 +318,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						disabled={valgteSlettAttr.length === 0}
 						onClick={() => {
 							const attrSomSkalSlettes = slettAttr
-							handleSlettModalOpenChange(false)
+							handleSlettDialogOpenChange(false)
 							return handleDelete(attrSomSkalSlettes)
 						}}
 					>
@@ -342,7 +342,7 @@ export const VisningRedigerbarPersondetaljer = ({
 							icon={<PencilIcon title="Endre" />}
 							onClick={() => setVisningModus(Modus.Skriv)}
 						/>
-						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && slettModal}
+						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && slettDialog}
 					</EditDeleteKnapper>
 					<div className="flexbox--full-width">
 						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}

@@ -32,7 +32,7 @@ const validation = Yup.object().shape({
 
 const FORM_ID = 'opprett-rediger-team'
 
-export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
+export const OpprettRedigerTeam = ({ team = null, closeDialog, mutate }) => {
 	const erOppretting = !team
 
 	const [isLoading, setIsLoading] = useState(false)
@@ -78,7 +78,7 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 					setError('Noe gikk galt under oppretting av team: ' + response.data?.error)
 					setIsLoading(false)
 				} else {
-					closeModal()
+					closeDialog()
 					setIsLoading(false)
 					return mutate()
 				}
@@ -98,7 +98,7 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 					setError('Noe gikk galt under redigering av team: ' + response.data?.error)
 					setIsLoading(false)
 				} else {
-					closeModal()
+					closeDialog()
 					setIsLoading(false)
 					return mutate()
 				}
@@ -110,7 +110,7 @@ export const OpprettRedigerTeam = ({ team = null, closeModal, mutate }) => {
 	}
 
 	return (
-		<Dialog open onOpenChange={(open) => !open && closeModal()}>
+		<Dialog open onOpenChange={(open) => !open && closeDialog()}>
 			<Dialog.Popup closeOnOutsideClick={false}>
 				<Dialog.Header>
 					<Dialog.Title>{team ? `Rediger team ${team.navn}` : 'Opprett team'}</Dialog.Title>
