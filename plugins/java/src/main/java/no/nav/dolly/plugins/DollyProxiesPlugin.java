@@ -75,6 +75,13 @@ public class DollyProxiesPlugin implements Plugin<Project> {
             imports.mavenBom("org.springframework.session:spring-session-bom:" + versions.springSessionBom);
             imports.mavenBom("org.testcontainers:testcontainers-bom:" + versions.testcontainers);
         });
+        dependencyManagement.dependencies(managed -> {
+            managed.dependency("at.yawk.lz4:lz4-java:" + versions.lz4);
+            managed.dependency("com.google.guava:guava:" + versions.guava);
+            managed.dependency("com.ongres.scram:scram-client:" + versions.scram);
+            managed.dependency("com.ongres.scram:scram-common:" + versions.scram);
+            managed.dependency("org.xerial.snappy:snappy-java:" + versions.snappy);
+        });
 
         project.getTasks().withType(JavaCompile.class).configureEach(task ->
                 task.getOptions().getCompilerArgs().add("-parameters")

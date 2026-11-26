@@ -85,7 +85,8 @@ export default () => {
 							På denne siden finner du en oversikt over dine egne organisasjoner. Du kan opprette
 							nye organisasjoner ved å trykke på knappen under.
 							<br />
-							Kontakt oss gjerne på {dollySlack} dersom du har spørsmål eller innspill.
+							Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>{' '}
+							dersom du har spørsmål eller innspill.
 						</Hjelpetekst>
 					</div>
 				</div>

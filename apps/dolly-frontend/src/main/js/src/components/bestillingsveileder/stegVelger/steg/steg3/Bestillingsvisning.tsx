@@ -6,6 +6,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/bestillingsdata/Bestillingsdata'
 import * as _ from 'lodash-es'
 import { BestillingsdataOrganisasjon } from '@/components/bestilling/sammendrag/bestillingsdata/BestillingsdataOrganisasjon'
+import { VergemaalOppsummeringAdvarsel } from '@/components/fagsystem/pdlf/form/partials/vergemaal/NavTjenestevirksomhetAdvarsel'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -56,6 +57,7 @@ export const Bestillingsvisning = ({ bestilling }: any) => {
 
 	return (
 		<div className="bestilling-data" style={{ paddingBottom: showVisMerButton ? '30px' : 0 }}>
+			<VergemaalOppsummeringAdvarsel vergemaalListe={bestilling?.pdldata?.person?.vergemaal} />
 			<div
 				ref={contentRef}
 				style={visMer ? undefined : { maxHeight: bestillingMaxHeight, overflowY: 'hidden' }}

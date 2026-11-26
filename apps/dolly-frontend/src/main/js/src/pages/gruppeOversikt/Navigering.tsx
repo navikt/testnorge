@@ -6,10 +6,11 @@ import Select, {
 	InputActionMeta,
 	OptionProps,
 } from 'react-select'
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Highlighter from 'react-highlight-words'
+import { InlineMessage } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { resetFeilmelding } from '@/ducks/finnPerson'
 import { useReduxDispatch } from '@/utils/hooks/useRedux'
@@ -283,22 +284,39 @@ const Navigering = () => {
 		}
 	}, [normalizedFragment, searchPerson])
 
+	const resetSearch = useCallback(() => {
+		requestIdRef.current += 1
+		nextPageRef.current = 1
+		hasMorePdlfRef.current = false
+		hasMorePdlRef.current = false
+		isLoadingMoreRef.current = false
+		setFragment('')
+		setOptions([])
+		setIsLoading(false)
+		setIsLoadingMore(false)
+	}, [])
+
+	const clearError = useCallback(() => {
+		dispatch(resetFeilmelding())
+		resetPersonError()
+		setError(null)
+	}, [dispatch, resetPersonError])
+
+	useEffect(() => {
+		return () => {
+			dispatch(resetFeilmelding())
+		}
+	}, [dispatch])
+
 	const handleSearchSelect = useCallback(
 		(option: NavigeringOption | null) => {
-			dispatch(resetFeilmelding())
-			if (!option?.value) return
+			if (!option?.value) {
+				clearError()
+				return
+			}
 
-			requestIdRef.current += 1
-			nextPageRef.current = 1
-			hasMorePdlfRef.current = false
-			hasMorePdlRef.current = false
-			isLoadingMoreRef.current = false
-			setFragment('')
-			setOptions([])
-			setIsLoading(false)
-			setIsLoadingMore(false)
-			setError(null)
-			resetPersonError()
+			resetSearch()
+			clearError()
 
 			switch (option.type) {
 				case SoekTypeValg.PERSON:
@@ -312,7 +330,7 @@ const Navigering = () => {
 					break
 			}
 		},
-		[dispatch, resetPersonError, selectPerson, selectBestilling, selectGruppe],
+		[resetSearch, clearError, selectPerson, selectBestilling, selectGruppe],
 	)
 
 	const handleInputChange = useCallback(
@@ -320,13 +338,11 @@ const Navigering = () => {
 			if (actionMeta.action !== 'input-change') {
 				return
 			}
-			dispatch(resetFeilmelding())
-			resetPersonError()
-			setError(null)
+			clearError()
 			setFragment(tekst)
 			startSearch(tekst.trim())
 		},
-		[dispatch, resetPersonError, startSearch],
+		[clearError, startSearch],
 	)
 
 	const displayError = error || personFeilmelding
@@ -335,7 +351,7 @@ const Navigering = () => {
 	return (
 		<ErrorBoundary>
 			<NavigeringContext.Provider value={contextValue}>
-				<div>
+				<div className="navigering">
 					<div
 						data-testid={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
 						className="finnperson-container skjemaelement"
@@ -358,6 +374,8 @@ const Navigering = () => {
 								windowHeight > 800 ? 500 : windowHeight < 500 ? 300 : windowHeight - 400
 							}
 							onChange={handleSearchSelect}
+							onBlur={resetSearch}
+							blurInputOnSelect={true}
 							backspaceRemovesValue={true}
 							aria-label="Person"
 							placeholder={'Søk etter navn, ident, aktør-ID, bestilling eller gruppe'}
@@ -367,13 +385,15 @@ const Navigering = () => {
 						/>
 					</div>
 					{displayError && (
-						<div
+						<InlineMessage
+							className="navigering-feilmelding"
+							status="error"
+							size="small"
+							role="alert"
 							data-testid={TestComponentSelectors.ERROR_MESSAGE_NAVIGERING}
-							className="error-message"
-							style={{ marginTop: '10px', maxWidth: '330px' }}
 						>
 							{displayError}
-						</div>
+						</InlineMessage>
 					)}
 				</div>
 			</NavigeringContext.Provider>

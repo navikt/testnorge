@@ -265,6 +265,7 @@ export const VisningRedigerbar = ({
 						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
+						erRedigering
 					/>
 				)
 			case Attributt.Boadresse:
@@ -385,7 +386,7 @@ export const VisningRedigerbar = ({
 					</>
 				)}
 				{visningModus === Modus.Skriv && (
-					<Form onSubmit={(data) => handleSubmit(data)}>
+					<Form>
 						<>
 							{visFormState && (
 								<>
@@ -399,6 +400,7 @@ export const VisningRedigerbar = ({
 								<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
 								<Knappegruppe>
 									<NavButton
+										type="button"
 										variant="secondary"
 										style={{ marginRight: '10px' }}
 										onClick={onNavButtonClick}
@@ -407,6 +409,7 @@ export const VisningRedigerbar = ({
 										Avbryt
 									</NavButton>
 									<NavButton
+										type="button"
 										variant="primary"
 										onClick={() => handleSubmit(formMethods.watch())}
 										disabled={formMethods.formState.isSubmitting}

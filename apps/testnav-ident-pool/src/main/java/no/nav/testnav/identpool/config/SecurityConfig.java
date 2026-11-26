@@ -20,7 +20,9 @@ class SecurityConfig {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(DollyServerHttpSecurity.withDefaultHttpRequests())
+                .authorizeExchange(exchanges ->
+                        DollyServerHttpSecurity.withDefaultHttpRequests()
+                                .customize(exchanges))
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults())).build();
     }
 }

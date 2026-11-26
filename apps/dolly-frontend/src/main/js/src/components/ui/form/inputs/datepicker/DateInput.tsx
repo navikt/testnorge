@@ -36,6 +36,7 @@ type DateInputProps = {
 	className?: string
 	placeholder?: string
 	isDisabled?: boolean
+	title?: string | null
 	autoFocus?: boolean
 	value?: string
 	style?: React.CSSProperties
@@ -55,6 +56,7 @@ export const DateInput = ({
 	fieldName,
 	className,
 	isDisabled,
+	title,
 	datepickerOnclick,
 	autoFocus,
 	style,
@@ -122,6 +124,7 @@ export const DateInput = ({
 				value={controlledValue !== undefined ? controlledValue : formattedValue || fieldValue || ''}
 				type="text"
 				disabled={isDisabled}
+				title={title ?? undefined}
 				autoFocus={autoFocus}
 				className={inputClassNames}
 				placeholder={placeholder}

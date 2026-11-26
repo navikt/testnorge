@@ -148,7 +148,9 @@ const VergemaalVisning = ({
 	relasjoner,
 	erPdlVisning,
 }: VergemaalVisningTypes) => {
-	const initVergemaal = Object.assign(_.cloneDeep(initialVergemaal), data[idx])
+	const initVergemaal = Object.assign(_.cloneDeep(initialVergemaal), data[idx], {
+		tjenesteomraade: data[idx]?.tjenesteomraade ?? [],
+	})
 	let initialValues = { vergemaal: initVergemaal }
 
 	const redigertVergemaalPdlf = _.get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
@@ -167,7 +169,9 @@ const VergemaalVisning = ({
 
 	let redigertVergemaalValues = redigertVergemaalPdlf
 		? {
-				vergemaal: Object.assign(_.cloneDeep(initialVergemaal), redigertVergemaalPdlf),
+				vergemaal: Object.assign(_.cloneDeep(initialVergemaal), redigertVergemaalPdlf, {
+					tjenesteomraade: redigertVergemaalPdlf.tjenesteomraade ?? [],
+				}),
 			}
 		: null
 	if (redigertVergemaalValues) {
