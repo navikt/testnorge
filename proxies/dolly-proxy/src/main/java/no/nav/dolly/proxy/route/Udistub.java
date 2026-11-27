@@ -2,6 +2,7 @@ package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
+import no.nav.dolly.proxy.config.Consumers;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -15,17 +16,13 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 @RequiredArgsConstructor
 class Udistub {
 
-    private static final String CLUSTER = "dev-fss";
-    private static final String NAME = "testnav-udi-stub";
-    private static final String NAMESPACE = "dolly";
-
-    private final Targets targets;
+    private final Consumers consumers;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
 
         var authenticationFilter = authenticationFilterService
-                .getNavAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.udistub);
+                .getNavAuthenticationFilter(consumers.getUdistub());
 
         return spec -> spec
                 .path("/udistub/**")
@@ -33,7 +30,7 @@ class Udistub {
                         .stripPrefix(1)
                         .setResponseHeader(CONTENT_TYPE, "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
-                .uri(targets.udistub);
+                .uri(consumers.getUdistub().getUrl());
 
     }
 

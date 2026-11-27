@@ -2,6 +2,7 @@ package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
+import no.nav.dolly.proxy.config.Consumers;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -13,17 +14,13 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Fullmakt {
 
-    private static final String CLUSTER = "dev-gcp";
-    private static final String NAMESPACE = "repr";
-    private static final String NAME = "fullmakt";
-
-    private final Targets targets;
+    private final Consumers consumers;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build() {
 
         var authenticationFilter = authenticationFilterService
-                .getFakedingsAuthenticationFilter(CLUSTER, NAMESPACE, NAME, targets.fullmakt);
+                .getFakedingsAuthenticationFilter(consumers.getFullmakt());
 
         return spec -> spec
                 .path("/fullmakt/**")
@@ -31,7 +28,7 @@ class Fullmakt {
                         .stripPrefix(1)
                         .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
                         .filter(authenticationFilter))
-                .uri(targets.fullmakt);
+                .uri(consumers.getFullmakt().getUrl());
 
     }
 

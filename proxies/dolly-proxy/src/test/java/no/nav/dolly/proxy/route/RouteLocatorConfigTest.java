@@ -113,42 +113,56 @@ class RouteLocatorConfigTest {
 
     @DynamicPropertySource
     static void setDynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.fakedings.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.fakedings.url", () -> wireMockServer.baseUrl());
 
-        registry.add("app.targets.aareg-services", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.aareg-vedlikehold", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.arena-forvalteren", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.arena-ords", () -> wireMockServer.baseUrl());
         registry.add("app.targets.batch", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.oppfoelgingsvedtak14a", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.brregstub", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.dokarkiv", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.ereg", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.fullmakt", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.henvendelse", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.histark", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.inntektstub", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.inst", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.kelvin-aap", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.kontoregister", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.skattekort-q1", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.skattekort-q2", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.krrstub", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.medl", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.norg2", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.oppfoelging", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pdl-api", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pdl-api-q1", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pdl-identhendelse", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pdl-testdata", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pensjon", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pensjon-afp", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.pensjon-samboer", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.saf", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.sigrunstub", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.skjermingsregister", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.sykemelding", () -> wireMockServer.baseUrl());
-        registry.add("app.targets.udistub", () -> wireMockServer.baseUrl());
+        registry.add("consumers.aareg-services-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.aareg-services-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.aareg-services-q4.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.aareg-vedlikehold-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.aareg-vedlikehold-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.aareg-vedlikehold-q4.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.arena-forvalteren.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.arena-ords-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.arena-ords-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.arena-ords-q4.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.brregstub.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.dokarkiv-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.dokarkiv-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.dokarkiv-q4.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.ereg-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.ereg-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.ereg-q4.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.fullmakt.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.henvendelse.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.histark.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.inntektstub.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.inst.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.kelvin-aap.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.kontoregister.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.krrstub.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.medl.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.norg2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.oppfoelging.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.oppfoelgingsvedtak14a.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pdl-api-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pdl-api-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pdl-identhendelse.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pdl-testdata.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pensjon.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pensjon-afp-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pensjon-afp-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pensjon-samboer-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.pensjon-samboer-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.saf-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.saf-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.saf-q4.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.sigrunstub.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.skattekort-q1.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.skattekort-q2.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.skjermingsregister.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.sykemelding.url", () -> wireMockServer.baseUrl());
+        registry.add("consumers.udistub.url", () -> wireMockServer.baseUrl());
     }
 
     @ParameterizedTest
@@ -840,7 +854,7 @@ class RouteLocatorConfigTest {
     void testPdl(Pdl.SpecialCase env) {
 
         var url = "/some/path";
-        var responseBody = "Success from mocked " + env.getName();
+        var responseBody = "Success from mocked " + env.name();
         switch (env) {
 
             case Pdl.SpecialCase.API -> {

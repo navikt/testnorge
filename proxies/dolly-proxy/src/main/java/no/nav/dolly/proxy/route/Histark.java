@@ -1,6 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.proxy.config.Consumers;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -12,13 +13,13 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Histark {
 
-    private final Targets targets;
+    private final Consumers consumers;
 
     Function<PredicateSpec, Buildable<Route>> build() {
         return spec -> spec
                 .path("/histark/**")
                 .filters(f -> f.stripPrefix(1))
-                .uri(targets.histark);
+                .uri(consumers.getHistark().getUrl());
     }
 
 }

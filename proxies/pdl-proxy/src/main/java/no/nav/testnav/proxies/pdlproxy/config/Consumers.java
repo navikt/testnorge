@@ -27,5 +27,7 @@ public class Consumers {
     private ServerProperties pdlApi;
     private ServerProperties pdlApiQ1;
     private ServerProperties pdlTestdata;
+    private ServerProperties pdlIdenthendelse;
+    private ServerProperties pdlAktor;
 
 }

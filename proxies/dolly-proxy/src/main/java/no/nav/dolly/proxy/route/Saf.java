@@ -2,6 +2,7 @@ package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
+import no.nav.dolly.proxy.config.Consumers;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -14,37 +15,35 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Saf {
 
-    private static final String CLUSTER = "dev-fss";
-    private static final String NAMESPACE = "teamdokumenthandtering";
-    private static final String NAME = "saf%s"; // Note replacement pattern.
-
-    private final Targets targets;
+    private final Consumers consumers;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
 
-        var url = targets.saf.formatted(env.nameAndUrlReplacement);
-        var name = NAME.formatted(env.nameAndUrlReplacement);
+        var serverProperties = switch (env) {
+            case Q1 -> consumers.getSafQ1();
+            case Q2 -> consumers.getSafQ2();
+            case Q4 -> consumers.getSafQ4();
+        };
         var authenticationFilter = authenticationFilterService
-                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
+                .getTrygdeetatenAuthenticationFilter(serverProperties);
 
         return spec -> spec
                 .path("/saf/%s/**".formatted(env.code))
                 .filters(f -> f
                         .stripPrefix(2)
                         .filter(authenticationFilter))
-                .uri(url);
+                .uri(serverProperties.getUrl());
 
     }
 
     @RequiredArgsConstructor
     enum SpecialCase {
-        Q1("q1", "-q1"),
-        Q2("q2", ""),
-        Q4("q4", "-q4");
+        Q1("q1"),
+        Q2("q2"),
+        Q4("q4");
 
         private final String code;
-        private final String nameAndUrlReplacement;
     }
 
 }

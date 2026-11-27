@@ -1,6 +1,7 @@
 package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.proxy.config.Consumers;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -14,11 +15,15 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Ereg {
 
-    private final Targets targets;
+    private final Consumers consumers;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
 
-        var uri = targets.ereg.contains("%s") ? targets.ereg.formatted(env.code) : targets.ereg;
+        var uri = switch (env) {
+            case Q1 -> consumers.getEregQ1().getUrl();
+            case Q2 -> consumers.getEregQ2().getUrl();
+            case Q4 -> consumers.getEregQ4().getUrl();
+        };
 
         return spec -> spec
                 .path("/ereg/api/%s/**".formatted(env.code))

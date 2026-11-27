@@ -29,6 +29,11 @@ logging:
           gateway: INFO
 
 consumers:
+  fakedings:
+    url: https://fakedings.intern.dev.nav.no
+    cluster: dev-gcp
+    namespace: nais
+    name: fakedings
   yrkesskade:
     url: http://yrkesskade-datagenerator-service.yrkesskade.svc.cluster.local
     cluster: dev-gcp

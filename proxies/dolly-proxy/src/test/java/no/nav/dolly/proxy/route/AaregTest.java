@@ -4,7 +4,7 @@ import no.nav.dolly.libs.test.DollySpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DollySpringBootTest
 class AaregTest {
@@ -13,45 +13,43 @@ class AaregTest {
     private Aareg aareg;
 
     @Test
-    void testCorrectNames() {
-
-        // Readable.
-        assertThat(aareg.getName(Aareg.SpecialCase.Q1, false))
+    void shouldUseReadableNamesPerEnvironment() {
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q1, false).getName())
                 .isEqualTo("aareg-services-nais-q1");
-        assertThat(aareg.getName(Aareg.SpecialCase.Q2, false))
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q2, false).getName())
                 .isEqualTo("aareg-services-nais");
-        assertThat(aareg.getName(Aareg.SpecialCase.Q4, false))
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q4, false).getName())
                 .isEqualTo("aareg-services-nais-q4");
-
-        // Writeable.
-        assertThat(aareg.getName(Aareg.SpecialCase.Q1, true))
-                .isEqualTo("aareg-dolly-api-q1");
-        assertThat(aareg.getName(Aareg.SpecialCase.Q2, true))
-                .isEqualTo("aareg-dolly-api-q2");
-        assertThat(aareg.getName(Aareg.SpecialCase.Q4, true))
-                .isEqualTo("aareg-dolly-api-q4");
-
     }
 
     @Test
-    void testCorrectUrls() {
+    void shouldUseWriteableNamesPerEnvironment() {
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q1, true).getName())
+                .isEqualTo("aareg-dolly-api-q1");
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q2, true).getName())
+                .isEqualTo("aareg-dolly-api-q2");
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q4, true).getName())
+                .isEqualTo("aareg-dolly-api-q4");
+    }
 
-        // Readable.
-        assertThat(aareg.getUrl(Aareg.SpecialCase.Q1, false))
+    @Test
+    void shouldUseReadableUrlsPerEnvironment() {
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q1, false).getUrl())
                 .contains("://aareg-services-q1.");
-        assertThat(aareg.getUrl(Aareg.SpecialCase.Q2, false))
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q2, false).getUrl())
                 .contains("://aareg-services.");
-        assertThat(aareg.getUrl(Aareg.SpecialCase.Q4, false))
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q4, false).getUrl())
                 .contains("://aareg-services-q4.");
+    }
 
-        // Writeable.
-        assertThat(aareg.getUrl(Aareg.SpecialCase.Q1, true))
+    @Test
+    void shouldUseWriteableUrlsPerEnvironment() {
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q1, true).getUrl())
                 .contains("://aareg-dolly-api-q1.");
-        assertThat(aareg.getUrl(Aareg.SpecialCase.Q2, true))
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q2, true).getUrl())
                 .contains("://aareg-dolly-api-q2.");
-        assertThat(aareg.getUrl(Aareg.SpecialCase.Q4, true))
+        assertThat(aareg.getServerProperties(Aareg.SpecialCase.Q4, true).getUrl())
                 .contains("://aareg-dolly-api-q4.");
-
     }
 
 }

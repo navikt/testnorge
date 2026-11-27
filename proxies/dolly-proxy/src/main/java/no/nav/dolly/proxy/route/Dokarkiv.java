@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
+import no.nav.dolly.proxy.config.Consumers;
 import no.nav.dolly.proxy.service.DokarkivUploadService;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
@@ -32,19 +33,21 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class Dokarkiv {
 
-    private static final String CLUSTER = "dev-fss";
-    private static final String NAMESPACE = "teamdokumenthandtering";
-
-    private final Targets targets;
+    private final Consumers consumers;
     private final AuthenticationFilterService authenticationFilterService;
     private final DokarkivUploadService uploadService;
     private final ObjectMapper objectMapper;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env) {
 
-        var url = targets.dokarkiv.formatted(env.code);
+        var serverProperties = switch (env) {
+            case Q1 -> consumers.getDokarkivQ1();
+            case Q2 -> consumers.getDokarkivQ2();
+            case Q4 -> consumers.getDokarkivQ4();
+        };
+        var url = serverProperties.getUrl();
         var authenticationFilter = authenticationFilterService
-                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, env.name, url);
+                .getTrygdeetatenAuthenticationFilter(serverProperties);
 
         return spec -> spec
                 .path("/dokarkiv/api/%s/**".formatted(env.code))
@@ -100,13 +103,12 @@ public class Dokarkiv {
 
     @RequiredArgsConstructor
     public enum SpecialCase {
-        Q1("q1", "dokarkiv-q1"),
-        Q2("q2", "dokarkiv"),
-        Q4("q4", "dokarkiv-q4");
+        Q1("q1"),
+        Q2("q2"),
+        Q4("q4");
 
         @Getter
         private final String code;
-        private final String name;
     }
 
 }

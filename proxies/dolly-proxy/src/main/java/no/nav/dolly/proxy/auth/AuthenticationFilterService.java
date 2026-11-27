@@ -17,22 +17,19 @@ public class AuthenticationFilterService {
     private final FakedingsService fakedingsService;
     private final TokenCache tokenCache;
 
-    public GatewayFilter getNavAuthenticationFilter(String cluster, String namespace, String name, String url) {
-        var serverProperties = ServerProperties.of(cluster, namespace, name, url);
+    public GatewayFilter getNavAuthenticationFilter(ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
                         () -> tokenCache.get(serverProperties, navTokenService::exchange));
     }
 
-    public GatewayFilter getTrygdeetatenAuthenticationFilter(String cluster, String namespace, String name, String url) {
-        var serverProperties = ServerProperties.of(cluster, namespace, name, url);
+    public GatewayFilter getTrygdeetatenAuthenticationFilter(ServerProperties serverProperties) {
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(
                         () -> tokenCache.get(serverProperties, trygdeetatenTokenService::exchange));
     }
 
-    public GatewayFilter getFakedingsAuthenticationFilter(String cluster, String namespace, String name, String url) {
-        var serverProperties = ServerProperties.of(cluster, namespace, name, url);
+    public GatewayFilter getFakedingsAuthenticationFilter(ServerProperties serverProperties) {
         return fakedingsService
                 .bearerAuthenticationHeaderFilter(serverProperties);
     }

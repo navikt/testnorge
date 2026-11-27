@@ -1,10 +1,9 @@
 package no.nav.dolly.proxy.route;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
 import no.nav.dolly.proxy.auth.PdlAuthConfig;
+import no.nav.dolly.proxy.config.Consumers;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -17,23 +16,21 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Pdl {
 
-    private static final String CLUSTER = "dev-fss";
-    private static final String NAMESPACE = "pdl";
-
-    private final Targets targets;
+    private final Consumers consumers;
     private final AuthenticationFilterService authenticationFilterService;
     private final PdlAuthConfig pdlAuthConfig;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull Pdl.SpecialCase env) {
 
-        var url = switch (env) {
-            case API -> targets.pdlApi;
-            case API_Q1 -> targets.pdlApiQ1;
-            case IDENTHENDELSE -> targets.pdlIdenthendelse;
-            case TESTDATA -> targets.pdlTestdata;
+        var serverProperties = switch (env) {
+            case API -> consumers.getPdlApiQ2();
+            case API_Q1 -> consumers.getPdlApiQ1();
+            case IDENTHENDELSE -> consumers.getPdlIdenthendelse();
+            case TESTDATA -> consumers.getPdlTestdata();
         };
+        var url = serverProperties.getUrl();
         var bearerAuthenticationFilter = authenticationFilterService
-                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, env.name, url);
+                .getTrygdeetatenAuthenticationFilter(serverProperties);
         var apiKeyAuthenticationFilter = authenticationFilterService
                 .getApiKeyAuthenticationFilter(pdlAuthConfig.getHendelseApiKey());
 
@@ -72,15 +69,11 @@ class Pdl {
 
     }
 
-    @RequiredArgsConstructor
     enum SpecialCase {
-        API("pdl-api"),
-        API_Q1("pdl-api-q1"),
-        IDENTHENDELSE("pdl-identhendelse"),
-        TESTDATA("pdl-testdata");
-
-        @Getter(AccessLevel.PACKAGE)
-        private final String name;
+        API,
+        API_Q1,
+        IDENTHENDELSE,
+        TESTDATA
     }
 
 }

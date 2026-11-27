@@ -24,8 +24,6 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
 
 app:
-  fakedings:
-    url: https://fakedings.intern.dev.nav.no
   pdl:
     elastic:
       username: ${ELASTIC_USERNAME}
@@ -33,39 +31,248 @@ app:
     hendelse:
       apikey: ${HENDELSE_LAGER_API_KEY}
   targets:
-    aareg-services: https://%s.intern.dev.nav.no # Note host replacement pattern.
-    aareg-vedlikehold: http://%s.arbeidsforhold.svc.nais.local # Note host replacement pattern.
-    arena-forvalteren: http://arena-forvalteren.teamarenanais.svc.nais.local
-    arena-ords: http://arena-ords-%s.teamarenanais.svc.nais.local # Note replacement pattern.
     batch: https://batch.adeo.no
-    brregstub: http://brreg-stub.dolly
-    dokarkiv: https://dokarkiv-%s.intern.dev.nav.no # Note replacement pattern.
-    ereg: https://ereg-services-%s.dev.intern.nav.no # Note replacement pattern.
-    fullmakt: https://fullmakt.intern.dev.nav.no
-    henvendelse: https://sf-henvendelse.intern.dev.nav.no
-    histark: https://histarkimport.dev.intern.nav.no
-    inntektstub: http://inntektstub.team-inntekt
-    inst: http://opphold-testdata.team-rocket.svc.nais.local
-    kelvin-aap: https://aap-behandlingsflyt.intern.dev.nav.no
-    kontoregister: https://sokos-kontoregister-person.intern.dev.nav.no
-    skattekort-q1: https://sokos-skattekort-q1.intern.dev.nav.no
-    skattekort-q2: https://sokos-skattekort.intern.dev.nav.no
-    krrstub: https://digdir-krr-stub.intern.dev.nav.no
-    medl: https://medlemskap-medl-testdata.intern.dev.nav.no
-    norg2: http://norg2.org.svc.nais.local
-    oppfoelging: https://veilarboppfolging.intern.dev.nav.no
-    oppfoelgingsvedtak14a: https://veilarbvedtaksstotte.intern.dev.nav.no
-    pdl-api: http://pdl-api.pdl.svc.nais.local
-    pdl-api-q1: https://pdl-api-q1.pdl.svc.nais.local
-    pdl-identhendelse: http://pdl-identhendelse-lager.pdl.svc.nais.local
-    pdl-testdata: http://pdl-testdata.pdl.svc.nais.local
-    pensjon: http://pensjon-testdata-facade.pensjontestdata
-    pensjon-afp: https://pensjon-afp-offentlig-mock-%s.intern.dev.nav.no # Note replacement pattern.
-    pensjon-samboer: https://pensjon-samboerforhold-backend-%s.intern.dev.nav.no # Note replacement pattern.
-    saf: http://saf%s.teamdokumenthandtering.svc.nais.local # Note replacement pattern.
-    sigrunstub: http://sigrun-skd-stub.team-inntekt.svc.nais.local
-    skjermingsregister: https://skjermede-personer.dev.adeo.no
-    sykemelding: https://tsm-input-dolly.intern.dev.nav.no
-    udistub: http://testnav-udi-stub.dolly
   token-cache:
     grace-period-seconds: 60
+
+consumers:
+  aareg-services-q1:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: aareg-services-nais-q1
+    url: https://aareg-services-q1.intern.dev.nav.no
+  aareg-services-q2:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: aareg-services-nais
+    url: https://aareg-services.intern.dev.nav.no
+  aareg-services-q4:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: aareg-services-nais-q4
+    url: https://aareg-services-q4.intern.dev.nav.no
+  aareg-vedlikehold-q1:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: aareg-dolly-api-q1
+    url: http://aareg-dolly-api-q1.arbeidsforhold.svc.nais.local
+  aareg-vedlikehold-q2:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: aareg-dolly-api-q2
+    url: http://aareg-dolly-api-q2.arbeidsforhold.svc.nais.local
+  aareg-vedlikehold-q4:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: aareg-dolly-api-q4
+    url: http://aareg-dolly-api-q4.arbeidsforhold.svc.nais.local
+  arena-forvalteren:
+    cluster: dev-fss
+    namespace: teamarenanais
+    name: arena-forvalteren
+    url: http://arena-forvalteren.teamarenanais.svc.nais.local
+  arena-ords-q1:
+    cluster: dev-fss
+    namespace: teamarenanais
+    name: arena-ords-q1
+    url: http://arena-ords-q1.teamarenanais.svc.nais.local
+  arena-ords-q2:
+    cluster: dev-fss
+    namespace: teamarenanais
+    name: arena-ords-q2
+    url: http://arena-ords-q2.teamarenanais.svc.nais.local
+  arena-ords-q4:
+    cluster: dev-fss
+    namespace: teamarenanais
+    name: arena-ords-q4
+    url: http://arena-ords-q4.teamarenanais.svc.nais.local
+  brregstub:
+    cluster: dev-fss
+    namespace: dolly
+    name: brreg-stub
+    url: http://brreg-stub.dolly
+  dokarkiv-q1:
+    cluster: dev-fss
+    namespace: teamdokumenthandtering
+    name: dokarkiv-q1
+    url: https://dokarkiv-q1.intern.dev.nav.no
+  dokarkiv-q2:
+    cluster: dev-fss
+    namespace: teamdokumenthandtering
+    name: dokarkiv
+    url: https://dokarkiv-q2.intern.dev.nav.no
+  dokarkiv-q4:
+    cluster: dev-fss
+    namespace: teamdokumenthandtering
+    name: dokarkiv-q4
+    url: https://dokarkiv-q4.intern.dev.nav.no
+  ereg-q1:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: ereg-services-q1
+    url: https://ereg-services-q1.dev.intern.nav.no
+  ereg-q2:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: ereg-services-q2
+    url: https://ereg-services-q2.dev.intern.nav.no
+  ereg-q4:
+    cluster: dev-fss
+    namespace: arbeidsforhold
+    name: ereg-services-q4
+    url: https://ereg-services-q4.dev.intern.nav.no
+  fakedings:
+    url: https://fakedings.intern.dev.nav.no
+    cluster: dev-gcp
+    namespace: nais
+    name: fakedings
+  fullmakt:
+    cluster: dev-gcp
+    namespace: repr
+    name: fullmakt
+    url: https://fullmakt.intern.dev.nav.no
+  henvendelse:
+    cluster: dev-gcp
+    namespace: teamnks
+    name: sf-henvendelse-api-proxy
+    url: https://sf-henvendelse.intern.dev.nav.no
+  histark:
+    cluster: dev-fss
+    namespace: histark
+    name: histarkimport
+    url: https://histarkimport.dev.intern.nav.no
+  inntektstub:
+    cluster: dev-fss
+    namespace: team-inntekt
+    name: inntektstub
+    url: http://inntektstub.team-inntekt
+  inst:
+    cluster: dev-fss
+    namespace: team-rocket
+    name: opphold-testdata
+    url: http://opphold-testdata.team-rocket.svc.nais.local
+  kelvin-aap:
+    cluster: dev-gcp
+    namespace: aap
+    name: behandlingsflyt
+    url: https://aap-behandlingsflyt.intern.dev.nav.no
+  kontoregister:
+    cluster: dev-gcp
+    namespace: okonomi
+    name: sokos-kontoregister-person
+    url: https://sokos-kontoregister-person.intern.dev.nav.no
+  krrstub:
+    cluster: dev-gcp
+    namespace: team-rocket
+    name: digdir-krr-stub
+    url: https://digdir-krr-stub.intern.dev.nav.no
+  medl:
+    cluster: dev-gcp
+    namespace: team-rocket
+    name: medlemskap-medl-testdata
+    url: https://medlemskap-medl-testdata.intern.dev.nav.no
+  norg2:
+    cluster: dev-fss
+    namespace: org
+    name: norg2
+    url: http://norg2.org.svc.nais.local
+  oppfoelging:
+    cluster: dev-gcp
+    namespace: poao
+    name: veilarboppfolging
+    url: https://veilarboppfolging.intern.dev.nav.no
+  oppfoelgingsvedtak14a:
+    cluster: dev-gcp
+    namespace: obo
+    name: veilarbvedtaksstotte
+    url: https://veilarbvedtaksstotte.intern.dev.nav.no
+  pdl-api-q1:
+    cluster: dev-fss
+    namespace: pdl
+    name: pdl-api-q1
+    url: https://pdl-api-q1.pdl.svc.nais.local
+  pdl-api-q2:
+    cluster: dev-fss
+    namespace: pdl
+    name: pdl-api
+    url: http://pdl-api.pdl.svc.nais.local
+  pdl-identhendelse:
+    cluster: dev-fss
+    namespace: pdl
+    name: pdl-identhendelse-lager
+    url: http://pdl-identhendelse-lager.pdl.svc.nais.local
+  pdl-testdata:
+    cluster: dev-fss
+    namespace: pdl
+    name: pdl-testdata
+    url: http://pdl-testdata.pdl.svc.nais.local
+  pensjon:
+    cluster: dev-fss
+    namespace: pensjontestdata
+    name: pensjon-testdata-facade
+    url: http://pensjon-testdata-facade.pensjontestdata
+  pensjon-afp-q1:
+    cluster: dev-gcp
+    namespace: pensjon-saksbehandling
+    name: pensjon-afp-offentlig-mock-q1
+    url: https://pensjon-afp-offentlig-mock-q1.intern.dev.nav.no
+  pensjon-afp-q2:
+    cluster: dev-gcp
+    namespace: pensjon-saksbehandling
+    name: pensjon-afp-offentlig-mock-q2
+    url: https://pensjon-afp-offentlig-mock-q2.intern.dev.nav.no
+  pensjon-samboer-q1:
+    cluster: dev-gcp
+    namespace: pensjon-person
+    name: pensjon-samboerforhold-backend-q1
+    url: https://pensjon-samboerforhold-backend-q1.intern.dev.nav.no
+  pensjon-samboer-q2:
+    cluster: dev-gcp
+    namespace: pensjon-person
+    name: pensjon-samboerforhold-backend-q2
+    url: https://pensjon-samboerforhold-backend-q2.intern.dev.nav.no
+  saf-q1:
+    cluster: dev-fss
+    namespace: teamdokumenthandtering
+    name: saf-q1
+    url: http://saf-q1.teamdokumenthandtering.svc.nais.local
+  saf-q2:
+    cluster: dev-fss
+    namespace: teamdokumenthandtering
+    name: saf
+    url: http://saf.teamdokumenthandtering.svc.nais.local
+  saf-q4:
+    cluster: dev-fss
+    namespace: teamdokumenthandtering
+    name: saf-q4
+    url: http://saf-q4.teamdokumenthandtering.svc.nais.local
+  sigrunstub:
+    cluster: dev-fss
+    namespace: team-inntekt
+    name: sigrun-skd-stub
+    url: http://sigrun-skd-stub.team-inntekt.svc.nais.local
+  skattekort-q1:
+    cluster: dev-gcp
+    namespace: okonomi
+    name: sokos-skattekort-q1
+    url: https://sokos-skattekort-q1.intern.dev.nav.no
+  skattekort-q2:
+    cluster: dev-gcp
+    namespace: okonomi
+    name: sokos-skattekort
+    url: https://sokos-skattekort.intern.dev.nav.no
+  skjermingsregister:
+    cluster: dev-fss
+    namespace: nom
+    name: skjermede-personer
+    url: https://skjermede-personer.dev.adeo.no
+  sykemelding:
+    cluster: dev-gcp
+    namespace: tsm
+    name: tsm-input-dolly
+    url: https://tsm-input-dolly.intern.dev.nav.no
+  udistub:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-udi-stub
+    url: http://testnav-udi-stub.dolly

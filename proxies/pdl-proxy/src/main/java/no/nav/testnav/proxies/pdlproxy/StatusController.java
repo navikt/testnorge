@@ -2,6 +2,7 @@ package no.nav.testnav.proxies.pdlproxy;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
+import no.nav.testnav.proxies.pdlproxy.config.Consumers;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ public class StatusController {
     private static final String TEAM_PDL = "Team Persondata";
 
     private final WebClient webClient;
+    private final Consumers consumers;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, TestnavStatusResponse> getStatus() {
@@ -41,9 +43,10 @@ public class StatusController {
                 "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/readiness",
                 webClient);
 
+        var pdlAktorUrl = consumers.getPdlAktor().getUrl();
         var pdlAktorStatus = checkConsumerStatus(
-                "https://pdl-aktor.dev.intern.nav.no/internal/health/liveness",
-                "https://pdl-aktor.dev.intern.nav.no/internal/health/readiness",
+                pdlAktorUrl + "/internal/health/liveness",
+                pdlAktorUrl + "/internal/health/readiness",
                 webClient);
 
         return Map.of(

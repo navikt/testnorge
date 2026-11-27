@@ -7,10 +7,14 @@ springdoc:
     urls:
       # None, due to CORS.
 
-app:
-  targets:
-    histark: https://histarkimport.dev.intern.nav.no
-    inntektstub: https://inntektstub.intern.dev.nav.no
-    sigrunstub: http://sigrun-skd-stub.team-inntekt.dev.intern.nav.no
-    skjermingsregister: https://skjermede-personer.intern.dev.nav.no
-    udistub: http://testnav-udi-stub.intern.dev.nav.no
+consumers:
+  histark:
+    url: https://histarkimport.dev.intern.nav.no
+  inntektstub:
+    url: https://inntektstub.intern.dev.nav.no
+  sigrunstub:
+    url: http://sigrun-skd-stub.team-inntekt.dev.intern.nav.no
+  skjermingsregister:
+    url: https://skjermede-personer.intern.dev.nav.no
+  udistub:
+    url: http://testnav-udi-stub.intern.dev.nav.no

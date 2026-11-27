@@ -39,3 +39,13 @@ consumers:
     cluster: dev-fss
     name: pdl-api-q1
     namespace: pdl
+  pdl-identhendelse:
+    url: http://pdl-identhendelse-lager.pdl.svc.nais.local
+    cluster: dev-fss
+    name: pdl-identhendelse-lager
+    namespace: pdl
+  pdl-aktor:
+    url: https://pdl-aktor.dev.intern.nav.no
+    cluster: dev-fss
+    name: pdl-aktor
+    namespace: pdl

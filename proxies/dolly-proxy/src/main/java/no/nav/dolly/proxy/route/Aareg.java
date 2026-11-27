@@ -2,6 +2,8 @@ package no.nav.dolly.proxy.route;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.proxy.auth.AuthenticationFilterService;
+import no.nav.dolly.proxy.config.Consumers;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
@@ -15,18 +17,15 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 class Aareg {
 
-    private static final String CLUSTER = "dev-fss";
-    private static final String NAMESPACE = "arbeidsforhold";
-
-    private final Targets targets;
+    private final Consumers consumers;
     private final AuthenticationFilterService authenticationFilterService;
 
     Function<PredicateSpec, Buildable<Route>> build(@NonNull SpecialCase env, boolean writeable) {
 
-        var name = getName(env, writeable);
-        var url = getUrl(env, writeable);
+        var serverProperties = getServerProperties(env, writeable);
+        var url = serverProperties.getUrl();
         var authenticationFilter = authenticationFilterService
-                .getTrygdeetatenAuthenticationFilter(CLUSTER, NAMESPACE, name, url);
+                .getTrygdeetatenAuthenticationFilter(serverProperties);
 
         if (writeable) {
             return spec -> spec
@@ -52,29 +51,28 @@ class Aareg {
 
     }
 
-    String getName(SpecialCase env, boolean writeable) {
-        return writeable ?
-                env.writeableName :
-                env.readableName;
-    }
-
-    String getUrl(SpecialCase env, boolean writeable) {
-        return writeable ?
-                targets.aaregVedlikehold.formatted(env.writeableHost) :
-                targets.aaregServices.formatted(env.readableHost);
+    ServerProperties getServerProperties(SpecialCase env, boolean writeable) {
+        if (writeable) {
+            return switch (env) {
+                case Q1 -> consumers.getAaregVedlikeholdQ1();
+                case Q2 -> consumers.getAaregVedlikeholdQ2();
+                case Q4 -> consumers.getAaregVedlikeholdQ4();
+            };
+        }
+        return switch (env) {
+            case Q1 -> consumers.getAaregServicesQ1();
+            case Q2 -> consumers.getAaregServicesQ2();
+            case Q4 -> consumers.getAaregServicesQ4();
+        };
     }
 
     @RequiredArgsConstructor
     enum SpecialCase {
-        Q1("q1", "aareg-services-nais-q1", "aareg-services-q1", "aareg-dolly-api-q1", "aareg-dolly-api-q1"),
-        Q2("q2", "aareg-services-nais", "aareg-services", "aareg-dolly-api-q2", "aareg-dolly-api-q2"),
-        Q4("q4", "aareg-services-nais-q4", "aareg-services-q4", "aareg-dolly-api-q4", "aareg-dolly-api-q4");
+        Q1("q1"),
+        Q2("q2"),
+        Q4("q4");
 
         private final String code;
-        private final String readableName;
-        private final String readableHost;
-        private final String writeableName;
-        private final String writeableHost;
     }
 
 }

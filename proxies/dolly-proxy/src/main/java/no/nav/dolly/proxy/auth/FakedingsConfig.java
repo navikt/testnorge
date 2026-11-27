@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 class FakedingsConfig {
 
-    @Value("${app.fakedings.url}")
+    @Value("${consumers.fakedings.url}")
     private String url;
 
     @Bean

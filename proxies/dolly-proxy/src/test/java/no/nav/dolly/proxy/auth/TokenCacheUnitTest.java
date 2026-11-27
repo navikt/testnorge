@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureNavTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureTrygdeetatenTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,10 +61,7 @@ class TokenCacheUnitTest {
                 .thenReturn(Mono.empty());
 
         var filter = authenticationFilterService.getNavAuthenticationFilter(
-                "dev-gcp",
-                "dolly",
-                "some-app",
-                "http://some-app"
+                ServerProperties.of("dev-gcp", "dolly", "some-app", "http://some-app")
         );
 
         var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/test").build());
