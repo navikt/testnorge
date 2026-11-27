@@ -115,8 +115,9 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	const disablePersoninfo = formMethods.watch(`${personPath}.identifikasjonsnummer`)
 
 	const kontakter = Options('kontaktType').filter(
-		(type) => type.value !== 'PERSON_FDATO' || opts?.antall === 1,
+		(type) => type.value !== 'PERSON_FDATO' || opts?.antall == 1,
 	)
+
 	return (
 		<Kategori title="Kontakt">
 			<FormSelect
