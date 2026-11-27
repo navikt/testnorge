@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.tenorsearchservice.service;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;

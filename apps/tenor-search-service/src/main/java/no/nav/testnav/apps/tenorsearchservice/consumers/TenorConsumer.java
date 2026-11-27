@@ -1,10 +1,10 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers;
 
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
-import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdata;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
+import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdataCommand;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -41,6 +41,6 @@ public class TenorConsumer {
     public Mono<TenorResponse> getTestdata(String query, InfoType type, String fields, Integer antall, Integer side, Integer seed) {
 
         return maskinportenConsumer.getAccessToken()
-                .flatMap(token -> new GetTenorTestdata(webClient, query, Kilde.FREG, type, fields, antall, side, seed, token.value()).call());
+                .flatMap(token -> new GetTenorTestdataCommand(webClient, query, Kilde.FREG, type, fields, antall, side, seed, token.value()).call());
     }
 }

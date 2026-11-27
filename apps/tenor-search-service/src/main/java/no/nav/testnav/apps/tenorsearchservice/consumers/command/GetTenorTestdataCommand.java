@@ -3,9 +3,9 @@ package no.nav.testnav.apps.tenorsearchservice.consumers.command;
 import tools.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorResponse;
 import no.nav.testnav.libs.reactivecore.web.WebClientError;
 import no.nav.testnav.libs.reactivecore.web.WebClientHeader;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
+public class GetTenorTestdataCommand implements Callable<Mono<TenorResponse>> {
 
     private static final String TENOR_QUERY_URL = "/api/testnorge/v2/soek/{kilde}";
 
@@ -68,7 +68,15 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                             .build())
                 .doOnError(WebClientError.logTo(log))
                 .retryWhen(WebClientError.is5xxException())
-                .onErrorResume(error -> TenorResponse.of(WebClientError.describe(error), query));
+                .onErrorResume(error -> {
+                    var description = WebClientError.describe(error);
+                    return Mono.just(TenorResponse
+                            .builder()
+                            .status(description.getStatus())
+                            .error(description.getMessage())
+                            .query(query)
+                            .build());
+                });
     }
 
     private Integer getAntall(Integer antall, InfoType type) {

@@ -26,7 +26,7 @@ public class TenorOrganisasjonRequest {
     private Boolean registrertIFrivillighetsregisteret;
     private EnhetStatus enhetStatuser;
     private Boolean slettetIEnhetsregisteret;
-    private TenorRequest.Intervall antallAnsatte;
+    private no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorRequest.Intervall antallAnsatte;
     private Boolean revisorer;
     private Boolean regnskapsfoerere;
     private Boolean dagligLeder;
@@ -93,8 +93,8 @@ public class TenorOrganisasjonRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Arbeidsforhold {
-        private TenorRequest.DatoIntervall startDato;
-        private TenorRequest.DatoIntervall sluttDato;
+        private no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorRequest.DatoIntervall startDato;
+        private no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorRequest.DatoIntervall sluttDato;
         private Boolean harPermisjoner;
         private Boolean harPermitteringer;
         private Boolean harTimerMedTimeloenn;

@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tenorsearchservice.domain;
+package no.nav.testnav.libs.dto.tenorsearchservice.v1;
 
 @SuppressWarnings("java:S115")
 public enum Hendelse {

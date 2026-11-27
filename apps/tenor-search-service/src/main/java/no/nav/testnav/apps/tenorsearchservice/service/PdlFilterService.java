@@ -3,7 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.PdlDataConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.BestillingIndexSelector;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorOversiktResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

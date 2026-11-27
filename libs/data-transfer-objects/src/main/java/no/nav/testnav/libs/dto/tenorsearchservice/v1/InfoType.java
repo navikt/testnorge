@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tenorsearchservice.consumers.dto;
+package no.nav.testnav.libs.dto.tenorsearchservice.v1;
 
 @SuppressWarnings("java:S115")
 public enum InfoType {

@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorOrganisasjonRawResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.TenorResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
