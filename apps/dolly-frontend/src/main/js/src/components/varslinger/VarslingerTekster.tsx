@@ -80,8 +80,8 @@ export const hentVarslingTekst = (varslingId: string): VarslingTekst | null => {
 							Brukerdokumentasjon i menyen.
 						</BodyLong>
 						<BodyLong>
-							Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>dersom det er noe du lurer på eller trenger hjelp
-							med.
+							Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>{' '}
+							dersom det er noe du lurer på eller trenger hjelp med.
 						</BodyLong>
 					</VStack>
 				),
@@ -127,8 +127,8 @@ export const hentVarslingTekst = (varslingId: string): VarslingTekst | null => {
 							å gjøre endringer på opprettede personer som har TPS som master.
 						</BodyLong>
 						<BodyLong>
-
-						Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>{' '}dersom du har noen spørsmål eller kommentarer.
+							Kontakt oss gjerne på {dollySlack} evt <a href="mailto:dolly@nav.no">dolly@nav.no</a>{' '}
+							dersom du har noen spørsmål eller kommentarer.
 						</BodyLong>
 					</VStack>
 				),
