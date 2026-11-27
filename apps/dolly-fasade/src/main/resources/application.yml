@@ -33,3 +33,8 @@ consumers:
     namespace: dolly
     url: http://testnav-person-service.dolly.svc.cluster.local
     cluster: dev-gcp
+  tenor-search-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tenor-search-service
+    url: http://testnav-tenor-search-service.dolly.svc.cluster.local

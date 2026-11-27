@@ -18,4 +18,5 @@ public class Consumers {
 
     private ServerProperties identPool;
     private ServerProperties personService;
+    private ServerProperties tenorSearchService;
 }
