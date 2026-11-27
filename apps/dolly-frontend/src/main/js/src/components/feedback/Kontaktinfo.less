@@ -1,50 +1,50 @@
 @import (reference) '@/styles/variables.less';
 
-.btn-modal {
-  cursor: pointer;
-  position: fixed;
-  z-index: 100;
-  right: 30px;
-  bottom: 70px;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  background-color: var(--ax-bg-accent-strong);
-  border: 0px;
-  box-shadow: var(--ax-shadow-dialog);
+.btn-dialog {
+	cursor: pointer;
+	position: fixed;
+	z-index: 100;
+	right: 30px;
+	bottom: 70px;
+	border-radius: 50%;
+	width: 60px;
+	height: 60px;
+	background-color: var(--ax-bg-accent-strong);
+	border: 0px;
+	box-shadow: var(--ax-shadow-dialog);
 
-  svg {
-    color: white;
-    padding-top: 4px;
-  }
+	svg {
+		color: white;
+		padding-top: 4px;
+	}
 }
 
-.btn-modal:hover {
-  background-color: var(--ax-bg-accent-strong-hover);
+.btn-dialog:hover {
+	background-color: var(--ax-bg-accent-strong-hover);
 }
 
-.modal-content {
-  display: flex;
-  margin-bottom: -15px;
+.dialog-content {
+	display: flex;
+	margin-bottom: -15px;
 
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    margin-top: 32px;
-  }
+	img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		margin-right: 10px;
+		margin-top: 32px;
+	}
 
-  .bruker-ikon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    margin-top: 32px;
-    fill: @navGra60;
-  }
+	.bruker-ikon {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		margin-right: 10px;
+		margin-top: 32px;
+		fill: @navGra60;
+	}
 
-  .modal-input {
-    width: 90%;
-  }
+	.dialog-input {
+		width: 90%;
+	}
 }

@@ -27,7 +27,7 @@ export const RelatertPersonImportButton = ({
 	master,
 }: Props) => {
 	const [loading, setLoading] = useState(false)
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [dialogIsOpen, openDialog, closeDialog] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState<string | null>(null)
 
 	const mutate = useMatchMutate()
@@ -57,13 +57,13 @@ export const RelatertPersonImportButton = ({
 				size="xsmall"
 				variant="tertiary"
 				icon={<PersonTallShortIcon aria-hidden />}
-				onClick={openModal}
+				onClick={openDialog}
 				disabled={disabled}
 				title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
 			>
 				{importerTitle}
 			</Button>
-			<Dialog open={modalIsOpen} onOpenChange={modalIsOpen ? closeModal : openModal}>
+			<Dialog open={dialogIsOpen} onOpenChange={dialogIsOpen ? closeDialog : openDialog}>
 				<Dialog.Popup>
 					<Dialog.Header>
 						<Dialog.Title>{importerTitle}</Dialog.Title>
@@ -91,7 +91,7 @@ export const RelatertPersonImportButton = ({
 										setFeilmelding('Noe gikk galt')
 									} else {
 										mutate(REGEX_BACKEND_GRUPPER)
-										closeModal()
+										closeDialog()
 									}
 									setLoading(false)
 								})}
@@ -99,6 +99,7 @@ export const RelatertPersonImportButton = ({
 								{relatertPersonIdenter.length > 1 ? (
 									<CheckboxGroup
 										legend="Velg hvilke relaterte personer du ønsker å importere"
+										className="checkbox-group--aksel-default"
 										onChange={handleChange}
 									>
 										{relatertPersonIdenter.map((ident) => {

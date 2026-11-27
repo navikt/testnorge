@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
 import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
-import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
-import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
+import { SlettDialog } from '@/components/ui/button/SlettDialog/SlettDialog'
+import { BestillingSammendragDialog } from '@/components/bestilling/sammendrag/BestillingSammendragDialog'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { HendelseIdPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/HendelseIdPersonMiljoeInfo'
@@ -127,7 +127,7 @@ import { HenvendelseVisning } from '@/components/fagsystem/henvendelse/visning/H
 import { Button, InfoCard } from '@navikt/ds-react'
 import { InformationSquareFillIcon, PlusCircleIcon } from '@navikt/aksel-icons'
 import { OpprettMal } from '@/pages/maler/OpprettMal'
-import { malTyper } from '@/pages/maler/MalModal'
+import { malTyper } from '@/pages/maler/MalDialog'
 import { getIdenttypeFraIdent } from '@/utils/identtype'
 
 export const DEFAULT_RETRY_COUNT = 8
@@ -666,11 +666,11 @@ const PersonVisning = (props: PersonVisningProps) => {
 					{bestillingIdListe?.length > 0 && (
 						<>
 							<OpprettMal id={ident?.ident} malType={malTyper.PERSON} />
-							<BestillingSammendragModal bestillinger={ident?.bestillinger} />
+							<BestillingSammendragDialog bestillinger={ident?.bestillinger} />
 						</>
 					)}
 					{!iLaastGruppe && ident.master !== 'PDL' && (
-						<SlettModal action={slettPerson} loading={loading.slettPerson} slettType={'person'} />
+						<SlettDialog action={slettPerson} loading={loading.slettPerson} slettType={'person'} />
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton slettPerson={slettPerson} loading={loading.slettPerson} />
@@ -867,7 +867,7 @@ const PersonVisning = (props: PersonVisningProps) => {
 				/>
 				<HendelseIdPersonMiljoeInfo ident={ident.ident} relatertePersoner={relatertePersoner} />
 				<TidligereBestillinger ids={ident.bestillingId} erOrg={false} />
-				<BeskrivelseConnector ident={ident} closeModal={() => {}} />
+				<BeskrivelseConnector ident={ident} closeDialog={() => {}} />
 			</div>
 		</ErrorBoundary>
 	)

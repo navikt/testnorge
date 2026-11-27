@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useRef, useState } from 'react'
 // @ts-ignore
 import './Kontaktinfo.less'
-import { KontaktModal } from '@/components/feedback/KontaktModal'
+import { KontaktDialog } from '@/components/feedback/KontaktDialog'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -20,7 +20,7 @@ export const Kontaktinfo = () => {
 			<button
 				ref={buttonRef}
 				data-testid={TestComponentSelectors.BUTTON_OPEN_KONTAKTINFO}
-				className={'btn-modal'}
+				className={'btn-dialog'}
 				onClick={() => setOpenState(!openState)}
 				title="Kontakt oss"
 			>
@@ -35,7 +35,7 @@ export const Kontaktinfo = () => {
 			>
 				<KontaktinfoPanel setOpenState={setOpenState} openKontaktskjema={openKontaktskjema} />
 			</Popover>
-			{isKontaktskjemaOpen && <KontaktModal closeModal={closeKontaktskjema} />}
+			{isKontaktskjemaOpen && <KontaktDialog closeDialog={closeKontaktskjema} />}
 		</ErrorBoundary>
 	)
 }

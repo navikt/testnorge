@@ -59,7 +59,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 		<div className="step-navknapper-wrapper">
 			<div className="step-navknapper">
 				<AvbrytButton action={onAbort}>
-					Er du sikker på at du vil avbryte bestillingen?
+					Er du sikker på at du vil avbryte bestillingen? Endringene vil ikke bli lagret.
 				</AvbrytButton>
 				<div className="step-navknapper--right">
 					{showPrevious && (

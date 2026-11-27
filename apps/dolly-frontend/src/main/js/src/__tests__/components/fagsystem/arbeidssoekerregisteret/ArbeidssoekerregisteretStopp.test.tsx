@@ -60,7 +60,7 @@ describe('ArbeidssoekerregisteretStopp', () => {
 		await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
 	})
 
-	it('keeps the modal open when stopping fails', async () => {
+	it('keeps the dialog open when stopping fails', async () => {
 		const onStopped = vi.fn()
 		mockStoppArbeidssoekerregisteret.mockRejectedValue(new Error('Stopp feilet'))
 

@@ -2,9 +2,9 @@ import { BestillingSammendrag } from '@/components/bestilling/sammendrag/Bestill
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
-import { malTyper } from '@/pages/maler/MalModal'
+import { malTyper } from '@/pages/maler/MalDialog'
 import * as _ from 'lodash-es'
-import { SlettModal } from '@/components/ui/button/SlettModal/SlettModal'
+import { SlettDialog } from '@/components/ui/button/SlettDialog/SlettDialog'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
 import { OpprettMal } from '@/pages/maler/OpprettMal'
@@ -67,7 +67,7 @@ export default function BestillingDetaljer({
 						!harEksisterendeNyIdent &&
 						!harRelatertPersonBarn &&
 						!gjenopprettingsId && <OpprettMal id={bestilling.id} malType={malTyper.BESTILLING} />}
-					<SlettModal
+					<SlettDialog
 						action={DollyApi.slettBestilling}
 						bestillingId={bestilling.id}
 						loading={false}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from '@navikt/ds-react'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { MalModal } from '@/pages/maler/MalModal'
+import { MalDialog } from '@/pages/maler/MalDialog'
 
 interface SoekNyMalDialogProps {
 	verdier: Record<string, unknown>
@@ -23,7 +23,7 @@ export const SoekNyMalDialog = ({ verdier, malType, disabled }: SoekNyMalDialogP
 			>
 				Opprett mal fra søk
 			</Button>
-			<MalModal verdier={verdier} malType={malType} open={open} setOpen={setOpen} />
+			<MalDialog verdier={verdier} malType={malType} open={open} setOpen={setOpen} />
 		</>
 	)
 }

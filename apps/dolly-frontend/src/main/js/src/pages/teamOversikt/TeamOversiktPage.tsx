@@ -9,7 +9,6 @@ import {
 import { TeamVisning } from '@/pages/teamOversikt/TeamVisning'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
 import { OpprettRedigerTeam } from '@/pages/teamOversikt/OpprettRedigerTeam'
 import React, { useState } from 'react'
 import { useBrukerTeams, useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -34,11 +33,11 @@ export default () => {
 
 	const [valgtTeam, setValgtTeam] = useState(null)
 
-	const [opprettRedigerTeamModalIsOpen, openOpprettRedigerTeamModal, closeOpprettRedigerTeamModal] =
+	const [opprettRedigerTeamDialogIsOpen, openOpprettRedigerTeamDialog, closeOpprettRedigerTeamDialog] =
 		useBoolean(false)
-	const [bliMedITeamModalIsOpen, openBliMedITeamModal, closeBliMedITeamModal] = useBoolean(false)
-	const [forlatTeamModalIsOpen, openForlatTeamModal, closeForlatTeamModal] = useBoolean(false)
-	const [slettTeamModalIsOpen, openSlettTeamModal, closeSlettTeamModal] = useBoolean(false)
+	const [bliMedITeamDialogIsOpen, openBliMedITeamDialog, closeBliMedITeamDialog] = useBoolean(false)
+	const [forlatTeamDialogIsOpen, openForlatTeamDialog, closeForlatTeamDialog] = useBoolean(false)
+	const [slettTeamDialogIsOpen, openSlettTeamDialog, closeSlettTeamDialog] = useBoolean(false)
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
@@ -108,7 +107,7 @@ export default () => {
 												<Button
 													onClick={() => {
 														setValgtTeam(team)
-														openForlatTeamModal()
+														openForlatTeamDialog()
 													}}
 													variant="tertiary"
 													icon={
@@ -128,7 +127,7 @@ export default () => {
 												<Button
 													onClick={() => {
 														setValgtTeam(team)
-														openOpprettRedigerTeamModal()
+														openOpprettRedigerTeamDialog()
 													}}
 													variant="tertiary"
 													icon={<PencilWritingIcon title="Rediger team" />}
@@ -139,7 +138,7 @@ export default () => {
 												<Button
 													onClick={() => {
 														setValgtTeam(team)
-														openSlettTeamModal()
+														openSlettTeamDialog()
 													}}
 													variant="tertiary"
 													icon={<TrashIcon title="Slett team" />}
@@ -158,62 +157,58 @@ export default () => {
 						variant={'primary'}
 						onClick={() => {
 							setValgtTeam(null)
-							openOpprettRedigerTeamModal()
+							openOpprettRedigerTeamDialog()
 						}}
 						data-testid={TestComponentSelectors.BUTTON_TEAM_OPPRETT}
 					>
 						Opprett team
 					</Button>
-					<Button variant={'primary'} onClick={openBliMedITeamModal}>
+					<Button variant={'primary'} onClick={openBliMedITeamDialog}>
 						Bli med i team
 					</Button>
 				</Knappegruppe>
-				<DollyModal isOpen={bliMedITeamModalIsOpen} closeModal={closeBliMedITeamModal} width="60%">
+				{bliMedITeamDialogIsOpen && (
 					<BliMedITeam
 						brukerId={currentBruker?.brukerId}
 						brukerTeams={brukerTeams}
-						closeModal={() => {
-							closeBliMedITeamModal()
+						closeDialog={() => {
+							closeBliMedITeamDialog()
 							return mutate()
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
-				<DollyModal isOpen={forlatTeamModalIsOpen} closeModal={closeForlatTeamModal} width="40%">
+				)}
+				{forlatTeamDialogIsOpen && valgtTeam && (
 					<ForlatTeam
 						team={valgtTeam}
 						brukerId={currentBruker?.brukerId}
-						closeModal={() => {
-							closeForlatTeamModal()
+						closeDialog={() => {
+							closeForlatTeamDialog()
 							return mutate()
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
-				<DollyModal
-					isOpen={opprettRedigerTeamModalIsOpen}
-					closeModal={closeOpprettRedigerTeamModal}
-					width="60%"
-				>
+				)}
+				{opprettRedigerTeamDialogIsOpen && (
 					<OpprettRedigerTeam
 						team={valgtTeam}
-						closeModal={() => {
-							closeOpprettRedigerTeamModal()
+						closeDialog={() => {
+							closeOpprettRedigerTeamDialog()
 							return mutate()
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
-				<DollyModal isOpen={slettTeamModalIsOpen} closeModal={closeSlettTeamModal} width="40%">
+				)}
+				{slettTeamDialogIsOpen && valgtTeam && (
 					<SlettTeam
 						team={valgtTeam}
-						closeModal={() => {
-							closeSlettTeamModal()
+						closeDialog={() => {
+							closeSlettTeamDialog()
 							return mutate()
 						}}
 						mutate={mutate}
 					/>
-				</DollyModal>
+				)}
 			</Box>
 		</>
 	)

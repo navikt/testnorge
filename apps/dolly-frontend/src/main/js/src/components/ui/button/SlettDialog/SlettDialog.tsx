@@ -18,7 +18,7 @@ type Props = {
 	slettType: string
 }
 
-export const SlettModal = ({
+export const SlettDialog = ({
 	action,
 	gruppeId,
 	bestillingId,

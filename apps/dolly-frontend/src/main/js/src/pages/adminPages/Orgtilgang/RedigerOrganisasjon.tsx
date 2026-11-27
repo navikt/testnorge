@@ -2,13 +2,9 @@ import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/O
 import { PencilIcon, XMarkOctagonFillIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
 import React, { useState } from 'react'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { Form, FormProvider, useForm } from 'react-hook-form'
-import './RedigerModal.less'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
+import { Controller, useForm } from 'react-hook-form'
 import { miljoer } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
-import { Button, InfoCard } from '@navikt/ds-react'
+import { Button, Checkbox, CheckboxGroup, Dialog, InfoCard } from '@navikt/ds-react'
 
 type RedigerTypes = {
 	orgNr: string
@@ -16,12 +12,18 @@ type RedigerTypes = {
 	mutate: Function
 }
 
+type RedigerValues = {
+	miljoe: string[]
+	organisasjonsnummer: string
+}
+
 export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => {
 	const [isLoading, setIsLoading, resetLoading] = useBoolean(false)
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [error, setError] = useState(null)
+	const [dialogIsOpen, setDialogIsOpen] = useState(false)
+	const [error, setError] = useState<Error | null>(null)
+	const formId = `rediger-organisasjon-${orgNr}`
 
-	const formMethods = useForm({
+	const { handleSubmit, control, watch } = useForm<RedigerValues>({
 		mode: 'onChange',
 		defaultValues: {
 			miljoe: miljoe?.includes(',') ? miljoe.split(',') : [miljoe],
@@ -29,16 +31,23 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 		},
 	})
 
-	const { handleSubmit, control, watch } = formMethods
-	const values = watch()
+	const valgteMiljoer = watch('miljoe')
 
-	const updateOrganisasjon = async () => {
+	const handleOpenChange = (open: boolean) => {
+		if (open) {
+			resetLoading()
+			setError(null)
+		}
+		setDialogIsOpen(open)
+	}
+
+	const updateOrganisasjon = async (values: RedigerValues) => {
 		setIsLoading(true)
 		await OrganisasjonTilgangService.updateOrganisasjon(values)
 			.then(() => {
 				mutate().then(() => {
 					resetLoading()
-					closeModal()
+					setDialogIsOpen(false)
 				})
 			})
 			.catch((error) => {
@@ -48,51 +57,63 @@ export const RedigerOrganisasjon = ({ orgNr, miljoe, mutate }: RedigerTypes) => 
 	}
 
 	return (
-		<FormProvider {...formMethods}>
-			<Button
-				onClick={() => {
-					resetLoading()
-					setError(null)
-					openModal()
-				}}
-				variant={'tertiary'}
-				icon={<PencilIcon title={'Endre tilgang'} />}
-				size={'small'}
-				style={{ marginLeft: '10px' }}
-			/>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'50%'} overflow={'visible'}>
-				<Form control={control} autoComplete="off" onSubmit={handleSubmit(updateOrganisasjon)}>
-					<div className="redigerModal">
-						<div className="redigerModal redigerModal-content">
-							<h1>Oppdatere organisasjonstilgang</h1>
-						</div>
-						<div className="redigerModal redigerModal-input">
-							<FormSelect
-								name={'miljoe'}
-								label={'Miljø'}
-								options={miljoer}
-								isClearable={false}
-								isMulti={true}
-								size={'grow'}
-							/>
-						</div>
-						{error && (
-							<InfoCard data-color="danger" size={'small'}>
-								<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
-									Feil ved oppdatering: {error.message}
-								</InfoCard.Message>
-							</InfoCard>
-						)}
-						<ModalActionKnapper
-							submitknapp="Endre tilgang"
-							disabled={values.miljoe.length === 0}
-							onAvbryt={closeModal}
-							loading={isLoading}
-							center
+		<Dialog open={dialogIsOpen} onOpenChange={handleOpenChange}>
+			<Dialog.Trigger>
+				<Button
+					variant="tertiary"
+					icon={<PencilIcon title="Endre tilgang" />}
+					size="small"
+					style={{ marginLeft: '10px' }}
+				/>
+			</Dialog.Trigger>
+			<Dialog.Popup>
+				<Dialog.Header>
+					<Dialog.Title>Oppdatere organisasjonstilgang</Dialog.Title>
+				</Dialog.Header>
+				<Dialog.Body>
+					<form id={formId} autoComplete="off" onSubmit={handleSubmit(updateOrganisasjon)}>
+						<Controller
+							name="miljoe"
+							control={control}
+							render={({ field }) => (
+								<CheckboxGroup
+									legend="Miljø"
+									className="checkbox-group--aksel-default"
+									value={field.value}
+									onChange={field.onChange}
+									error={field.value?.length === 0 && 'Velg minst ett miljø'}
+								>
+									{miljoer.map((miljoeOption) => (
+										<Checkbox key={miljoeOption.value} value={miljoeOption.value}>
+											{miljoeOption.label}
+										</Checkbox>
+									))}
+								</CheckboxGroup>
+							)}
 						/>
-					</div>
-				</Form>
-			</DollyModal>
-		</FormProvider>
+					</form>
+					{error && (
+						<InfoCard data-color="danger" size="small" style={{ marginTop: '1rem' }}>
+							<InfoCard.Message icon={<XMarkOctagonFillIcon aria-hidden />}>
+								Feil ved oppdatering: {error.message}
+							</InfoCard.Message>
+						</InfoCard>
+					)}
+				</Dialog.Body>
+				<Dialog.Footer>
+					<Dialog.CloseTrigger>
+						<Button variant="secondary">Avbryt</Button>
+					</Dialog.CloseTrigger>
+					<Button
+						type="submit"
+						form={formId}
+						loading={isLoading}
+						disabled={valgteMiljoer?.length === 0}
+					>
+						Endre tilgang
+					</Button>
+				</Dialog.Footer>
+			</Dialog.Popup>
+		</Dialog>
 	)
 }

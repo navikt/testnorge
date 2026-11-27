@@ -7,7 +7,7 @@ import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/ico
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
+import { KommentarDialog } from '@/pages/gruppe/PersonListe/dialog/KommentarDialog'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
 import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
@@ -19,6 +19,8 @@ import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButt
 import { Bestilling, useGruppeById } from '@/utils/hooks/useGruppe'
 import { useLocation } from 'react-router'
 import { usePdlfPersoner } from '@/utils/hooks/usePdlForvalter'
+import { Button } from '@navikt/ds-react'
+import { ChatElipsisIcon } from '@navikt/aksel-icons'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -47,7 +49,7 @@ export default function PersonListe({
 	fetchPdlPersoner,
 	sorting,
 }: any) {
-	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
+	const [isKommentarDialogOpen, openKommentarDialog, closeKommentarDialog] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
@@ -229,12 +231,13 @@ export default function PersonListe({
 							}}
 						>
 							<div>
-								<Icon
-									kind="kommentar"
-									size={20}
+								<Button
+									size="xsmall"
+									variant="tertiary"
+									icon={<ChatElipsisIcon title="Endre kommentar" />}
 									onClick={(event) => {
 										setSelectedIdent(row.ident)
-										openKommentarModal()
+										openKommentarDialog()
 										event.stopPropagation()
 									}}
 								/>
@@ -334,8 +337,8 @@ export default function PersonListe({
 					)}
 					onHeaderClick={onHeaderClick}
 				/>
-				{isKommentarModalOpen && selectedIdent && (
-					<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
+				{isKommentarDialogOpen && selectedIdent && (
+					<KommentarDialog closeDialog={closeKommentarDialog} ident={selectedIdent} />
 				)}
 			</span>
 		</ErrorBoundary>

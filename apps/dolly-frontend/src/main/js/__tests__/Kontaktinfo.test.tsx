@@ -21,10 +21,10 @@ vi.mock('@/components/ui/appError/ErrorBoundary', () => ({
 	ErrorBoundary: ({ children }: any) => <>{children}</>,
 }))
 
-vi.mock('@/components/feedback/KontaktModal', () => ({
-	KontaktModal: ({ closeModal }: any) => (
-		<div data-testid="kontakt-modal">
-			<button onClick={closeModal}>Lukk modal</button>
+vi.mock('@/components/feedback/KontaktDialog', () => ({
+	KontaktDialog: ({ closeDialog }: any) => (
+		<div data-testid="kontakt-dialog">
+			<button onClick={closeDialog}>Lukk dialog</button>
 		</div>
 	),
 }))
@@ -43,7 +43,7 @@ describe('Kontaktinfo', () => {
 		expect(screen.getByText('Kontakt oss', { selector: 'h2' })).toBeInTheDocument()
 	})
 
-	it('should open KontaktModal when kontaktskjema button is clicked', async () => {
+	it('should open KontaktDialog when kontaktskjema button is clicked', async () => {
 		const user = userEvent.setup()
 
 		render(<Kontaktinfo />)
@@ -54,7 +54,7 @@ describe('Kontaktinfo', () => {
 		const kontaktskjemaButton = screen.getByText('Åpne kontaktskjema')
 		await user.click(kontaktskjemaButton)
 
-		expect(screen.getByTestId('kontakt-modal')).toBeInTheDocument()
+		expect(screen.getByTestId('kontakt-dialog')).toBeInTheDocument()
 	})
 })
 

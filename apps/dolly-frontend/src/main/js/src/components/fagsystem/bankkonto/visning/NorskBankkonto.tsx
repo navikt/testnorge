@@ -4,12 +4,9 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
-import Button from '@/components/ui/button/Button'
-import { DollyModal } from '@/components/ui/modal/DollyModal'
-import Icon from '@/components/ui/icon/Icon'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import { formatDate } from '@/utils/DataFormatter'
+import { BekreftSlettDialog } from '@/components/ui/button/SlettDialog/BekreftSlettDialog'
 
 type Data = {
 	data: NorskBankkontoData
@@ -24,19 +21,11 @@ type NorskBankkontoData = {
 
 const EditDeleteKnapper = styled.div`
 	position: absolute;
-	right: 0;
+	right: 8px;
 	top: 0;
-	margin: -5px 10px 0 0;
-
-	&&& {
-		button {
-			position: relative;
-		}
-	}
 `
 
 export const Visning = ({ data, ident, extraButtons }: Data) => {
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [show, , setHide] = useBoolean(true)
 
 	const handleDelete = useCallback(() => {
@@ -75,30 +64,11 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 			</div>
 			{extraButtons && (
 				<EditDeleteKnapper>
-					<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
-					<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-						<div className="slettModal">
-							<div className="slettModal slettModal-content">
-								<Icon size={50} kind="report-problem-circle" />
-								<h1>Slett</h1>
-								<h4>Er du sikker på at du vil slette denne bankkontoen fra personen?</h4>
-							</div>
-							<div className="slettModal-actions">
-								<NavButton onClick={closeModal} variant={'secondary'}>
-									Nei
-								</NavButton>
-								<NavButton
-									onClick={() => {
-										closeModal()
-										return handleDelete()
-									}}
-									variant={'primary'}
-								>
-									Ja, jeg er sikker
-								</NavButton>
-							</div>
-						</div>
-					</DollyModal>
+					<BekreftSlettDialog
+						tittel="Er du sikker på at du vil slette bankkontoen?"
+						beskrivelse="Du er i ferd med å slette en bankkonto fra personen. Denne handlingen kan ikke angres."
+						onBekreft={handleDelete}
+					/>
 				</EditDeleteKnapper>
 			)}
 		</div>

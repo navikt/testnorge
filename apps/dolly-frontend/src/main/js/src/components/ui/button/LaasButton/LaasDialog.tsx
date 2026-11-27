@@ -7,14 +7,14 @@ import {
 import { BodyLong, Dialog, Button } from '@navikt/ds-react'
 import { PadlockLockedIcon } from '@navikt/aksel-icons'
 
-type LaasModalProps = {
+type LaasDialogProps = {
 	action: Function
 	loading: boolean
 	gruppeId: string | number
 	autoMutate?: boolean
 }
 
-export const LaasModal = ({ action, gruppeId, loading, autoMutate = true }: LaasModalProps) => {
+export const LaasDialog = ({ action, gruppeId, loading, autoMutate = true }: LaasDialogProps) => {
 	const matchMutate = useMatchMutate()
 
 	return (

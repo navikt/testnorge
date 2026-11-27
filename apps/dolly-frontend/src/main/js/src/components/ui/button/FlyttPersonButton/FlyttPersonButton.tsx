@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FlyttPersonModal } from '@/components/ui/button/FlyttPersonButton/FlyttPersonModal'
+import { FlyttPersonDialog } from '@/components/ui/button/FlyttPersonButton/FlyttPersonDialog'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Button } from '@navikt/ds-react'
 import { LeaveIcon } from '@navikt/aksel-icons'
@@ -26,7 +26,7 @@ export const FlyttPersonButton = ({
 			>
 				Flytt personer
 			</Button>
-			{open && <FlyttPersonModal gruppeId={gruppeId} open={open} setOpen={setOpen} />}
+			{open && <FlyttPersonDialog gruppeId={gruppeId} open={open} setOpen={setOpen} />}
 		</>
 	)
 }

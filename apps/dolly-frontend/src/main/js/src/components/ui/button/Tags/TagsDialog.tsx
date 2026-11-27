@@ -11,7 +11,7 @@ type Props = {
 	eksisterendeTags: string[]
 }
 
-export const TagsModal = ({ gruppeId, eksisterendeTags }: Props) => {
+export const TagsDialog = ({ gruppeId, eksisterendeTags }: Props) => {
 	const [selectedOptions, setSelectedOptions] = useState(eksisterendeTags)
 	const [open, setOpen] = useState(false)
 	const { tagOptions, loading } = useTags()

@@ -1,4 +1,4 @@
-import { MalModal } from '@/pages/maler/MalModal'
+import { MalDialog } from '@/pages/maler/MalDialog'
 import React, { useState } from 'react'
 import { FileLoadingIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
@@ -18,7 +18,7 @@ export const OpprettMal = ({ id, malType }: { id: string; malType: string }) => 
 			>
 				Opprett mal
 			</Button>
-			<MalModal id={id} malType={malType} open={open} setOpen={setOpen} />
+			<MalDialog id={id} malType={malType} open={open} setOpen={setOpen} />
 		</>
 	)
 }

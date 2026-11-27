@@ -6,7 +6,7 @@ import * as _ from 'lodash-es'
 import React from 'react'
 
 export type Miljostatus = {
-	closeModal?: () => void
+	closeDialog?: () => void
 	bestilling: {
 		status: Bestillingsinformasjon[]
 		systeminfo: string
@@ -117,7 +117,7 @@ const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {
 	)
 }
 
-export default function MiljoeStatus({ bestilling, closeModal }: Miljostatus) {
+export default function MiljoeStatus({ bestilling, closeDialog }: Miljostatus) {
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 	const statusrapport = mapStatusrapport(bestilling.status)
 	const { tekst } = antallIdenterOpprettet(bestilling)
@@ -133,7 +133,7 @@ export default function MiljoeStatus({ bestilling, closeModal }: Miljostatus) {
 					)}
 				</div>
 			)}
-			<FagsystemStatus statusrapport={statusrapport} closeModal={closeModal} />
+			<FagsystemStatus statusrapport={statusrapport} closeDialog={closeDialog} />
 		</div>
 	)
 }
