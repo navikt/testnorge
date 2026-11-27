@@ -5,7 +5,7 @@ import lombok.val;
 import no.nav.testnav.apps.personservice.config.Consumers;
 import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlBolkPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlPersonGetCommand;
-import no.nav.testnav.apps.personservice.provider.v2.PdlMiljoer;
+import no.nav.testnav.libs.dto.personservice.v1.PdlMiljoer;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
