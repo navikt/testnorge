@@ -28,6 +28,7 @@ spec:
       rules:
         - application: dolly-frontend
         - application: dolly-frontend-dev
+        - application: dolly-fasade
         - application: dolly-idporten
         - application: dolly-auth-local
         - application: testnav-oversikt-frontend

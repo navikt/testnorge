@@ -3,7 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorOrganisasjonConsumer;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
+import no.nav.testnav.libs.dto.tenorsearchservice.v1.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.apps.tenorsearchservice.mapper.TenorOrganisasjonResultMapperService;

@@ -1,7 +1,7 @@
 package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.identpool.domain.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
 
 import static java.lang.Integer.parseInt;
 

@@ -26,7 +26,7 @@ public class PdlPersonController {
     @GetMapping("/ident/{ident}")
     @Operation(description = "Henter PDL-person angitt ved ident fra PDL-API / PDL-API-Q1")
     public Mono<JsonNode> pdlPerson(@PathVariable("ident") String ident,
-                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PdlMiljoer
+                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") no.nav.testnav.libs.dto.personservice.v1.PdlMiljoer
                                       pdlMiljoe) {
         return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
     }

@@ -3,14 +3,12 @@ package no.nav.testnav.identpool.config;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.providers.v2.IdentController;
 import no.nav.testnav.identpool.providers.v2.IdentValidatorController;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.service.Identpool32Service;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
-import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
-import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,9 +54,6 @@ class SecurityConfigTest {
 
     @MockitoBean
     private ReactiveJwtDecoder jwtDecoder;
-
-    @MockitoBean
-    private GetUserInfo getUserInfo;
 
     @MockitoBean
     private PersonnummerValidatorService personnummerValidatorService;
@@ -120,10 +115,9 @@ class SecurityConfigTest {
     void shouldAllowAuthenticatedPostToValidationEndpoint() {
         var ident = "14505899947";
         var token = "test-token";
-        var jwt = Jwt.withTokenValue(token).header("alg", "RS256").subject("test-client").build();
+        var jwt = Jwt.withTokenValue(token).header("alg", "RS256").subject("test-client")
+                .claim("NAVident", "Z123456").build();
         when(jwtDecoder.decode(token)).thenReturn(Mono.just(jwt));
-        when(getUserInfo.call()).thenReturn(Mono.just(new UserInfoExtended(
-                "test-client", null, null, null, null, false, List.of())));
         when(personnummerValidatorService.validerFoedselsnummer(List.of(ident))).thenReturn(Flux.empty());
 
         webTestClient.post()
@@ -135,12 +129,11 @@ class SecurityConfigTest {
                 .expectBody().json("[]");
 
         verify(jwtDecoder).decode(token);
-        verify(getUserInfo).call();
         verify(personnummerValidatorService).validerFoedselsnummer(List.of(ident));
         verifyNoInteractions(identpool32Service, personidentifikatorRepository);
         assertThat(logAppender.list)
                 .extracting(ILoggingEvent::getFormattedMessage)
-                .containsExactly("Identvalidering utført av: test-client, totalt antall: 0, herav i prod: 0");
+                .containsExactly("Identvalidering utført av: Z123456, totalt antall: 0, herav i prod: 0");
     }
 
     @ParameterizedTest

@@ -4,25 +4,25 @@ import lombok.val;
 import no.nav.dolly.libs.test.DollySpringBootTest;
 import no.nav.testnav.identpool.config.AbstractTestcontainer;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
-import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
-import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
-import no.nav.testnav.libs.securitycore.domain.UserInfoExtended;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.core.context.ReactiveSecurityContextHolder.withAuthentication;
 
 @DollySpringBootTest
 class IdentValidatorControllerTest extends AbstractTestcontainer {
@@ -41,21 +42,24 @@ class IdentValidatorControllerTest extends AbstractTestcontainer {
     private static final String VALIDATION_URL = "/api/v2/ident/validerflere";
 
     @Autowired
+    private ApplicationContext applicationContext;
+
     private WebTestClient webTestClient;
 
     @MockitoBean
     private TpsMessagingConsumer tpsMessagingConsumer;
-
-    @MockitoBean
-    private GetUserInfo getUserInfo;
 
     @MockitoSpyBean
     private PersonnummerValidatorService personnummerValidatorService;
 
     @BeforeEach
     void setup() {
-        when(getUserInfo.call()).thenReturn(Mono.just(new UserInfoExtended(
-                "test-user", null, null, null, null, false, List.of())));
+        var jwt = Jwt.withTokenValue("test-token").header("alg", "RS256").subject("test-user")
+                .claim("NAVident", "Z123456").build();
+        webTestClient = WebTestClient.bindToApplicationContext(applicationContext)
+                .webFilter((exchange, chain) -> chain.filter(exchange)
+                        .contextWrite(withAuthentication(new JwtAuthenticationToken(jwt))))
+                .build();
     }
 
     @Test

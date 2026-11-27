@@ -5,11 +5,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import no.nav.testnav.identpool.dto.ValideringFlereRequestDTO;
-import no.nav.testnav.identpool.dto.ValideringResponseDTO;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringFlereRequestDTO;
 import no.nav.testnav.identpool.service.PersonnummerValidatorService;
-import no.nav.testnav.libs.reactivesecurity.action.GetUserInfo;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringResponseDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +27,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequestMapping("/api/v2/ident/validerflere")
 public class IdentValidatorController {
 
-    private final GetUserInfo getUserInfo;
     private final PersonnummerValidatorService personnummerValidatorService;
 
     @PostMapping
@@ -39,15 +40,26 @@ public class IdentValidatorController {
                 .buffer(80)
                 .concatMap(personnummerValidatorService::validerFoedselsnummer)
                 .collectList()
-                .flatMap(resultat -> getUserInfo.call()
+                .flatMap(resultat -> getNavIdent()
                         .zipWith(Mono.just(resultat)))
                 .flatMapMany(tuple -> {
-                    log.info("Identvalidering utført av: {}, totalt antall: {}, herav i prod: {}", tuple.getT1().id(),
+                    log.info("Identvalidering utført av: {}, totalt antall: {}, herav i prod: {}", tuple.getT1(),
                             tuple.getT2().size(),
                             tuple.getT2().stream()
-                            .filter(response -> isTrue(response.erIProd()))
-                            .count());
+                                    .filter(response -> isTrue(response.erIProd()))
+                                    .count());
                     return Flux.fromIterable(tuple.getT2());
                 });
+    }
+
+    private Mono<String> getNavIdent() {
+
+        return ReactiveSecurityContextHolder.getContext()
+                .mapNotNull(SecurityContext::getAuthentication)
+                .filter(JwtAuthenticationToken.class::isInstance)
+                .map(JwtAuthenticationToken.class::cast)
+                .map(JwtAuthenticationToken::getTokenAttributes)
+                .mapNotNull(map -> (String) map.get("NAVident"))
+                .switchIfEmpty(Mono.just("Ukjent"));
     }
 }

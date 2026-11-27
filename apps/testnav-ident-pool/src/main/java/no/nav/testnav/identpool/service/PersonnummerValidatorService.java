@@ -6,14 +6,14 @@ import lombok.val;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Ident2032;
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.dto.ValideringInteralDTO;
-import no.nav.testnav.identpool.dto.ValideringResponseDTO;
 import no.nav.testnav.identpool.repository.IdentRepository;
 import no.nav.testnav.identpool.repository.PersonidentifikatorRepository;
 import no.nav.testnav.identpool.util.DatoFraIdentUtility;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
+import no.nav.testnav.libs.dto.identpool.v2.ValideringResponseDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,9 +30,9 @@ import java.util.stream.IntStream;
 
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.identpool.domain.Kjoenn.KVINNE;
-import static no.nav.testnav.identpool.domain.Kjoenn.MANN;
 import static no.nav.testnav.identpool.domain.Rekvireringsstatus.I_BRUK;
+import static no.nav.testnav.libs.dto.identpool.v1.Kjoenn.KVINNE;
+import static no.nav.testnav.libs.dto.identpool.v1.Kjoenn.MANN;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -169,7 +169,7 @@ public class PersonnummerValidatorService {
         try {
             LocalDate.parse(dag + maaned + aarhundre + aar, DateTimeFormatter.ofPattern("ddMMyyyy"));
             return true;
-        } catch (DateTimeParseException e) {
+        } catch (DateTimeParseException _) {
             return false;
         }
     }

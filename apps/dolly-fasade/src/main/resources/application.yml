@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: dolly-fasade
+    version: 1
+    description: App som eksponerer utvalgte tjenester
+  config:
+    import: "dolly-application.yml"
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+  main:
+    allow-bean-definition-overriding: true
+
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+spring.jmx.enabled: true
+server.tomcat.mbeanregistry.enabled: true
+
+consumers:
+  ident-pool:
+    url: http://testnav-ident-pool.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool
+  person-service:
+    name: testnav-person-service
+    namespace: dolly
+    url: http://testnav-person-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  tenor-search-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tenor-search-service
+    url: http://testnav-tenor-search-service.dolly.svc.cluster.local

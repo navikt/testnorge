@@ -1,0 +1,37 @@
+plugins {
+    id "dolly-apps"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "dolly-fasade"
+        property "sonar.projectName", "dolly-fasade"
+    }
+}
+
+dependencies {
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:reactive-standalone-security"
+    implementation "no.nav.testnav.libs:testing"
+
+
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+
+    implementation "org.springframework.retry:spring-retry"
+
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:reactive-security"
+    implementation "no.nav.testnav.libs:testing"
+
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
+
+    implementation "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.28.1"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+}

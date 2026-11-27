@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;

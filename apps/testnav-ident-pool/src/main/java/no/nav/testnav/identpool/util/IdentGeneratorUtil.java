@@ -1,8 +1,8 @@
 package no.nav.testnav.identpool.util;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
+import no.nav.testnav.libs.dto.identpool.v1.Identtype;
+import no.nav.testnav.libs.dto.identpool.v1.Kjoenn;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
