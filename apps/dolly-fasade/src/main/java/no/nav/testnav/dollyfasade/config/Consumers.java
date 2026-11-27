@@ -17,16 +17,5 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties identPool;
-    private ServerProperties testnavPdlForvalter;
-    private ServerProperties testnavPdlProxy;
-    private ServerProperties testnavPersonService;
-    private ServerProperties testnavTpsMessagingService;
-    private ServerProperties yrkesskadeProxy;
-    private ServerProperties arbeidssoekerregisteretProxy;
-    private ServerProperties brukerService;
-    private ServerProperties safProxy;
-    private ServerProperties etterlatte;
-    private ServerProperties nomProxy;
-    private ServerProperties teamkatalog;
-    private ServerProperties altinn3TilgangService;
+    private ServerProperties personService;
 }
