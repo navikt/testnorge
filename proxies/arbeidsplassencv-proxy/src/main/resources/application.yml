@@ -19,6 +19,11 @@ spring:
             response-timeout: 30s
 
 consumers:
+  fakedings:
+    url: https://fakedings.intern.dev.nav.no
+    cluster: dev-gcp
+    namespace: nais
+    name: fakedings
   arbeidsplassencv:
     name: pam-cv-api-gcp
     namespace: teampam

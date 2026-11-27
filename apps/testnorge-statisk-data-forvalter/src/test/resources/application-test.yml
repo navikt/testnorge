@@ -34,8 +34,6 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dummy
     namespace: dolly
-  krr-stub:
-    url: http://localhost:${wiremock.server.port:0}/krr-stub/api
   synthdata-aareg:
     url: http://localhost:${wiremock.server.port:0}/synt-aareg
   testnav-kodeverk-service:

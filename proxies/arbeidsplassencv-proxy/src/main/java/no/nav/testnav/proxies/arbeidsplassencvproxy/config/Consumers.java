@@ -25,5 +25,6 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties arbeidsplassenCv;
+    private ServerProperties fakedings;
 
 }

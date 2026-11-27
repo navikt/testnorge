@@ -72,7 +72,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-person-faste-data-service
           cluster: dev-gcp
-        - application: krr-stub
         - application: synthdata-aareg
           cluster: dev-fss
         - application: testnav-kodeverk-service

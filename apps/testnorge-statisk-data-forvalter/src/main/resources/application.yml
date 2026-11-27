@@ -48,8 +48,6 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dev-gcp
     namespace: dolly
-  krr-stub:
-    url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
   testnav-kodeverk-service:

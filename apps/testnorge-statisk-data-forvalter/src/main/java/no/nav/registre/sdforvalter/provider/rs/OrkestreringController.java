@@ -28,7 +28,7 @@ public class OrkestreringController {
 
     @PostMapping(value = "/{miljoe}")
     @Operation(
-            description = "Orkestrerer testdata i KRR, AAREG, EREG."
+            description = "Orkestrerer testdata i AAREG, EREG."
     )
     public void initializeInEnvironment(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
         environmentInitializationService.initializeEnvironmentWithStaticData(miljoe, gruppe != null ? gruppe.name() : null);
@@ -40,14 +40,6 @@ public class OrkestreringController {
     )
     public void initializeAareg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
         environmentInitializationService.initializeAareg(miljoe, gruppe != null ? gruppe.name() : null);
-    }
-
-    @PostMapping(value = "/krr")
-    @Operation(
-            description = "Oppretter kontaktinformasjon i KRR basert på angitt gruppe."
-    )
-    public void initializeKrr(@RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeKrr(gruppe != null ? gruppe.name() : null);
     }
 
     @PostMapping(value = "/ereg/{miljoe}")

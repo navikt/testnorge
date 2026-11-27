@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.adapter.KrrAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.krr.KrrConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.organisasjon.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
@@ -19,17 +17,14 @@ import java.util.List;
 public class EnvironmentInitializationService {
 
     private final AaregService aaregService;
-    private final KrrConsumer krrConsumer;
     private final OrganisasjonMottakServiceConsumer organisasjonMottakServiceConsumer;
     private final EregStatusService eregStatusService;
 
     private final EregAdapter eregAdapter;
-    private final KrrAdapter krrAdapter;
     private final AaregAdapter aaregAdapter;
 
     public void initializeEnvironmentWithStaticData(String environment, String gruppe) {
         log.info("Start init of all static data sets...");
-        initializeKrr(gruppe);
         initializeAareg(environment, gruppe);
         initializeEreg(environment, gruppe);
         log.info("Completed init of all static data sets.");
@@ -80,11 +75,5 @@ public class EnvironmentInitializationService {
             log.error("Kunne ikke slå opp orgnumre i ereg.");
             throw e;
         }
-    }
-
-    public void initializeKrr(String gruppe) {
-        log.info("Start init av KRR ...");
-        krrConsumer.send(krrAdapter.fetchBy(gruppe));
-        log.info("Init av krr er ferdig.");
     }
 }
